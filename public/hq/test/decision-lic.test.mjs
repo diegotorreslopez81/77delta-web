@@ -50,14 +50,16 @@ test('botonesTransicion: un boton por destino de la tabla 5.3, Descartar en rojo
   const l = { expediente: 'EXP-1', estado: 'Por decidir' };
   let recargado = false;
   const botones = botonesTransicion(l, async () => { recargado = true; }, 'owner');
-  assert.deepEqual(botones.map(b => b.textContent), ['Aprobada', 'Descartada', 'Cerrada sin presentar']);
-  assert.deepEqual(botones.map(b => b.className), ['btn primario', 'btn peligro', 'btn']);
+  assert.deepEqual(botones.map(b => b.textContent), ['Aprobada', 'Descartada'], 'Cerrada sin presentar solo con el cierre pasado');
+  assert.deepEqual(botones.map(b => b.className), ['btn primario', 'btn peligro']);
+  const cerrada = botonesTransicion({ ...l, cierre: '2020-01-01' }, async () => {}, 'owner');
+  assert.deepEqual(cerrada.map(b => b.textContent), ['Aprobada', 'Descartada', 'Cerrada sin presentar']);
   assert.equal(recargado, false, 'construir los botones no ejecuta la transicion ni recarga');
   assert.ok(botones.every(b => typeof b.listeners.click[0] === 'function'));
 });
 
 test('botonesTransicion: rol agente no ofrece Por decidir -> Aprobada ni -> Descartada, ni recuperar una Descartada', () => {
-  const pd = botonesTransicion({ estado: 'Por decidir' }, async () => {}, 'agente');
+  const pd = botonesTransicion({ estado: 'Por decidir', cierre: '2020-01-01' }, async () => {}, 'agente');
   assert.deepEqual(pd.map(b => b.textContent), ['Cerrada sin presentar'], "Descartada exige owner desde cualquier estado que no sea Nueva");
   const desc = botonesTransicion({ estado: 'Descartada' }, async () => {}, 'agente');
   assert.deepEqual(desc.map(b => b.textContent), []);
@@ -70,8 +72,9 @@ test('botonesTransicion: un estado final sin salidas (Adjudicada) no ofrece ning
 });
 
 test('botonClaveSobre: solo para el rol owner, null para agente', () => {
-  assert.equal(botonClaveSobre({ id: 1 }, 'agente'), null);
-  const b = botonClaveSobre({ id: 1 }, 'owner');
+  assert.equal(botonClaveSobre({ id: 1, estado: 'En redacción' }, 'agente'), null);
+  assert.equal(botonClaveSobre({ id: 1, estado: 'Por decidir' }, 'owner'), null, 'antes de redactar no hay sobre');
+  const b = botonClaveSobre({ id: 1, estado: 'En redacción' }, 'owner');
   assert.equal(b.tag, 'button');
   assert.equal(b.textContent, 'Clave de sobre');
   assert.equal(typeof b.listeners.click[0], 'function');

@@ -320,7 +320,10 @@ test('tarjetaLic: botones de transicion segun rol (5.3), owner ve el boton de cl
   const botonesOwner = buscarNodos(owner, n => n.tag === 'button').map(b => b.textContent);
   assert.ok(botonesOwner.includes('En redacción'));
   assert.ok(botonesOwner.includes('Descartada'));
-  assert.ok(botonesOwner.includes('Clave de sobre'));
+  assert.equal(botonesOwner.includes('Clave de sobre'), false, 'Aprobada aún no tiene sobre');
+  assert.ok(botonesOwner.includes('Copiar para el chat'));
+  const red = buscarNodos(tarjetaLic({ ...l, estado: 'En redacción' }, AHORA, 'owner'), n => n.tag === 'button').map(b => b.textContent);
+  assert.ok(red.includes('Clave de sobre'));
   const agente = tarjetaLic(l, AHORA, 'agente');
   const botonesAgente = buscarNodos(agente, n => n.tag === 'button').map(b => b.textContent);
   assert.ok(botonesAgente.includes('En redacción'));
@@ -339,4 +342,14 @@ test('render: menor=1 pasa importe_max 20000 a la RPC de servidor (Menor como fi
   let visto = null;
   await pintar([], { estado: 'Aprobada', menor: '1' }, { cargador: async f => { visto = f; return { total: 0, filas: [] }; } });
   assert.equal(visto.importe_max, 20000);
+});
+
+test('tarjetaLic: título de la ficha sin repetir el objeto, resumen de la ficha y texto para el chat', async () => {
+  const { resumenFicha, textoChatLic } = await import('../app/vistas/licitaciones.js');
+  const l = { id: 7, expediente: 'E7', estado: 'Por decidir', objeto: 'Servicio X.', importe: 7843, cierre: '2026-10-01',
+    ficha: { objeto_real: 'Servicio X', plazo_ejecucion: '12 meses', criterios_adjudicacion: { peso_automatico: 100 }, solvencia: { tecnica: null, economica: null } } };
+  assert.equal(resumenFicha(l), 'solo precio · 12 meses · el pliego no detalla solvencia');
+  const textos = buscarNodos(tarjetaLic(l, AHORA, 'owner'), n => n.tag === 'p').map(n => n.textContent);
+  assert.equal(textos.includes('Servicio X.'), false, 'el objeto igual al título no se repite');
+  assert.ok(textoChatLic(l).startsWith('Licitación #7 · E7 · Servicio X'));
 });

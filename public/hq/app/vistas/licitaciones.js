@@ -6,7 +6,7 @@
 // H5: se retira ?vista=menores; 'Menor' pasa a ser un filtro más (importe_max 20000) de esta misma vista.
 // El cuadro de los cinco paneles (embudo, pipeline...) se queda en Operación/KPIs vía panelesLicitaciones,
 // que sigue leyendo el payload de omc_hq_v2 sin tocar: esa vista es una foto agregada, no necesita fidelidad total.
-import { el, fecha, urlSegura } from '../ui.js';
+import { el, fecha, urlSegura, toast } from '../ui.js';
 import { embudo, porElegible, porDecidir, vencida, esperandoResolucion, sinPresentarUrgente, ordenCierre, estadoDe, estadoBase, estadoPartido, solvenciaTexto, pipelinePorMes, tipologiaOrgano, tipologia, TIPOLOGIAS, filtrar, enlacesLic, ESTADOS_H1 } from '../licitaciones.js';
 import { botonesTransicion, botonClaveSobre, checklistA5 } from '../decision-lic.js';
 import { recargar } from '../main.js';
@@ -165,6 +165,27 @@ function alternar(art) {
   art.setAttribute('aria-expanded', String(!abierto));
   return !abierto;
 }
+// Card (Diego 23-sep): sin textos repetidos; una línea con lo que pide la ficha C2 y botón para el chat.
+const norm = t => String(t || '').toLowerCase().replace(/[^a-z0-9áéíóúñü]+/g, ' ').trim();
+export function resumenFicha(l) {
+  const f = l.ficha || {}, c = f.criterios_adjudicacion || {}, s = f.solvencia || {};
+  const partes = [];
+  if (c.peso_automatico === 100) partes.push('solo precio');
+  else if (c.peso_subjetivo != null) partes.push(c.peso_subjetivo + ' % juicio de valor');
+  if (f.plazo_ejecucion) partes.push(corto(f.plazo_ejecucion, 40));
+  const solv = [s.economica && 'económica', s.tecnica && 'técnica', s.clasificacion && 'clasificación'].filter(Boolean);
+  if (f.objeto_real || Object.keys(s).length) partes.push(solv.length ? 'solvencia ' + solv.join(', ') : 'el pliego no detalla solvencia');
+  if (f.certificaciones) partes.push('pide ' + corto([].concat(f.certificaciones).join(', '), 40));
+  return partes.join(' · ');
+}
+export function textoChatLic(l) {
+  return ['Licitación #' + l.id, l.expediente, corto(l.ficha?.objeto_real || l.resumen_corto || l.objeto || '', 120),
+    l.importe ? eurCorto(l.importe) + ' sin IVA' : null, l.cierre ? 'cierra ' + fecha(l.cierre) : null].filter(Boolean).join(' · ') + ': ';
+}
+async function copiarLic(l) {
+  try { await navigator.clipboard.writeText(textoChatLic(l)); toast('Copiado: pégalo en el chat del chief'); }
+  catch { toast('No se pudo copiar'); }
+}
 export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
   const venc = vencida(l, ahora), espera = esperandoResolucion(l, ahora);
   // #1238: vencida sin resolver en rojo y con lo que falta por hacer; Presentada con cierre pasado no "cerro", espera al organo.
@@ -183,6 +204,7 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
   // desde el catálogo cerrado de omc_motivos_no(). Se muestra tal cual, sin filtrar por ninguna lista.
   const tagsMotivo = par.estado === 'Descartada' && l.motivo_descarte ? [el('span', { class: 'pill', text: corto(l.motivo_descarte, 60) })] : [];
   const etiquetas = Array.isArray(l.etiquetas) ? l.etiquetas : [];
+  const titulo = corto(l.ficha?.objeto_real || l.resumen_corto || l.objeto || l.expediente, 160);
   const historial = el('div', { class: 'lic-historial' });
   let historialCargado = false;
   const cargarHistorial = () => {
@@ -197,10 +219,10 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
       }))));
     }).catch(() => { historial.innerHTML = ''; historial.append(el('p', { class: 'mudo', text: 'no se pudo cargar el historial' })); });
   };
-  const alClic = e => { if (e.target?.closest?.('a, button')) return; if (alternar(e.currentTarget || art)) cargarHistorial(); };
+  const alClic = e => { if (e.target?.closest?.('a, button')) return; alternar(e.currentTarget || art); };
   const art = el('article', {
     class: 'card-lic', tabindex: '0', 'aria-expanded': 'false', 'data-expediente': l.expediente || '',
-    onclick: alClic, onkeydown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault?.(); if (alternar(e.currentTarget || art)) cargarHistorial(); } },
+    onclick: alClic, onkeydown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault?.(); alternar(e.currentTarget || art); } },
   }, [
     el('div', { class: 'lic-tags' }, [
       el('span', { class: 'pill tag-' + colorEstado(par.estado), title: 'Estado: ' + par.estado }, [el('i', { class: 'punto g-' + (COLOR_ESTADO[par.estado] || 'neutro-3') }), par.estado]),
@@ -212,22 +234,24 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
       el('span', { class: 'plazo' }, [el('i', { class: 'punto g-' + p.color }), el('span', { class: 'plazo-txt ' + claseTexto, text: p.texto })]),
     ]),
     tags.length ? el('div', { class: 'lic-tipologia' }, tags.map(t => el('span', { class: 'pill tag-' + t.color, title: 'Tipología: ' + t.texto, text: t.texto }))) : null,
-    el('h3', { class: 'lic-titulo', text: corto(l.resumen_corto || l.objeto || l.expediente, 160) }),
+    el('h3', { class: 'lic-titulo', text: titulo }),
+    resumenFicha(l) ? el('p', { class: 'sub lic-resumen', text: resumenFicha(l) }) : null,
     l.organo || l.provincia ? el('p', { class: 'lic-organo', text: [l.organo, l.provincia].filter(Boolean).join(' · ') }) : null,
     el('div', { class: 'detalle' }, [
-      l.objeto ? el('p', { class: 'sub', text: l.objeto }) : null,
+      l.objeto && norm(l.objeto) !== norm(titulo) ? el('p', { class: 'sub', text: l.objeto }) : null,
       l.expediente ? el('p', { class: 'sub', text: 'Expediente ' + l.expediente }) : null,
       solv !== 'sin dato' ? el('p', { class: 'sub', text: 'Solvencia: ' + solv }) : null,
       l.agente ? el('p', { class: 'sub', text: 'Agente: ' + l.agente + (l.tomada_en ? ' · tomada ' + fecha(l.tomada_en) : '') }) : null,
       l.motivo_descarte ? el('p', { class: 'sub', text: 'Motivo: ' + l.motivo_descarte + (l.origen_descarte ? ' (' + l.origen_descarte + ')' : '') }) : null,
       l.justificante_drive ? el('p', { class: 'sub' }, [el('a', { class: 'btn-enlace', href: urlSegura(l.justificante_drive), target: '_blank', rel: 'noopener', text: 'Justificante' })]) : null,
       checklistA5(l),
-      historial,
+      el('details', { class: 'lic-hist', ontoggle: e => { if (e.currentTarget?.open) cargarHistorial(); } }, [el('summary', { text: 'Historial' }), historial]),
     ]),
     el('div', { class: 'lic-pie enlaces enlaces-doc' }, [
       ...enlaces.map(([t, u]) => el('a', { class: 'btn-enlace', href: u, target: '_blank', rel: 'noopener', text: t })),
       ...botonesTransicion(l, recargarSinCache, rol),
       botonClaveSobre(l, rol),
+      el('button', { class: 'btn', text: 'Copiar para el chat', onclick: () => copiarLic(l) }),
     ]),
   ]);
   return art;

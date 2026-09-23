@@ -77,8 +77,10 @@ async function ejecutarTransicion(l, destino, recargar) {
 
 // Un boton por destino valido (tabla 5.3 filtrada por rol, licitaciones.js:transicionesValidas). Descartar
 // siempre en rojo; el resto, primario si es el avance natural (el primero de la lista), secundario si no.
-export function botonesTransicion(l, recargar, rol) {
-  return transicionesValidas(l, rol).map((destino, i) => el('button', {
+// Card (Diego 23-sep): 'Cerrada sin presentar' solo tiene sentido con el cierre ya pasado.
+export function botonesTransicion(l, recargar, rol, ahora = new Date()) {
+  const cerro = l.cierre && String(l.cierre).slice(0, 10) < ahora.toISOString().slice(0, 10);
+  return transicionesValidas(l, rol).filter(d => d !== 'Cerrada sin presentar' || cerro).map((destino, i) => el('button', {
     class: 'btn' + (destino === 'Descartada' ? ' peligro' : i === 0 ? ' primario' : ''),
     text: destino,
     onclick: () => ejecutarTransicion(l, destino, recargar),
@@ -87,8 +89,9 @@ export function botonesTransicion(l, recargar, rol) {
 
 // P1: clave de sobre, solo owner. Se pide al vuelo (nunca se guarda en localStorage ni en S.datos) y se
 // muestra en un toast largo; al cerrarlo desaparece de la pantalla igual que del navegador.
+const CON_SOBRE = new Set(['En redacción', 'Por presentar', 'Presentada', 'Subsanación']);
 export function botonClaveSobre(l, rol) {
-  if (rol !== 'owner') return null;
+  if (rol !== 'owner' || !CON_SOBRE.has(l.estado)) return null;
   return el('button', { class: 'btn', text: 'Clave de sobre', onclick: async () => {
     try {
       const r = await claveSobre(l.id);
