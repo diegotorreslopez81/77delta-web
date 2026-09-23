@@ -1,0 +1,327 @@
+// Funciones puras de licitaciones (plan 3b, tanda 2a): que Diego decida sobre las decidibles (unas
+// 60) en vez de las 1.475 filas del feed, y el embudo de KPIs de Operacion/Licitaciones. Sin DOM,
+// sin imports de vistas: se prueba con node --test.
+import { sinAcentos } from './estado.js';
+export const DECIDIBLES = new Set(['Probable', 'Dudosa']);
+export const ABIERTAS = new Set(['Nueva', 'Por decidir']);
+
+// C1 (revision final del controlador): estado '' (cadena vacia, valor por defecto de la columna en
+// BD) se trata como 'Nueva' en todo el modulo, igual que ya hace schema-v2.sql en omc_hq_v2 con
+// coalesce(nullif(x->>'estado', ''), 'Nueva'). Sin esto una fila recien detectada con estado ''
+// caia fuera de ABIERTAS y no aparecia ni en porDecidir ni en enCriba.
+export function estadoDe(l) {
+  return (l?.estado || '').trim() || 'Nueva';
+}
+
+export function pendiente(l) {
+  const d = l?.decision;
+  return d == null || d === '' || d === 'Pendiente';
+}
+
+// #1238: la decision se LEE, nunca se normaliza en BD (el Sheet y la sync dejan 'OK (auto)', 'NOK', 'Descartado'...).
+// go = OK y OK (auto); nogo = No, NOK, Descartado/a; pendiente = nulo, vacio, Pendiente y cualquier valor no reconocido.
+export function decisionDe(l) {
+  const d = String(l?.decision ?? '').trim().toUpperCase();
+  if (d === 'OK' || /^OK\s*\(?AUTO\)?$/.test(d)) return 'go';
+  if (['NO', 'NOK', 'DESCARTADO', 'DESCARTADA'].includes(d)) return 'nogo';
+  return 'pendiente';
+}
+
+// Estados finales: nadie tiene ya nada que hacer con la licitacion (Presentada espera al organo, el resto ya se resolvio).
+// H1 (tanda 4): 'Contratada' y 'Retirada' ya no existen en BD (omc_lic_estado_actual las traduce a Adjudicada/Descartada
+// desde la migracion de estados); se dejan fuera para no reconocer nombres muertos.
+const FINALES = new Set(['Presentada', 'Adjudicada', 'No adjudicada', 'Descartada', 'Cerrada sin presentar']);
+export function esFinal(l) { return FINALES.has(estadoBase(l)); }
+const hoyDe = ahora => ahora.toISOString().slice(0, 10);
+export function cierrePasado(l, ahora = new Date()) {
+  const c = String(l?.cierre || '').slice(0, 10);
+  return /^\d{4}-\d{2}-\d{2}$/.test(c) && c < hoyDe(ahora);
+}
+// Vencida sin resolver: no final (Presentada incluida) y con el cierre ya pasado. Ni viva ni cerrada: alguien tiene que cerrarla.
+export function vencida(l, ahora = new Date()) { return !esFinal(l) && cierrePasado(l, ahora); }
+// Presentada con el cierre pasado: correcta, espera la resolucion del organo; no es una viva que cerro.
+export function esperandoResolucion(l, ahora = new Date()) { return estadoBase(l) === 'Presentada' && cierrePasado(l, ahora); }
+
+// Aprobada u OK (decision go o estado Aprobada) sin resolver que cierra en <= 2 dias (menos de 48 h; el cierre solo trae fecha):
+// pide presentarse ya. Encargo #1238 (Marc-Chief 20-sep): IFAE-2026/07 tenia OK del 5-sep y vencio el 18-09 sin presentarse.
+export function sinPresentarUrgente(l, ahora = new Date()) {
+  if (esFinal(l) || vencida(l, ahora)) return false;
+  if (!(decisionDe(l) === 'go' || estadoBase(l) === 'Aprobada')) return false;
+  const c = String(l?.cierre || '').slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(c)) return false;
+  const d = Math.round((Date.parse(c) - Date.parse(hoyDe(ahora))) / 864e5);
+  return d >= 0 && d <= 2;
+}
+
+// Botones Presentar/Estudiar/Descartar: en toda viva de Nueva (solo Probable/Dudosa) o Por decidir con
+// decision pendiente, o con decision go y estado distinto de Aprobada (incoherente: Presentar la deja Aprobada). Aprobada con go
+// ya esta decidida, y nogo no se vuelve a preguntar. H1: 'Analizada'/'Pausada' ya no existen en BD (traducidas a Por decidir).
+export function conBotones(l, ahora = new Date()) {
+  if (esFinal(l) || vencida(l, ahora)) return false;
+  const est = estadoBase(l), dec = decisionDe(l);
+  if (est === 'Nueva') return dec === 'pendiente' && DECIDIBLES.has(l.elegible);
+  if (est !== 'Por decidir') return false;
+  return dec === 'pendiente' || dec === 'go';
+}
+
+// H1: los 12 estados canonicos de omc_licitaciones (mismo orden que omc_lic_estados() en schema-v18-licita.sql).
+export const ESTADOS_H1 = ['Nueva', 'Por decidir', 'Aprobada', 'En redaccion', 'Por presentar', 'Presentada',
+  'Subsanacion', 'Propuesta de adjudicacion', 'Adjudicada', 'No adjudicada', 'Descartada', 'Cerrada sin presentar']
+  .map(e => e.replace('redaccion', 'redacción').replace('Subsanacion', 'Subsanación').replace('adjudicacion', 'adjudicación'));
+
+// H1 5.3: grafo exacto de omc_lic_transicion_ok() (schema-v18-licita.sql). p_de === p_a (quedarse) siempre vale y
+// no se repite aqui; esto es solo el destino de cada boton de avance o retroceso, incluidos los 5 rollbacks.
+export const TRANSICIONES_5_3 = {
+  'Nueva': ['Por decidir', 'Descartada', 'Cerrada sin presentar'],
+  'Por decidir': ['Aprobada', 'Descartada', 'Cerrada sin presentar'],
+  'Aprobada': ['En redacción', 'Descartada', 'Cerrada sin presentar'],
+  'En redacción': ['Por presentar', 'Descartada', 'Cerrada sin presentar', 'Aprobada'],
+  'Por presentar': ['Presentada', 'Descartada', 'Cerrada sin presentar', 'En redacción'],
+  'Presentada': ['Subsanación', 'Propuesta de adjudicación', 'Adjudicada', 'No adjudicada'],
+  'Subsanación': ['Presentada', 'No adjudicada'],
+  'Propuesta de adjudicación': ['Adjudicada', 'No adjudicada'],
+  'Descartada': ['Por decidir'],
+  'Cerrada sin presentar': ['Nueva'],
+};
+
+// Trigger omc_licitaciones_guardia() (schema-v18-licita.sql): solo tres movimientos exigen rol owner.
+// Todo lo demas de TRANSICIONES_5_3 vale para owner y agente por igual.
+export function rolPermite(deEstado, aEstado, rol) {
+  if (rol === 'owner') return true;
+  if (deEstado === 'Por decidir' && aEstado === 'Aprobada') return false; // "solo Diego aprueba"
+  if (aEstado === 'Descartada' && deEstado !== 'Nueva') return false; // "solo Diego descarta a partir de Por decidir"
+  if (deEstado === 'Descartada' && aEstado !== 'Descartada') return false; // "solo Diego recupera una descartada"
+  return true;
+}
+
+// Destinos que este boton puede ofrecer para esta licitacion y este rol: interseccion de la tabla 5.3 con la guardia.
+export function transicionesValidas(l, rol) {
+  const est = estadoBase(l);
+  return (TRANSICIONES_5_3[est] || []).filter(dest => rolPermite(est, dest, rol));
+}
+
+// Nulls de cierre van al final; empate (incluido null contra null) se desempata por expediente.
+export function ordenCierre(a, b) {
+  const ac = a.cierre, bc = b.cierre;
+  if (ac == null && bc == null) return String(a.expediente || '').localeCompare(String(b.expediente || ''));
+  if (ac == null) return 1;
+  if (bc == null) return -1;
+  return String(ac).localeCompare(String(bc)) || (Number(a.importe) || Infinity) - (Number(b.importe) || Infinity) || String(a.expediente || '').localeCompare(String(b.expediente || ''));
+}
+
+export function porDecidir(lics, ahora = new Date()) {
+  return (lics || [])
+    .filter(l => pendiente(l) && ABIERTAS.has(estadoDe(l)) && DECIDIBLES.has(l.elegible) && !vencida(l, ahora))
+    .sort(ordenCierre);
+}
+
+export function enCriba(lics, ahora = new Date()) {
+  return (lics || [])
+    .filter(l => pendiente(l) && ABIERTAS.has(estadoDe(l)) && !DECIDIBLES.has(l.elegible) && !vencida(l, ahora))
+    .sort(ordenCierre);
+}
+
+export function porElegible(lics) {
+  const g = {};
+  for (const l of lics || []) { const k = l.elegible || 'Sin clasificar'; (g[k] ||= []).push(l); }
+  return Object.entries(g).sort((a, b) => b[1].length - a[1].length);
+}
+
+export function solvenciaTexto(l) {
+  const t = l?.solvencia || '';
+  if (!t || t.startsWith('?')) return 'sin dato';
+  return t.length > 160 ? t.slice(0, 160) + '…' : t;
+}
+
+function sumaImporte(rows) { return rows.reduce((s, l) => s + (Number(l.importe) || 0), 0); }
+function fila(clave, nombre, rows) { return { clave, nombre, n: rows.length, eur: sumaImporte(rows) }; }
+
+// Task 3 (ruling del controlador): el payload del servidor solo trae licitaciones abiertas; adjudicadas,
+// contratadas, descartadas y cerradas llegan agregadas en d.lic_resumen (n/eur ya sumados alli). Si existe
+// resumen[clave] se usa eso (Number con default 0); si no, se sigue contando el array como antes, para que
+// el embudo no se quede vacio con datos antiguos o de un agente que aun no manda lic_resumen.
+function filaResumen(clave, nombre, rows, resumen) {
+  const r = resumen?.[clave];
+  if (r) return { clave, nombre, n: Number(r.n ?? 0), eur: Number(r.eur ?? 0) };
+  return fila(clave, nombre, rows);
+}
+
+// Orden fijo del embudo (Task 1, plan 3b; I1 de la revision final anade pausadas). aprobadas/
+// presentadas/pausadas/adjudicadas/contratadas/descartadas/cerradas son exclusivas entre si por
+// estado, salvo aprobadas que ademas admite decision 'OK' cuando el estado no ha avanzado a
+// Presentada/Adjudicada/Contratada; cada fila cuenta una sola vez porque el filtro es un unico
+// predicado OR, no la union de dos arrays.
+// #1238: las vencidas sin resolver quedan fuera de todos los conteos. Lo que viene de lic_resumen (servidor, cuenta todo lo de BD)
+// se corrige restando las vencidas que el payload trae de ese estado; lo que se cuenta del array ya no las incluye.
+export function embudo(lics, kpis = {}, resumen = {}, ahora = new Date()) {
+  const todas = lics || [];
+  const rows = todas.filter(l => !vencida(l, ahora));
+  const nVenc = est => todas.filter(l => vencida(l, ahora) && estadoDe(l) === est).length;
+  const resumenSinVencidas = est => {
+    const clave = { Aprobada: 'aprobadas', Pausada: 'pausadas' }[est], r = resumen?.[clave];
+    return r ? { ...resumen, [clave]: { ...r, n: Math.max(0, Number(r.n ?? 0) - nVenc(est)) } } : resumen;
+  };
+  const filas = [];
+  const detectadas = kpis?.['lic.detectadas.n'];
+  if (detectadas) filas.push({ clave: 'detectadas', nombre: 'Detectadas', n: Number(detectadas.valor) || 0, eur: null });
+  else if (resumen?.total) filas.push({ clave: 'detectadas', nombre: 'Detectadas', n: Number(resumen.total.n) || 0, eur: null });
+  const analizadas = kpis?.['lic.analizadas.n'];
+  if (analizadas) filas.push({ clave: 'analizadas', nombre: 'Analizadas', n: Number(analizadas.valor) || 0, eur: null });
+  filas.push(fila('por_decidir', 'Por decidir', porDecidir(rows)));
+  filas.push(fila('en_criba', 'En criba', enCriba(rows)));
+  // C2 (revision final): aprobadas y presentadas tambien pueden venir de lic_resumen cuando existe
+  // (el array de 'licitaciones' ya no se recorta a 7 dias para estos dos estados, pero lic_resumen
+  // sigue siendo la fuente completa, sin el limite de pestana/30 dias de omc_hq; ver Deuda aceptada).
+  filas.push(filaResumen('aprobadas', 'Aprobadas', rows.filter(l => estadoDe(l) === 'Aprobada' || (l.decision === 'OK' && !['Presentada', 'Adjudicada', 'Contratada'].includes(estadoDe(l)))), resumenSinVencidas('Aprobada')));
+  filas.push(filaResumen('presentadas', 'Presentadas', rows.filter(l => estadoDe(l) === 'Presentada'), resumen));
+  // I1 (revision final): fila pausadas, misma fuente (lic_resumen o array) que aprobadas/presentadas;
+  // la vista decide si la pinta (solo cuando n > 0).
+  filas.push(filaResumen('pausadas', 'Pausadas', rows.filter(l => estadoDe(l) === 'Pausada'), resumenSinVencidas('Pausada')));
+  filas.push(filaResumen('adjudicadas', 'Adjudicadas', rows.filter(l => estadoDe(l) === 'Adjudicada'), resumen));
+  filas.push(filaResumen('contratadas', 'Contratadas', rows.filter(l => estadoDe(l) === 'Contratada'), resumen));
+  // Minor 8 (revision final): mismo predicado de descartada que la SQL (estado empieza por
+  // 'Descartada' o decision en NO/NOK/DESCARTADA/DESCARTADO, sin distinguir mayusculas).
+  filas.push(filaResumen('descartadas', 'Descartadas', rows.filter(l => estadoDe(l).startsWith('Descartada') || ['NO', 'NOK', 'DESCARTADA', 'DESCARTADO'].includes(String(l.decision || '').toUpperCase())), resumen));
+  filas.push(filaResumen('cerradas', 'Cerradas sin presentar', rows.filter(l => estadoDe(l) === 'Cerrada sin presentar'), resumen));
+  return filas;
+}
+
+// Pipeline por mes de cierre (Home y Operación/Licitaciones): importe de aprobadas y presentadas desde el mes
+// en curso; lo anterior cae en la primera columna y lo posterior (o sin fecha) en la última.
+const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+export function pipelinePorMes(licitaciones, ahora = new Date(), meses = 6) {
+  const y0 = ahora.getUTCFullYear(), m0 = ahora.getUTCMonth();
+  const cols = Array.from({ length: meses }, (_, i) => ({ etiqueta: MESES[(m0 + i) % 12] + (i === meses - 1 ? '+' : ''), presentada: 0, aprobada: 0 }));
+  for (const l of licitaciones || []) {
+    const est = String(l.estado || '').toLowerCase();
+    if (est !== 'aprobada' && est !== 'presentada') continue;
+    const c = l.cierre ? new Date(l.cierre) : null;
+    const i = c && !isNaN(c) ? (c.getUTCFullYear() - y0) * 12 + c.getUTCMonth() - m0 : 0;
+    cols[Math.min(meses - 1, Math.max(0, i))][est] += Number(l.importe) || 0;
+  }
+  return cols;
+}
+// Embudo acumulado desde lic_resumen (estados excluyentes): lo presentado incluye lo ya resuelto.
+
+// Tipologia del organo de contratacion (tarjetas ricas, encargo #1057): deriva una categoria legible
+// del texto libre de 'organo' para poder filtrar sin columna nueva en la BD. Gana el primer patron
+// que matchea, en este orden.
+const TIPOLOGIA_RE = [
+  ['Ayuntamiento', /ajuntament|ayuntamiento|concello|udala|alcald/i],
+  ['Diputación', /diputaci|consell insular|cabildo/i],
+  ['Consorcio', /consorci/i],
+  ['Autonómica', /generalitat|conselleria|departament|junta de|gobierno de|xunta|comunidad de|servei|servicio .* de salud/i],
+  ['Estatal', /ministerio|estatal|instituto|agencia|sociedad mercantil|entidad p[uú]blica|m\.p\./i],
+  ['Universidad', /universi/i],
+  ['Empresa pública', /s\.a\.|s\.l\.|empresa/i],
+];
+export const TIPOLOGIAS = [...TIPOLOGIA_RE.map(x => x[0]), 'Otro'];
+// Brief 2023 (renombrada): ya habia un 'tipologia(organo)' clasificando el organo de contratacion;
+// pasa a llamarse tipologiaOrgano() para dejar el nombre 'tipologia' libre para la nueva clasificacion
+// por contenido (objeto/resumen/tipo del pliego) que pide este brief. Sin cambio de comportamiento.
+export function tipologiaOrgano(organo) {
+  const t = String(organo || '');
+  for (const [nombre, re] of TIPOLOGIA_RE) if (re.test(t)) return nombre;
+  return 'Otro';
+}
+
+// Tags de tipologia del contenido de la licitacion (brief 2023, pedido repetido de Diego: "formacion,
+// software, un SaaS, hardware, presencial, online... data, business intelligence, CRM, ERPs"). Funcion
+// pura, sin DOM: clasifica por palabras clave (castellano y catalan) buscadas sin acentos y en
+// minusculas (sinAcentos ya hace normalize('NFD') + minusculas) sobre objeto/resumen_corto/motivo_auto/
+// tipo. Orden = especificidad: primero categorias de producto, luego de modalidad (mismo orden que pide
+// el brief); maximo 4 etiquetas; sin ninguna coincidencia, lista vacia. Cada categoria lleva ya el
+// nombre de la familia de color de tokens.css (--tag-<color>-bg/-fg en brand/tokens.css).
+const TIPO_TAGS = [
+  ['erp', 'ERP', ['erp', 'contabilidad', 'nominas', 'recursos humanos', 'gestion economica', 'sap', 'gestion integral'], 'indigo'],
+  ['crm', 'CRM', ['crm', 'gestion de clientes', 'atencion ciudadana', 'ciudadano 360'], 'rosa'],
+  ['datos', 'Datos', ['datos', 'dades', 'big data', 'data lake', 'analitica', 'business intelligence', 'bi', 'cuadro de mando', 'power bi', 'reporting'], 'cian'],
+  ['ia', 'IA', ['inteligencia artificial', 'ia', 'machine learning', 'chatbot', 'asistente virtual', 'llm', 'automatizacion'], 'violeta'],
+  ['ciberseguridad', 'Ciberseguridad', ['ciberseguridad', 'seguridad de la informacion', 'ens', 'soc', 'auditoria de seguridad', 'backup', 'copia inmutable'], 'ambar'],
+  ['saas', 'SaaS', ['saas', 'suscripcion', 'subscripcio', 'licencia de uso', 'nube', 'cloud', 'modalidad servicio'], 'teal'],
+  ['software', 'Software', ['software', 'aplicacion', 'aplicacio', 'desarrollo', 'desenvolupament', 'plataforma', 'sistema de informacion', 'app', 'portal', 'sede electronica', 'web'], 'azul'],
+  ['hardware', 'Hardware', ['hardware', 'equipos', 'equipamiento', 'servidores', 'ordenadores', 'suministro de equipos', 'impresoras', 'sensores', 'iot', 'camaras'], 'oliva'],
+  ['licencias', 'Licencias', ['licencia', 'licencias', 'llicencia', 'renovacion de licencias', 'microsoft', 'oracle', 'sap'], 'gris'],
+  ['formacion', 'Formación', ['formacion', 'curso', 'taller', 'docencia', 'capacitacion', 'formacio', 'aula'], 'verde'],
+  ['consultoria', 'Consultoría', ['consultoria', 'asesoramiento', 'assessorament', 'asistencia tecnica', 'estudio', 'diagnostico', 'plan director', 'oficina tecnica'], 'gris'],
+  ['mantenimiento', 'Mantenimiento', ['mantenimiento', 'manteniment', 'soporte', 'suport', 'evolutivo', 'correctivo'], 'oliva'],
+  ['comunicaciones', 'Comunicaciones', ['telecomunicaciones', 'telefonia', 'red', 'wifi', 'fibra', 'voip'], 'indigo'],
+  ['presencial', 'Presencial', ['presencial', 'in situ', 'en las dependencias', 'en las instalaciones'], 'teal'],
+  ['online', 'Online', ['online', 'en linea', 'telematico', 'remoto', 'virtual', 'videoconferencia'], 'cian'],
+];
+const escapeRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+export function tipologia(l) {
+  const texto = sinAcentos([l?.objeto, l?.resumen_corto, l?.motivo_auto, l?.tipo].filter(Boolean).join(' '));
+  if (!texto) return [];
+  const etiquetas = [];
+  for (const [clave, nombre, palabras, color] of TIPO_TAGS) {
+    if (etiquetas.length >= 4) break;
+    if (palabras.some(p => new RegExp('\\b' + escapeRe(p) + '\\b').test(texto))) etiquetas.push({ clave, texto: nombre, color });
+  }
+  return etiquetas;
+}
+
+// Sin columna de solvencia normalizada: 'sin solvencia' cuando el texto declara exencion (159.6,
+// 'no exige', 'sin acreditaci'); si hay texto y no la declara, se entiende que exige.
+export function sinSolvencia(l) {
+  const t = String(l?.solvencia || '').toLowerCase();
+  return /159\.6|no exige|sin acreditaci/.test(t);
+}
+
+// Catalogo cerrado de motivos de NO (encargo #1063), mismo orden que omc_motivos_no() en SQL y
+// MOTIVOS_NO en scripts/hq/hq.py: es el orden en que Diego los ve, tanto en los chips del modal de
+// descarte como en el panel de KPIs.
+export const MOTIVOS_NO = ['Fuera de España', 'Suministro/hardware', 'No TIC ni formación', 'Solvencia/clasificación',
+  'Presencial', 'Sin pliego', 'Plazo corto', 'Importe bajo', 'Competencia/consorcio', 'Duplicada'];
+
+// Motivos de NO reales de una licitacion: solo lo de l.motivos que esta en el catalogo cerrado. Una
+// aprobada/presentada trae en 'motivos' los motivos de SI del Sheet (texto libre de Sales), asi que
+// para ellas esto siempre devuelve [] en vez de colar texto ajeno al catalogo.
+export function motivosNo(l) {
+  return (l?.motivos || []).filter(m => MOTIVOS_NO.includes(m));
+}
+
+// Desde 2.0.20 omc_licitaciones_descartadas devuelve tambien estados sucios del Sheet con el motivo
+// pegado al estado ("Descartada: solo viable en UTE"). Se parte una sola vez y en un sitio: la pill de
+// la tarjeta muestra el estado limpio y el resto viaja como texto de motivo.
+export function estadoPartido(l) {
+  const e = estadoDe(l), i = e.indexOf(':');
+  return i > 0 ? { estado: e.slice(0, i).trim(), motivo: e.slice(i + 1).trim() } : { estado: e, motivo: '' };
+}
+export function estadoBase(l) { return estadoPartido(l).estado; }
+
+// Presencialidad (2.0.20, filtro nuevo de la hoja): no hay columna en BD. La senal fiable es el motivo
+// de NO 'Presencial' del catalogo cerrado (lo pone Diego al descartar); para lo que aun no se ha
+// decidido solo queda la heuristica de texto sobre lo que escribe el bot y el pliego.
+export function presencial(l) {
+  if (motivosNo(l).includes('Presencial')) return true;
+  const t = [l?.motivo_auto, l?.solvencia, l?.objeto, l?.resumen_corto].filter(Boolean).join(' ').toLowerCase();
+  return /presencial|in situ/.test(t);
+}
+
+const CAMPOS_TEXTO = l => [l.expediente, l.resumen_corto, l.objeto, l.organo, l.provincia];
+export function coincideTexto(l, texto) {
+  const q = sinAcentos(texto).trim();
+  return !q || sinAcentos(CAMPOS_TEXTO(l).join(' ')).includes(q);
+}
+
+// Filtro puro para la vista: tipologia/solvencia/fuente/tipo/motivo/presencial/texto/desiertas, todos
+// opcionales (sin valor no filtra). Es la unica funcion que filtra la lista de licitaciones.
+// 'motivo' es un motivo del catalogo, o 'sin' para las descartadas sin ningun motivo reconocido.
+export function filtrar(rows, f = {}) {
+  return (rows || []).filter(l =>
+    (!f.tipologia || tipologiaOrgano(l.organo) === f.tipologia)
+    && (!f.solvencia || f.solvencia === 'todas' || (f.solvencia === 'sin solvencia' ? sinSolvencia(l) : !sinSolvencia(l)))
+    && (!f.fuente || l.pestana === f.fuente)
+    && (!f.tipo || l.tipo === f.tipo)
+    && (!f.motivo || (f.motivo === 'sin' ? (estadoBase(l) === 'Descartada' && motivosNo(l).length === 0) : motivosNo(l).includes(f.motivo)))
+    && (!f.presencial || (f.presencial === 'si' ? presencial(l) : !presencial(l)))
+    && (!f.texto || coincideTexto(l, f.texto))
+    && (!f.desiertas || estadoDe(l) === 'Cerrada sin presentar'));
+}
+
+// Enlaces de la tarjeta de licitación. PPT y PCAP prefieren la copia de Drive que sube el bot
+// (abre en el móvil sin sesión del portal); si aún no está, el enlace del portal (PLACSP, Gencat...).
+export function enlacesLic(l) {
+  return [['Perfil', l.enlace], ['Carpeta', l.carpeta], ['PPT', l.ppt_drive || l.ppt], ['PCAP', l.pcap_drive || l.pcap]].filter(x => x[1]);
+}

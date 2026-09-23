@@ -1,0 +1,291 @@
+/* HQ v2 · móvil primero. Colores y tipografías solo de tokens.css. */
+*{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--papel);color:var(--tinta);font-family:var(--body);font-size:16px;line-height:1.45;padding-bottom:env(safe-area-inset-bottom)}
+h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.02em;line-height:1.15;margin:0}
+a{color:inherit}
+/* Sticky en iPhone (19-sep): no hay ningun contenedor con overflow entre '.cab' y 'body' (revisado
+   hq.css/tokens.css/cards.css y main.js), asi que no es un 'scroll dentro de .vista'. El fallo real en
+   iOS Safari con 'position:sticky' sin scroll-ancestor con overflow es casi siempre de composicion
+   (el header se queda en la capa de pintado normal y el motor lo "pierde" durante el scroll inercial):
+   se fuerza su propia capa GPU con translateZ(0) y se añade el prefijo -webkit-sticky por si acaso el
+   iPhone de Diego va con una version vieja de Safari que aun lo requiere. */
+.cab{position:-webkit-sticky;position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:calc(8px + env(safe-area-inset-top)) 12px 8px;background:var(--marino);color:var(--marfil);min-height:52px;transform:translateZ(0)}
+.marca{font-family:var(--display);font-weight:700;text-decoration:none;font-size:18px;color:inherit}
+.btn-icono{font:inherit;font-size:22px;line-height:1;background:none;border:0;color:inherit;cursor:pointer;padding:4px 6px;display:inline-flex;align-items:center;justify-content:center}
+#hamburguesa{min-width:44px;min-height:44px}
+.buscador{position:relative;flex:1;max-width:520px;margin-left:auto;min-width:0}
+.buscador .campo{padding:6px 10px;font-size:14px;background:rgba(255,255,255,.1);border-color:transparent;color:var(--marfil)}
+.buscador .campo::placeholder{color:var(--pizarra-clara)}
+.resultados{position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--panel);color:var(--tinta);border:1px solid var(--linea);border-radius:var(--radio);max-height:60vh;overflow:auto;z-index:15;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.resultados a{display:block;padding:8px 10px;text-decoration:none;color:inherit;font-size:14px}.resultados a:hover,.resultados a.marcado{background:var(--oro-suave)}
+.resultados .tipo{font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--tinta-2);margin-right:6px}
+.contador{background:var(--oro);color:var(--tinta);border-radius:999px;padding:3px 10px;font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis}
+/* Punto rosa de la cabecera (19-sep): es el semaforo de saturacion de cuentas (estado.js
+   semaforoCuentas), no decorativo. Antes era un punto de 14px sin area de toque; ahora el span mide
+   44x44 (mismo objetivo tactil que el resto de botones de la cabecera) con el punto de color en
+   ::before, y shell.js le añade cursor y el toast al tocarlo en movil (aria-label/title ya se rellenan
+   ahi con el texto real, p.ej. 'team@ al 98 % de la ventana'). */
+.semaforo{min-width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 4px;background:none;border:0;cursor:pointer;color:var(--pizarra-clara);font-size:12px}
+.semaforo::before{content:'';display:block;width:14px;height:14px;flex:none;border-radius:50%;background:var(--pizarra-clara)}
+.semaforo.verde::before{background:var(--exito)}.semaforo.ambar::before{background:var(--oro-luz)}.semaforo.rojo::before{background:var(--error)}
+.cab .salir{color:var(--pizarra-clara);font-size:13px}
+.ver{font-family:var(--mono);font-size:11px;opacity:.6}
+.cuerpo{display:flex;align-items:stretch;min-height:calc(100vh - 52px)}
+.menu{background:var(--panel);border-right:1px solid var(--linea);width:232px;flex:none;display:flex;flex-direction:column;justify-content:space-between;padding:10px 8px;box-sizing:border-box}
+.menu .area{margin-bottom:6px}.area-titulo{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--tinta-2);margin:8px 10px 2px}
+.ico{display:block;width:22px;height:22px;flex:none}
+.menu nav a{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px;border-radius:var(--radio-boton);text-decoration:none;color:var(--tinta);font-size:15px}
+.menu nav a.activa{background:var(--oro);color:var(--tinta);font-weight:600}.menu .pronto{margin:0 10px;font-size:12px}
+.menu-cab{display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:0;background:var(--panel);margin:-10px -8px 8px;padding:calc(8px + env(safe-area-inset-top)) 10px 8px;box-shadow:0 0 32px rgba(0,0,0,.3)}
+.menu-cab .marca-menu{font-family:var(--display);font-weight:700;font-size:16px}
+.menu-cab button{min-width:44px;min-height:44px}
+.menu-pie{display:grid;gap:6px;font-size:12px;padding:8px 10px}.menu-pie a{color:var(--tinta-2)}
+.velo{display:none}
+.vista{flex:1;min-width:0;padding:14px;max-width:1280px;margin:0 auto;box-sizing:border-box}
+@media (max-width:899px){
+  .menu{position:fixed;top:0;bottom:0;left:0;z-index:25;width:min(84vw,320px);transform:translateX(-100%);transition:transform .2s var(--ease);overflow-y:auto;padding-bottom:env(safe-area-inset-bottom)}
+  body.menu-abierto .menu{transform:none}body.menu-abierto .velo{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:24}
+  #plegar,.cab .salir{display:none}.cab .contador{font-size:12px;padding:2px 8px}
+  /* I4 (revision final): .menu-cab (prepend de montarCabeceraMenu) suma un tercer hijo a .menu, que
+     seguia usando justify-content:space-between de la regla base (linea 21): con tres hijos eso deja
+     ~80px muertos entre la cabecera "HQ" y la primera area. Se corta el reparto y se ancla el pie abajo
+     a mano. */
+  .menu{justify-content:flex-start}
+  .menu-pie{margin-top:auto}
+}
+@media (min-width:900px){
+  #hamburguesa{display:none}.menu-pie [data-salir]{display:none}
+  .menu-cab{display:none}
+  body.menu-plegado .menu{width:56px;padding:10px 4px}
+  body.menu-plegado .menu nav a{justify-content:center;padding:0}
+  body.menu-plegado .menu nav a span.txt{display:none}
+  body.menu-plegado .area-titulo,body.menu-plegado .menu-pie a,body.menu-plegado .menu-pie .ver,body.menu-plegado .pronto{display:none}
+}
+.tarjeta{background:var(--panel);border:1px solid var(--linea);border-radius:var(--radio);padding:12px;margin-bottom:10px}
+.tarjeta.roja{border-left:4px solid var(--error)}
+.btn{font:inherit;padding:8px 14px;border-radius:var(--radio-boton);border:1px solid var(--linea-fuerte);background:var(--panel);color:var(--tinta);cursor:pointer}
+.btn.primario{background:var(--oro);border-color:var(--oro);font-weight:600}
+.btn.peligro{border-color:var(--error);color:var(--error)}
+.btn-enlace{background:none;border:0;color:var(--oro-oscuro);text-decoration:underline;cursor:pointer;font:inherit}
+.campo,textarea,select{font:inherit;width:100%;padding:8px 10px;border:1px solid var(--linea-fuerte);border-radius:var(--radio-boton);background:var(--papel);color:var(--tinta)}
+.fila{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+/* Pills en oro de marca (2.0.19): antes gris sobre gris, ilegible en oscuro. Nunca se parten en dos
+   lineas (nowrap+ellipsis); el wrap entre pills lo hace el contenedor .chips/.enlaces. */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:2px 8px;border-radius:999px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;background:var(--oro-suave);color:var(--tinta);border:1px solid rgba(167,120,27,.35)}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .pill{background:rgba(212,160,58,.18);color:var(--oro-oscuro);border-color:rgba(212,160,58,.45)}
+}
+:root[data-theme="dark"] .pill{background:rgba(212,160,58,.18);color:var(--oro-oscuro);border-color:rgba(212,160,58,.45)}
+.pill.codigo{font-family:var(--mono);background:var(--oro-suave);color:var(--tinta)}
+.mudo{color:var(--tinta-2);font-size:14px}
+.fondo{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.modal{background:var(--papel);width:100%;max-width:720px;max-height:92vh;overflow:auto;border-radius:var(--radio) var(--radio) 0 0;padding:14px}
+.modal-cab{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.btn-x{font-size:24px;background:none;border:0;cursor:pointer;color:var(--tinta-2)}
+.modal-acciones{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.modal .chips{flex-wrap:wrap;overflow:visible}.modal textarea{width:100%;box-sizing:border-box;margin-top:10px}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--tinta);color:var(--papel);padding:10px 14px;border-radius:var(--radio-boton);z-index:30;display:flex;gap:12px;align-items:center;max-width:92vw}
+.entrar{max-width:420px;margin:20vh auto;display:grid;gap:12px}
+.cargando,.error{text-align:center;color:var(--tinta-2);padding:40px 0}
+@media (min-width:900px){.fondo{align-items:center}.modal{border-radius:var(--radio)}.vista{padding:20px}}
+/* Móvil: un token largo (expediente, URL, título sin espacios) ensanchaba el viewport a 441 px y dejaba el pie de los modales fuera de pantalla (19-sep). */
+@media (max-width:599px){.vista,.modal{overflow-wrap:anywhere}}
+
+/* inicio y plan */
+.seccion{margin:18px 0}.seccion h2{font-size:17px;margin-bottom:8px}
+.objetivo{padding:14px;border-radius:var(--radio);background:var(--marino);color:var(--marfil);margin-bottom:14px}.objetivo .mudo{color:var(--marfil);opacity:.75}
+.barra{height:6px;background:rgba(255,255,255,.2);border-radius:3px;margin-top:10px;overflow:hidden}.barra i{display:block;height:100%;background:var(--oro)}
+.tarjeta.enlace{display:block;text-decoration:none}.tarjeta .titulo{margin:4px 0 2px;font-weight:500}
+.bloque{margin:18px 0}.bloque-cab h2{font-size:18px}.frentes{display:grid;gap:8px;margin-top:8px}.frente.vacio{opacity:.6}
+@media (min-width:900px){.frentes{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}}
+
+/* tablero */
+.filtros{margin-bottom:10px}.campo.mini{width:auto;min-width:120px;padding:6px 8px;font-size:14px}
+.kanban{display:grid;gap:10px;align-items:start}
+@media (min-width:900px){.kanban{grid-template-columns:repeat(5,minmax(200px,1fr));overflow-x:auto}}
+.columna{background:var(--pizarra-tenue);border-radius:var(--radio);padding:8px;min-height:120px}.columna.sobre{outline:2px solid var(--oro)}
+.columna h2{font-size:14px;text-transform:uppercase;letter-spacing:.04em;margin:2px 4px 8px;color:var(--tinta-2)}
+.encargo{cursor:pointer;position:relative}.encargo.arrastrando{opacity:.4}.encargo .mover{position:absolute;right:10px;bottom:8px;font-size:12px}
+.pestanas{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}.pestanas .btn{white-space:nowrap;font-size:13px;padding:6px 10px}
+.form{display:grid;gap:8px}.dos{display:grid;gap:8px;grid-template-columns:1fr 1fr}.campo-l{display:grid;gap:3px;font-size:14px}
+.hilo{display:grid;gap:8px;max-height:40vh;overflow:auto;margin:8px 0}.avance p{margin:2px 0 0}.kit{display:block;font-size:14px}.btn.ancho{width:100%;margin-bottom:6px}
+
+/* decisiones */
+.decision summary{cursor:pointer;list-style:none}.decision summary::-webkit-details-marker{display:none}.decision .detalle{margin:8px 0;white-space:normal;word-break:break-word}
+.licitacion .modal-acciones{justify-content:flex-start}
+/* regla 54 (#1120): detalle en tres bloques con titulo; los pasos en tinta plena y con filete oro para que salten a la vista */
+.decision .bloques{display:grid;gap:10px;margin:10px 0}
+.bloque h4{margin:0 0 4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--pizarra)}
+.bloque p{margin:0}.bloque ul,.bloque ol{margin:0;padding-left:20px;display:grid;gap:4px}.bloque li{min-width:0}
+.bloque a{overflow-wrap:anywhere;word-break:break-word}
+.bloque-datos{font-size:14px;color:var(--tinta-2)}
+.bloque-pasos{padding:10px 12px;border-left:3px solid var(--oro);border-radius:var(--radio-boton);background:var(--panel-2)}
+.bloque-pasos h4{color:var(--oro-oscuro)}.bloque-pasos li{font-weight:500}
+.licitacion .datos{display:grid;gap:4px;margin:8px 0}.licitacion .datos p{margin:0;font-size:14px}
+.pill.elegible-probable{background:var(--exito-suave);color:var(--exito)}
+.pill.elegible-dudosa{background:var(--oro-suave);color:var(--oro-oscuro)}
+.enlaces-doc{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.enlaces-doc .btn-enlace{display:inline-flex;align-items:center;min-height:36px;padding:6px 12px;border:1px solid var(--linea-fuerte);border-radius:var(--radio-boton);background:var(--panel);color:var(--oro-oscuro);text-decoration:none}
+
+/* equipo y expedientes */
+.avatar{width:44px;height:44px;border-radius:50%;flex:none;object-fit:cover;background:var(--marino)}.avatar.letra{display:grid;place-items:center;color:var(--oro);font-family:var(--display);font-weight:700;font-size:20px}
+.agente{align-items:center}.acciones-exp{margin-top:10px}.objetivo .btn{color:var(--tinta)}.resumen{margin:4px 0 0;font-size:14px}
+.objetivo .datos{display:flex;gap:18px;flex-wrap:wrap;margin-top:6px}.objetivo .dato{display:grid}.objetivo .dato strong{font-size:16px}.objetivo .dato.mal strong{color:var(--oro-luz)}.objetivo .dato.bien strong{color:#8CB897}
+
+/* operacion/licitaciones */
+.embudo{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin:8px 0}
+.mini{background:var(--panel);border:1px solid var(--linea);border-radius:var(--radio);padding:10px;text-align:center}
+.mini .v{font-family:var(--display);font-weight:700;font-size:22px;line-height:1.2}
+.mini .v small{display:block;font-family:var(--body);font-weight:400;font-size:12px;color:var(--tinta-2)}
+.mini .l{font-size:12px;color:var(--tinta-2);margin-top:2px}
+.grupo-criba{margin-bottom:10px}
+.grupo-criba summary{cursor:pointer;font-weight:600;padding:6px 0;list-style:none}
+.grupo-criba summary::-webkit-details-marker{display:none}
+.grupo-criba p{margin:6px 0;padding:8px 0;border-top:1px solid var(--linea);font-size:14px}
+/* Recursos/Cómputo (#1054): tarjeta por cuenta con barras de semana y de ventana de 5 h, pill por color y aviso de tercera cuenta */
+.tarjeta.cuenta{margin-top:12px}.tarjeta.cuenta .fila{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}.tarjeta.cuenta h2{margin:0;font-size:18px}
+.consumo{margin-top:10px}.consumo .fila{gap:8px}.consumo strong{font-size:15px}.tarjeta .barra{background:var(--pizarra-tenue);margin-top:6px}
+.barra.verde i{background:var(--exito)}.barra.ambar i{background:var(--oro-luz)}.barra.rojo i{background:var(--error)}
+.pill.verde{background:var(--exito-suave);color:var(--exito)}.pill.ambar{background:var(--oro-suave);color:var(--oro-oscuro)}.pill.rojo{background:var(--error);color:#fff}
+.aviso{padding:10px 14px;border-radius:8px;background:var(--oro-suave);color:var(--tinta);margin:10px 0}.aviso.rojo{background:var(--error);color:#fff}
+/* Home (#1056, lote 2 de #259): cifras grandes, filas de cifras, urgentes, KPIs vivos y consumo. */
+.cifra{font-size:28px;font-weight:600;line-height:1.15;margin:0 0 4px;color:var(--tinta)}
+.fila-cifras{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;margin:6px 0}
+.fila-cifras .enlace{font-weight:600}
+.tarjeta.enlace .barra{margin:8px 0 6px}
+.fila.urgente{border-left:3px solid var(--error);padding-left:8px}
+.mini .s{display:block;font-size:11px;color:var(--tinta-2);margin-top:2px}
+.mini.rojo .v{color:var(--error)}
+.pill.activo{display:inline-block;margin:2px 0}
+.aviso.enlace{display:block;text-decoration:none}
+.tarjeta .barra{background:var(--pizarra-tenue)}
+/* Home visual (#1056, HQ 2.0.6): rejilla de paneles con cifra grande, tendencia y SVG propio (graficos.js).
+   Colores de los gráficos por token: g-<color> rellena y t-<color> traza; oro solo de acento. */
+.g-tinta,.t-tinta{--c:var(--tinta)}.g-tinta-2,.t-tinta-2{--c:var(--tinta-2)}.g-oro,.t-oro{--c:var(--oro)}
+.g-neutro-1,.t-neutro-1{--c:var(--pizarra)}.g-neutro-2,.t-neutro-2{--c:var(--pizarra-tenue)}.g-neutro-3,.t-neutro-3{--c:var(--linea-fuerte)}
+.g-verde,.t-verde{--c:var(--exito)}.g-ambar,.t-ambar{--c:var(--oro-luz)}.g-rojo,.t-rojo{--c:var(--error)}.g-pista,.t-pista{--c:var(--surface-3)}
+.graf-svg{display:block;width:100%;height:auto;overflow:visible}.graf-svg [class^="g-"]{fill:var(--c)}.graf-svg [class^="t-"]{stroke:var(--c)}
+.graf-svg .l-traz{stroke:var(--tinta-2)}.graf-svg .l-area{fill:var(--linea);opacity:.6}
+.franja{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+.semaforo-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--panel);border:1px solid var(--linea);color:var(--tinta);text-decoration:none;font-size:13px;font-weight:600}
+.punto{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--c);flex:none}
+.cuadro{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:640px){.cuadro{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1100px){.cuadro{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:1500px){.cuadro{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.panel-kpi{position:relative;background:var(--panel);border:1px solid var(--linea);border-radius:var(--radio);padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.panel-kpi:hover{border-color:var(--linea-fuerte)}.panel-kpi.alerta{border-top:3px solid var(--error)}
+.panel-kpi.ancho{grid-column:1/-1}
+.panel-kpi h2{margin:0;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--pizarra)}
+.panel-kpi h2 a{color:inherit;text-decoration:none}.estirado::after{content:'';position:absolute;inset:0;border-radius:var(--radio)}
+.panel-kpi .enlace,.panel-kpi .pill{position:relative;z-index:1}
+.cifra-xl{font-family:var(--display);font-size:34px;font-weight:700;line-height:1.05;margin:0;color:var(--tinta)}
+.cifra-m{font-family:var(--display);font-size:20px;font-weight:700;margin:-4px 0 0;text-align:center;color:var(--tinta)}
+.panel-kpi .sub{margin:2px 0 0;font-size:13px;color:var(--pizarra)}
+.tend{margin:4px 0 0;font-size:13px;font-weight:600}.tend.sube{color:var(--exito)}.tend.baja{color:var(--error)}
+.graf.fina svg{height:8px}.graf.gruesa svg{height:14px}.graf.linea{max-height:70px}
+.graf.fina svg,.graf.gruesa svg{border-radius:4px}
+.eje-x{display:flex;margin-top:-4px}.eje-x span{flex:1;text-align:center;font-size:11px;color:var(--pizarra)}
+.leyenda{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--tinta-2)}
+.leyenda li{display:inline-flex;align-items:center;gap:6px}.leyenda b{color:var(--tinta)}
+.filas{display:grid;gap:8px;align-content:start}
+.fila-barra{display:grid;grid-template-columns:1fr auto;gap:2px 8px;font-size:13px;color:var(--tinta);text-decoration:none}
+.fila-barra .et{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fila-barra b{font-weight:600;white-space:nowrap}.fila-barra .graf{grid-column:1/-1}.fila-barra .fr{grid-column:1/-1;font-size:11px;color:var(--pizarra)}.fila-barra.vencida .fr{color:var(--error);font-weight:600}
+.dos-col{display:grid;gap:16px}@media(min-width:760px){.dos-col{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)}}
+.donut-fila{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.donut{position:relative;width:120px;flex:none}
+.donut .centro{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:22px;color:var(--tinta)}
+.donut-fila .leyenda{flex-direction:column;flex:1;min-width:120px}
+.medidores{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
+/* '.medidor-cuenta' y no '.medidor': tokens.css (generado, no se toca) ya define un '.medidor' propio de
+   8 px que colisionaba por nombre y aplastaba este medidor circular (19-sep, ver recursos.js). */
+.medidor-cuenta{text-align:center}.medidor-cuenta .sub{margin:0}
+.medidores.cuentas{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}.medidor-cuenta .fila-barra{text-align:left;margin-top:6px}.medidor-cuenta .pill{margin-right:4px}
+.lista-corta{margin:0;padding-left:16px;font-size:13px;color:var(--tinta-2)}.lista-corta li{margin:2px 0}.lista-corta .rojo,.lista-corta li.rojo{color:var(--error)}.grupo-tit{margin:8px 0 2px;font-size:12px;font-weight:600;color:var(--pizarra);text-transform:uppercase;letter-spacing:.03em}
+/* Operación/Licitaciones en la línea del cuadro de mando (#1057, HQ 2.0.7) */
+@media(min-width:640px){.panel-kpi.ancho-2{grid-column:span 2}}
+.filtros-rica{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:18px 0 12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+/* Organigrama en móvil: la fila de pills no puede empujar la card fuera de la pantalla (19-sep, sw 425 con W 390). */
+.card-agente{min-width:0}
+.card-agente .chips{flex-wrap:wrap;overflow:visible}
+.chip{padding:5px 12px;border-radius:999px;border:1px solid var(--linea);background:var(--panel);color:var(--tinta-2);text-decoration:none;font-size:13px;font-weight:600}
+.chip.activo{background:var(--tinta);border-color:var(--tinta);color:var(--papel)}
+.chip.rojo{border-color:var(--error);color:var(--error)}
+.chip.rojo.activo{background:var(--error);border-color:var(--error);color:#fff}
+.filtros-rica .campo.mini{flex:1 1 220px;max-width:360px}
+.lista-rica{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+@media(min-width:760px){.lista-rica{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1300px){.lista-rica{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.tarjeta-rica{background:var(--panel);border:1px solid var(--linea);border-radius:var(--radio);padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.tarjeta-rica .cab{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tarjeta-rica .pill.estado,.tarjeta-rica .plazo{display:inline-flex;align-items:center;gap:5px}
+.tarjeta-rica .plazo{margin-left:auto;font-size:12px;font-weight:600;color:var(--tinta)}
+.tarjeta-rica h3{margin:0;font-size:15px;line-height:1.35;color:var(--tinta)}
+.tarjeta-rica .sub{margin:0;font-size:13px;color:var(--pizarra)}
+.cifra-fila{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px}
+.cifra-l{margin:0;font-family:var(--display);font-size:24px;font-weight:700;color:var(--tinta)}
+.plazo-barra{display:flex;flex-direction:column;gap:3px}
+.tarjeta-rica .solv{margin:0;font-size:12px;color:var(--tinta-2)}
+.tarjeta-rica .enlaces{display:flex;flex-wrap:wrap;gap:12px;margin-top:auto;font-size:13px}
+.tarjeta-rica h3 a{color:inherit;text-decoration:none}.tarjeta-rica h3 a:hover{text-decoration:underline}
+.barra-filtros{margin-top:16px}
+.tarjeta-agente .avatar{width:36px;height:36px}.tarjeta-agente .avatar.letra{font-size:16px}
+.bandeja{margin-top:24px}.bandeja h3{font-size:15px;margin:12px 0 6px}.bandeja summary h2,.bandeja summary h3{display:inline}.decision textarea{margin:8px 0 4px;resize:vertical}
+
+/* === menu-home-kpis === */
+/* #1057 tarea 29: logo 77 Delta junto a "HQ" (cabecera fija y cajón móvil), campana de notificaciones +
+   botón de recarga dentro de #buscador (index.html no se toca en este lote: se montan por JS desde
+   shell.js), franja "KPIs ›" en las vistas que ya no llevan su cuadro arriba, y ajustes de móvil (chips
+   con scroll horizontal en vez de amontonarse, contador de texto oculto bajo 900px porque ya está la
+   campana). El toast ya vive abajo con safe-area (calc(16px + env(safe-area-inset-bottom))): cumple la
+   opción "bottom con safe-area" del encargo sin tocar esa regla. */
+.cab .marca{display:inline-flex;align-items:center;gap:6px}
+.cab .marca::before{content:'';width:24px;height:24px;background:url('/hq/monograma.svg') no-repeat center/contain;flex:none}
+.marca-menu{display:inline-flex;align-items:center;gap:6px}
+.logo-menu{height:20px;width:auto;flex:none}
+#buscador{display:flex;align-items:center;gap:6px}
+.buscador .campo{flex:1;min-width:0}
+.campana{position:relative}
+.badge-campana{position:absolute;top:0;right:0;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--error);color:#fff;font-size:10px;line-height:16px;text-align:center;font-weight:700}
+@keyframes girar{to{transform:rotate(360deg)}}
+.btn-icono.girando .ico{animation:girar .8s linear infinite}
+.enlace-kpis{justify-content:flex-end;margin:0 0 10px}
+@media (max-width:899px){
+  #contador{display:none}
+  .campana,#recargar-btn{min-width:44px;min-height:44px}
+  .chips{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+  .chips .chip{flex:none}
+}
+/* === fin menu-home-kpis === */
+
+/* #1005 tabla de menores de 20k y #1001 cabecera de fuentes: selectores propios, no tocan las vistas existentes */
+.fuentes-cab{margin:0 0 8px}.fuentes-det summary{cursor:pointer;font-weight:600;font-size:14px;padding:4px 0}.fuentes-cab .sub{margin:4px 0;font-size:13px;color:var(--tinta-2)}
+.titulo-vista{font-size:18px;margin:6px 0 10px}.filtros-menores{display:grid;gap:8px;margin-bottom:10px}
+.tabla-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}.tabla-lic{border-collapse:collapse;width:100%;min-width:900px;font-size:13px}
+.tabla-lic th{text-align:left;font-size:12px;color:var(--tinta-2);padding:6px 8px;border-bottom:1px solid var(--linea-fuerte);white-space:nowrap}
+.tabla-lic td{padding:7px 8px;border-bottom:1px solid var(--linea);vertical-align:top}
+.tabla-lic .fila-lic{cursor:pointer}.tabla-lic .fila-lic:focus-visible{outline:2px solid var(--tinta);outline-offset:-2px}
+.tabla-lic .c-exp,.tabla-lic .c-imp,.tabla-lic .c-cierre{white-space:nowrap}
+.tabla-lic .c-org{min-width:150px}.tabla-lic .c-obj{min-width:240px}.tabla-lic .c-org,.tabla-lic .c-obj{word-break:normal;overflow-wrap:normal}.tabla-lic .obj-2l{display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tabla-lic .detalle-lic td{background:var(--panel);border-bottom:1px solid var(--linea-fuerte)}.tabla-lic .detalle-lic .sub{margin:0 0 4px;font-size:13px;color:var(--tinta-2)}
+/* Salud (#1121): semáforo del engranaje. Filas en columna a 420 px: estado + nombre envuelven por palabras, nada cortado por carácter ni scroll horizontal */
+.salud{max-width:900px}.salud,.salud *{min-width:0;overflow-wrap:break-word;word-break:normal}
+.salud-contadores{font-size:18px;font-weight:600;margin:6px 0}.salud-contadores .cont{white-space:nowrap}
+.salud-contadores .verde{color:var(--exito)}.salud-contadores .rojo{color:var(--error)}.salud-contadores .gris{color:var(--pizarra)}
+.salud-grupo{margin:10px 0;border:1px solid var(--linea);border-radius:var(--radio);background:var(--panel)}.salud-grupo.con-rojo{border-color:var(--error)}
+.salud-grupo>summary{cursor:pointer;padding:10px 12px;font-weight:600;list-style:none}.salud-grupo>summary::-webkit-details-marker{display:none}
+.salud-grupo>summary .sub{font-weight:400;font-size:13px;color:var(--pizarra)}
+.salud-lista{list-style:none;margin:0;padding:0}
+.salud-fila{padding:8px 12px;border-top:1px solid var(--linea)}.salud-fila.rojo{border-left:4px solid var(--error)}.salud-fila.verde{border-left:4px solid var(--exito)}.salud-fila.gris{border-left:4px solid var(--pizarra-tenue)}
+.salud-cab{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center}.salud-nombre{font-size:15px}
+.salud-cab .pill{white-space:normal;overflow:visible;text-overflow:clip;max-width:100%}.pill.gris{background:var(--tag-gris-bg);color:var(--tag-gris-fg);border-color:transparent}
+.salud-critico{font-size:12px;font-weight:600;color:var(--error);border:1px solid var(--error);border-radius:999px;padding:0 7px}
+.salud-detalle{margin:4px 0 0;font-size:14px;color:var(--tinta-2)}.salud-meta{margin:2px 0 0;font-size:12px;color:var(--pizarra)}
+/* Semáforo de control (#1281): seis filas arriba del Home y de Salud. Mismos tokens que las filas de Salud; el color nunca va solo (cada fila lleva su texto). */
+.semaforo-seis{display:grid;gap:6px;margin:4px 0 14px}
+.sem-fila{display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px;min-height:44px;padding:6px 12px;border:1px solid var(--linea);border-left-width:4px;border-radius:var(--radio);background:var(--panel);color:var(--tinta);text-decoration:none}
+.sem-fila.rojo{border-left-color:var(--error)}.sem-fila.verde{border-left-color:var(--exito)}.sem-fila.gris{border-left-color:var(--pizarra-tenue)}
+.sem-fila b{font-size:15px}.sem-estado{font-weight:600;font-size:14px;margin-left:auto}
+.sem-fila.rojo .sem-estado{color:var(--error)}.sem-fila.verde .sem-estado{color:var(--exito)}.sem-fila.gris .sem-estado{color:var(--pizarra)}
+.sem-duenos{flex-basis:100%;font-size:12px;color:var(--pizarra)}
+@media(min-width:720px){.semaforo-seis{grid-template-columns:repeat(3,1fr)}}

@@ -1,0 +1,114 @@
+---
+/** Cabecera en tinta con el monograma en marfil; botón de acción en ocre. */
+import Monograma from './Monograma.astro';
+import { nav, navCa, cta, ctaCa, href, hrefCa, equivalenteCa, equivalenteEs } from '../lib/site';
+
+const idioma = Astro.currentLocale === 'ca' ? 'ca' : 'es';
+const enlace = idioma === 'ca' ? hrefCa : href;
+const items = idioma === 'ca' ? navCa : nav;
+const boton = idioma === 'ca' ? ctaCa : cta;
+const actual = Astro.url.pathname;
+const activo = (ruta: string) => actual.startsWith(enlace(ruta));
+const otroIdioma = idioma === 'ca' ? 'es' : 'ca';
+const enlaceOtroIdioma = idioma === 'ca' ? equivalenteEs(actual) : equivalenteCa(actual);
+---
+
+<header class="sticky top-0 z-50 border-b border-marfil/10 bg-marino/95 text-marfil backdrop-blur-xl">
+  <div class="wrap flex h-[72px] items-center justify-between gap-6">
+    <a href={enlace('/')} class="text-marfil" aria-label="77 Delta, inicio">
+      <Monograma size={26} />
+    </a>
+
+    <nav aria-label="Principal" class="hidden items-center gap-6 lg:flex">
+      {
+        items.map((n) => (
+          <a
+            href={enlace(n.ruta)}
+            class:list={[
+              'text-[14px] font-medium transition-colors duration-200 hover:text-marfil',
+              activo(n.ruta) ? 'text-oro-luz' : 'text-marfil/70',
+            ]}
+            aria-current={activo(n.ruta) ? 'page' : undefined}
+          >
+            {n.texto}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a
+        href={enlaceOtroIdioma}
+        data-selector-idioma
+        data-idioma-destino={otroIdioma}
+        class="hidden shrink-0 rounded-[6px] border border-marfil/25 px-2.5 py-1.5 font-mono text-[12px] font-semibold uppercase tracking-[0.04em] text-marfil/80 transition-colors duration-200 hover:border-marfil/60 hover:text-marfil sm:inline-flex"
+        aria-label={idioma === 'ca' ? 'Canviar a castellà' : 'Cambiar a català'}
+      >
+        {otroIdioma}
+      </a>
+      <a
+        href={enlace(boton.ruta)}
+        class="inline-flex items-center whitespace-nowrap rounded-[8px] bg-oro px-4 py-2.5 text-[13px] font-semibold text-marfil transition-[background-color,color,box-shadow] duration-200 hover:bg-marfil hover:text-tinta hover:shadow-[0_6px_20px_rgba(0,0,0,.3)] sm:px-5"
+      >
+        <span class="hidden sm:inline">{boton.texto}</span><span class="sm:hidden">{idioma === 'ca' ? 'Reservar' : 'Reservar'}</span>
+      </a>
+      <button
+        type="button"
+        class="grid h-10 w-10 place-items-center text-marfil lg:hidden"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+        aria-controls="menu-movil"
+        data-burger
+      >
+        <span class="block h-0.5 w-5 rounded bg-current"></span>
+        <span class="mt-[5px] block h-0.5 w-5 rounded bg-current"></span>
+      </button>
+    </div>
+  </div>
+
+  <div id="menu-movil" class="hidden border-t border-marfil/10 bg-marino shadow-[0_16px_40px_rgba(0,0,0,.35)] lg:hidden" data-menu>
+    <nav aria-label="Principal, móvil" class="wrap flex flex-col py-3">
+      {
+        items.map((n) => (
+          <a
+            href={enlace(n.ruta)}
+            class:list={[
+              'rounded-[8px] px-3 py-3 text-[15px] font-medium hover:bg-marfil/10',
+              activo(n.ruta) ? 'text-oro-luz' : 'text-marfil',
+            ]}
+          >
+            {n.texto}
+          </a>
+        ))
+      }
+      <a
+        href={enlaceOtroIdioma}
+        data-selector-idioma
+        data-idioma-destino={otroIdioma}
+        class="mt-2 rounded-[8px] border-t border-marfil/10 px-3 py-3 pt-4 font-mono text-[13px] font-semibold uppercase tracking-[0.04em] text-marfil/80"
+      >
+        {idioma === 'ca' ? 'Castellano' : 'Català'}
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const boton = document.querySelector<HTMLButtonElement>('[data-burger]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  boton?.addEventListener('click', () => {
+    const abierto = boton.getAttribute('aria-expanded') === 'true';
+    boton.setAttribute('aria-expanded', String(!abierto));
+    boton.setAttribute('aria-label', abierto ? 'Abrir menú' : 'Cerrar menú');
+    menu?.classList.toggle('hidden', abierto);
+  });
+
+  // Elección manual de idioma: se recuerda, para que el script de detección de Base.astro no la pise.
+  document.querySelectorAll<HTMLAnchorElement>('[data-selector-idioma]').forEach((a) => {
+    a.addEventListener('click', () => {
+      try {
+        localStorage.setItem('idioma-77delta', a.dataset.idiomaDestino ?? '');
+      } catch {}
+    });
+  });
+</script>

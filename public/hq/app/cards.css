@@ -1,0 +1,154 @@
+/* Tarjetas ricas de Equipo y Operacion/Licitaciones (#1057, hallazgo de Diego con capturas: cabecera
+   oscura de '.cab'/'.objetivo' con texto encima casi invisible, avatares de 36px sin gracia, tarjeta de
+   licitacion sin colapsar midiendo unos 14.000 px de alto en movil). Clases nuevas sin tocar '.cab',
+   '.objetivo' ni '.tarjeta-agente' (esas ya las usa la app y arrastraban los bugs). Reutiliza de hq.css
+   lo que ya sirve tal cual: .lista-rica (rejilla 1/2/3 col), .filtros-rica, .chips, .chip, .pill y sus
+   variantes de color, .punto/.g-color, .enlaces-doc .btn-enlace, .btn.primario. Colores solo de
+   tokens.css; rojo/ambar/verde unicamente en semaforos (pill/punto de latido y de plazo). */
+
+/* Equipo: tarjeta de agente, avatar clicable a chat, ficha con cabecera clara */
+.card-agente{display:flex;gap:12px;align-items:flex-start;background:var(--panel);border:1px solid var(--linea);border-radius:var(--radio);padding:14px 16px;cursor:pointer;transition:box-shadow .2s var(--ease),transform .2s var(--ease)}
+.card-agente:hover{box-shadow:0 10px 24px rgba(6,16,31,.08);transform:translateY(-1px)}
+.card-agente .avatar{width:56px;height:56px}
+.card-agente .avatar.letra{font-size:22px}
+.card-agente .cuerpo-agente{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
+.card-agente h3{margin:0;font-size:15px;line-height:1.3}
+.card-agente h3 a{color:inherit;text-decoration:none}
+.card-agente h3 a:hover{text-decoration:underline}
+.card-agente .sub{margin:0;font-size:13px;color:var(--pizarra)}
+.avatar-link{display:inline-block;line-height:0;border-radius:50%}
+.avatar-link:focus-visible{outline:2px solid var(--oro);outline-offset:2px}
+
+.ficha-cab{background:var(--panel);border:1px solid var(--linea);border-radius:var(--radio);padding:16px;align-items:flex-start}
+.ficha-cab .avatar{width:72px;height:72px}
+.ficha-cab .avatar.letra{font-size:28px}
+.ficha-cab h1{font-size:22px;margin-bottom:2px}
+.ficha-cab .sub{margin:0 0 8px;font-size:13px;color:var(--pizarra)}
+.ficha-cab .chips{margin-bottom:10px}
+
+/* Operacion/Licitaciones: tarjeta colapsada por defecto, clic o Intro/espacio despliega el detalle */
+.card-lic{display:block;background:var(--panel);border:1px solid var(--linea);border-radius:var(--radio);padding:14px 16px;cursor:pointer;min-width:0;transition:box-shadow .2s var(--ease),transform .2s var(--ease)}
+.card-lic:hover{box-shadow:0 10px 24px rgba(6,16,31,.08);transform:translateY(-1px)}
+.card-lic:focus-visible{outline:2px solid var(--oro);outline-offset:2px}
+.lic-tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.lic-tags .plazo{display:inline-flex;align-items:center;gap:5px;margin-left:auto;font-size:12px;font-weight:600;color:var(--tinta)}
+.lic-titulo{margin:8px 0 0;font-size:15px;line-height:1.35;color:var(--tinta);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.lic-organo{margin:2px 0 0;font-size:13px;color:var(--pizarra)}
+.card-lic .detalle{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--linea)}
+.card-lic[aria-expanded="true"] .detalle{display:block}
+.card-lic .sub{margin:0 0 4px;font-size:13px;color:var(--tinta-2)}
+
+/* Brief 2023 (colorines + tags de tipologia, pedido repetido de Diego): paleta semantica de pildoras,
+   diez familias de tokens.css, reutilizada por la card de licitaciones y la ficha de decisiones.js para
+   no tener dos lenguajes visuales. Nunca oro de relleno aqui (regla dura: oro solo acento). */
+/* Prefijo ':root' (no estructural, solo sube especificidad a 0,3,0): hq.css ya trae
+   ':root:not([data-theme="light"]) .pill' y ':root[data-theme="dark"] .pill' con esa misma
+   especificidad para el tinte oro por defecto; sin el prefijo, esas reglas ganarian en tema oscuro
+   pese a cargarse antes, porque a igual especificidad decide el orden, no la especificidad. */
+:root .pill.tag-verde{background:var(--tag-verde-bg);color:var(--tag-verde-fg)}
+:root .pill.tag-azul{background:var(--tag-azul-bg);color:var(--tag-azul-fg)}
+:root .pill.tag-violeta{background:var(--tag-violeta-bg);color:var(--tag-violeta-fg)}
+:root .pill.tag-cian{background:var(--tag-cian-bg);color:var(--tag-cian-fg)}
+:root .pill.tag-ambar{background:var(--tag-ambar-bg);color:var(--tag-ambar-fg)}
+:root .pill.tag-rosa{background:var(--tag-rosa-bg);color:var(--tag-rosa-fg)}
+:root .pill.tag-teal{background:var(--tag-teal-bg);color:var(--tag-teal-fg)}
+:root .pill.tag-indigo{background:var(--tag-indigo-bg);color:var(--tag-indigo-fg)}
+:root .pill.tag-oliva{background:var(--tag-oliva-bg);color:var(--tag-oliva-fg)}
+:root .pill.tag-gris{background:var(--tag-gris-bg);color:var(--tag-gris-fg)}
+/* Importe: tono por tramo de procedimiento (LCSP), no por categoria de tipologia. */
+:root .pill.imp-1{background:var(--tag-gris-bg);color:var(--tag-gris-fg)}
+:root .pill.imp-2{background:var(--tag-azul-bg);color:var(--tag-azul-fg)}
+:root .pill.imp-3{background:var(--tag-violeta-bg);color:var(--tag-violeta-fg)}
+:root .pill.imp-4{background:var(--tag-ambar-bg);color:var(--tag-ambar-fg)}
+/* Fila propia de tags de tipologia, debajo de las pildoras de estado/organo/importe/procedimiento. */
+.lic-tipologia{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+/* Texto de "cierra en N d": rojo <=3, ambar <=7, neutro el resto (independiente del punto de semaforo). */
+.plazo-txt.rojo{color:var(--error)}
+.plazo-txt.ambar{color:var(--oro-luz)}
+.plazo-txt.neutro{color:var(--tinta)}
+/* Pie siempre visible (enlaces Perfil/Carpeta/PPT/PCAP + Presentar/Descartar/Estudiar): no vive dentro
+   de '.detalle', para que se vea sin desplegar la tarjeta. Area tactil minima 44px. */
+.lic-pie{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--linea)}
+.lic-pie .btn-enlace{display:inline-flex;align-items:center;min-height:44px;padding:8px 12px;border:1px solid var(--linea-fuerte);border-radius:var(--radio-boton);background:var(--panel);color:var(--oro-oscuro);text-decoration:none}
+.lic-pie .btn{min-height:44px}
+
+/* Filtros nuevos de tipologia/solvencia/fuente/tipo/desiertas: selects + checkbox en fila, envuelven en movil */
+.filtros-select{display:flex;flex-wrap:wrap;gap:8px;align-items:center;width:100%}
+.filtros-select select{width:auto;min-width:150px;flex:1 1 160px;font-size:13px;padding:6px 8px}
+.filtros-select label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--tinta-2);white-space:nowrap}
+
+/* Cola en criba: filas compactas agrupadas por elegible, sin la rejilla de tarjetas ricas */
+.lista-criba{display:flex;flex-direction:column;gap:4px}
+
+@media (max-width:599px){
+  .card-agente{padding:12px}
+  .card-agente .avatar{width:48px;height:48px}
+  .ficha-cab{flex-direction:column;align-items:center;text-align:center}
+  .ficha-cab .chips{justify-content:center}
+}
+
+/* === 2.0.20 filtros === */
+/* Boton flotante del embudo + hoja inferior de filtros (app/filtros.js). Solo tokens de tokens.css y
+   las clases que ya existen (.chip, .chip.activo, .pill, .btn, .btn-enlace, .campo). Oro plano. El
+   tema oscuro sale solo porque todo son tokens; las dos guardas de tokens.css ya los redefinen. */
+[hidden]{display:none !important}
+
+.fab-filtros{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:19;
+  width:52px;height:52px;border-radius:50%;border:1px solid var(--oro);background:var(--oro);color:var(--marino);
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;
+  box-shadow:0 8px 24px rgba(6,16,31,.28);transition:transform .18s var(--ease),box-shadow .18s var(--ease)}
+.fab-filtros:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(6,16,31,.34)}
+.fab-filtros .globo{position:absolute;top:-3px;right:-3px;min-width:20px;height:20px;padding:0 5px;box-sizing:border-box;
+  border-radius:999px;background:var(--tinta);color:var(--papel);font:700 11px/20px var(--body);text-align:center}
+/* El FAB no puede tapar los botones de la ultima tarjeta ni el pie de la hoja */
+.con-fab{padding-bottom:88px}
+
+.hoja-fondo{display:none;position:fixed;inset:0;z-index:22;background:rgba(0,0,0,.45);align-items:flex-end;justify-content:center}
+.hoja-fondo.abierta{display:flex}
+.hoja{display:flex;flex-direction:column;width:100%;max-height:85dvh;box-sizing:border-box;
+  background:var(--papel);color:var(--tinta);border-radius:16px 16px 0 0;
+  box-shadow:0 -12px 40px rgba(6,16,31,.35);padding:8px 14px calc(10px + env(safe-area-inset-bottom));
+  animation:hoja-sube .18s var(--ease)}
+@keyframes hoja-sube{from{transform:translateY(100%)}to{transform:none}}
+.hoja-asa{width:40px;height:4px;border-radius:2px;background:var(--linea-fuerte);margin:2px auto 6px;flex:none}
+.hoja-cab{display:flex;align-items:center;justify-content:space-between;gap:8px;flex:none}
+.hoja-cab h2{font-size:18px;margin:0}
+.hoja-cab .btn-x{min-width:44px;min-height:44px}
+.hoja-buscar{flex:none;margin:8px 0 2px;box-sizing:border-box}
+.hoja-cuerpo{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 0 10px}
+.hoja-seccion{margin:12px 0 0}
+.hoja-seccion h3{margin:0 0 6px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--tinta-2)}
+.hoja .chips{flex-wrap:wrap;overflow:visible}
+.hoja .chip{min-height:34px;display:inline-flex;align-items:center}
+.hoja-pie{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:none;
+  padding:10px 0 2px;border-top:1px solid var(--linea);background:var(--papel)}
+.hoja-pie .btn.primario{flex:1;justify-content:center;min-height:44px}
+body.con-hoja{overflow:hidden}
+
+/* Pills de los filtros activos encima de la lista */
+.chips.chips-activos{flex-wrap:wrap;overflow:visible;margin:0 0 10px}
+.pill-activo{gap:2px;padding-right:2px}
+.quita-pill{font:inherit;font-size:14px;line-height:1;background:none;border:0;color:inherit;cursor:pointer;
+  min-width:26px;min-height:26px;border-radius:999px;padding:0 4px}
+.quita-pill:hover{background:var(--oro-suave)}
+
+@media (prefers-reduced-motion: reduce){
+  .hoja{animation:none}
+  .fab-filtros{transition:none}
+}
+@media (min-width:900px){
+  .hoja-fondo{align-items:center}
+  .hoja{width:520px;max-width:92vw;max-height:80vh;border-radius:var(--radio);animation:none;padding-bottom:10px}
+}
+
+/* Chips del embudo (Licitaciones, Expedientes, Tablero): una sola fila que se arrastra en el movil.
+   La regla global de .chips ya hace nowrap + scroll bajo 899px; aqui solo se separa del contenido. */
+.chips-embudo{margin:0 0 10px;scroll-padding-inline:16px}
+.chips-embudo .chip{white-space:nowrap}
+
+/* Tablero: una sola columna cuando la ruta trae ?estado=<columna>, y cabecera "Ahora mismo" */
+@media (min-width:900px){.kanban.una{grid-template-columns:minmax(200px,720px)}}
+.ahora-mismo{margin:0 0 10px}
+.ahora-mismo h2{font-size:14px;margin:0 0 6px;color:var(--tinta-2)}
+.chips-ahora{flex-wrap:wrap;overflow:visible}
+.chips-ahora .pill{max-width:100%}

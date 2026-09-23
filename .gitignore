@@ -1,0 +1,27 @@
+dist/
+.astro/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.env
+.env.production
+.DS_Store
+.idea/
+.env.*
+
+# Notas internas del proyecto: no se publican (el repo es público para GitHub Pages)
+CLAUDE.md
+
+# Worktrees de agentes
+.claude/
+
+# Documentación interna de empresa: vive en Drive "77 Delta · Empresa" y en local, nunca en este repo público (6-sep-2026)
+docs/empresa/
+__pycache__/
+.worktrees/
+.superpowers/
+
+# semillas del CRM con datos de clientes (NIF, carpetas de Drive): solo en local y en la base de datos
+scripts/hq/seed-crm-*.sql

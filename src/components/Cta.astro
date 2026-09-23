@@ -1,0 +1,41 @@
+---
+/** Cierre de página: franja de tinta con foto al fondo y el botón de diagnóstico, como en la web anterior. */
+import { href as hrefEs, hrefCa } from '../lib/site';
+
+interface Props {
+  titulo?: string;
+  texto?: string;
+  boton?: string;
+}
+const {
+  titulo = '30 minutos. Sin compromiso. Tú decides después.',
+  texto = 'Entrevista estructurada con tu empresa. Te entregamos una propuesta personalizada con estado inicial, plan de trabajo y presupuesto.',
+  boton = 'Reservar diagnóstico gratuito',
+} = Astro.props;
+const href = Astro.currentLocale === 'ca' ? hrefCa : hrefEs;
+---
+
+<section class="relative isolate overflow-hidden bg-marino text-marfil">
+  <img
+    src={href('/img/fotos/oficina-1600.webp')}
+    alt=""
+    width="1600"
+    height="1067"
+    loading="lazy"
+    decoding="async"
+    class="absolute inset-0 -z-20 h-full w-full object-cover opacity-35"
+  />
+  <div class="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(167,120,27,.22)_0%,rgba(6,16,31,.55)_45%,rgba(6,16,31,.96)_75%)]"></div>
+  <div class="wrap py-28 text-center md:py-36" data-reveal>
+    <h2 class="mx-auto max-w-[20ch] font-display text-[clamp(32px,4.8vw,64px)] font-semibold leading-[1.08] tracking-[-0.025em]">
+      {titulo}
+    </h2>
+    <p class="mx-auto mt-6 max-w-[56ch] text-[clamp(16px,1.3vw,19px)] text-marfil/78">{texto}</p>
+    <a
+      href={href('/contacto/')}
+      class="mt-10 inline-flex items-center gap-2 rounded-[10px] bg-oro px-8 py-4 text-[16px] font-bold text-marfil shadow-[0_12px_40px_rgba(167,120,27,.35)] transition-[background-color,color,transform] duration-200 hover:-translate-y-0.5 hover:bg-marfil hover:text-tinta"
+    >
+      {boton} →
+    </a>
+  </div>
+</section>

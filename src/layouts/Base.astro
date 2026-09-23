@@ -1,0 +1,145 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import WhatsApp from '../components/WhatsApp.astro';
+import { site, umami, searchConsole, href, equivalenteCa, equivalenteEs } from '../lib/site';
+
+interface Props {
+  /** Título de la página, sin el nombre de la marca. */
+  title: string;
+  description?: string;
+  /** Ruta de la imagen OG dentro de public/, sin base. */
+  ogImage?: string;
+  /** Borradores y páginas de prueba: fuera de buscadores. */
+  noindex?: boolean;
+}
+const { title, description = site.descripcion, ogImage = '/img/og.png', noindex = false } = Astro.props;
+
+const idioma = Astro.currentLocale === 'ca' ? 'ca' : 'es';
+const claimIdioma = idioma === 'ca' ? site.claimCa : site.claim;
+const tituloCompleto = title ? `${title} · ${site.nombre}` : `${site.nombre} · ${claimIdioma}`;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const og = new URL(href(ogImage), Astro.site).href;
+// Alternativas de idioma para hreflang: la propia página, la equivalente en el otro idioma, y x-default en castellano.
+const rutaEs = idioma === 'ca' ? equivalenteEs(Astro.url.pathname) : Astro.url.pathname;
+const rutaCa = idioma === 'ca' ? Astro.url.pathname : equivalenteCa(Astro.url.pathname);
+const urlEs = new URL(rutaEs, Astro.site).href;
+const urlCa = new URL(rutaCa, Astro.site).href;
+---
+
+<!doctype html>
+<html lang={idioma}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {
+      !noindex && (
+        <>
+          <link rel="alternate" hreflang="es-ES" href={urlEs} />
+          <link rel="alternate" hreflang="ca-ES" href={urlCa} />
+          <link rel="alternate" hreflang="x-default" href={urlEs} />
+        </>
+      )
+    }
+    <link rel="icon" type="image/svg+xml" href={href('/favicon.svg')} />
+    <link rel="alternate icon" href={href('/favicon.ico')} sizes="16x16 32x32 48x48" />
+    <meta name="theme-color" content="#06101F" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {searchConsole && <meta name="google-site-verification" content={searchConsole} />}
+    {umami.script && <script defer src={umami.script} data-website-id={umami.websiteId} is:inline />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.nombre} />
+    <meta property="og:title" content={tituloCompleto} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={og} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={idioma === 'ca' ? 'ca_ES' : 'es_ES'} />
+    <meta property="og:locale:alternate" content={idioma === 'ca' ? 'es_ES' : 'ca_ES'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={tituloCompleto} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={og} />
+
+    <script is:inline define:vars={{ idioma, rutaCa, rutaEs }}>
+      // Detección de idioma por navegador, con selección recordada y sin pisar una elección manual.
+      // Corre lo antes posible (antes de pintar el body) para minimizar el parpadeo de idioma.
+      try {
+        var guardado = localStorage.getItem('idioma-77delta');
+        if (!guardado) {
+          var prefiereCatalan = (navigator.language || navigator.userLanguage || '').toLowerCase().startsWith('ca');
+          if (prefiereCatalan && idioma !== 'ca') {
+            localStorage.setItem('idioma-77delta', 'ca');
+            location.replace(rutaCa);
+          } else if (!prefiereCatalan && idioma !== 'es') {
+            // Visitante sin catalán en el navegador que llega directo a una página en catalán: no le forzamos nada,
+            // solo dejamos memoria de que su idioma detectado es castellano por si vuelve a la home.
+            localStorage.setItem('idioma-77delta', idioma);
+          } else {
+            localStorage.setItem('idioma-77delta', idioma);
+          }
+        }
+      } catch (e) {}
+    </script>
+  </head>
+  <body class="min-h-screen bg-papel text-tinta">
+    <Nav />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <WhatsApp />
+
+    <script>
+      // Aparición al hacer scroll y contadores. Sin librerías.
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reveals = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      const contadores = document.querySelectorAll<HTMLElement>('[data-contador]');
+
+      function contar(el: HTMLElement) {
+        const fin = Number(el.dataset.contador ?? '0');
+        const sufijo = el.dataset.sufijo ?? '';
+        const decimales = (el.dataset.contador ?? '').split('.')[1]?.length ?? 0;
+        if (reduce) {
+          el.textContent = fin.toFixed(decimales) + sufijo;
+          return;
+        }
+        const t0 = performance.now();
+        const dur = 1100;
+        const paso = (t: number) => {
+          const p = Math.min(1, (t - t0) / dur);
+          const e = 1 - Math.pow(1 - p, 3);
+          el.textContent = (fin * e).toFixed(decimales) + sufijo;
+          if (p < 1) requestAnimationFrame(paso);
+        };
+        requestAnimationFrame(paso);
+      }
+
+      if (!('IntersectionObserver' in window) || reduce) {
+        reveals.forEach((e) => e.classList.add('es-visible'));
+        contadores.forEach(contar);
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const en of entries) {
+              if (!en.isIntersecting) continue;
+              const el = en.target as HTMLElement;
+              if (el.hasAttribute('data-reveal')) el.classList.add('es-visible');
+              if (el.hasAttribute('data-contador')) contar(el);
+              io.unobserve(el);
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.15 },
+        );
+        reveals.forEach((e) => io.observe(e));
+        contadores.forEach((e) => io.observe(e));
+      }
+    </script>
+  </body>
+</html>
