@@ -562,3 +562,9 @@ test('transicionesValidas: interseccion de la tabla 5.3 con la guardia de rol', 
   assert.deepEqual(transicionesValidas({ estado: 'Adjudicada' }, 'owner'), [], 'estado final sin salida');
   assert.deepEqual(transicionesValidas({ estado: '' }, 'agente'), transicionesValidas({ estado: 'Nueva' }, 'agente'), 'estado vacio cae a Nueva (estadoBase)');
 });
+
+test('tipologia ignora motivo_auto: notas internas de la criba no generan etiquetas (caso 026_06, 24-sep)', () => {
+  const l = { objeto: 'Suministro de material de papelería y fungibles informáticos', tipo: 'Obras',
+    motivo_auto: 'Descartado: adquisición de licencia, reventa de producto de tercero, no desarrollo propio' };
+  assert.deepEqual(tipologia(l).map(t => t.clave), []);
+});

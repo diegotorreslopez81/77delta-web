@@ -228,7 +228,7 @@ export function tipologiaOrgano(organo) {
 // Tags de tipologia del contenido de la licitacion (brief 2023, pedido repetido de Diego: "formacion,
 // software, un SaaS, hardware, presencial, online... data, business intelligence, CRM, ERPs"). Funcion
 // pura, sin DOM: clasifica por palabras clave (castellano y catalan) buscadas sin acentos y en
-// minusculas (sinAcentos ya hace normalize('NFD') + minusculas) sobre objeto/resumen_corto/motivo_auto/
+// minusculas (sinAcentos ya hace normalize('NFD') + minusculas) solo sobre objeto y resumen_corto (motivo_auto son notas internas de la criba: "no desarrollo propio" colaba Software; 24-sep)./
 // tipo. Orden = especificidad: primero categorias de producto, luego de modalidad (mismo orden que pide
 // el brief); maximo 4 etiquetas; sin ninguna coincidencia, lista vacia. Cada categoria lleva ya el
 // nombre de la familia de color de tokens.css (--tag-<color>-bg/-fg en brand/tokens.css).
@@ -251,7 +251,7 @@ const TIPO_TAGS = [
 ];
 const escapeRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 export function tipologia(l) {
-  const texto = sinAcentos([l?.objeto, l?.resumen_corto, l?.motivo_auto, l?.tipo].filter(Boolean).join(' '));
+  const texto = sinAcentos([l?.objeto, l?.resumen_corto].filter(Boolean).join(' '));
   if (!texto) return [];
   const etiquetas = [];
   for (const [clave, nombre, palabras, color] of TIPO_TAGS) {
