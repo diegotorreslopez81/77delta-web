@@ -72,7 +72,13 @@ async function ejecutarTransicion(l, destino, recargar) {
     await transicionLicitacion(l.id, destino, { motivo, nota, justificante });
     toast(l.expediente + ': ' + destino);
     await recargar();
-  } catch (err) { toast('HQ rechaza: ' + err.message); }
+  } catch (err) {
+    // H4 (24-sep): si el catalogo fallo justo al abrir el modal, motivo llega null y HQ rechaza el
+    // descarte sin guardar nada; antes esto se perdia en un toast de 4s. Ahora dura mas, ofrece
+    // reintentar sin perder lo escrito y fuerza recargar el catalogo por si ya esta disponible.
+    catalogoCache = null;
+    toast('HQ rechaza ' + l.expediente + ': ' + err.message, 'Reintentar', () => ejecutarTransicion(l, destino, recargar), 12000);
+  }
 }
 
 // Un boton por destino valido (tabla 5.3 filtrada por rol, licitaciones.js:transicionesValidas). Descartar
