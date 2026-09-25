@@ -28,6 +28,7 @@ import { panel, cifra, grafico, leyenda, filaBarra } from '../cuadro.js';
 import { tarjetaEncargo } from '../tarjeta.js';
 import { recargar } from '../main.js';
 import { usd } from './recursos.js';
+import { hace } from './salud.js';
 
 // Fix ronda 2 (B2): avatar_url lo publica hq.py agente avatar-url sin validar esquema en la BD.
 // NIT #9 (parado, aplicado aqui por ser trivial): (a.nombre || a.id) puede ser '' si ambos faltan;
@@ -110,6 +111,12 @@ function chipsAgente(a, S, ahora) {
   ]);
 }
 
+// Schema-v30: tipo (fase|area|proyecto) y modo (continuo|a_demanda) de omc_agentes viajan solos en el
+// payload (to_jsonb(a) en omc_hq_v2, sin lista de columnas explicita) y se anaden a la misma linea de
+// sub que depto/nivel/modelo; filter(Boolean) los omite si el agente aun no los trae.
+const MODO_TEXTO = { continuo: 'continuo', a_demanda: 'a demanda' };
+function subAgente(a) { return [a.depto, 'nivel ' + a.nivel, a.modelo, a.tipo, MODO_TEXTO[a.modo]].filter(Boolean).join(' · '); }
+
 function ficha(raiz, S, a, ahora = new Date()) {
   raiz.append(el('a', { href: '#equipo/organigrama', class: 'btn-enlace', text: '← equipo' }));
   const sesionUrl = urlSegura(a.sesion_url);
@@ -117,7 +124,7 @@ function ficha(raiz, S, a, ahora = new Date()) {
     avatarConChat(a),
     el('div', {}, [
       el('h1', { text: a.nombre || a.id }),
-      el('p', { class: 'sub', text: [a.depto, 'nivel ' + a.nivel, a.modelo].filter(Boolean).join(' · ') }),
+      el('p', { class: 'sub', text: subAgente(a) }),
       chipsAgente(a, S, ahora),
       sesionUrl ? el('a', { class: 'btn primario', href: sesionUrl, target: '_blank', rel: 'noopener', text: 'Abrir sesión' }) : el('span', { class: 'mudo', text: 'sin sesión publicada' }),
     ]),
@@ -159,10 +166,112 @@ export function tarjetaAgente(a, S, ahora = new Date()) {
     // colisionaba por especificidad heredando align-items:stretch y min-height:100vh en esta tarjeta (19-sep).
     el('div', { class: 'cuerpo-agente' }, [
       el('h3', {}, [el('a', { href: '#equipo/agente/' + a.id, text: a.nombre || a.id })]),
-      el('p', { class: 'sub', text: [a.depto, 'nivel ' + a.nivel, a.modelo].filter(Boolean).join(' · ') }),
+      el('p', { class: 'sub', text: subAgente(a) }),
       chipsAgente(a, S, ahora),
     ]),
   ]);
+}
+
+// Piezas de Licita (schema-v31, lic_piezas_listar via p_token): mismo patron de carga y cache de 30 s
+// que salud.js, pero sin volver async el render() de esta vista (los tests del organigrama esperan las
+// secciones de departamento en la misma pasada sincrona). El contenedor se cuelga ya del DOM y se rellena
+// en cuanto llega la RPC; si falla y no hay cache previa, aviso rojo con el motivo (nunca pantalla vacia).
+let cargaPiezas = () => rpc('lic_piezas_listar');
+export function usarCargadorPiezas(fn) { if (fn) cargaPiezas = fn; }
+const PIEZAS_CACHE_MS = 30e3;
+let piezasCache = null;   // { piezas, t }
+const abiertosPiezas = new Map();
+export function restablecerPiezas() { piezasCache = null; abiertosPiezas.clear(); }
+const plural = (k, uno, varios) => `${k} ${k === 1 ? uno : varios}`;
+
+// Averiada o sin_latido (activa pero el cron lleva mas de 26 h sin latir, marcado por la propia RPC):
+// rojo. Pausada: gris, con su motivo. Activa y con latido: verde. Nunca solo color: cada fila lleva el
+// texto del estado.
+function colorPieza(p) { return (p.estado === 'averiada' || p.sin_latido) ? 'rojo' : p.estado === 'pausada' ? 'gris' : 'verde'; }
+
+export function contadoresPiezas(piezas) {
+  const m = new Map();
+  for (const p of piezas || []) {
+    const k = p.maquina || '?';
+    const c = m.get(k) || { maquina: k, activas: 0, pausadas: 0, averiadas: 0, sinLatido: 0, total: 0 };
+    c.total++;
+    if (p.estado === 'averiada') c.averiadas++; else if (p.estado === 'pausada') c.pausadas++; else c.activas++;
+    if (p.sin_latido) c.sinLatido++;
+    m.set(k, c);
+  }
+  return [...m.values()].sort((a, b) => a.maquina.localeCompare(b.maquina, 'es'));
+}
+
+function resumenPiezas(piezas) {
+  const activas = piezas.filter(p => p.estado === 'activa').length, pausadas = piezas.filter(p => p.estado === 'pausada').length,
+    averiadas = piezas.filter(p => p.estado === 'averiada').length, sinLatido = piezas.filter(p => p.sin_latido).length;
+  return el('div', {}, [
+    el('p', { class: 'salud-contadores', role: 'status' }, [
+      el('span', { class: 'cont verde', text: plural(activas, 'activa', 'activas') }), ', ',
+      el('span', { class: 'cont gris', text: plural(pausadas, 'pausada', 'pausadas') }), ', ',
+      el('span', { class: 'cont rojo', text: plural(averiadas, 'averiada', 'averiadas') }),
+      sinLatido ? el('span', { class: 'cont rojo', text: ', ' + plural(sinLatido, 'sin latido', 'sin latido') }) : '',
+      ' de ' + piezas.length]),
+    el('ul', { class: 'lista-corta' }, contadoresPiezas(piezas).map(c => el('li', {}, [
+      el('b', { text: c.maquina }), ': ' + plural(c.activas, 'activa', 'activas') + ', ' + plural(c.pausadas, 'pausada', 'pausadas') +
+        ', ' + plural(c.averiadas, 'averiada', 'averiadas') + (c.sinLatido ? ', ' + plural(c.sinLatido, 'sin latido', 'sin latido') : '')]))),
+  ]);
+}
+
+// Comando solo en el title (tooltip): nunca en texto visible. Pausada/averiada muestran su motivo_estado.
+function filaPieza(p, ahora) {
+  const col = colorPieza(p), senal = hace(p.ultimo_latido, ahora);
+  return el('li', { class: 'salud-fila ' + col, title: p.comando || '' }, [
+    el('div', { class: 'salud-cab' }, [
+      el('span', { class: 'pill ' + col, text: p.estado }),
+      el('b', { class: 'salud-nombre', text: p.nombre }),
+      el('span', { class: 'sub', text: p.tipo }),
+      p.sin_latido ? el('span', { class: 'salud-critico', text: 'sin latido' }) : null,
+      p.fallos_seguidos > 0 ? el('span', { class: 'salud-critico', text: plural(p.fallos_seguidos, 'fallo seguido', 'fallos seguidos') }) : null]),
+    (p.estado === 'pausada' || p.estado === 'averiada') && p.motivo_estado ? el('p', { class: 'salud-detalle', text: p.motivo_estado }) : null,
+    el('p', { class: 'sub salud-meta', text: (p.horario || 'sin horario') + ' · ' + (senal ? 'último latido ' + senal : 'sin latido todavía') })]);
+}
+function grupoPiezas(maquina, filas, ahora) {
+  const rojos = filas.filter(p => colorPieza(p) === 'rojo').length;
+  const abierto = abiertosPiezas.has(maquina) ? abiertosPiezas.get(maquina) : rojos > 0;
+  const det = el('details', { class: 'salud-grupo' + (rojos ? ' con-rojo' : ''), id: 'piezas-grupo-' + maquina, open: abierto }, [
+    el('summary', {}, [el('span', { class: 'salud-grupo-nombre', text: maquina }), el('span', { class: 'sub', text: ' · ' + (rojos ? rojos + ' en rojo de ' + filas.length : filas.length + ' sin rojo') })]),
+    el('ul', { class: 'salud-lista' }, filas.map(f => filaPieza(f, ahora)))]);
+  det.addEventListener('toggle', () => abiertosPiezas.set(maquina, !!det.open));
+  return det;
+}
+function cuerpoPiezas(piezas, aviso, ahora) {
+  const nodos = [];
+  if (aviso) nodos.push(el('p', { class: 'aviso rojo', role: 'alert', text: aviso }));
+  if (!piezas.length) { nodos.push(el('p', { class: 'mudo', text: 'Sin piezas registradas.' })); return nodos; }
+  nodos.push(resumenPiezas(piezas));
+  const porMaquina = new Map();
+  for (const p of piezas) { const k = p.maquina || '?'; if (!porMaquina.has(k)) porMaquina.set(k, []); porMaquina.get(k).push(p); }
+  for (const [maquina, filas] of [...porMaquina].sort((x, y) => x[0].localeCompare(y[0], 'es'))) nodos.push(grupoPiezas(maquina, filas, ahora));
+  return nodos;
+}
+// 'seccion piezas' y no solo 'seccion': visualmente reusa el mismo espaciado (hq.css), pero con una clase
+// propia distinguible de las secciones de departamento.
+function seccionPiezas(ahora) {
+  const caja = el('div', { class: 'piezas' });
+  const cont = el('section', { class: 'seccion piezas' }, [el('h2', { text: 'Piezas' }), caja]);
+  const pintar = (piezas, aviso) => { caja.innerHTML = ''; caja.append(...cuerpoPiezas(piezas, aviso, ahora)); };
+  if (piezasCache) pintar(piezasCache.piezas, null);
+  else caja.append(el('p', { class: 'cargando', text: 'Cargando piezas...' }));
+  if (piezasCache && Date.now() - piezasCache.t < PIEZAS_CACHE_MS) return cont;
+  (async () => {
+    try {
+      const piezas = await cargaPiezas();
+      const lista = Array.isArray(piezas) ? piezas : [];
+      piezasCache = { piezas: lista, t: Date.now() };
+      pintar(lista, null);
+    } catch (e) {
+      const msg = 'No se pudieron cargar las piezas (' + (e?.message || 'error') + ').';
+      if (piezasCache) pintar(piezasCache.piezas, msg);
+      else { caja.innerHTML = ''; caja.append(el('p', { class: 'aviso rojo', role: 'alert', text: msg })); }
+    }
+  })();
+  return cont;
 }
 
 export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
@@ -173,4 +282,5 @@ export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
   raiz.append(el('div', { class: 'fila enlace-kpis' }, [el('a', { class: 'btn-enlace', href: '#kpis?grupo=equipo', text: 'KPIs ›' })]));
   const deptos = [...new Set(ags.map(a => a.depto))];
   for (const d of deptos) raiz.append(el('section', { class: 'seccion' }, [el('h2', { text: d }), el('div', { class: 'lista-rica' }, ags.filter(a => a.depto === d).map(a => tarjetaAgente(a, S, ahora)))]));
+  raiz.append(seccionPiezas(ahora));
 }
