@@ -333,8 +333,13 @@ export function coincideTexto(l, texto) {
   return !q || sinAcentos(CAMPOS_TEXTO(l).join(' ')).includes(q);
 }
 
-// Filtro puro para la vista: tipologia/solvencia/fuente/tipo/motivo/presencial/texto/desiertas, todos
-// opcionales (sin valor no filtra). Es la unica funcion que filtra la lista de licitaciones.
+// Tanda E (leftover tanda B/C): con_ute es columna real de omc_licitaciones (boolean), sin consumo en
+// el front hasta ahora. 'Sin plazo' es una licitacion viva (no final) sin fecha de cierre todavia.
+export function esUte(l) { return l?.con_ute === true; }
+export function sinPlazo(l) { return !l?.cierre && !esFinal(l); }
+
+// Filtro puro para la vista: tipologia/solvencia/fuente/tipo/motivo/presencial/texto/desiertas/ute/
+// sinPlazo, todos opcionales (sin valor no filtra). Es la unica funcion que filtra la lista de licitaciones.
 // 'motivo' es un motivo del catalogo, o 'sin' para las descartadas sin ningun motivo reconocido.
 export function filtrar(rows, f = {}) {
   return (rows || []).filter(l =>
@@ -345,7 +350,9 @@ export function filtrar(rows, f = {}) {
     && (!f.motivo || (f.motivo === 'sin' ? (estadoBase(l) === 'Descartada' && motivosNo(l).length === 0) : motivosNo(l).includes(f.motivo)))
     && (!f.presencial || (f.presencial === 'si' ? presencial(l) : !presencial(l)))
     && (!f.texto || coincideTexto(l, f.texto))
-    && (!f.desiertas || estadoDe(l) === 'Cerrada sin presentar'));
+    && (!f.desiertas || estadoDe(l) === 'Cerrada sin presentar')
+    && (!f.ute || esUte(l))
+    && (!f.sinPlazo || sinPlazo(l)));
 }
 
 // Enlaces de la tarjeta de licitación. PPT y PCAP prefieren la copia de Drive que sube el bot

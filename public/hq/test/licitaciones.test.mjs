@@ -404,6 +404,27 @@ test('filtrar con motivo "sin": solo descartadas sin ningun motivo del catalogo'
   assert.deepEqual(filtrar(rows, { motivo: 'sin' }).map(l => l.expediente), ['M2', 'M3']);
 });
 
+// Tanda E (leftover tanda B/C): con_ute (columna real de omc_licitaciones) y 'sin plazo' (viva sin cierre).
+test('esUte y sinPlazo, y su uso como filtro', async () => {
+  const { esUte, sinPlazo } = await import('../app/licitaciones.js');
+  assert.equal(esUte({ con_ute: true }), true);
+  assert.equal(esUte({ con_ute: false }), false);
+  assert.equal(esUte({}), false, 'sin con_ute, false, nunca undefined');
+
+  assert.equal(sinPlazo({ estado: 'Aprobada', cierre: null }), true);
+  assert.equal(sinPlazo({ estado: 'Aprobada', cierre: '2026-10-01' }), false);
+  assert.equal(sinPlazo({ estado: 'Descartada', cierre: null }), false, 'final, aunque no tenga cierre');
+
+  const rows = [
+    { expediente: 'U1', con_ute: true, estado: 'Aprobada', cierre: '2026-10-01' },
+    { expediente: 'U2', con_ute: false, estado: 'Aprobada', cierre: null },
+    { expediente: 'U3', con_ute: true, estado: 'Aprobada', cierre: null },
+  ];
+  assert.deepEqual(filtrar(rows, { ute: true }).map(l => l.expediente), ['U1', 'U3']);
+  assert.deepEqual(filtrar(rows, { sinPlazo: true }).map(l => l.expediente), ['U2', 'U3']);
+  assert.deepEqual(filtrar(rows, { ute: true, sinPlazo: true }).map(l => l.expediente), ['U3']);
+});
+
 test('enlacesLic prefiere los pliegos de Drive y cae al portal si no hay copia', () => {
   const con = { enlace: 'https://p.example/1', carpeta: 'https://drive.google.com/drive/folders/abc', ppt: 'https://p.example/ppt', pcap: 'https://p.example/pcap', ppt_drive: 'https://drive.google.com/file/d/PPT1/view', pcap_drive: '' };
   assert.deepEqual(enlacesLic(con), [['Perfil', 'https://p.example/1'], ['Carpeta', 'https://drive.google.com/drive/folders/abc'], ['PPT', 'https://drive.google.com/file/d/PPT1/view'], ['PCAP', 'https://p.example/pcap']]);
