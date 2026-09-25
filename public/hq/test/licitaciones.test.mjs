@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DECIDIBLES, ABIERTAS, pendiente, porDecidir, enCriba, porElegible, solvenciaTexto, embudo, estadoDe, tipologiaOrgano, TIPOLOGIAS, tipologia, sinSolvencia, filtrar, MOTIVOS_NO, motivosNo, enlacesLic, decisionDe, vencida, cierrePasado, esperandoResolucion, conBotones, sinPresentarUrgente, ESTADOS_H1, TRANSICIONES_5_3, rolPermite, transicionesValidas } from '../app/licitaciones.js';
+import { DECIDIBLES, ABIERTAS, pendiente, porDecidir, enCriba, porElegible, solvenciaTexto, embudo, estadoDe, tipologiaOrgano, TIPOLOGIAS, tipologia, sinSolvencia, filtrar, MOTIVOS_NO, motivosNo, enlacesLic, decisionDe, vencida, cierrePasado, esperandoResolucion, conBotones, sinPresentarUrgente, ESTADOS_H1, TRANSICIONES_5_3, rolPermite, transicionesValidas, configurarLicita } from '../app/licitaciones.js';
 
 // Fixture de 8 licitaciones (Task 1, plan 3b): cubre decidibles, criba, descartada, aprobada por
 // decision sin ser decidible, presentada y contratada con importe.
@@ -537,6 +537,41 @@ test('TRANSICIONES_5_3: los cinco rollbacks de la tabla 5.3', () => {
 test('TRANSICIONES_5_3: los estados finales de la maquina (Adjudicada, No adjudicada) no tienen salida', () => {
   assert.equal(TRANSICIONES_5_3['Adjudicada'], undefined);
   assert.equal(TRANSICIONES_5_3['No adjudicada'], undefined);
+});
+
+// D17 (#1355): configurarLicita muta ESTADOS_H1/TRANSICIONES_5_3 en directo (lic_config). Cada test
+// restaura los valores por defecto en un finally para no arrastrar estado a los tests de arriba/abajo.
+test('configurarLicita: aplica estados por orden y transiciones activas de lic_config, con dedup y sin (entrada)/self-loop/inactivas', () => {
+  const estadosOriginales = ESTADOS_H1.slice();
+  const transicionesOriginales = JSON.parse(JSON.stringify(TRANSICIONES_5_3));
+  try {
+    configurarLicita({
+      estados: [{ orden: 2, nombre: 'B' }, { orden: 1, nombre: 'A' }],
+      transiciones: [
+        { de: 'A', a: 'B', activa: true },
+        { de: 'A', a: 'B', activa: true },
+        { de: 'A', a: 'A', activa: true },
+        { de: '(entrada)', a: 'A', activa: true },
+        { de: 'B', a: 'A', activa: false },
+      ],
+    });
+    assert.deepEqual(ESTADOS_H1, ['A', 'B']);
+    assert.deepEqual(TRANSICIONES_5_3, { A: ['B'] });
+  } finally {
+    ESTADOS_H1.length = 0; ESTADOS_H1.push(...estadosOriginales);
+    for (const k of Object.keys(TRANSICIONES_5_3)) delete TRANSICIONES_5_3[k];
+    Object.assign(TRANSICIONES_5_3, transicionesOriginales);
+  }
+});
+
+test('configurarLicita: cfg vacio, nulo o sin datos usables no toca los valores por defecto', () => {
+  const estadosOriginales = ESTADOS_H1.slice();
+  const transicionesOriginales = JSON.parse(JSON.stringify(TRANSICIONES_5_3));
+  configurarLicita({});
+  configurarLicita(null);
+  configurarLicita({ estados: [], transiciones: [] });
+  assert.deepEqual(ESTADOS_H1, estadosOriginales);
+  assert.deepEqual(TRANSICIONES_5_3, transicionesOriginales);
 });
 
 test('rolPermite: owner puede cualquier movimiento de la tabla', () => {

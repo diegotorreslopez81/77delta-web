@@ -42,6 +42,10 @@ export const licitacionCambios = id => rpc('omc_licitacion_cambios', { p_id: id 
 export const licitacionesTabla = (filtro = {}) => rpc('omc_licitaciones_tabla', { p_filtro: filtro });
 // P1: clave de sobre, solo owner (RLS + guardia en la propia RPC); nunca se guarda en localStorage ni en S.datos.
 export const claveSobre = id => rpc('omc_licitacion_clave_sobre', { p_id: id });
+// D17 (#1355): estados y transiciones de Licita en directo desde lic_config (schema-v32), no del
+// snapshot hardcodeado de licitaciones.js. Opcional y sin reintento (mismo patron que toqueNoDisponible
+// de abajo): si falla, main.js se queda con los valores por defecto de licitaciones.js.
+export const configLicita = () => rpc('lic_config');
 // #1170: omc_licitaciones_toque (schema-v12, solo owner) da la última vez que se tocó cada licitación viva; se pide en paralelo
 // y es opcional: si la RPC aún no existe o falla, las licitaciones se pintan sin "sin tocar" y no se vuelve a intentar en esta
 // sesión. Un agente recibe [] y no cambia nada.

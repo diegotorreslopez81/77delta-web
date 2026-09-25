@@ -102,6 +102,32 @@ export function transicionesValidas(l, rol) {
   return (TRANSICIONES_5_3[est] || []).filter(dest => rolPermite(est, dest, rol));
 }
 
+// D17 (#1355): ESTADOS_H1 y TRANSICIONES_5_3 nacen con el snapshot de schema-v18/v32 como valores por
+// defecto (para que node --test siga pasando sin llamar a esta funcion), pero la fuente viva es
+// lic_config(p_token) (schema-v32), que trae 'estados' (id, orden, nombre...) y 'transiciones' (de, a,
+// activa, rol, condicion...) leidos en directo de lic_estados/lic_transiciones. api.js/main.js llaman a
+// esta funcion una vez al arrancar con el resultado de lic_config; si falla o llega vacio no se toca
+// nada y se sigue con los valores por defecto (mismo patron que toqueNoDisponible/clavesCache en api.js).
+// Muta los mismos arrays/objetos exportados (nunca los reasigna) para que vistas/licitaciones.js y
+// decision-lic.js, que ya los importan, vean el cambio sin tocar su propio codigo.
+export function configurarLicita(cfg) {
+  const estados = Array.isArray(cfg?.estados) ? cfg.estados : [];
+  const nombres = estados.slice().sort((a, b) => (a?.orden ?? 0) - (b?.orden ?? 0)).map(e => e?.nombre).filter(Boolean);
+  if (nombres.length) { ESTADOS_H1.length = 0; ESTADOS_H1.push(...nombres); }
+
+  const transiciones = Array.isArray(cfg?.transiciones) ? cfg.transiciones : [];
+  const g = {};
+  for (const t of transiciones) {
+    if (!t || t.activa === false || !t.de || !t.a || t.de === t.a || t.de === '(entrada)') continue;
+    const destinos = (g[t.de] ||= []);
+    if (!destinos.includes(t.a)) destinos.push(t.a);
+  }
+  if (Object.keys(g).length) {
+    for (const k of Object.keys(TRANSICIONES_5_3)) delete TRANSICIONES_5_3[k];
+    Object.assign(TRANSICIONES_5_3, g);
+  }
+}
+
 // Nulls de cierre van al final; empate (incluido null contra null) se desempata por expediente.
 export function ordenCierre(a, b) {
   const ac = a.cierre, bc = b.cierre;

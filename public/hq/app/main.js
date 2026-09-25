@@ -1,4 +1,4 @@
-import { conf, TOKEN, cargar, rpc, guardarToken, salir } from './api.js';
+import { conf, TOKEN, cargar, rpc, guardarToken, salir, configLicita } from './api.js';
 import { S, poner } from './estado.js';
 import { el, toast } from './ui.js';
 import { crearRecargador, decidirRecargaAutomatica } from './recargador.js';
@@ -13,6 +13,7 @@ import * as equipo from './vistas/equipo.js';
 import * as colaboradores from './vistas/colaboradores.js';
 import * as expedientes from './vistas/expedientes.js';
 import * as licitaciones from './vistas/licitaciones.js';
+import { configurarLicita } from './licitaciones.js';
 import * as recursos from './vistas/recursos.js';
 import * as salud from './vistas/salud.js';
 
@@ -125,6 +126,10 @@ if ('serviceWorker' in navigator) {
 if (!TOKEN) pedirToken();
 else {
   conf().then(recargarYMarcar).catch(e => { raiz.innerHTML = ''; raiz.append(el('p', { class: 'error', text: 'No se pudo cargar HQ: ' + e.message })); });
+  // D17 (#1355): estados/transiciones de Licita en directo, opcional y sin bloquear el arranque (mismo
+  // patron que el push de mas abajo): si falla, la vista de licitaciones sigue con el snapshot de
+  // licitaciones.js.
+  configLicita().then(configurarLicita).catch(() => {});
   // Sin realtime (T7-b): recarga cada 60s y al volver a la pestaña, nunca en segundo plano. Fix ronda 2
   // (revision final, D3): el propio tick del intervalo tambien mira document.hidden (antes solo lo
   // miraba el comentario, no el codigo). #1057 tarea 29: al volver a la pestaña solo si ya pasaron 60s
