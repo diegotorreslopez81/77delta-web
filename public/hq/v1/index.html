@@ -1161,21 +1161,6 @@ function renderRegistro(){
     app.appendChild(box);
   });
 
-  app.appendChild(el('h2', { class: 'sec-t', text: 'One Man Company · histórico' }));
-  var omcBox = el('div', {}); app.appendChild(omcBox);
-  omcBox.appendChild(el('p', { class: 'peq', text: 'Cargando histórico de Engram…' }));
-  fetch('http://127.0.0.1:7437/observations?project=77delta&limit=300').then(function(r){ return r.json(); }).then(function(obs){
-    omcBox.innerHTML = '';
-    var filtrado = (obs || []).filter(function(o){ var t = o.title || ''; return t.indexOf('[CORE]') === 0 || t.indexOf('[DECISION]') === 0 || t.indexOf('[ENCARGO') === 0 || t.indexOf('[CORREO]') === 0; });
-    if (!filtrado.length){ omcBox.appendChild(el('p', { class: 'peq', text: 'Sin entradas [CORE]/[DECISION]/[ENCARGO] todavía.' })); return; }
-    filtrado.slice(0, 80).forEach(function(o){
-      omcBox.appendChild(el('div', { class: 'omc-item' }, [el('span', { class: 'fecha', text: (o.created_at || '').slice(0, 16).replace('T', ' ') + ' · ' }), el('span', { text: o.title })]));
-    });
-  }).catch(function(){
-    omcBox.innerHTML = '';
-    omcBox.appendChild(el('p', { class: 'peq', text: 'Histórico de Engram no disponible desde aquí (solo se ve en un navegador de esta misma máquina, 127.0.0.1:7437).' }));
-  });
-
   if (S.hq.decisiones && S.hq.decisiones.length){
     app.appendChild(el('h2', { class: 'sec-t' }, ['Decisiones ', el('small', { text: S.hq.decisiones.length })]));
     var dbox = el('div', {});

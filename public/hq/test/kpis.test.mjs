@@ -41,7 +41,7 @@ if (typeof globalThis.localStorage === 'undefined') {
   globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => mem.set(k, String(v)), removeItem: (k) => mem.delete(k) };
 }
 
-const { render, GRUPOS, porMotivo, filasMotivos } = await import('../app/vistas/kpis.js');
+const { render, GRUPOS, filasMotivos } = await import('../app/vistas/kpis.js');
 const { derivar } = await import('../app/estado.js');
 
 const buscarNodos = (n, f, out = []) => { if (n && n.nodeType === 1) { if (f(n)) out.push(n); n.children.forEach(c => buscarNodos(c, f, out)); } return out; };
@@ -150,32 +150,11 @@ test('render: sin expedientes en el payload, la sección Expedientes no se pinta
   assert.ok(!grupos(r).map(nombreGrupo).includes('Expedientes'));
 });
 
-// Motivos de NO (#1063): recuento puro multietiqueta para el panel "Por qué no vamos". Sin cambios.
-test('porMotivo: cuenta multietiqueta por motivo del catalogo, descendente, sin ceros, "Sin motivo" al final', () => {
-  const conMotivos = [
-    { expediente: 'D1', estado: 'Descartada', motivos: ['Sin pliego', 'Plazo corto'] },
-    { expediente: 'D2', estado: 'Descartada', motivos: ['Sin pliego'] },
-    { expediente: 'D3', estado: 'Descartada', motivos: [] },
-    { expediente: 'D4', estado: 'Nueva', motivos: ['Sin pliego'] },
-    { expediente: 'D5', estado: 'Aprobada', decision: 'OK', motivos: ['Cliente conocido'] },
-  ];
-  assert.deepEqual(porMotivo(conMotivos), [
-    { motivo: 'Sin pliego', n: 2 },
-    { motivo: 'Plazo corto', n: 1 },
-    { motivo: 'Sin motivo', n: 1 },
-  ]);
-});
-
-test('porMotivo: sin descartadas devuelve []; todas con motivo no añaden fila "Sin motivo"', () => {
-  assert.deepEqual(porMotivo([]), []);
-  assert.deepEqual(porMotivo([{ expediente: 'D1', estado: 'Descartada', motivos: ['Duplicada'] }]), [{ motivo: 'Duplicada', n: 1 }]);
-});
-
 test('render: panel "Por qué no vamos" en Licitaciones cuando hay descartadas con motivo, con subtitulo N de M', () => {
   const conDescartadas = { ...datosOwner, licitaciones: [...lics,
     { expediente: 'D1', estado: 'Descartada', motivos: ['Sin pliego'] },
     { expediente: 'D2', estado: 'Descartada', motivos: [] },
-  ] };
+  ], lic_motivos: { descartadas: 2, con_motivo: 1, motivos: [{ motivo: 'Sin pliego', n: 1 }] } };
   const r = pintar({ datos: conDescartadas, derivado: derivar(conDescartadas) });
   assert.ok(r.textContent.includes('Por qué no vamos'));
   assert.ok(r.textContent.includes('Sin pliego'));
@@ -190,11 +169,11 @@ test('filasMotivos: con lic_motivos usa el agregado del servidor, ordena desc, a
     { motivo: 'Fuera de España', n: 5 }, { motivo: 'Presencial', n: 2 }, { motivo: 'Sin motivo', n: 3 } ], total: 10, conMotivo: 7 });
 });
 
-test('filasMotivos: sin lic_motivos cae al recuento del payload (porMotivo); agregado vacio devuelve filas []', () => {
+test('filasMotivos: sin lic_motivos no recuenta en el navegador (D17); agregado vacio devuelve filas []', () => {
   const d = { licitaciones: [
     { expediente: 'D1', estado: 'Descartada', motivos: ['Sin pliego'] },
     { expediente: 'D2', estado: 'Descartada', motivos: [] } ] };
-  assert.deepEqual(filasMotivos(d), { filas: [{ motivo: 'Sin pliego', n: 1 }, { motivo: 'Sin motivo', n: 1 }], total: 2, conMotivo: 1 });
+  assert.deepEqual(filasMotivos(d), { filas: [], total: 0, conMotivo: 0 });
   assert.deepEqual(filasMotivos({ licitaciones: [], lic_motivos: { descartadas: 0, con_motivo: 0, motivos: [] } }).filas, []);
   assert.deepEqual(filasMotivos({ licitaciones: [], lic_motivos: {} }).filas, []);
 });

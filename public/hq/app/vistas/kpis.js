@@ -6,7 +6,7 @@
 // Tablero, Equipo, Objetivo (antes "Plan"; mismo clave 'plan' para no romper la ruta #kpis?grupo=plan).
 // Un agente solo ve los grupos cuyo dato viaja en su payload (mismo criterio que antes, GRUPOS.disponible).
 import { el } from '../ui.js';
-import { estadoDe, motivosNo, MOTIVOS_NO } from '../licitaciones.js';
+import { estadoDe } from '../licitaciones.js';
 import { panel, cifra, filaBarra, anchoLog, eurCorto } from '../cuadro.js';
 import { embudoLicitaciones, embudoExpedientes, embudoTablero, resumenEquipo } from '../embudos.js';
 
@@ -30,26 +30,9 @@ function seccion(nombre, paneles) {
   return paneles && paneles.length ? el('section', { class: 'seccion kpi-grupo' }, [el('h2', { text: nombre }), el('div', { class: 'cuadro' }, paneles)]) : null;
 }
 
-// #1063: recuento puro de motivos de NO sobre todo el payload de licitaciones, para el panel "Por qué
-// no vamos". Multietiqueta (una descartada con dos motivos cuenta en los dos), catálogo primero de
-// mayor a menor y sin ceros, "Sin motivo" siempre al final si hay alguna descartada sin catálogo.
-export function porMotivo(lics) {
-  const cuenta = {};
-  let sinMotivo = 0;
-  for (const l of lics || []) {
-    if (estadoDe(l) !== 'Descartada') continue;
-    const motivos = motivosNo(l);
-    if (motivos.length) motivos.forEach(m => { cuenta[m] = (cuenta[m] || 0) + 1; });
-    else sinMotivo++;
-  }
-  const filas = MOTIVOS_NO.map(m => ({ motivo: m, n: cuenta[m] || 0 })).filter(f => f.n > 0).sort((a, b) => b.n - a.n);
-  if (sinMotivo > 0) filas.push({ motivo: 'Sin motivo', n: sinMotivo });
-  return filas;
-}
-
-// #1063: filas del panel "Por qué no vamos". Desde la 2.0.18 omc_hq_v2 trae 'lic_motivos' ya contado en
-// SQL ({ descartadas, con_motivo, motivos: [{ motivo, n }] }), porque las descartadas no viajan en el
-// array 'licitaciones' (peso del payload); si falta, se cuenta sobre el payload con porMotivo.
+// #1063: filas del panel "Por qué no vamos". omc_hq_v2 trae 'lic_motivos' ya contado en SQL
+// ({ descartadas, con_motivo, motivos: [{ motivo, n }] }). D17 (25-sep): HQ solo pinta lo que sale en
+// directo de Supabase, así que sin ese agregado no hay panel; ya no se recuenta con un catálogo copiado en el JS.
 export function filasMotivos(d) {
   const r = d?.lic_motivos;
   if (r && Array.isArray(r.motivos)) {
@@ -58,9 +41,7 @@ export function filasMotivos(d) {
     if (total - conMotivo > 0) filas.push({ motivo: 'Sin motivo', n: total - conMotivo });
     return { filas, total, conMotivo };
   }
-  const lics = d?.licitaciones || [];
-  const descartadas = lics.filter(l => estadoDe(l) === 'Descartada');
-  return { filas: porMotivo(lics), total: descartadas.length, conMotivo: descartadas.filter(l => motivosNo(l).length > 0).length };
+  return { filas: [], total: 0, conMotivo: 0 };
 }
 
 // Panel de la pestaña Licitaciones (vive aquí y no en vistas/licitaciones.js porque es el único de los
