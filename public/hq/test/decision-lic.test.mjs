@@ -64,7 +64,7 @@ test('botonesTransicion: rol agente no ofrece Por decidir -> Aprobada ni -> Desc
   const desc = botonesTransicion({ estado: 'Descartada' }, async () => {}, 'agente');
   assert.deepEqual(desc.map(b => b.textContent), []);
   const desOwner = botonesTransicion({ estado: 'Descartada' }, async () => {}, 'owner');
-  assert.deepEqual(desOwner.map(b => b.textContent), ['Por decidir']);
+  assert.deepEqual(desOwner.map(b => b.textContent), ['Por decidir', 'Criba de pliego']);
 });
 
 test('botonesTransicion: un estado final sin salidas (Adjudicada) no ofrece ningun boton', () => {

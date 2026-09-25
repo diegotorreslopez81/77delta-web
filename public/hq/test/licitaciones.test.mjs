@@ -19,7 +19,7 @@ const lics = [
 
 test('DECIDIBLES y ABIERTAS son los conjuntos esperados', () => {
   assert.deepEqual([...DECIDIBLES], ['Probable', 'Dudosa']);
-  assert.deepEqual([...ABIERTAS], ['Nueva', 'Por decidir']);
+  assert.deepEqual([...ABIERTAS], ['Nueva', 'Criba de pliego', 'Por decidir']);
 });
 
 // C1 (revision final del controlador): estado '' (cadena vacia, valor por defecto de la columna en
@@ -513,10 +513,10 @@ test('sinPresentarUrgente: Aprobada u OK a <= 2 dias del cierre sin presentar; P
 // Tanda 4 (H1, tabla 5.3 de LICITA-SPEC.md): los 12 estados canonicos y el grafo de transiciones que
 // valida omc_licitaciones_guardia() en BD. Estas pruebas fijan el contrato entre la vista, decision-lic.js
 // y el trigger, para que un cambio en el grafo de aqui obligue a revisar tambien la SQL.
-test('ESTADOS_H1: los 12 estados canonicos, en el mismo orden que omc_lic_estados()', () => {
-  assert.deepEqual(ESTADOS_H1, ['Nueva', 'Por decidir', 'Aprobada', 'En redacción', 'Por presentar', 'Presentada',
+test('ESTADOS_H1: los 12 estados canonicos de omc_lic_estados() mas Criba de pliego (Licita v3)', () => {
+  assert.deepEqual(ESTADOS_H1, ['Nueva', 'Criba de pliego', 'Por decidir', 'Aprobada', 'En redacción', 'Por presentar', 'Presentada',
     'Subsanación', 'Propuesta de adjudicación', 'Adjudicada', 'No adjudicada', 'Descartada', 'Cerrada sin presentar']);
-  assert.equal(ESTADOS_H1.length, 12);
+  assert.equal(ESTADOS_H1.length, 13);
 });
 
 test('TRANSICIONES_5_3: todo destino de todo estado es el mismo un estado valido de ESTADOS_H1', () => {
@@ -558,7 +558,7 @@ test('transicionesValidas: interseccion de la tabla 5.3 con la guardia de rol', 
   assert.deepEqual(transicionesValidas({ estado: 'Por decidir' }, 'owner'), ['Aprobada', 'Descartada', 'Cerrada sin presentar']);
   assert.deepEqual(transicionesValidas({ estado: 'Por decidir' }, 'agente'), ['Cerrada sin presentar']);
   assert.deepEqual(transicionesValidas({ estado: 'Descartada' }, 'agente'), []);
-  assert.deepEqual(transicionesValidas({ estado: 'Descartada' }, 'owner'), ['Por decidir']);
+  assert.deepEqual(transicionesValidas({ estado: 'Descartada' }, 'owner'), ['Por decidir', 'Criba de pliego']);
   assert.deepEqual(transicionesValidas({ estado: 'Adjudicada' }, 'owner'), [], 'estado final sin salida');
   assert.deepEqual(transicionesValidas({ estado: '' }, 'agente'), transicionesValidas({ estado: 'Nueva' }, 'agente'), 'estado vacio cae a Nueva (estadoBase)');
 });

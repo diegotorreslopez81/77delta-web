@@ -26,7 +26,7 @@ function sumaImporte(rows) { return rows.reduce((s, l) => s + (Number(l.importe)
 // en el informe. 'Retirada' no tiene clave propia en lic_resumen (hueco de datos: no se puede sumar a
 // Perdidas sin inventar), así que cae en "Otros estados" en vez de desaparecer: se ve, no se pierde.
 const PASOS_LIC = [
-  ['nuevas', 'Nuevas', ['Nueva']],
+  ['nuevas', 'Nuevas', ['Nueva', 'Criba de pliego']],
   ['decidir', 'Por decidir', ['Por decidir', 'Analizada']],
   ['aprobadas', 'Aprobadas', ['Aprobada']],
   ['redaccion', 'En redacción', ['En redacción']],

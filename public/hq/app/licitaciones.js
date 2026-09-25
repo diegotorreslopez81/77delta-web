@@ -3,7 +3,7 @@
 // sin imports de vistas: se prueba con node --test.
 import { sinAcentos } from './estado.js';
 export const DECIDIBLES = new Set(['Probable', 'Dudosa']);
-export const ABIERTAS = new Set(['Nueva', 'Por decidir']);
+export const ABIERTAS = new Set(['Nueva', 'Criba de pliego', 'Por decidir']);
 
 // C1 (revision final del controlador): estado '' (cadena vacia, valor por defecto de la columna en
 // BD) se trata como 'Nueva' en todo el modulo, igual que ya hace schema-v2.sql en omc_hq_v2 con
@@ -64,15 +64,17 @@ export function conBotones(l, ahora = new Date()) {
   return dec === 'pendiente' || dec === 'go';
 }
 
-// H1: los 12 estados canonicos de omc_licitaciones (mismo orden que omc_lic_estados() en schema-v18-licita.sql).
-export const ESTADOS_H1 = ['Nueva', 'Por decidir', 'Aprobada', 'En redaccion', 'Por presentar', 'Presentada',
+// H1: los estados canonicos de omc_licitaciones (mismo orden que omc_lic_estados() en schema-v18-licita.sql), mas
+// 'Criba de pliego' de Licita v3 (lic_estados, schema-v32). En la tanda E salen de Supabase (D17).
+export const ESTADOS_H1 = ['Nueva', 'Criba de pliego', 'Por decidir', 'Aprobada', 'En redaccion', 'Por presentar', 'Presentada',
   'Subsanacion', 'Propuesta de adjudicacion', 'Adjudicada', 'No adjudicada', 'Descartada', 'Cerrada sin presentar']
   .map(e => e.replace('redaccion', 'redacción').replace('Subsanacion', 'Subsanación').replace('adjudicacion', 'adjudicación'));
 
 // H1 5.3: grafo exacto de omc_lic_transicion_ok() (schema-v18-licita.sql). p_de === p_a (quedarse) siempre vale y
 // no se repite aqui; esto es solo el destino de cada boton de avance o retroceso, incluidos los 5 rollbacks.
 export const TRANSICIONES_5_3 = {
-  'Nueva': ['Por decidir', 'Descartada', 'Cerrada sin presentar'],
+  'Nueva': ['Criba de pliego', 'Por decidir', 'Descartada', 'Cerrada sin presentar'],
+  'Criba de pliego': ['Aprobada', 'Por decidir', 'Descartada', 'Cerrada sin presentar'],
   'Por decidir': ['Aprobada', 'Descartada', 'Cerrada sin presentar'],
   'Aprobada': ['En redacción', 'Descartada', 'Cerrada sin presentar'],
   'En redacción': ['Por presentar', 'Descartada', 'Cerrada sin presentar', 'Aprobada'],
@@ -80,7 +82,7 @@ export const TRANSICIONES_5_3 = {
   'Presentada': ['Subsanación', 'Propuesta de adjudicación', 'Adjudicada', 'No adjudicada'],
   'Subsanación': ['Presentada', 'No adjudicada'],
   'Propuesta de adjudicación': ['Adjudicada', 'No adjudicada'],
-  'Descartada': ['Por decidir'],
+  'Descartada': ['Por decidir', 'Criba de pliego'],
   'Cerrada sin presentar': ['Nueva'],
 };
 

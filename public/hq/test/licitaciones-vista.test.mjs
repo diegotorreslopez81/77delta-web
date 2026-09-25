@@ -111,11 +111,11 @@ test('filtroCliente: no incluye motivo (se filtra aparte por motivo_descarte cru
   assert.equal('motivo' in v, false);
 });
 
-test('render: 12 chips de ESTADOS_H1 sin recuento, el actual con clase activo, alias de ruta vieja resuelve', async () => {
+test('render: 13 chips de ESTADOS_H1 sin recuento, el actual con clase activo, alias de ruta vieja resuelve', async () => {
   const raiz = await pintar([], { estado: 'activas' });
   const cs = chips(raiz);
-  assert.equal(cs.length, 12);
-  assert.deepEqual(cs.map(c => c.textContent), ['Nueva', 'Por decidir', 'Aprobada', 'En redacción', 'Por presentar', 'Presentada', 'Subsanación', 'Propuesta de adjudicación', 'Adjudicada', 'No adjudicada', 'Descartada', 'Cerrada sin presentar']);
+  assert.equal(cs.length, 13);
+  assert.deepEqual(cs.map(c => c.textContent), ['Nueva', 'Criba de pliego', 'Por decidir', 'Aprobada', 'En redacción', 'Por presentar', 'Presentada', 'Subsanación', 'Propuesta de adjudicación', 'Adjudicada', 'No adjudicada', 'Descartada', 'Cerrada sin presentar']);
   const activo = cs.find(c => clase(c, 'activo'));
   assert.equal(activo.textContent, 'Aprobada');
   assert.equal(activo.attrs.href, '#operacion/licitaciones?estado=Aprobada');
