@@ -72,13 +72,15 @@ test('embudoLicitaciones: estados desconocidos van a "otros" y nunca se pierden 
 test('embudoLicitaciones: conversion acumulada (ha llegado al menos hasta aqui), nunca n/n entre estados excluyentes', () => {
   const { pasos } = embudoLicitaciones(lics);
   const porClave = Object.fromEntries(pasos.map(p => [p.clave, p]));
-  // Acumulados del fixture: ganadas 2; presentadas 1 + 2 ganadas + 1 no adjudicada = 4; redaccion 5;
-  // aprobadas 6; decidir 8; nuevas 10 (la cerrada sin presentar, la pausada y la descartada no suman).
+  // Acumulados del fixture: ganadas 2; presentadas 1 + 2 ganadas + 1 no adjudicada = 4; por_presentar
+  // 4 (0 filas propias, hereda el acumulado de presentadas); redaccion 5; aprobadas 6; decidir 8;
+  // nuevas 10 (la cerrada sin presentar, la pausada y la descartada no suman).
   assert.equal(porClave.nuevas.conversion, null, 'primer paso, sin anterior');
   assert.equal(porClave.decidir.conversion, conversion(8, 10));
   assert.equal(porClave.aprobadas.conversion, conversion(6, 8));
   assert.equal(porClave.redaccion.conversion, conversion(5, 6));
-  assert.equal(porClave.presentadas.conversion, conversion(4, 5));
+  assert.equal(porClave.por_presentar.conversion, conversion(4, 5), 'D56: paso nuevo entre redaccion y presentadas');
+  assert.equal(porClave.presentadas.conversion, conversion(4, 4), 'sin filas en Por presentar, el acumulado ya venia completo (100%)');
   assert.equal(porClave.ganadas.conversion, conversion(2, 4));
   assert.equal(porClave.perdidas.conversion, null, 'terminal que mezcla no adjudicadas y cerradas: sin %');
   for (const p of pasos) if (p.conversion != null) assert.ok(p.conversion <= 100, p.clave + ' no pasa de 100 %');
@@ -93,7 +95,8 @@ test('embudoLicitaciones: mas presentadas que en redaccion (caso real 19-sep) no
   const porClave = Object.fromEntries(embudoLicitaciones(real).pasos.map(p => [p.clave, p]));
   assert.equal(porClave.presentadas.n, 9);
   assert.equal(porClave.redaccion.n, 2);
-  assert.equal(porClave.presentadas.conversion, conversion(9, 11), 'de 11 que llegaron al menos a redaccion, 9 estan presentadas');
+  assert.equal(porClave.por_presentar.conversion, conversion(9, 11), 'de 11 que llegaron al menos a redaccion, 9 estan al menos en por presentar');
+  assert.equal(porClave.presentadas.conversion, conversion(9, 9), 'de los 9 que llegaron a por presentar (foto: 0 filas ahi), los 9 estan presentadas');
   assert.equal(porClave.redaccion.conversion, conversion(11, 36));
   assert.equal(porClave.ganadas.conversion, 0, 'nada ganado todavia: 0 %, no null');
 });
@@ -126,6 +129,34 @@ test('embudoLicitaciones: con lic_resumen presente, prefiere sus n/eur sobre con
   assert.equal(porClaveLat.pausadas.importe, 40000);
   assert.equal(porClaveLat.descartadas.n, 7);
   assert.equal(porClaveLat.descartadas.importe, 70000);
+});
+
+test('embudoLicitaciones: D56/Tanda G - Por presentar es paso secuencial; Subsanación y Propuesta de adjudicación son laterales, nunca "otros"', () => {
+  const v3 = [
+    { expediente: 'V1', estado: 'Por presentar', importe: 1000 },
+    { expediente: 'V2', estado: 'Subsanación', importe: 2000 },
+    { expediente: 'V3', estado: 'Propuesta de adjudicación', importe: 3000 },
+  ];
+  const { pasos, laterales } = embudoLicitaciones(v3);
+  const porClave = Object.fromEntries(pasos.map(p => [p.clave, p]));
+  assert.equal(porClave.por_presentar.n, 1);
+  assert.equal(porClave.por_presentar.importe, 1000);
+  const porClaveLat = Object.fromEntries(laterales.map(l => [l.clave, l]));
+  assert.equal(porClaveLat.subsanacion.n, 1);
+  assert.equal(porClaveLat.subsanacion.importe, 2000);
+  assert.equal(porClaveLat.propuesta_adjudicacion.n, 1);
+  assert.equal(porClaveLat.propuesta_adjudicacion.importe, 3000);
+  assert.ok(!laterales.some(l => l.clave === 'otros'), 'ninguno de los tres cae en Otros estados');
+});
+
+test('embudoLicitaciones: subsanación y propuesta de adjudicación prefieren lic_resumen (schema-v53) sobre el array crudo', () => {
+  const resumen = { subsanacion: { n: 3, eur: 9000 }, propuesta_adjudicacion: { n: 1, eur: 500 } };
+  const { laterales } = embudoLicitaciones([], resumen);
+  const porClaveLat = Object.fromEntries(laterales.map(l => [l.clave, l]));
+  assert.equal(porClaveLat.subsanacion.n, 3);
+  assert.equal(porClaveLat.subsanacion.importe, 9000);
+  assert.equal(porClaveLat.propuesta_adjudicacion.n, 1);
+  assert.equal(porClaveLat.propuesta_adjudicacion.importe, 500);
 });
 
 test('embudoLicitaciones: array vacio o ausente no rompe nada', () => {

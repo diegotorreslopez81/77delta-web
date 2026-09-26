@@ -1,4 +1,4 @@
-import { conf, TOKEN, cargar, rpc, guardarToken, salir, configLicita } from './api.js';
+import { conf, TOKEN, cargar, rpc, guardarToken, salir, configLicita, catalogoDescarte } from './api.js';
 import { S, poner } from './estado.js';
 import { el, toast } from './ui.js';
 import { crearRecargador, decidirRecargaAutomatica } from './recargador.js';
@@ -13,7 +13,7 @@ import * as equipo from './vistas/equipo.js';
 import * as colaboradores from './vistas/colaboradores.js';
 import * as expedientes from './vistas/expedientes.js';
 import * as licitaciones from './vistas/licitaciones.js';
-import { configurarLicita } from './licitaciones.js';
+import { configurarLicita, configurarMotivosNo } from './licitaciones.js';
 import * as recursos from './vistas/recursos.js';
 import * as salud from './vistas/salud.js';
 
@@ -130,6 +130,8 @@ else {
   // patron que el push de mas abajo): si falla, la vista de licitaciones sigue con el snapshot de
   // licitaciones.js.
   configLicita().then(configurarLicita).catch(() => {});
+  // D57/Tanda G: unico catalogo de motivos de NO, pedido en vivo a omc_motivos_no() (fuente unica, ver licitaciones.js).
+  catalogoDescarte().then(configurarMotivosNo).catch(() => {});
   // Sin realtime (T7-b): recarga cada 60s y al volver a la pestaña, nunca en segundo plano. Fix ronda 2
   // (revision final, D3): el propio tick del intervalo tambien mira document.hidden (antes solo lo
   // miraba el comentario, no el codigo). #1057 tarea 29: al volver a la pestaña solo si ya pasaron 60s

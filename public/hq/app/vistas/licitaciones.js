@@ -228,6 +228,9 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
       el('span', { class: 'pill tag-' + colorEstado(par.estado), title: 'Estado: ' + par.estado }, [el('i', { class: 'punto g-' + (COLOR_ESTADO[par.estado] || 'neutro-3') }), par.estado]),
       tipo && tipo !== 'Otro' ? el('span', { class: 'pill tag-' + colorOrgano(tipo), title: 'Órgano: ' + tipo, text: tipo }) : null,
       el('span', { class: 'pill ' + importeClase(l.importe), text: l.importe ? eurCorto(l.importe) + ' sin IVA' : 'sin importe' }),
+      // D56/Tanda G (#2051): Adjudicada con importe_adjudicado (real, sin IVA) muestra un pill aparte;
+      // el pill de arriba sigue siendo el presupuesto de licitación, nunca se sustituye (ambos datos son reales).
+      par.estado === 'Adjudicada' && l.importe_adjudicado ? el('span', { class: 'pill tag-verde', text: 'Adjudicado ' + eurCorto(l.importe_adjudicado) + ' sin IVA' }) : null,
       l.procedimiento ? el('span', { class: 'pill', text: l.procedimiento }) : null,
       ...tagsMotivo,
       ...etiquetas.map(e => el('span', { class: 'pill', text: e })),

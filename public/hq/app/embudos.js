@@ -25,15 +25,21 @@ function sumaImporte(rows) { return rows.reduce((s, l) => s + (Number(l.importe)
 // de presentar) así que salen de lic_resumen y enlazan a la pestaña sin filtro; se anota como decisión
 // en el informe. 'Retirada' no tiene clave propia en lic_resumen (hueco de datos: no se puede sumar a
 // Perdidas sin inventar), así que cae en "Otros estados" en vez de desaparecer: se ve, no se pierde.
+// D56/Tanda G (encargo #2051): 'Por presentar' entra como paso secuencial (TRANSICIONES_5_3 en
+// licitaciones.js: el 100% de 'En redacción' pasa por 'Por presentar' antes de 'Presentada', nunca
+// salta directo). 'Subsanación' y 'Propuesta de adjudicación' NO son secuenciales (solo una parte de
+// las Presentada pasa por ahi, y vuelven a Presentada/Adjudicada/No adjudicada): van de lateral, no
+// como paso del embudo (ver push() de subsanacionRow/propuestaRow mas abajo).
 const PASOS_LIC = [
   ['nuevas', 'Nuevas', ['Nueva', 'Criba de pliego']],
   ['decidir', 'Por decidir', ['Por decidir', 'Analizada']],
   ['aprobadas', 'Aprobadas', ['Aprobada']],
   ['redaccion', 'En redacción', ['En redacción']],
+  ['por_presentar', 'Por presentar', ['Por presentar']],
   ['presentadas', 'Presentadas', ['Presentada']],
 ];
 // 'Retirada' se deja fuera a propósito (ver comentario de arriba): sin bucket propio, cae en "otros".
-const ESTADOS_LIC_CONOCIDOS = new Set([...PASOS_LIC.flatMap(p => p[2]), 'Pausada', 'Adjudicada', 'Contratada', 'Cerrada sin presentar', 'No adjudicada']);
+const ESTADOS_LIC_CONOCIDOS = new Set([...PASOS_LIC.flatMap(p => p[2]), 'Pausada', 'Adjudicada', 'Contratada', 'Cerrada sin presentar', 'No adjudicada', 'Subsanación', 'Propuesta de adjudicación']);
 const esDescartadaSucia = l => estadoBase(l).startsWith('Descartada');
 
 function filaLic(clave, titulo, rows, ruta) { return { clave, titulo, n: rows.length, importe: sumaImporte(rows), conversion: null, ruta }; }
@@ -79,7 +85,7 @@ export function embudoLicitaciones(lics, resumen = {}) {
   // pasa de 100 %. Las no adjudicadas pasaron por Presentadas, así que suman en el acumulado de
   // presentadas y anteriores; cerradas sin presentar, pausadas y descartadas salieron antes y no suman.
   // Perdidas es terminal, hermana de Ganadas, y mezcla no adjudicadas con cerradas: sin % (sería mentir).
-  const cadena = ['nuevas', 'decidir', 'aprobadas', 'redaccion', 'presentadas', 'ganadas'];
+  const cadena = ['nuevas', 'decidir', 'aprobadas', 'redaccion', 'por_presentar', 'presentadas', 'ganadas'];
   const porClave = Object.fromEntries(pasos.map(p => [p.clave, p]));
   const acumulado = {};
   let acum = 0;
@@ -90,11 +96,16 @@ export function embudoLicitaciones(lics, resumen = {}) {
   for (let i = 1; i < cadena.length; i++) porClave[cadena[i]].conversion = conversion(acumulado[cadena[i]], acumulado[cadena[i - 1]]);
   const pausadas = filaCombinada('pausadas', 'Pausadas', nEurEstado('pausadas', ['Pausada'], rows, resumen), '#operacion/licitaciones?estado=pausadas');
   const descartadas = filaDescartadas(rows, resumen, '#operacion/licitaciones?estado=descartadas');
+  // D56/Tanda G: subsanación y propuesta de adjudicación, lateral (ver comentario de PASOS_LIC arriba).
+  // lic_resumen aun no trae estas dos claves en produccion (schema-v53): nEurEstado cae al array crudo
+  // hasta que la SQL las agregue, mismo patron de fallback que el resto de laterales.
+  const subsanacion = filaCombinada('subsanacion', 'Subsanación', nEurEstado('subsanacion', ['Subsanación'], rows, resumen), '#operacion/licitaciones?estado=subsanacion');
+  const propuestaAdjudicacion = filaCombinada('propuesta_adjudicacion', 'Propuesta de adjudicación', nEurEstado('propuesta_adjudicacion', ['Propuesta de adjudicación'], rows, resumen), '#operacion/licitaciones?estado=propuesta_adjudicacion');
   // Estados desconocidos (o presentes en el array crudo sin encajar en ningún paso ni salida lateral,
   // p. ej. un valor nuevo del Sheet que aún no está en el catálogo): nunca se pierden, van a "Otros".
   const otros = rows.filter(l => !ESTADOS_LIC_CONOCIDOS.has(estadoBase(l)) && !esDescartadaSucia(l));
   const filaOtros = otros.length ? filaLic('otros', 'Otros estados', otros, '#operacion/licitaciones') : null;
-  return { pasos, laterales: [pausadas, descartadas, filaOtros].filter(f => f && f.n > 0) };
+  return { pasos, laterales: [pausadas, descartadas, subsanacion, propuestaAdjudicacion, filaOtros].filter(f => f && f.n > 0) };
 }
 
 // --- Expedientes ---------------------------------------------------------------------------------------

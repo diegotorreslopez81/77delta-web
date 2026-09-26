@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DECIDIBLES, ABIERTAS, pendiente, porDecidir, enCriba, porElegible, solvenciaTexto, embudo, estadoDe, tipologiaOrgano, TIPOLOGIAS, tipologia, sinSolvencia, filtrar, MOTIVOS_NO, motivosNo, enlacesLic, decisionDe, vencida, cierrePasado, esperandoResolucion, conBotones, sinPresentarUrgente, ESTADOS_H1, TRANSICIONES_5_3, rolPermite, transicionesValidas, configurarLicita } from '../app/licitaciones.js';
+import { DECIDIBLES, ABIERTAS, pendiente, porDecidir, enCriba, porElegible, solvenciaTexto, embudo, estadoDe, tipologiaOrgano, TIPOLOGIAS, tipologia, sinSolvencia, filtrar, MOTIVOS_NO, motivosNo, configurarMotivosNo, enlacesLic, decisionDe, vencida, cierrePasado, esperandoResolucion, conBotones, sinPresentarUrgente, ESTADOS_H1, TRANSICIONES_5_3, rolPermite, transicionesValidas, configurarLicita } from '../app/licitaciones.js';
 
 // Fixture de 8 licitaciones (Task 1, plan 3b): cubre decidibles, criba, descartada, aprobada por
 // decision sin ser decidible, presentada y contratada con importe.
@@ -380,6 +380,24 @@ test('motivosNo: solo devuelve los elementos de l.motivos que estan en el catalo
   assert.deepEqual(motivosNo({ motivos: [] }), []);
   assert.deepEqual(motivosNo({}), []);
   assert.deepEqual(motivosNo({ motivos: null }), []);
+});
+
+// D57/Tanda G (#2051): configurarMotivosNo() sincroniza MOTIVOS_NO con omc_motivos_no() en directo
+// (mismo patron que configurarLicita() con ESTADOS_H1: muta el array in place, nunca lo reasigna, y
+// una lista vacia o invalida no lo toca).
+test('configurarMotivosNo: sustituye el catalogo en directo; vacio o invalido no toca nada', () => {
+  const original = MOTIVOS_NO.slice();
+  try {
+    configurarMotivosNo(['Motivo A', 'Motivo B']);
+    assert.deepEqual(MOTIVOS_NO, ['Motivo A', 'Motivo B']);
+    assert.deepEqual(motivosNo({ motivos: ['Motivo A', 'Sin pliego'] }), ['Motivo A'], 'Sin pliego ya no esta en el catalogo sustituido');
+    configurarMotivosNo([]);
+    assert.deepEqual(MOTIVOS_NO, ['Motivo A', 'Motivo B'], 'lista vacia no sustituye el catalogo actual');
+    configurarMotivosNo(null);
+    assert.deepEqual(MOTIVOS_NO, ['Motivo A', 'Motivo B'], 'null no sustituye el catalogo actual');
+  } finally {
+    MOTIVOS_NO.length = 0; MOTIVOS_NO.push(...original);
+  }
 });
 
 test('filtrar con motivo: pasa las filas cuyo motivosNo incluye el motivo pedido', () => {
