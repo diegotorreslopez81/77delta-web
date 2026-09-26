@@ -77,14 +77,15 @@ export function embudoLicitaciones(lics, resumen = {}) {
   const noAdjudicadas = nEurEstado('no_adjudicadas', ['No adjudicada'], rows, resumen);
   const cerradas = nEurEstado('cerradas', ['Cerrada sin presentar'], rows, resumen);
   pasos.push(filaCombinada('ganadas', 'Ganadas', ganadas, '#operacion/licitaciones'));
-  pasos.push(filaCombinada('perdidas', 'Perdidas', combinar(noAdjudicadas, cerradas), '#operacion/licitaciones'));
+  pasos.push(filaCombinada('perdidas', 'Perdidas', noAdjudicadas, '#operacion/licitaciones'));
   // Conversión acumulada, no n/n entre estados excluyentes: el embudo es una foto (cada paso cuenta lo que
   // hoy está en ese estado), así que "presentadas / en redacción" daba 450 % con 9 presentadas y 2 en
-  // redacción. El % de un paso es acumulado(paso) / acumulado(anterior), donde acumulado = lo que hay en
-  // ese paso más todo lo que ya está más adelante en la cadena (ha llegado al menos hasta aquí): nunca
-  // pasa de 100 %. Las no adjudicadas pasaron por Presentadas, así que suman en el acumulado de
-  // presentadas y anteriores; cerradas sin presentar, pausadas y descartadas salieron antes y no suman.
-  // Perdidas es terminal, hermana de Ganadas, y mezcla no adjudicadas con cerradas: sin % (sería mentir).
+  // redacción. El % de un paso es acumulado(paso) / acumulado(nuevas), la base fija del embudo (D58,
+  // 26-sep): dividir por el paso anterior daba 100 % trivial en cuanto ese paso anterior tenía 0 en curso
+  // (Presentadas salía 100 % con solo 19/856 reales). Las no adjudicadas pasaron por Presentadas, así que
+  // suman en el acumulado de presentadas y anteriores; cerradas sin presentar, pausadas y descartadas
+  // salieron antes y no suman. Perdidas es terminal, hermana de Ganadas, solo no adjudicadas (D58): cerradas
+  // sin presentar es salida lateral, como pausadas/descartadas, nunca cuenta en Perdidas. Sin % (sería mentir).
   const cadena = ['nuevas', 'decidir', 'aprobadas', 'redaccion', 'por_presentar', 'presentadas', 'ganadas'];
   const porClave = Object.fromEntries(pasos.map(p => [p.clave, p]));
   const acumulado = {};
@@ -93,9 +94,10 @@ export function embudoLicitaciones(lics, resumen = {}) {
     acum += porClave[clave].n + (clave === 'presentadas' ? noAdjudicadas.n : 0);
     acumulado[clave] = acum;
   }
-  for (let i = 1; i < cadena.length; i++) porClave[cadena[i]].conversion = conversion(acumulado[cadena[i]], acumulado[cadena[i - 1]]);
+  for (let i = 1; i < cadena.length; i++) porClave[cadena[i]].conversion = conversion(acumulado[cadena[i]], acumulado[cadena[0]]);
   const pausadas = filaCombinada('pausadas', 'Pausadas', nEurEstado('pausadas', ['Pausada'], rows, resumen), '#operacion/licitaciones?estado=pausadas');
   const descartadas = filaDescartadas(rows, resumen, '#operacion/licitaciones?estado=descartadas');
+  const filaCerradas = filaCombinada('cerradas', 'Cerrada sin presentar', cerradas, '#operacion/licitaciones?estado=cerradas');
   // D56/Tanda G: subsanación y propuesta de adjudicación, lateral (ver comentario de PASOS_LIC arriba).
   // lic_resumen aun no trae estas dos claves en produccion (schema-v53): nEurEstado cae al array crudo
   // hasta que la SQL las agregue, mismo patron de fallback que el resto de laterales.
@@ -105,7 +107,7 @@ export function embudoLicitaciones(lics, resumen = {}) {
   // p. ej. un valor nuevo del Sheet que aún no está en el catálogo): nunca se pierden, van a "Otros".
   const otros = rows.filter(l => !ESTADOS_LIC_CONOCIDOS.has(estadoBase(l)) && !esDescartadaSucia(l));
   const filaOtros = otros.length ? filaLic('otros', 'Otros estados', otros, '#operacion/licitaciones') : null;
-  return { pasos, laterales: [pausadas, descartadas, subsanacion, propuestaAdjudicacion, filaOtros].filter(f => f && f.n > 0) };
+  return { pasos, laterales: [pausadas, descartadas, filaCerradas, subsanacion, propuestaAdjudicacion, filaOtros].filter(f => f && f.n > 0) };
 }
 
 // --- Expedientes ---------------------------------------------------------------------------------------

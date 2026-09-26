@@ -49,15 +49,18 @@ test('embudoLicitaciones: recuentos e importes por paso, sin resumen (todo desde
   // Ganadas = Adjudicada + Contratada (fallback al array crudo sin lic_resumen)
   assert.equal(porClave.ganadas.n, 2);
   assert.equal(porClave.ganadas.importe, 15000);
-  // Perdidas = No adjudicada + Cerrada sin presentar (Retirada no tiene clave: hueco de datos, no cuenta aqui)
-  assert.equal(porClave.perdidas.n, 2);
-  assert.equal(porClave.perdidas.importe, 1200);
+  // Perdidas = solo No adjudicada (D58, 26-sep). Retirada no tiene clave: hueco de datos, no cuenta aqui.
+  assert.equal(porClave.perdidas.n, 1);
+  assert.equal(porClave.perdidas.importe, 800);
 
   const porClaveLat = Object.fromEntries(laterales.map(l => [l.clave, l]));
   assert.equal(porClaveLat.pausadas.n, 1);
   assert.equal(porClaveLat.pausadas.importe, 300);
   assert.equal(porClaveLat.descartadas.n, 1, 'solo L9 (estado empieza por Descartada)');
   assert.equal(porClaveLat.descartadas.importe, 700);
+  // D58: Cerrada sin presentar es lateral, como pausadas/descartadas, nunca cuenta en Perdidas.
+  assert.equal(porClaveLat.cerradas.n, 1);
+  assert.equal(porClaveLat.cerradas.importe, 400);
 });
 
 test('embudoLicitaciones: estados desconocidos van a "otros" y nunca se pierden (ni Retirada, ni un valor nuevo)', () => {
@@ -69,20 +72,22 @@ test('embudoLicitaciones: estados desconocidos van a "otros" y nunca se pierden 
   assert.equal(otros.importe, 250 + 999);
 });
 
-test('embudoLicitaciones: conversion acumulada (ha llegado al menos hasta aqui), nunca n/n entre estados excluyentes', () => {
+test('embudoLicitaciones: conversion acumulada sobre base fija (acumulado.nuevas), nunca n/n entre estados excluyentes', () => {
   const { pasos } = embudoLicitaciones(lics);
   const porClave = Object.fromEntries(pasos.map(p => [p.clave, p]));
   // Acumulados del fixture: ganadas 2; presentadas 1 + 2 ganadas + 1 no adjudicada = 4; por_presentar
   // 4 (0 filas propias, hereda el acumulado de presentadas); redaccion 5; aprobadas 6; decidir 8;
-  // nuevas 10 (la cerrada sin presentar, la pausada y la descartada no suman).
+  // nuevas 10 (la cerrada sin presentar, la pausada y la descartada no suman). D58: cada paso se divide
+  // por acumulado.nuevas (10, base fija), no por el paso anterior: evita el 100 % trivial en cuanto un
+  // paso intermedio tiene 0 en curso.
   assert.equal(porClave.nuevas.conversion, null, 'primer paso, sin anterior');
   assert.equal(porClave.decidir.conversion, conversion(8, 10));
-  assert.equal(porClave.aprobadas.conversion, conversion(6, 8));
-  assert.equal(porClave.redaccion.conversion, conversion(5, 6));
-  assert.equal(porClave.por_presentar.conversion, conversion(4, 5), 'D56: paso nuevo entre redaccion y presentadas');
-  assert.equal(porClave.presentadas.conversion, conversion(4, 4), 'sin filas en Por presentar, el acumulado ya venia completo (100%)');
-  assert.equal(porClave.ganadas.conversion, conversion(2, 4));
-  assert.equal(porClave.perdidas.conversion, null, 'terminal que mezcla no adjudicadas y cerradas: sin %');
+  assert.equal(porClave.aprobadas.conversion, conversion(6, 10));
+  assert.equal(porClave.redaccion.conversion, conversion(5, 10));
+  assert.equal(porClave.por_presentar.conversion, conversion(4, 10), 'D56: paso nuevo entre redaccion y presentadas');
+  assert.equal(porClave.presentadas.conversion, conversion(4, 10), 'D58: base fija, no 4/4 = 100% trivial por 0 en Por presentar');
+  assert.equal(porClave.ganadas.conversion, conversion(2, 10));
+  assert.equal(porClave.perdidas.conversion, null, 'terminal, solo no adjudicadas (D58): sin %');
   for (const p of pasos) if (p.conversion != null) assert.ok(p.conversion <= 100, p.clave + ' no pasa de 100 %');
 });
 
@@ -95,17 +100,25 @@ test('embudoLicitaciones: mas presentadas que en redaccion (caso real 19-sep) no
   const porClave = Object.fromEntries(embudoLicitaciones(real).pasos.map(p => [p.clave, p]));
   assert.equal(porClave.presentadas.n, 9);
   assert.equal(porClave.redaccion.n, 2);
-  assert.equal(porClave.por_presentar.conversion, conversion(9, 11), 'de 11 que llegaron al menos a redaccion, 9 estan al menos en por presentar');
-  assert.equal(porClave.presentadas.conversion, conversion(9, 9), 'de los 9 que llegaron a por presentar (foto: 0 filas ahi), los 9 estan presentadas');
+  assert.equal(porClave.por_presentar.conversion, conversion(9, 36), 'D58: base fija acumulado.nuevas (36), no el paso anterior');
+  assert.equal(porClave.presentadas.conversion, conversion(9, 36));
   assert.equal(porClave.redaccion.conversion, conversion(11, 36));
   assert.equal(porClave.ganadas.conversion, 0, 'nada ganado todavia: 0 %, no null');
 });
 
-test('embudoLicitaciones: division por cero cuando nada ha llegado al paso anterior', () => {
+test('embudoLicitaciones: con base fija no cero, ningun paso da null salvo el primero (D58)', () => {
   const soloNuevas = embudoLicitaciones([{ expediente: 'X', estado: 'Nueva', importe: 100 }]);
   const p2 = Object.fromEntries(soloNuevas.pasos.map(p => [p.clave, p]));
   assert.equal(p2.decidir.conversion, 0, 'de 1 nueva, 0 han pasado a decidir');
-  assert.equal(p2.aprobadas.conversion, null, 'acumulado anterior en cero: no se puede convertir "de cero"');
+  // D58: la base es acumulado.nuevas (1, no cero), asi que aprobadas y ganadas dan 0%, no null.
+  assert.equal(p2.aprobadas.conversion, 0);
+  assert.equal(p2.ganadas.conversion, 0);
+});
+
+test('embudoLicitaciones: division por cero real solo cuando acumulado.nuevas es cero (array vacio)', () => {
+  const { pasos } = embudoLicitaciones([]);
+  const p2 = Object.fromEntries(pasos.map(p => [p.clave, p]));
+  assert.equal(p2.decidir.conversion, null, 'acumulado.nuevas en cero: no se puede convertir "de cero"');
   assert.equal(p2.ganadas.conversion, null);
 });
 
@@ -122,13 +135,15 @@ test('embudoLicitaciones: con lic_resumen presente, prefiere sus n/eur sobre con
   const porClave = Object.fromEntries(pasos.map(p => [p.clave, p]));
   assert.equal(porClave.ganadas.n, 3);
   assert.equal(porClave.ganadas.importe, 30000);
-  assert.equal(porClave.perdidas.n, 4);
-  assert.equal(porClave.perdidas.importe, 3100);
+  assert.equal(porClave.perdidas.n, 3, 'D58: solo no_adjudicadas, sin cerradas');
+  assert.equal(porClave.perdidas.importe, 3000);
   const porClaveLat = Object.fromEntries(laterales.map(l => [l.clave, l]));
   assert.equal(porClaveLat.pausadas.n, 4);
   assert.equal(porClaveLat.pausadas.importe, 40000);
   assert.equal(porClaveLat.descartadas.n, 7);
   assert.equal(porClaveLat.descartadas.importe, 70000);
+  assert.equal(porClaveLat.cerradas.n, 1);
+  assert.equal(porClaveLat.cerradas.importe, 100);
 });
 
 test('embudoLicitaciones: D56/Tanda G - Por presentar es paso secuencial; Subsanación y Propuesta de adjudicación son laterales, nunca "otros"', () => {
