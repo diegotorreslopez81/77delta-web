@@ -5,8 +5,9 @@ import { AREAS, CLAVES, resolver } from '../app/rutas.js';
 // Brief B (19-sep): menú nuevo con diez áreas (Salud, #1121), todas de una sola vista. Operación va Licitaciones,
 // Expedientes, Tablero (Diego: "así deberían ir ordenados y no al revés"); Equipo ya no agrupa: se
 // reparte en Organigrama y Colaboradores, en la posición que ocupaba Equipo (justo antes de Recursos).
-test('AREAS tiene las nueve áreas del menú nuevo en orden y cada vista es una clave válida', () => {
-  assert.deepEqual(AREAS.map(a => a.id), ['hoy', 'kpis', 'licitaciones', 'expedientes', 'tablero', 'salud', 'organigrama', 'colaboradores', 'recursos', 'direccion']);
+// O13a (D69, tanda E bis): Admin (panel generico de D9) justo despues de Salud.
+test('AREAS tiene las once áreas del menú nuevo en orden y cada vista es una clave válida', () => {
+  assert.deepEqual(AREAS.map(a => a.id), ['hoy', 'kpis', 'licitaciones', 'expedientes', 'tablero', 'salud', 'admin', 'organigrama', 'colaboradores', 'recursos', 'direccion']);
   for (const a of AREAS) for (const v of a.vistas) assert.ok(CLAVES.has(v.clave), v.clave);
   assert.deepEqual(AREAS.find(a => a.id === 'organigrama').vistas.map(v => v.clave), ['equipo/organigrama']);
   assert.deepEqual(AREAS.find(a => a.id === 'colaboradores').vistas.map(v => v.clave), ['equipo/colaboradores']);
@@ -37,6 +38,8 @@ const casos = [
   ['#expedientes/9', '', 'operacion/expedientes', '9', {}, '#operacion/expedientes/9', true],
   ['#operacion/licitaciones', '', 'operacion/licitaciones', undefined, {}, '#operacion/licitaciones', false],
   ['#operacion/salud', '', 'operacion/salud', undefined, {}, '#operacion/salud', false],
+  ['#operacion/admin', '', 'operacion/admin', undefined, {}, '#operacion/admin', false],
+  ['#operacion/admin/lic_organos', '', 'operacion/admin', 'lic_organos', {}, '#operacion/admin/lic_organos', false],
   ['#recursos', '', 'recursos/computo', undefined, {}, '#recursos/computo', true],
   ['#recursos/computo', '', 'recursos/computo', undefined, {}, '#recursos/computo', false],
   ['#recursos/dinero', '', 'recursos/computo', undefined, {}, '#recursos/computo', true],

@@ -43,6 +43,14 @@ export const licitacionFicha = id => rpc('lic_ficha_extraccion', { p_id: id });
 // O13b (D69, tanda E bis): lista de auto-aprobadas por criba 2 (D1) con ventana de veto de 12h
 // (lic_aprobadas_auto, schema-v60). El veto en si reutiliza transicionEstado ya existente.
 export const aprobadasAuto = (dias = 3) => rpc('lic_aprobadas_auto', { p_dias: dias });
+// O13a (D69, tanda E bis): panel de administracion generico de D9 sobre las 15 tablas de catalogo que
+// versiona lic_versionar (schema-v61). Todas exigen rol owner server-side (42501 si no lo es).
+export const licAdminTablas = () => rpc('lic_admin_tablas');
+export const licAdminColumnas = tabla => rpc('lic_admin_columnas', { p_tabla: tabla });
+export const licAdminFilas = tabla => rpc('lic_admin_filas', { p_tabla: tabla });
+export const licAdminGuardar = (tabla, clave, cambios, motivo) => rpc('lic_admin_guardar', { p_tabla: tabla, p_clave: clave, p_cambios: cambios, p_motivo: motivo || null });
+export const licAdminAlta = (tabla, fila, motivo) => rpc('lic_admin_alta', { p_tabla: tabla, p_fila: fila, p_motivo: motivo || null });
+export const licAdminHistorial = (tabla, clave) => rpc('lic_admin_historial', { p_tabla: tabla, p_clave: clave });
 // Listado unico de la vista de Licitaciones (omc_licitaciones_tabla extendida en schema-v20): filtro server-side
 // por estado, etiqueta(s), importe (Menor = importe_max 20000) y cierre.
 export const licitacionesTabla = (filtro = {}) => rpc('omc_licitaciones_tabla', { p_filtro: filtro });
