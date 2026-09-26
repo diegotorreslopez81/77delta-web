@@ -8,7 +8,7 @@
 // que sigue leyendo el payload de omc_hq_v2 sin tocar: esa vista es una foto agregada, no necesita fidelidad total.
 import { el, fecha, urlSegura, toast } from '../ui.js';
 import { embudo, porElegible, porDecidir, vencida, esperandoResolucion, sinPresentarUrgente, ordenCierre, estadoDe, estadoBase, estadoPartido, solvenciaTexto, pipelinePorMes, tipologiaOrgano, tipologia, TIPOLOGIAS, filtrar, enlacesLic, ESTADOS_H1 } from '../licitaciones.js';
-import { botonesTransicion, botonClaveSobre, checklistA5 } from '../decision-lic.js';
+import { botonesTransicion, botonClaveSobre, checklistA5, ejecutarTransicion } from '../decision-lic.js';
 import { recargar } from '../main.js';
 import { hojaFiltros, pillsActivos } from '../filtros.js';
 import { donut, barras } from '../graficos.js';
@@ -95,6 +95,9 @@ export function filtroServidor(v, ahora = new Date()) {
   if (v.menor === '1') f.importe_max = 20000;
   if (v.etiqueta) f.etiquetas = [v.etiqueta];
   if (v.abiertas !== '0') f.cierre_desde = ahora.toISOString().slice(0, 10);
+  // O13d (D69, tanda E bis): espera_diego = true cuando la licitación tiene una tarea abierta con
+  // lic_tareas.espera_de = 'diego' (schema-v57/v58).
+  if (v.espera === '1') f.espera_diego = true;
   return f;
 }
 // Filtros que no tiene la RPC (tipología, solvencia, tipo, presencial, texto, motivo de NO): se aplican
@@ -219,6 +222,31 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
       }))));
     }).catch(() => { historial.innerHTML = ''; historial.append(el('p', { class: 'mudo', text: 'no se pudo cargar el historial' })); });
   };
+  // O13c (D69, tanda E bis): campos extraidos con cita/ubicacion y criterios evaluados GO/NO GO/DUDA,
+  // via lic_ficha_extraccion (schema-v59). Mismo patron de lazy-load que cargarHistorial.
+  const ficha = el('div', { class: 'lic-ficha-extraccion' });
+  let fichaCargada = false;
+  const cargarFicha = () => {
+    if (fichaCargada || !l.id) return;
+    fichaCargada = true;
+    ficha.append(el('p', { class: 'mudo', text: 'cargando…' }));
+    import('../api.js').then(m => m.licitacionFicha(l.id)).then(f => {
+      ficha.innerHTML = '';
+      const extraccion = Array.isArray(f?.extraccion) ? f.extraccion : [];
+      const evaluaciones = Array.isArray(f?.evaluaciones) ? f.evaluaciones : [];
+      if (!extraccion.length && !evaluaciones.length) { ficha.append(el('p', { class: 'mudo', text: 'sin extracción ni evaluación' })); return; }
+      if (evaluaciones.length) {
+        ficha.append(el('ul', { class: 'lista-corta' }, evaluaciones.map(v => el('li', {
+          text: v.resultado + (v.critico ? ' (crítico)' : '') + ' · ' + v.nombre + (v.motivo_criterio ? ': ' + v.motivo_criterio : ''),
+        }))));
+      }
+      if (extraccion.length) {
+        ficha.append(el('ul', { class: 'lista-corta' }, extraccion.map(e => el('li', {
+          text: e.campo + ': ' + (typeof e.valor === 'string' ? e.valor : JSON.stringify(e.valor)) + (e.cita ? ' · «' + corto(e.cita, 120) + '»' : ''),
+        }))));
+      }
+    }).catch(() => { ficha.innerHTML = ''; ficha.append(el('p', { class: 'mudo', text: 'no se pudo cargar' })); });
+  };
   const alClic = e => { if (e.target?.closest?.('a, button')) return; alternar(e.currentTarget || art); };
   const art = el('article', {
     class: 'card-lic', tabindex: '0', 'aria-expanded': 'false', 'data-expediente': l.expediente || '',
@@ -249,6 +277,7 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
       l.justificante_drive ? el('p', { class: 'sub' }, [el('a', { class: 'btn-enlace', href: urlSegura(l.justificante_drive), target: '_blank', rel: 'noopener', text: 'Justificante' })]) : null,
       checklistA5(l),
       el('details', { class: 'lic-hist', ontoggle: e => { if (e.currentTarget?.open) cargarHistorial(); } }, [el('summary', { text: 'Historial' }), historial]),
+      el('details', { class: 'lic-hist', ontoggle: e => { if (e.currentTarget?.open) cargarFicha(); } }, [el('summary', { text: 'Extracción y evaluación' }), ficha]),
     ]),
     el('div', { class: 'lic-pie enlaces enlaces-doc' }, [
       ...enlaces.map(([t, u]) => el('a', { class: 'btn-enlace', href: u, target: '_blank', rel: 'noopener', text: t })),
@@ -279,8 +308,28 @@ export function construirRuta(v = {}) {
   for (const k of ['tipologia', 'solvencia', 'tipo', 'motivo', 'presencial', 'texto', 'etiqueta']) if (v[k] && v[k] !== 'todas') q.set(k, v[k]);
   if (v.menor === '1') q.set('menor', '1');
   if (v.abiertas === '0') q.set('abiertas', '0');
+  if (v.espera === '1') q.set('espera', '1');
   const s = q.toString();
   return '#operacion/licitaciones' + (s ? '?' + s : '');
+}
+
+// O13b (D69, tanda E bis): panel de D1 (criba-2 con todos los criterios GO auto-aprueba, ventana de veto
+// de 12h). Solo owner: es una decision de Diego, no de los agentes. lic_aprobadas_auto (schema-v60) ya
+// filtra a las que siguen en Aprobada; el boton 'Vetar' reutiliza ejecutarTransicion (mismo modal de
+// motivo que el resto de la app) hacia 'Descartada' y recarga la vista al confirmar.
+function panelAprobadasAuto(rol) {
+  if (rol !== 'owner') return null;
+  const cuerpo = el('div', { class: 'lic-historial' }, [el('p', { class: 'mudo', text: 'cargando…' })]);
+  import('../api.js').then(m => m.aprobadasAuto(3)).then(filas => {
+    cuerpo.innerHTML = '';
+    const enPlazo = (Array.isArray(filas) ? filas : []).filter(f => f.dentro_de_plazo);
+    if (!enPlazo.length) { cuerpo.append(el('p', { class: 'mudo', text: 'ninguna dentro del plazo de veto' })); return; }
+    cuerpo.append(el('ul', { class: 'lista-corta' }, enPlazo.map(f => el('li', {}, [
+      el('span', { text: (f.expediente || '#' + f.licitacion_id) + ' · ' + (f.organo || '') + ' · ' + (f.importe ? eurCorto(f.importe) : 'sin importe') + ' · aprobada ' + fecha(f.aprobada_en) + ' ' }),
+      el('button', { class: 'btn peligro chip', text: 'Vetar', onclick: () => ejecutarTransicion({ id: f.licitacion_id, expediente: f.expediente }, 'Descartada', recargarSinCache) }),
+    ]))));
+  }).catch(() => { cuerpo.innerHTML = ''; cuerpo.append(el('p', { class: 'mudo', text: 'no se pudo cargar' })); });
+  return el('details', { class: 'lic-hist panel-aprobadas-auto', open: true }, [el('summary', { text: 'Auto-aprobadas por criba 2 · veto 12h (D1)' }), cuerpo]);
 }
 
 export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
@@ -292,9 +341,12 @@ export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
   for (const k of ['tipologia', 'solvencia', 'tipo', 'presencial', 'texto', 'motivo', 'etiqueta']) if (filtrosRuta[k]) valores[k] = filtrosRuta[k];
   if (filtrosRuta.menor === '1') valores.menor = '1';
   if (filtrosRuta.abiertas === '0') valores.abiertas = '0';
+  if (filtrosRuta.espera === '1') valores.espera = '1';
 
   raiz.append(cabeceraFuentes(S));
   raiz.append(el('div', { class: 'fila enlace-kpis' }, [el('a', { class: 'btn-enlace', href: '#kpis?grupo=licitaciones', text: 'KPIs ›' })]));
+  const panelAuto = panelAprobadasAuto(rol);
+  if (panelAuto) raiz.append(panelAuto);
 
   const chips = el('div', { class: 'chips chips-embudo' });
   for (const e of ESTADOS_H1) {
@@ -312,6 +364,7 @@ export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
     { clave: 'orden', titulo: 'Orden', defecto: 'cierre', opciones: [['cierre', 'Cierre'], ['importe', 'Importe']] },
     { clave: 'menor', titulo: 'Importe', opciones: [['1', 'Solo Menor (< 20.000 € sin IVA)']] },
     { clave: 'abiertas', titulo: 'Cierre', opciones: [['0', 'Incluir ya cerradas']] },
+    { clave: 'espera', titulo: 'Espera', opciones: [['1', 'Espera a Diego']] },
     { clave: 'etiqueta', titulo: 'Etiqueta', opciones: [] },
     { clave: 'tipologia', titulo: 'Tipología', opciones: TIPOLOGIAS.map(t => [t, t]) },
     { clave: 'solvencia', titulo: 'Solvencia', opciones: [['sin solvencia', 'Sin solvencia'], ['exige', 'Exige solvencia']] },

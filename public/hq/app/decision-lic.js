@@ -52,7 +52,7 @@ function pedirJustificante(expediente) {
   return pedirTexto('Justificante de presentacion ' + expediente, 'Enlace del justificante (Drive, correo...)', true);
 }
 
-async function ejecutarTransicion(l, destino, recargar) {
+export async function ejecutarTransicion(l, destino, recargar) {
   let motivo = null, nota = '', justificante = null;
   if (destino === 'Descartada') {
     const r = await pedirMotivoDescarte('Descartar ' + l.expediente, await catalogo());
