@@ -161,7 +161,7 @@ export function bandeja(S, arg, ahora = new Date()) {
   const otras = [...g.resto, ...g.pospuestas];
   // Fix ronda 3 (plan 3b, tarea 2): porDecidir() deja solo las decidibles; enCriba() cuenta lo que aún
   // analiza Guillem (Revisar, No viable, Sin pliego) para la línea informativa.
-  const lic = porDecidir(d.licitaciones), criba = enCriba(d.licitaciones).length;
+  const lic = porDecidir(d.licitaciones, ahora), criba = enCriba(d.licitaciones, ahora).length;
   const lineaCriba = criba && tieneFila(d.claves_datos, 'home.licitaciones.en_criba_guillem') ? el('p', { class: 'mudo' }, [el('a', { href: '#operacion/licitaciones', text: criba + ' en criba de Guillem (Revisar, No viable, Sin pliego): se deciden cuando estén analizadas' })]) : null;
   const urgentes = g.hoy.length + g.semana.length, total = urgentes + otras.length;
   return el('section', { class: 'seccion bandeja', id: 'bandeja' }, [

@@ -32,12 +32,13 @@ test('estadoDe: cadena vacia o solo espacios cae a Nueva; un estado real se resp
   assert.equal(estadoDe({ estado: 'Presentada' }), 'Presentada');
 });
 
-test('C1: una fila con estado vacio, elegible Probable y decision null es pendiente y cuenta en por_decidir', () => {
+test('C1: una fila con estado vacio, elegible Probable y decision null es pendiente y cuenta en nueva', () => {
   const fila = { expediente: 'EVACIO', elegible: 'Probable', estado: '', decision: null, cierre: '2026-10-01', importe: '1000' };
   assert.ok(pendiente(fila));
-  assert.ok(porDecidir([fila]).some(l => l.expediente === 'EVACIO'), 'estado vacio debe tratarse como Nueva (abierta) y entrar en por_decidir');
+  assert.ok(porDecidir([fila]).some(l => l.expediente === 'EVACIO'), 'estado vacio debe tratarse como Nueva (abierta) y entrar en la cola pura porDecidir');
   const e = embudo([fila]);
-  assert.equal(e.find(f => f.clave === 'por_decidir').n, 1);
+  // D70 (#2086): el embudo v3 cuenta por estado exacto, no por elegible/decision como porDecidir().
+  assert.equal(e.find(f => f.clave === 'nueva').n, 1, 'estado vacio normaliza a Nueva');
 });
 
 test('pendiente: decision null, vacia o Pendiente; OK y No no son pendientes', () => {
@@ -55,7 +56,7 @@ test('porDecidir: Probable/Nueva y Dudosa/Por decidir pendientes entran, ordenad
 });
 
 test('enCriba: Revisar/Nueva y No viable/Nueva pendientes entran, no decidibles, mismo orden', () => {
-  const ec = enCriba(lics);
+  const ec = enCriba(lics, AHORA);
   assert.deepEqual(ec.map(l => l.expediente), ['E4', 'E3']);
 });
 
@@ -114,13 +115,13 @@ test('solvenciaTexto: recorte a 160 caracteres mas el caracter de elipsis U+2026
 });
 
 test('embudo sin kpis: no hay fila detectadas ni analizadas', () => {
-  const e = embudo(lics);
-  // I1 (revision final): fila pausadas anadida entre presentadas y adjudicadas.
-  assert.deepEqual(e.map(f => f.clave), ['por_decidir', 'en_criba', 'aprobadas', 'presentadas', 'pausadas', 'adjudicadas', 'contratadas', 'descartadas', 'cerradas']);
+  const e = embudo(lics, {}, {}, AHORA);
+  // D70 (#2086, spec §5): 13 fases v3, mismo orden que ESTADOS_H1, sin Pausada ni Contratada.
+  assert.deepEqual(e.map(f => f.clave), ['nueva', 'criba_pliego', 'por_decidir', 'aprobadas', 'en_redaccion', 'por_presentar', 'presentadas', 'subsanacion', 'propuesta_adjudicacion', 'adjudicadas', 'no_adjudicadas', 'descartadas', 'cerradas']);
 });
 
 test('embudo con kpis.lic.detectadas.n: primera fila detectadas con n 1500 y eur null', () => {
-  const e = embudo(lics, { 'lic.detectadas.n': { valor: 1500 } });
+  const e = embudo(lics, { 'lic.detectadas.n': { valor: 1500 } }, {}, AHORA);
   assert.equal(e[0].clave, 'detectadas');
   assert.equal(e[0].n, 1500);
   assert.equal(e[0].eur, null);
@@ -128,132 +129,123 @@ test('embudo con kpis.lic.detectadas.n: primera fila detectadas con n 1500 y eur
 });
 
 test('embudo con detectadas y analizadas: ambas delante, en ese orden', () => {
-  const e = embudo(lics, { 'lic.detectadas.n': { valor: 1500 }, 'lic.analizadas.n': { valor: 300 } });
+  const e = embudo(lics, { 'lic.detectadas.n': { valor: 1500 }, 'lic.analizadas.n': { valor: 300 } }, {}, AHORA);
   assert.deepEqual(e.slice(0, 2).map(f => f.clave), ['detectadas', 'analizadas']);
   assert.equal(e[1].n, 300);
 });
 
-test('embudo: cuenta por_decidir y en_criba igual que las funciones puras', () => {
-  const e = embudo(lics);
-  const pd = e.find(f => f.clave === 'por_decidir'), ec = e.find(f => f.clave === 'en_criba');
-  assert.equal(pd.n, 2); assert.equal(pd.eur, 0);
-  assert.equal(ec.n, 2); assert.equal(ec.eur, 0);
-});
-
-test('embudo: aprobadas cuenta estado Aprobada y decision OK fuera de Presentada/Adjudicada/Contratada, una vez cada fila', () => {
+// D70: cada fase v3 cuenta por estado exacto, salvo descartadas (predicado especial mas abajo). Las
+// funciones puras porDecidir/enCriba siguen existiendo para las colas de triaje, pero ya no alimentan
+// el embudo: por eso E6 (Nueva + decision OK) ya no entra en aprobadas, solo cuenta un estado real.
+test('embudo: nueva, criba_pliego y por_decidir cuentan por estado exacto', () => {
   const e = embudo(lics, {}, {}, AHORA);
-  const ap = e.find(f => f.clave === 'aprobadas');
-  assert.equal(ap.n, 1); // solo E6
-  assert.equal(ap.eur, 12000);
-  const ambas = [...lics, { expediente: 'E9', estado: 'Aprobada', decision: 'OK', importe: '100' }];
-  assert.equal(embudo(ambas, {}, {}, AHORA).find(f => f.clave === 'aprobadas').n, 2);
+  assert.equal(e.find(f => f.clave === 'nueva').n, 4); // E1, E3, E4, E6
+  assert.equal(e.find(f => f.clave === 'nueva').eur, 12000); // solo E6 con importe
+  assert.equal(e.find(f => f.clave === 'criba_pliego').n, 0);
+  assert.equal(e.find(f => f.clave === 'por_decidir').n, 1); // E2
+  assert.equal(e.find(f => f.clave === 'por_decidir').eur, 0);
 });
 
-// H1 (tanda 4): 'Contratada' ya no existe en BD (traducida a Adjudicada); E8 usa el estado vivo.
-test('embudo: presentadas y adjudicadas por estado exacto; contratadas (estado muerto) siempre en cero desde el array', () => {
-  const e = embudo(lics);
+test('embudo: aprobadas cuenta solo estado exacto Aprobada; decision OK con otro estado no cuenta', () => {
+  const e = embudo(lics, {}, {}, AHORA);
+  assert.equal(e.find(f => f.clave === 'aprobadas').n, 0); // E6 es Nueva+OK, no Aprobada: no cuenta en v3
+  const conAprobada = [...lics, { expediente: 'E9', estado: 'Aprobada', decision: 'OK', importe: '100' }];
+  assert.equal(embudo(conAprobada, {}, {}, AHORA).find(f => f.clave === 'aprobadas').n, 1);
+});
+
+test('embudo: presentadas y adjudicadas por estado exacto', () => {
+  const e = embudo(lics, {}, {}, AHORA);
   assert.equal(e.find(f => f.clave === 'presentadas').n, 1);
   assert.equal(e.find(f => f.clave === 'presentadas').eur, 30000);
   assert.equal(e.find(f => f.clave === 'adjudicadas').n, 1);
   assert.equal(e.find(f => f.clave === 'adjudicadas').eur, 45000.5);
-  assert.equal(e.find(f => f.clave === 'contratadas').n, 0);
-  assert.equal(e.find(f => f.clave === 'contratadas').eur, 0);
 });
 
 test('embudo: No adjudicada no cuenta como adjudicada', () => {
   const conNoAdjudicada = [...lics, { expediente: 'E10', estado: 'No adjudicada', decision: 'OK', importe: '9999' }];
-  assert.equal(embudo(conNoAdjudicada).find(f => f.clave === 'adjudicadas').n, 1); // solo E8, no suma E10
+  const e = embudo(conNoAdjudicada, {}, {}, AHORA);
+  assert.equal(e.find(f => f.clave === 'adjudicadas').n, 1); // solo E8, no suma E10
+  assert.equal(e.find(f => f.clave === 'no_adjudicadas').n, 1);
 });
 
 test('embudo: descartadas por estado que empieza por Descartada o decision No, una vez por fila', () => {
-  const e = embudo(lics);
+  const e = embudo(lics, {}, {}, AHORA);
   const de = e.find(f => f.clave === 'descartadas');
   assert.equal(de.n, 1); assert.equal(de.eur, 5000);
   const conNo = [...lics, { expediente: 'E11', estado: 'Nueva', decision: 'No', importe: '10' }, { expediente: 'E12', estado: 'Descartada por chief', decision: 'No', importe: '20' }];
-  assert.equal(embudo(conNo).find(f => f.clave === 'descartadas').n, 3);
+  assert.equal(embudo(conNo, {}, {}, AHORA).find(f => f.clave === 'descartadas').n, 3);
 });
 
 test('embudo: cerradas solo con estado Cerrada sin presentar', () => {
-  const e = embudo(lics);
+  const e = embudo(lics, {}, {}, AHORA);
   assert.equal(e.find(f => f.clave === 'cerradas').n, 0);
   const conCerrada = [...lics, { expediente: 'E13', estado: 'Cerrada sin presentar', importe: '0' }];
-  assert.equal(embudo(conCerrada).find(f => f.clave === 'cerradas').n, 1);
+  assert.equal(embudo(conCerrada, {}, {}, AHORA).find(f => f.clave === 'cerradas').n, 1);
 });
 
-// Ruling del controlador (17-sep): el payload real ya no trae en 'licitaciones' las filas cerradas
-// (Descartada, Cerrada sin presentar, Adjudicada, Contratada): esas se sirven agregadas en
-// 'lic_resumen' ({ total, descartadas, cerradas, adjudicadas, no_adjudicadas, contratadas }, cada una
-// { n, eur }). embudo(lics, kpis, resumen) usa resumen[clave] cuando existe para esas cuatro filas en
-// vez de contar el array, y resumen.total para la fila detectadas cuando no hay kpis.
+// Ruling del controlador (17-sep, vigente en v3): el payload real no trae en 'licitaciones' las filas
+// cerradas; esas se sirven agregadas en 'lic_resumen' ({ total, <clave>: { n, eur } } por cada fase).
+// embudo(lics, kpis, resumen) usa resumen[clave] cuando existe en vez de contar el array, para
+// cualquier clave del porFase, y resumen.total para detectadas cuando no hay kpis.
 
-test('embudo con resumen: adjudicadas/contratadas/descartadas/cerradas usan resumen en vez de contar el array', () => {
+test('embudo con resumen: usa resumen[clave] en vez de contar el array para cualquier fase', () => {
   const resumen = {
     total: { n: 1500, eur: 9000000 },
     descartadas: { n: 900, eur: 4000000 },
     cerradas: { n: 200, eur: 1000000 },
     adjudicadas: { n: 50, eur: 500000 },
     no_adjudicadas: { n: 30, eur: 300000 },
-    contratadas: { n: 20, eur: 200000 },
   };
   const e = embudo(lics, {}, resumen, AHORA);
-  assert.deepEqual(e.find(f => f.clave === 'descartadas'), { clave: 'descartadas', nombre: 'Descartadas', n: 900, eur: 4000000 });
-  assert.deepEqual(e.find(f => f.clave === 'cerradas'), { clave: 'cerradas', nombre: 'Cerradas sin presentar', n: 200, eur: 1000000 });
-  assert.deepEqual(e.find(f => f.clave === 'adjudicadas'), { clave: 'adjudicadas', nombre: 'Adjudicadas', n: 50, eur: 500000 });
-  assert.deepEqual(e.find(f => f.clave === 'contratadas'), { clave: 'contratadas', nombre: 'Contratadas', n: 20, eur: 200000 });
-  // aprobadas y presentadas no tienen clave en lic_resumen: se siguen contando del array, sin cambios.
-  assert.equal(e.find(f => f.clave === 'aprobadas').n, 1);
+  assert.deepEqual(e.find(f => f.clave === 'descartadas'), { clave: 'descartadas', nombre: 'Descartada', n: 900, eur: 4000000 });
+  assert.deepEqual(e.find(f => f.clave === 'cerradas'), { clave: 'cerradas', nombre: 'Cerrada sin presentar', n: 200, eur: 1000000 });
+  assert.deepEqual(e.find(f => f.clave === 'adjudicadas'), { clave: 'adjudicadas', nombre: 'Adjudicada', n: 50, eur: 500000 });
+  // aprobadas y presentadas no tienen clave en el resumen de este test: se siguen contando del array.
+  assert.equal(e.find(f => f.clave === 'aprobadas').n, 0);
   assert.equal(e.find(f => f.clave === 'presentadas').n, 1);
 });
 
 test('embudo con resumen: detectadas usa resumen.total cuando no hay kpis.lic.detectadas.n', () => {
-  const e = embudo(lics, {}, { total: { n: 1500, eur: 9000000 } });
+  const e = embudo(lics, {}, { total: { n: 1500, eur: 9000000 } }, AHORA);
   assert.equal(e[0].clave, 'detectadas');
   assert.equal(e[0].n, 1500);
   assert.equal(e[0].eur, null);
 });
 
 test('embudo: kpis.lic.detectadas.n tiene prioridad sobre resumen.total', () => {
-  const e = embudo(lics, { 'lic.detectadas.n': { valor: 1600 } }, { total: { n: 1500, eur: 9000000 } });
+  const e = embudo(lics, { 'lic.detectadas.n': { valor: 1600 } }, { total: { n: 1500, eur: 9000000 } }, AHORA);
   assert.equal(e[0].clave, 'detectadas');
   assert.equal(e[0].n, 1600);
 });
 
 test('embudo: sin resumen (por defecto {}) sigue contando el array como antes, sin romper', () => {
-  const e = embudo(lics);
+  const e = embudo(lics, {}, {}, AHORA);
   assert.equal(e.find(f => f.clave === 'adjudicadas').n, 1);
   assert.equal(e.find(f => f.clave === 'adjudicadas').eur, 45000.5);
-  assert.equal(e.find(f => f.clave === 'contratadas').n, 0);
   assert.equal(e.some(f => f.clave === 'detectadas'), false);
 });
 
 test('embudo con resumen: eur y n se leen con Number y por defecto 0 si faltan', () => {
-  const e = embudo(lics, {}, { adjudicadas: { n: 3 } });
+  const e = embudo(lics, {}, { adjudicadas: { n: 3 } }, AHORA);
   const adj = e.find(f => f.clave === 'adjudicadas');
   assert.equal(adj.n, 3);
   assert.equal(adj.eur, 0);
 });
 
-// I1 (revision final): fila pausadas, misma logica que aprobadas/presentadas (array o resumen).
-test('embudo: pausadas cuenta por estado Pausada, del array cuando no hay resumen.pausadas', () => {
-  const conPausada = [...lics, { expediente: 'E14', estado: 'Pausada', decision: 'OK', importe: '7000' }];
-  const e = embudo(conPausada);
-  const pa = e.find(f => f.clave === 'pausadas');
-  assert.equal(pa.n, 1);
-  assert.equal(pa.eur, 7000);
+// #1238: las vencidas sin resolver quedan fuera de todos los conteos, tambien lo que llega agregado
+// de resumen (que cuenta la BD entera sin filtrar vencidas): se resta por fase segun el array recibido.
+test('embudo con resumen: resta las vencidas sin resolver del conteo agregado (#1238)', () => {
+  const vencida1 = { expediente: 'V1', estado: 'Aprobada', decision: null, cierre: '2026-08-01' };
+  const e = embudo([vencida1], {}, { aprobadas: { n: 10, eur: 90000 } }, AHORA);
+  const ap = e.find(f => f.clave === 'aprobadas');
+  assert.equal(ap.n, 9);
+  assert.equal(ap.eur, 90000);
 });
 
-test('embudo: pausadas usa resumen.pausadas cuando existe (C2)', () => {
-  const e = embudo(lics, {}, { pausadas: { n: 4, eur: 25000 } });
-  assert.deepEqual(e.find(f => f.clave === 'pausadas'), { clave: 'pausadas', nombre: 'Pausadas', n: 4, eur: 25000 });
-});
-
-// C2 (revision final): aprobadas y presentadas tambien pueden venir de lic_resumen (el corte de 7
-// dias por cierre ya no aplica a estos dos estados en el SQL, pero lic_resumen sigue siendo la fuente
-// completa sin el limite de pestana/30 dias de omc_hq).
-test('embudo: aprobadas y presentadas usan resumen cuando existe (C2)', () => {
-  const e = embudo(lics, {}, { aprobadas: { n: 10, eur: 90000 }, presentadas: { n: 5, eur: 45000 } });
-  assert.deepEqual(e.find(f => f.clave === 'aprobadas'), { clave: 'aprobadas', nombre: 'Aprobadas', n: 10, eur: 90000 });
-  assert.deepEqual(e.find(f => f.clave === 'presentadas'), { clave: 'presentadas', nombre: 'Presentadas', n: 5, eur: 45000 });
+test('embudo con resumen: aprobadas y presentadas usan resumen cuando existe, con nombre singular', () => {
+  const e = embudo(lics, {}, { aprobadas: { n: 10, eur: 90000 }, presentadas: { n: 5, eur: 45000 } }, AHORA);
+  assert.deepEqual(e.find(f => f.clave === 'aprobadas'), { clave: 'aprobadas', nombre: 'Aprobada', n: 10, eur: 90000 });
+  assert.deepEqual(e.find(f => f.clave === 'presentadas'), { clave: 'presentadas', nombre: 'Presentada', n: 5, eur: 45000 });
 });
 
 // tarjetas ricas (encargo #1057): tipologiaOrgano deriva la categoria del organo por texto libre;

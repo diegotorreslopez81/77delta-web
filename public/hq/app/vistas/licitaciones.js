@@ -7,7 +7,7 @@
 // El cuadro de los cinco paneles (embudo, pipeline...) se queda en Operación/KPIs vía panelesLicitaciones,
 // que sigue leyendo el payload de omc_hq_v2 sin tocar: esa vista es una foto agregada, no necesita fidelidad total.
 import { el, fecha, urlSegura, toast } from '../ui.js';
-import { embudo, porElegible, porDecidir, vencida, esperandoResolucion, sinPresentarUrgente, ordenCierre, estadoDe, estadoBase, estadoPartido, solvenciaTexto, pipelinePorMes, tipologiaOrgano, tipologia, TIPOLOGIAS, filtrar, enlacesLic, ESTADOS_H1 } from '../licitaciones.js';
+import { embudo, porElegible, porDecidir, vencida, esperandoResolucion, sinPresentarUrgente, ordenCierre, estadoDe, estadoBase, estadoPartido, solvenciaTexto, pipelinePorMes, tipologiaOrgano, tipologia, TIPOLOGIAS, filtrar, enlacesLic, ESTADOS_H1, ETAPAS_LIC, etapaDe } from '../licitaciones.js';
 import { botonesTransicion, botonClaveSobre, checklistA5, ejecutarTransicion } from '../decision-lic.js';
 import { recargar } from '../main.js';
 import { hojaFiltros, pillsActivos } from '../filtros.js';
@@ -77,12 +77,21 @@ export function plazoConsumido(l, ahora = new Date()) {
 // 'pausadas' cae en 'Por decidir', el estado vivo mas parecido tras la migracion H1.
 const ALIAS = { activas: 'Aprobada', criba: 'Nueva', pausadas: 'Por decidir', descartadas: 'Descartada',
   nuevas: 'Nueva', decidir: 'Por decidir', aprobadas: 'Aprobada', redaccion: 'En redacción', presentadas: 'Presentada' };
+// D70 (#2086 spec §2/§3): 'todas-presentadas' es el valor agregado del chip "Todas las presentadas",
+// pasa intacto (no es una fase de ESTADOS_H1, así que se distingue antes de mirar el catálogo).
 export function estadoChip(valorRuta) {
-  const v = String(valorRuta || ''), k = ALIAS[v] || v;
+  const v = String(valorRuta || '');
+  if (v === 'todas-presentadas') return v;
+  const k = ALIAS[v] || v;
   return ESTADOS_H1.includes(k) ? k : '';
 }
-export function ordenar(rows, orden = 'cierre') {
-  return [...rows].sort(orden === 'importe' ? (a, b) => (Number(a.importe) || Infinity) - (Number(b.importe) || Infinity) || ordenCierre(a, b) : ordenCierre);
+// Etapa del filtro (spec §1/§3) para un valor ya resuelto por estadoChip(): el agregado cuenta
+// siempre como la etapa 'presentadas'.
+export function etapaValor(est) { return est === 'todas-presentadas' ? 'presentadas' : etapaDe(est); }
+export function ordenar(rows, orden = 'cierre', descendente = false) {
+  const cmp = orden === 'importe' ? (a, b) => (Number(a.importe) || Infinity) - (Number(b.importe) || Infinity) || ordenCierre(a, b) : ordenCierre;
+  const listado = [...rows].sort(cmp);
+  return descendente ? listado.reverse() : listado;
 }
 // El buscador de la hoja es el filtro 'texto' de filtrar(); buscar() se mantiene como atajo.
 export function buscar(rows, texto) { return filtrar(rows, { texto }); }
@@ -90,11 +99,16 @@ export function buscar(rows, texto) { return filtrar(rows, { texto }); }
 // etiqueta y cierre (por defecto solo abiertas, cierre >= hoy; 'abiertas=0' las incluye todas). La
 // 'Nueva' pide hasta 1000 filas (cola de criba); el resto, 500.
 export function filtroServidor(v, ahora = new Date()) {
-  const est = estadoChip(v.estado) || 'Por decidir';
-  const f = { estados: [est], limite: est === 'Nueva' ? 1000 : 500 };
+  const agregado = estadoChip(v.estado) === 'todas-presentadas';
+  const est = agregado ? null : (estadoChip(v.estado) || 'Por decidir');
+  const estados = agregado ? ETAPAS_LIC.find(e => e.clave === 'presentadas').fases : [est];
+  const etapa = agregado ? 'presentadas' : etapaDe(est);
+  const f = { estados, limite: estados.includes('Nueva') ? 1000 : 500 };
   if (v.menor === '1') f.importe_max = 20000;
   if (v.etiqueta) f.etiquetas = [v.etiqueta];
-  if (v.abiertas !== '0') f.cierre_desde = ahora.toISOString().slice(0, 10);
+  // D70 (#2086 spec §3, "caso Calp"): cierre_desde=hoy solo decide algo en 'Antes de decidir'/'En
+  // marcha'; en 'Presentadas'/'Cerradas sin ir' la fecha límite ya pasó casi siempre y no debe esconder la fila.
+  if ((etapa === 'antes' || etapa === 'marcha') && v.abiertas !== '0') f.cierre_desde = ahora.toISOString().slice(0, 10);
   // O13d (D69, tanda E bis): espera_diego = true cuando la licitación tiene una tarea abierta con
   // lic_tareas.espera_de = 'diego' (schema-v57/v58).
   if (v.espera === '1') f.espera_diego = true;
@@ -105,6 +119,15 @@ export function filtroServidor(v, ahora = new Date()) {
 export function filtroCliente(v) {
   return { tipologia: v.tipologia || '', solvencia: v.solvencia || '', tipo: v.tipo || '', presencial: v.presencial || '', texto: v.texto || '' };
 }
+
+// D70 (#2086 spec §2): clave de lic_resumen para cada fase de ESTADOS_H1 (mismo patrón que embudo()
+// en licitaciones.js). El contador del chip sale de aquí, no de la página ya traída, para que cuadre
+// con omc_licitaciones_tabla aunque esa fase no esté en los ~500 resultados servidos.
+const CLAVE_RESUMEN = { 'Nueva': 'nueva', 'Criba de pliego': 'criba_pliego', 'Por decidir': 'por_decidir',
+  'Aprobada': 'aprobadas', 'En redacción': 'en_redaccion', 'Por presentar': 'por_presentar', 'Presentada': 'presentadas',
+  'Subsanación': 'subsanacion', 'Propuesta de adjudicación': 'propuesta_adjudicacion', 'Adjudicada': 'adjudicadas',
+  'No adjudicada': 'no_adjudicadas', 'Descartada': 'descartadas', 'Cerrada sin presentar': 'cerradas' };
+export function nFase(resumen, estado) { return Number(resumen?.[CLAVE_RESUMEN[estado]]?.n) || 0; }
 
 // Paneles del cuadro (se mueven a Operación/KPIs vía panelesLicitaciones; se dejan intactos aquí como
 // funciones internas para que ese export los reutilice sin duplicar código). Siguen leyendo el payload
@@ -319,17 +342,19 @@ export function construirRuta(v = {}) {
 // motivo que el resto de la app) hacia 'Descartada' y recarga la vista al confirmar.
 function panelAprobadasAuto(rol) {
   if (rol !== 'owner') return null;
-  const cuerpo = el('div', { class: 'lic-historial' }, [el('p', { class: 'mudo', text: 'cargando…' })]);
+  // D70 (#2086 spec §5): el panel entero (no solo su contenido) sale únicamente si hay filas dentro
+  // de plazo; se resuelve async así que se cuelga vacío y solo se rellena si hay algo que veto.
+  const caja = el('div', {});
   import('../api.js').then(m => m.aprobadasAuto(3)).then(filas => {
-    cuerpo.innerHTML = '';
     const enPlazo = (Array.isArray(filas) ? filas : []).filter(f => f.dentro_de_plazo);
-    if (!enPlazo.length) { cuerpo.append(el('p', { class: 'mudo', text: 'ninguna dentro del plazo de veto' })); return; }
-    cuerpo.append(el('ul', { class: 'lista-corta' }, enPlazo.map(f => el('li', {}, [
+    if (!enPlazo.length) return;
+    const cuerpo = el('div', { class: 'lic-historial' }, [el('ul', { class: 'lista-corta' }, enPlazo.map(f => el('li', {}, [
       el('span', { text: (f.expediente || '#' + f.licitacion_id) + ' · ' + (f.organo || '') + ' · ' + (f.importe ? eurCorto(f.importe) : 'sin importe') + ' · aprobada ' + fecha(f.aprobada_en) + ' ' }),
       el('button', { class: 'btn peligro chip', text: 'Vetar', onclick: () => ejecutarTransicion({ id: f.licitacion_id, expediente: f.expediente }, 'Descartada', recargarSinCache) }),
-    ]))));
-  }).catch(() => { cuerpo.innerHTML = ''; cuerpo.append(el('p', { class: 'mudo', text: 'no se pudo cargar' })); });
-  return el('details', { class: 'lic-hist panel-aprobadas-auto', open: true }, [el('summary', { text: 'Auto-aprobadas por criba 2 · veto 12h (D1)' }), cuerpo]);
+    ])))]);
+    caja.append(el('details', { class: 'lic-hist panel-aprobadas-auto', open: true }, [el('summary', { text: 'Auto-aprobadas por criba 2 · veto 12h (D1)' }), cuerpo]));
+  }).catch(() => {});
+  return caja;
 }
 
 export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
@@ -348,11 +373,24 @@ export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
   const panelAuto = panelAprobadasAuto(rol);
   if (panelAuto) raiz.append(panelAuto);
 
-  const chips = el('div', { class: 'chips chips-embudo' });
-  for (const e of ESTADOS_H1) {
-    const a = el('a', { class: 'chip' + (e === estado ? ' activo' : ''), href: construirRuta({ ...valores, estado: e }), text: e });
-    chips.append(a);
-    if (e === estado && a.scrollIntoView) setTimeout(() => a.scrollIntoView({ block: 'nearest', inline: 'center' }), 0);
+  // D70 (#2086 spec §2): chips agrupados por etapa, en filas con wrap (nunca scroll horizontal).
+  // Contador por fase desde d.lic_resumen vía nFase(); N=0 pinta chip gris, no pulsable, pero presente.
+  // Fila 'presentadas' añade el chip agregado "Todas las presentadas N" que filtra las 5 fases a la vez.
+  const resumen = d.lic_resumen || {};
+  const etapaActiva = etapaValor(estado);
+  const chips = el('div', { class: 'chips-etapas' });
+  for (const et of ETAPAS_LIC) {
+    const filaChips = el('div', { class: 'chips-fases' });
+    for (const e of et.fases) {
+      const n = nFase(resumen, e);
+      if (!n && e !== estado) { filaChips.append(el('span', { class: 'chip vacio', text: e + ' 0' })); continue; }
+      filaChips.append(el('a', { class: 'chip' + (e === estado ? ' activo' : ''), href: construirRuta({ ...valores, estado: e }), text: e + ' ' + n }));
+    }
+    if (et.clave === 'presentadas') {
+      const total = et.fases.reduce((s, e) => s + nFase(resumen, e), 0);
+      filaChips.append(el('a', { class: 'chip agregado' + (etapaActiva === 'presentadas' && estado === 'todas-presentadas' ? ' activo' : ''), href: construirRuta({ ...valores, estado: 'todas-presentadas' }), text: 'Todas las presentadas ' + total }));
+    }
+    chips.append(el('div', { class: 'fila-etapa' }, [el('span', { class: 'etapa-titulo', text: et.nombre }), filaChips]));
   }
   const zonaPills = el('div', { class: 'zona-pills' });
   const resumenTxt = el('p', { class: 'mudo' });
@@ -363,7 +401,9 @@ export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
     { clave: 'estado', titulo: 'Estado', fija: true, visible: () => false, opciones: ESTADOS_H1.map(e => [e, e]) },
     { clave: 'orden', titulo: 'Orden', defecto: 'cierre', opciones: [['cierre', 'Cierre'], ['importe', 'Importe']] },
     { clave: 'menor', titulo: 'Importe', opciones: [['1', 'Solo Menor (< 20.000 € sin IVA)']] },
-    { clave: 'abiertas', titulo: 'Cierre', opciones: [['0', 'Incluir ya cerradas']] },
+    // D70 (#2086 spec §3): "Incluir ya cerradas" solo pinta algo en 'Antes de decidir'/'En marcha';
+    // en 'Presentadas'/'Cerradas sin ir' el cierre nunca filtra, así que el conmutador no se muestra.
+    { clave: 'abiertas', titulo: 'Cierre', visible: v => { const et = etapaValor(v.estado); return et === 'antes' || et === 'marcha'; }, opciones: [['0', 'Incluir ya cerradas']] },
     { clave: 'espera', titulo: 'Espera', opciones: [['1', 'Espera a Diego']] },
     { clave: 'etiqueta', titulo: 'Etiqueta', opciones: [] },
     { clave: 'tipologia', titulo: 'Tipología', opciones: TIPOLOGIAS.map(t => [t, t]) },
@@ -387,7 +427,7 @@ export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
     lista.innerHTML = '';
     if (!rows.length) { lista.append(el('p', { class: 'mudo', text: 'nada con este filtro' })); return; }
     if (estado === 'Nueva') porElegible(rows).forEach((g, i) => lista.append(grupoCriba(g, i === 0)));
-    else ordenar(rows, valores.orden).forEach(l => lista.append(tarjetaLic(l, ahora, rol)));
+    else ordenar(rows, valores.orden, etapaActiva === 'presentadas' || etapaActiva === 'cerradas').forEach(l => lista.append(tarjetaLic(l, ahora, rol)));
   };
 
   const hoja = hojaFiltros({

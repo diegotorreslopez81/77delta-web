@@ -146,6 +146,16 @@ body.con-hoja{overflow:hidden}
 .chips-embudo{margin:0 0 10px;scroll-padding-inline:16px}
 .chips-embudo .chip{white-space:nowrap}
 
+/* D70 (#2086 spec §2): chips de Licitaciones agrupados por etapa, siempre en wrap, nunca scroll
+   horizontal (ni movil ni escritorio). Clases propias para no heredar la regla nowrap de .chips
+   bajo 899px (hq.css); ver comentario junto a .chips-embudo arriba. */
+.chips-etapas{display:flex;flex-direction:column;gap:6px;margin:0 0 10px}
+.fila-etapa{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.etapa-titulo{font-size:12px;color:var(--tinta-2);flex:0 0 auto;min-width:110px}
+.chips-fases{display:flex;flex-wrap:wrap;gap:6px}
+.chip.vacio{opacity:.5;cursor:default}
+.chip.agregado{font-weight:600}
+
 /* Tablero: una sola columna cuando la ruta trae ?estado=<columna>, y cabecera "Ahora mismo" */
 @media (min-width:900px){.kanban.una{grid-template-columns:minmax(200px,720px)}}
 .ahora-mismo{margin:0 0 10px}

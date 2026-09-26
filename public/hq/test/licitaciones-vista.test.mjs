@@ -111,21 +111,29 @@ test('filtroCliente: no incluye motivo (se filtra aparte por motivo_descarte cru
   assert.equal('motivo' in v, false);
 });
 
-test('render: 13 chips de ESTADOS_H1 sin recuento, el actual con clase activo, alias de ruta vieja resuelve', async () => {
-  const raiz = await pintar([], { estado: 'activas' });
-  const cs = chips(raiz);
+// D70 (#2086 spec §2): reemplaza el diseño Tanda 4 (chips planos sin recuento). Los 13 chips de fase
+// van agrupados por ETAPAS_LIC, con recuento "Nombre N" desde lic_resumen (nFase); si N=0 y la fase
+// no es la activa pinta <span class="chip vacio"> (no pulsable), por eso el fixture da n=1 a las 13
+// claves de CLAVE_RESUMEN para que todas salgan como <a class="chip"> y las capture chips().
+const RESUMEN_TODO_1 = Object.fromEntries(['nueva', 'criba_pliego', 'por_decidir', 'aprobadas', 'en_redaccion',
+  'por_presentar', 'presentadas', 'subsanacion', 'propuesta_adjudicacion', 'adjudicadas', 'no_adjudicadas',
+  'descartadas', 'cerradas'].map(k => [k, { n: 1 }]));
+
+test('render: 13 chips de fase de ESTADOS_H1 con recuento, agrupados por etapa, el actual con clase activo, alias de ruta vieja resuelve', async () => {
+  const raiz = await pintar([], { estado: 'activas' }, { S: { datos: { rol: 'owner', lic_resumen: RESUMEN_TODO_1 } } });
+  const cs = chips(raiz).filter(c => !clase(c, 'agregado'));
   assert.equal(cs.length, 13);
-  assert.deepEqual(cs.map(c => c.textContent), ['Nueva', 'Criba de pliego', 'Por decidir', 'Aprobada', 'En redacción', 'Por presentar', 'Presentada', 'Subsanación', 'Propuesta de adjudicación', 'Adjudicada', 'No adjudicada', 'Descartada', 'Cerrada sin presentar']);
+  assert.deepEqual(cs.map(c => c.textContent), ['Nueva 1', 'Criba de pliego 1', 'Por decidir 1', 'Aprobada 1', 'En redacción 1', 'Por presentar 1', 'Presentada 1', 'Subsanación 1', 'Propuesta de adjudicación 1', 'Adjudicada 1', 'No adjudicada 1', 'Descartada 1', 'Cerrada sin presentar 1']);
   const activo = cs.find(c => clase(c, 'activo'));
-  assert.equal(activo.textContent, 'Aprobada');
+  assert.equal(activo.textContent, 'Aprobada 1');
   assert.equal(activo.attrs.href, '#operacion/licitaciones?estado=Aprobada');
 });
 
 test('render: sin estado en la ruta, o uno invalido, cae en Por decidir', async () => {
   const raiz1 = await pintar([], {});
-  assert.ok(chips(raiz1).find(c => c.textContent === 'Por decidir' && clase(c, 'activo')));
+  assert.ok(chips(raiz1).find(c => c.textContent === 'Por decidir 0' && clase(c, 'activo')));
   const raiz2 = await pintar([], { estado: 'no-existe' });
-  assert.ok(chips(raiz2).find(c => c.textContent === 'Por decidir' && clase(c, 'activo')));
+  assert.ok(chips(raiz2).find(c => c.textContent === 'Por decidir 0' && clase(c, 'activo')));
 });
 
 test('render: pide a la RPC con el filtro de servidor exacto para el estado de la ruta', async () => {

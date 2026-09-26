@@ -70,6 +70,17 @@ export const ESTADOS_H1 = ['Nueva', 'Criba de pliego', 'Por decidir', 'Aprobada'
   'Subsanacion', 'Propuesta de adjudicacion', 'Adjudicada', 'No adjudicada', 'Descartada', 'Cerrada sin presentar']
   .map(e => e.replace('redaccion', 'redacción').replace('Subsanacion', 'Subsanación').replace('adjudicacion', 'adjudicación'));
 
+// D70 (#2086, v3): las 13 fases se agrupan en 4 etapas para el filtro y el embudo. Fuente: LICITA-SPEC.md v3 §1.
+export const ETAPAS_LIC = [
+  { clave: 'antes', nombre: 'Antes de decidir', fases: ['Nueva', 'Criba de pliego', 'Por decidir'] },
+  { clave: 'marcha', nombre: 'En marcha', fases: ['Aprobada', 'En redacción', 'Por presentar'] },
+  { clave: 'presentadas', nombre: 'Presentadas', fases: ['Presentada', 'Subsanación', 'Propuesta de adjudicación', 'Adjudicada', 'No adjudicada'] },
+  { clave: 'cerradas', nombre: 'Cerradas sin ir', fases: ['Descartada', 'Cerrada sin presentar'] },
+];
+export function etapaDe(estado) {
+  return ETAPAS_LIC.find(e => e.fases.includes(estado))?.clave || '';
+}
+
 // H1 5.3: grafo exacto de omc_lic_transicion_ok() (schema-v18-licita.sql). p_de === p_a (quedarse) siempre vale y
 // no se repite aqui; esto es solo el destino de cada boton de avance o retroceso, incluidos los 5 rollbacks.
 export const TRANSICIONES_5_3 = {
@@ -96,10 +107,13 @@ export function rolPermite(deEstado, aEstado, rol) {
   return true;
 }
 
-// Destinos que este boton puede ofrecer para esta licitacion y este rol: interseccion de la tabla 5.3 con la guardia.
+// Destinos que este boton puede ofrecer: 5.3 con el caso especial Descartada (nunca ofrece 'Nueva',
+// aunque la BD la traiga: spec #2086 §4) y la guardia de rol de usuario (rolPermite).
 export function transicionesValidas(l, rol) {
   const est = estadoBase(l);
-  return (TRANSICIONES_5_3[est] || []).filter(dest => rolPermite(est, dest, rol));
+  return (TRANSICIONES_5_3[est] || [])
+    .filter(dest => !(est === 'Descartada' && dest === 'Nueva'))
+    .filter(dest => rolPermite(est, dest, rol));
 }
 
 // D17 (#1355): ESTADOS_H1 y TRANSICIONES_5_3 nacen con el snapshot de schema-v18/v32 como valores por
@@ -174,43 +188,38 @@ function filaResumen(clave, nombre, rows, resumen) {
   return fila(clave, nombre, rows);
 }
 
-// Orden fijo del embudo (Task 1, plan 3b; I1 de la revision final anade pausadas). aprobadas/
-// presentadas/pausadas/adjudicadas/contratadas/descartadas/cerradas son exclusivas entre si por
-// estado, salvo aprobadas que ademas admite decision 'OK' cuando el estado no ha avanzado a
-// Presentada/Adjudicada/Contratada; cada fila cuenta una sola vez porque el filtro es un unico
-// predicado OR, no la union de dos arrays.
-// #1238: las vencidas sin resolver quedan fuera de todos los conteos. Lo que viene de lic_resumen (servidor, cuenta todo lo de BD)
-// se corrige restando las vencidas que el payload trae de ese estado; lo que se cuenta del array ya no las incluye.
+// D70 (#2086, spec §5): embudo con las 13 fases v3 (mismo orden que ESTADOS_H1), sin Pausada ni
+// Contratada (0 filas en produccion, fuera de v3). Cada fase es exclusiva por estado exacto, salvo
+// descartadas: mismo predicado especial que esDescartadaPredicado() de embudos.js (estado que
+// empieza por 'Descartada' via estadoBase, o decision en NO/NOK/DESCARTADA/DESCARTADO), contrato
+// compartido entre ambos ficheros. El conteo sale de lic_resumen (servidor, cuenta toda la tabla)
+// via filaResumen, con el array como fallback si el agente aun no manda esa clave.
+// #1238: las vencidas sin resolver quedan fuera de TODOS los conteos, tambien lo que llega
+// agregado de resumen (que cuenta la BD entera sin filtrar vencidas); se resta aqui por fase.
 export function embudo(lics, kpis = {}, resumen = {}, ahora = new Date()) {
   const todas = lics || [];
   const rows = todas.filter(l => !vencida(l, ahora));
-  const nVenc = est => todas.filter(l => vencida(l, ahora) && estadoDe(l) === est).length;
-  const resumenSinVencidas = est => {
-    const clave = { Aprobada: 'aprobadas', Pausada: 'pausadas' }[est], r = resumen?.[clave];
-    return r ? { ...resumen, [clave]: { ...r, n: Math.max(0, Number(r.n ?? 0) - nVenc(est)) } } : resumen;
-  };
+  const esDescartada = l => estadoBase(l).startsWith('Descartada') || ['NO', 'NOK', 'DESCARTADA', 'DESCARTADO'].includes(String(l.decision || '').toUpperCase());
   const filas = [];
   const detectadas = kpis?.['lic.detectadas.n'];
   if (detectadas) filas.push({ clave: 'detectadas', nombre: 'Detectadas', n: Number(detectadas.valor) || 0, eur: null });
   else if (resumen?.total) filas.push({ clave: 'detectadas', nombre: 'Detectadas', n: Number(resumen.total.n) || 0, eur: null });
   const analizadas = kpis?.['lic.analizadas.n'];
   if (analizadas) filas.push({ clave: 'analizadas', nombre: 'Analizadas', n: Number(analizadas.valor) || 0, eur: null });
-  filas.push(fila('por_decidir', 'Por decidir', porDecidir(rows)));
-  filas.push(fila('en_criba', 'En criba', enCriba(rows)));
-  // C2 (revision final): aprobadas y presentadas tambien pueden venir de lic_resumen cuando existe
-  // (el array de 'licitaciones' ya no se recorta a 7 dias para estos dos estados, pero lic_resumen
-  // sigue siendo la fuente completa, sin el limite de pestana/30 dias de omc_hq; ver Deuda aceptada).
-  filas.push(filaResumen('aprobadas', 'Aprobadas', rows.filter(l => estadoDe(l) === 'Aprobada' || (l.decision === 'OK' && !['Presentada', 'Adjudicada', 'Contratada'].includes(estadoDe(l)))), resumenSinVencidas('Aprobada')));
-  filas.push(filaResumen('presentadas', 'Presentadas', rows.filter(l => estadoDe(l) === 'Presentada'), resumen));
-  // I1 (revision final): fila pausadas, misma fuente (lic_resumen o array) que aprobadas/presentadas;
-  // la vista decide si la pinta (solo cuando n > 0).
-  filas.push(filaResumen('pausadas', 'Pausadas', rows.filter(l => estadoDe(l) === 'Pausada'), resumenSinVencidas('Pausada')));
-  filas.push(filaResumen('adjudicadas', 'Adjudicadas', rows.filter(l => estadoDe(l) === 'Adjudicada'), resumen));
-  filas.push(filaResumen('contratadas', 'Contratadas', rows.filter(l => estadoDe(l) === 'Contratada'), resumen));
-  // Minor 8 (revision final): mismo predicado de descartada que la SQL (estado empieza por
-  // 'Descartada' o decision en NO/NOK/DESCARTADA/DESCARTADO, sin distinguir mayusculas).
-  filas.push(filaResumen('descartadas', 'Descartadas', rows.filter(l => estadoDe(l).startsWith('Descartada') || ['NO', 'NOK', 'DESCARTADA', 'DESCARTADO'].includes(String(l.decision || '').toUpperCase())), resumen));
-  filas.push(filaResumen('cerradas', 'Cerradas sin presentar', rows.filter(l => estadoDe(l) === 'Cerrada sin presentar'), resumen));
+  const porFase = [
+    ['nueva', 'Nueva'], ['criba_pliego', 'Criba de pliego'], ['por_decidir', 'Por decidir'],
+    ['aprobadas', 'Aprobada'], ['en_redaccion', 'En redacción'], ['por_presentar', 'Por presentar'],
+    ['presentadas', 'Presentada'], ['subsanacion', 'Subsanación'], ['propuesta_adjudicacion', 'Propuesta de adjudicación'],
+    ['adjudicadas', 'Adjudicada'], ['no_adjudicadas', 'No adjudicada'],
+    ['descartadas', 'Descartada'], ['cerradas', 'Cerrada sin presentar'],
+  ];
+  for (const [clave, estado] of porFase) {
+    const filtro = clave === 'descartadas' ? esDescartada : l => estadoDe(l) === estado;
+    const nVenc = todas.filter(l => vencida(l, ahora) && filtro(l)).length;
+    const r = resumen?.[clave];
+    const resumenAjustado = r ? { ...resumen, [clave]: { ...r, n: Math.max(0, (Number(r.n) || 0) - nVenc) } } : resumen;
+    filas.push(filaResumen(clave, estado, rows.filter(filtro), resumenAjustado));
+  }
   return filas;
 }
 
