@@ -144,7 +144,7 @@ export function configurarLicita(cfg) {
     if (!t || t.activa === false || !t.de || !t.a || t.de === t.a || t.de === '(entrada)') continue;
     const destinos = (g[t.de] ||= []);
     if (!destinos.includes(t.a)) destinos.push(t.a);
-    if (t.rol) r[t.de + '>' + t.a] = t.rol;
+    if (t.rol && r[t.de + '>' + t.a] !== 'diego') r[t.de + '>' + t.a] = t.rol;
   }
   if (Object.keys(g).length) {
     for (const k of Object.keys(TRANSICIONES_5_3)) delete TRANSICIONES_5_3[k];

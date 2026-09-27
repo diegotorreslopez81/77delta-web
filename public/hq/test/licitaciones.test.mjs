@@ -657,6 +657,35 @@ test('configurarLicita: repuebla ROL_TRANSICION desde cfg.transiciones (rol), re
   }
 });
 
+// Nuria-HQ #2086: lic_transiciones tiene pares duplicados de/a con distinto rol (p. ej. Aprobada>Descartada
+// id 8 rol diego, id 39 rol criba). Si diego llega antes que otro rol para el mismo par, no debe perderse.
+test('configurarLicita: par de/a duplicado con rol diego y otro rol, gana diego sin importar el orden', () => {
+  const rolOriginal = JSON.parse(JSON.stringify(ROL_TRANSICION));
+  const transicionesOriginales = JSON.parse(JSON.stringify(TRANSICIONES_5_3));
+  try {
+    configurarLicita({
+      transiciones: [
+        { de: 'Aprobada', a: 'Descartada', activa: true, rol: 'diego' },
+        { de: 'Aprobada', a: 'Descartada', activa: true, rol: 'criba' },
+      ],
+    });
+    assert.equal(ROL_TRANSICION['Aprobada>Descartada'], 'diego', 'diego primero, criba despues: no se pierde diego');
+
+    configurarLicita({
+      transiciones: [
+        { de: 'Aprobada', a: 'Descartada', activa: true, rol: 'criba' },
+        { de: 'Aprobada', a: 'Descartada', activa: true, rol: 'diego' },
+      ],
+    });
+    assert.equal(ROL_TRANSICION['Aprobada>Descartada'], 'diego', 'criba primero, diego despues: diego gana igual');
+  } finally {
+    for (const k of Object.keys(ROL_TRANSICION)) delete ROL_TRANSICION[k];
+    Object.assign(ROL_TRANSICION, rolOriginal);
+    for (const k of Object.keys(TRANSICIONES_5_3)) delete TRANSICIONES_5_3[k];
+    Object.assign(TRANSICIONES_5_3, transicionesOriginales);
+  }
+});
+
 test('tipologia ignora motivo_auto: notas internas de la criba no generan etiquetas (caso 026_06, 24-sep)', () => {
   const l = { objeto: 'Suministro de material de papelería y fungibles informáticos', tipo: 'Obras',
     motivo_auto: 'Descartado: adquisición de licencia, reventa de producto de tercero, no desarrollo propio' };
