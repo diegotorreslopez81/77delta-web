@@ -72,7 +72,7 @@ async function posponer(p) {
   } })) });
 }
 
-function tarjeta(p, abierta, hilo) {
+function tarjeta(p, abierta, hilo, soloComentar) {
   // Fix ronda 2 (revision final, B2): p.enlace lo escribe cualquier agente al crear la tarjeta
   // (omc_solicitudes.enlace no valida esquema en la BD); un `javascript:...` ahi ejecutaria codigo en
   // el origen de HQ con el token owner a mano. urlSegura() lo descarta antes de pintarlo.
@@ -88,7 +88,10 @@ function tarjeta(p, abierta, hilo) {
     enlaceSeguro ? el('a', { href: enlaceSeguro, target: '_blank', rel: 'noopener', class: 'btn-enlace', text: 'abrir enlace' }) : null,
     el('div', { class: 'hilo' }, (hilo || []).map(mm => el('div', { class: 'avance' }, [el('span', { class: 'mudo', text: fecha(mm.ts, { hora: true }) + ' · ' + mm.autor }), el('p', { text: mm.texto })]))),
     campo,
-    el('div', { class: 'modal-acciones' }, [
+    el('div', { class: 'modal-acciones' }, soloComentar ? [
+      el('button', { class: 'btn', text: 'Copiar para el chat', onclick: () => copiar(p, campo) }),
+      el('button', { class: 'btn primario', text: 'Comentar', onclick: () => actuar(p, 'comentar', campo) }),
+    ] : [
       el('button', { class: 'btn', text: 'Copiar para el chat', onclick: () => copiar(p, campo) }),
       el('button', { class: 'btn', text: 'Comentar', onclick: () => actuar(p, 'comentar', campo) }),
       el('button', { class: 'btn', text: 'Posponer', onclick: () => posponer(p) }),
@@ -158,6 +161,13 @@ export function bandeja(S, arg, ahora = new Date()) {
   const cnt = (clave, k) => tieneFila(d.claves_datos, clave) ? ' (' + k + ')' : '';
   const sec = (t, xs) => xs.length ? el('section', { class: 'seccion' }, [el('h3', { text: t + cnt('home.tarjetas.depende_de_ti', xs.length) }), ...tarjetas(xs)]) : null;
   const plegada = (t, xs, abrir, extra = []) => xs.length || extra.length ? el('details', { class: 'grupo-criba', open: abrir }, [el('summary', {}, [el('h3', { text: t })]), ...extra, ...tarjetas(xs)]) : null;
+  // #2075: ya resueltas (aprobada/respondida) pero Diego puede querer comentar mas (p.ej. reabrir el
+  // hilo de una duda respondida). Antes desaparecian del todo: sin tarjeta no habia boton Comentar y el
+  // texto de Diego no llegaba a omc_mensajes (via omc_comentar). Solo Copiar/Comentar, ya esta resuelta.
+  const seguimiento = d.seguimiento || [];
+  const secSeguimiento = seguimiento.length ? el('details', { class: 'grupo-criba', open: seguimiento.some(p => p.id === abierta) }, [
+    el('summary', {}, [el('h3', { text: 'Seguimiento' + cnt('home.tarjetas.seguimiento', seguimiento.length) })]),
+    ...seguimiento.map(p => tarjeta(p, p.id === abierta, hilos[p.id] || [], true))]) : null;
   const otras = [...g.resto, ...g.pospuestas];
   // Fix ronda 3 (plan 3b, tarea 2): porDecidir() deja solo las decidibles; enCriba() cuenta lo que aún
   // analiza Guillem (Revisar, No viable, Sin pliego) para la línea informativa.
@@ -169,6 +179,7 @@ export function bandeja(S, arg, ahora = new Date()) {
     urgentes ? null : el('p', { class: 'mudo', text: total ? 'Nada urgente esta semana.' : 'Nada que decidir.' }),
     sec('Vence hoy', g.hoy), sec('Esta semana', g.semana),
     plegada('Sin fecha' + cnt('home.tarjetas.depende_de_ti', g.resto.length) + ' · pospuestas' + cnt('home.tarjetas.pospuestas', g.pospuestas.length), otras, otras.some(p => p.id === abierta)),
+    secSeguimiento,
     lic.length ? el('details', { class: 'grupo-criba' }, [el('summary', {}, [el('h2', { text: 'Licitaciones por decidir' + cnt('home.licitaciones.por_decidir', lic.length) })]), lineaCriba, ...lic.map(l => licitacion(l, d.rol)),
       el('a', { class: 'btn-enlace', href: '/hq/v1/#licita', text: 'histórico y fichas completas en HQ v1' })]) : lineaCriba,
   ]);
