@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DECIDIBLES, ABIERTAS, pendiente, porDecidir, enCriba, porElegible, solvenciaTexto, embudo, estadoDe, tipologiaOrgano, TIPOLOGIAS, tipologia, sinSolvencia, filtrar, MOTIVOS_NO, motivosNo, configurarMotivosNo, enlacesLic, decisionDe, vencida, cierrePasado, esperandoResolucion, conBotones, sinPresentarUrgente, ESTADOS_H1, TRANSICIONES_5_3, rolPermite, transicionesValidas, configurarLicita } from '../app/licitaciones.js';
+import { DECIDIBLES, ABIERTAS, pendiente, porDecidir, enCriba, porElegible, solvenciaTexto, embudo, estadoDe, tipologiaOrgano, TIPOLOGIAS, tipologia, sinSolvencia, filtrar, MOTIVOS_NO, motivosNo, configurarMotivosNo, enlacesLic, decisionDe, vencida, cierrePasado, esperandoResolucion, conBotones, sinPresentarUrgente, ESTADOS_H1, TRANSICIONES_5_3, ROL_TRANSICION, transicionesValidas, configurarLicita } from '../app/licitaciones.js';
 
 // Fixture de 8 licitaciones (Task 1, plan 3b): cubre decidibles, criba, descartada, aprobada por
 // decision sin ser decidible, presentada y contratada con importe.
@@ -605,28 +605,56 @@ test('configurarLicita: cfg vacio, nulo o sin datos usables no toca los valores 
   assert.deepEqual(TRANSICIONES_5_3, transicionesOriginales);
 });
 
-test('rolPermite: owner puede cualquier movimiento de la tabla', () => {
-  assert.equal(rolPermite('Por decidir', 'Aprobada', 'owner'), true);
-  assert.equal(rolPermite('Aprobada', 'Descartada', 'owner'), true);
-  assert.equal(rolPermite('Descartada', 'Por decidir', 'owner'), true);
+test('transicionesValidas: solo owner ve botones; cualquier otro rol no ve ninguno', () => {
+  assert.deepEqual(transicionesValidas({ estado: 'Por decidir' }, 'agente'), []);
+  assert.deepEqual(transicionesValidas({ estado: 'Por decidir' }, 'sistema'), []);
+  assert.deepEqual(transicionesValidas({ estado: 'Nueva' }, 'agente'), []);
 });
 
-test('rolPermite: agente no aprueba, no descarta salvo desde Nueva, y no recupera una Descartada', () => {
-  assert.equal(rolPermite('Por decidir', 'Aprobada', 'agente'), false, 'solo Diego aprueba');
-  assert.equal(rolPermite('Nueva', 'Descartada', 'agente'), true, 'descartar una Nueva si vale para agente');
-  assert.equal(rolPermite('Por decidir', 'Descartada', 'agente'), false, 'descartar desde Por decidir exige owner');
-  assert.equal(rolPermite('Aprobada', 'Descartada', 'agente'), false);
-  assert.equal(rolPermite('Descartada', 'Por decidir', 'agente'), false, 'solo Diego recupera una descartada');
-  assert.equal(rolPermite('Aprobada', 'En redacción', 'agente'), true, 'el resto del grafo vale igual para agente');
-});
-
-test('transicionesValidas: interseccion de la tabla 5.3 con la guardia de rol', () => {
-  assert.deepEqual(transicionesValidas({ estado: 'Por decidir' }, 'owner'), ['Aprobada', 'Descartada', 'Cerrada sin presentar']);
-  assert.deepEqual(transicionesValidas({ estado: 'Por decidir' }, 'agente'), ['Cerrada sin presentar']);
-  assert.deepEqual(transicionesValidas({ estado: 'Descartada' }, 'agente'), []);
-  assert.deepEqual(transicionesValidas({ estado: 'Descartada' }, 'owner'), ['Por decidir', 'Criba de pliego']);
+test('transicionesValidas: para owner, solo destinos cuya transicion en ROL_TRANSICION es de rol diego', () => {
+  assert.deepEqual(transicionesValidas({ estado: 'Descartada' }, 'owner'), ['Por decidir']);
   assert.deepEqual(transicionesValidas({ estado: 'Adjudicada' }, 'owner'), [], 'estado final sin salida');
-  assert.deepEqual(transicionesValidas({ estado: '' }, 'agente'), transicionesValidas({ estado: 'Nueva' }, 'agente'), 'estado vacio cae a Nueva (estadoBase)');
+  assert.deepEqual(transicionesValidas({ estado: '' }, 'owner'), transicionesValidas({ estado: 'Nueva' }, 'owner'), 'estado vacio cae a Nueva (estadoBase)');
+});
+
+// D70 (#2086 spec §4, reporte Nuria-HQ): tabla completa de botones por fase que Diego debe ver.
+// Nueva/Criba de pliego -> solo Descartar; Por decidir -> Aprobar y Descartar; Aprobada/En redaccion/
+// Por presentar -> solo Descartar; Presentada y posteriores + Cerrada sin presentar -> ninguno;
+// Descartada -> solo Recuperar (a Por decidir). Fija el contrato entre botonesTransicion y lic_transiciones.
+test('transicionesValidas: tabla completa spec #2086 SS4 para owner', () => {
+  assert.deepEqual(transicionesValidas({ estado: 'Nueva' }, 'owner'), ['Descartada']);
+  assert.deepEqual(transicionesValidas({ estado: 'Criba de pliego' }, 'owner'), ['Descartada']);
+  assert.deepEqual(transicionesValidas({ estado: 'Por decidir' }, 'owner'), ['Aprobada', 'Descartada']);
+  assert.deepEqual(transicionesValidas({ estado: 'Aprobada' }, 'owner'), ['Descartada']);
+  assert.deepEqual(transicionesValidas({ estado: 'En redacción' }, 'owner'), ['Descartada']);
+  assert.deepEqual(transicionesValidas({ estado: 'Por presentar' }, 'owner'), ['Descartada']);
+  assert.deepEqual(transicionesValidas({ estado: 'Presentada' }, 'owner'), []);
+  assert.deepEqual(transicionesValidas({ estado: 'Subsanación' }, 'owner'), []);
+  assert.deepEqual(transicionesValidas({ estado: 'Propuesta de adjudicación' }, 'owner'), []);
+  assert.deepEqual(transicionesValidas({ estado: 'Adjudicada' }, 'owner'), []);
+  assert.deepEqual(transicionesValidas({ estado: 'No adjudicada' }, 'owner'), []);
+  assert.deepEqual(transicionesValidas({ estado: 'Cerrada sin presentar' }, 'owner'), []);
+  assert.deepEqual(transicionesValidas({ estado: 'Descartada' }, 'owner'), ['Por decidir']);
+});
+
+test('configurarLicita: repuebla ROL_TRANSICION desde cfg.transiciones (rol), restaura al terminar', () => {
+  const rolOriginal = JSON.parse(JSON.stringify(ROL_TRANSICION));
+  const transicionesOriginales = JSON.parse(JSON.stringify(TRANSICIONES_5_3));
+  try {
+    configurarLicita({
+      transiciones: [
+        { de: 'A', a: 'B', activa: true, rol: 'diego' },
+        { de: 'A', a: 'C', activa: true, rol: 'sistema' },
+      ],
+    });
+    assert.deepEqual(ROL_TRANSICION, { 'A>B': 'diego', 'A>C': 'sistema' });
+    assert.deepEqual(transicionesValidas({ estado: 'A' }, 'owner'), ['B']);
+  } finally {
+    for (const k of Object.keys(ROL_TRANSICION)) delete ROL_TRANSICION[k];
+    Object.assign(ROL_TRANSICION, rolOriginal);
+    for (const k of Object.keys(TRANSICIONES_5_3)) delete TRANSICIONES_5_3[k];
+    Object.assign(TRANSICIONES_5_3, transicionesOriginales);
+  }
 });
 
 test('tipologia ignora motivo_auto: notas internas de la criba no generan etiquetas (caso 026_06, 24-sep)', () => {

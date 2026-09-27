@@ -322,11 +322,12 @@ test('tarjetaLic: enlaces validos primero (Perfil/Carpeta/PCAP), un enlace javas
   assert.deepEqual(enlaces, [['Perfil', 'https://perfil/x'], ['Carpeta', 'https://drive/x'], ['PCAP', 'https://pcap/x']]);
 });
 
-test('tarjetaLic: botones de transicion segun rol (5.3), owner ve el boton de clave de sobre y agente no', () => {
+// D70 (#2086 spec SS4, reporte Nuria-HQ): solo destinos de rol diego, y solo owner ve botones.
+test('tarjetaLic: botones de transicion solo rol diego (5.3), owner ve clave de sobre y agente no', () => {
   const l = { id: 1, expediente: 'X4', estado: 'Aprobada' };
   const owner = tarjetaLic(l, AHORA, 'owner');
   const botonesOwner = buscarNodos(owner, n => n.tag === 'button').map(b => b.textContent);
-  assert.ok(botonesOwner.includes('En redacción'));
+  assert.equal(botonesOwner.includes('En redacción'), false, 'En redacción es transicion automatica del agente (D62), sin boton');
   assert.ok(botonesOwner.includes('Descartada'));
   assert.equal(botonesOwner.includes('Clave de sobre'), false, 'Aprobada aún no tiene sobre');
   assert.ok(botonesOwner.includes('Copiar para el chat'));
@@ -334,8 +335,8 @@ test('tarjetaLic: botones de transicion segun rol (5.3), owner ve el boton de cl
   assert.ok(red.includes('Clave de sobre'));
   const agente = tarjetaLic(l, AHORA, 'agente');
   const botonesAgente = buscarNodos(agente, n => n.tag === 'button').map(b => b.textContent);
-  assert.ok(botonesAgente.includes('En redacción'));
-  assert.equal(botonesAgente.includes('Descartada'), false, 'agente no puede descartar una Aprobada (solo owner puede pasar a Descartada)');
+  assert.equal(botonesAgente.includes('En redacción'), false, 'agente no ve ningun boton de transicion');
+  assert.equal(botonesAgente.includes('Descartada'), false, 'solo owner puede pasar a Descartada');
   assert.equal(botonesAgente.includes('Clave de sobre'), false);
 });
 

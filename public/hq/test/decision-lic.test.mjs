@@ -46,25 +46,28 @@ const buscarNodos = (n, pred, out = []) => { if (n.nodeType === 1) { if (pred(n)
 // Construir los botones no toca la red: el handler onclick solo se dispara al pulsar, y aqui no se
 // pulsa ninguno. Si botonesTransicion() llamase a rpc() al construirse, esto lanzaria (no hay fetch en
 // node test).
-test('botonesTransicion: un boton por destino de la tabla 5.3, Descartar en rojo, el primero primario', () => {
+// D70 (#2086 spec SS4, reporte Nuria-HQ): solo botones de rol 'diego' en lic_transiciones, y solo owner
+// ve alguno (transicionesValidas). 'Cerrada sin presentar' es siempre solo lectura, tambien con cierre
+// pasado: no hay transicion de rol diego hacia ese destino, la hace el agente solo.
+test('botonesTransicion: un boton por destino de rol diego, Descartar en rojo, el primero primario', () => {
   const l = { expediente: 'EXP-1', estado: 'Por decidir' };
   let recargado = false;
   const botones = botonesTransicion(l, async () => { recargado = true; }, 'owner');
-  assert.deepEqual(botones.map(b => b.textContent), ['Aprobada', 'Descartada'], 'Cerrada sin presentar solo con el cierre pasado');
+  assert.deepEqual(botones.map(b => b.textContent), ['Aprobada', 'Descartada']);
   assert.deepEqual(botones.map(b => b.className), ['btn primario', 'btn peligro']);
   const cerrada = botonesTransicion({ ...l, cierre: '2020-01-01' }, async () => {}, 'owner');
-  assert.deepEqual(cerrada.map(b => b.textContent), ['Aprobada', 'Descartada', 'Cerrada sin presentar']);
+  assert.deepEqual(cerrada.map(b => b.textContent), ['Aprobada', 'Descartada'], "Cerrada sin presentar solo lectura, tambien con cierre pasado");
   assert.equal(recargado, false, 'construir los botones no ejecuta la transicion ni recarga');
   assert.ok(botones.every(b => typeof b.listeners.click[0] === 'function'));
 });
 
-test('botonesTransicion: rol agente no ofrece Por decidir -> Aprobada ni -> Descartada, ni recuperar una Descartada', () => {
+test('botonesTransicion: rol agente no ve ningun boton; solo owner recupera una Descartada', () => {
   const pd = botonesTransicion({ estado: 'Por decidir', cierre: '2020-01-01' }, async () => {}, 'agente');
-  assert.deepEqual(pd.map(b => b.textContent), ['Cerrada sin presentar'], "Descartada exige owner desde cualquier estado que no sea Nueva");
+  assert.deepEqual(pd.map(b => b.textContent), []);
   const desc = botonesTransicion({ estado: 'Descartada' }, async () => {}, 'agente');
   assert.deepEqual(desc.map(b => b.textContent), []);
   const desOwner = botonesTransicion({ estado: 'Descartada' }, async () => {}, 'owner');
-  assert.deepEqual(desOwner.map(b => b.textContent), ['Por decidir', 'Criba de pliego']);
+  assert.deepEqual(desOwner.map(b => b.textContent), ['Por decidir']);
 });
 
 test('botonesTransicion: un estado final sin salidas (Adjudicada) no ofrece ningun boton', () => {

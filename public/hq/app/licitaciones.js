@@ -97,23 +97,32 @@ export const TRANSICIONES_5_3 = {
   'Cerrada sin presentar': ['Nueva'],
 };
 
-// Trigger omc_licitaciones_guardia() (schema-v18-licita.sql): solo tres movimientos exigen rol owner.
-// Todo lo demas de TRANSICIONES_5_3 vale para owner y agente por igual.
-export function rolPermite(deEstado, aEstado, rol) {
-  if (rol === 'owner') return true;
-  if (deEstado === 'Por decidir' && aEstado === 'Aprobada') return false; // "solo Diego aprueba"
-  if (aEstado === 'Descartada' && deEstado !== 'Nueva') return false; // "solo Diego descarta a partir de Por decidir"
-  if (deEstado === 'Descartada' && aEstado !== 'Descartada') return false; // "solo Diego recupera una descartada"
-  return true;
-}
+// D70 (#2086 spec §4): rol de cada transicion tal como vive en lic_transiciones, no rol del usuario.
+// Solo 'diego' pinta boton en la card: 'sistema'/'criba'/'scraper' las hace el agente solo (D62/D63)
+// y nunca deben salir como boton, aunque el usuario logueado sea owner. Snapshot por defecto =
+// produccion 27-sep (select de, a, rol from lic_transiciones where rol = 'diego' and activa).
+export const ROL_TRANSICION = {
+  'Nueva>Descartada': 'diego',
+  'Criba de pliego>Descartada': 'diego',
+  'Por decidir>Aprobada': 'diego',
+  'Por decidir>Descartada': 'diego',
+  'Aprobada>Descartada': 'diego',
+  'En redacción>Descartada': 'diego',
+  'Por presentar>Descartada': 'diego',
+  'Descartada>Nueva': 'diego',
+  'Descartada>Por decidir': 'diego',
+};
 
 // Destinos que este boton puede ofrecer: 5.3 con el caso especial Descartada (nunca ofrece 'Nueva',
-// aunque la BD la traiga: spec #2086 §4) y la guardia de rol de usuario (rolPermite).
+// aunque la BD la traiga y sea rol diego: spec #2086 §4, "el boton usa Por decidir, que es la vuelta
+// util") y el filtro por rol de la transicion (ROL_TRANSICION), no por rol del usuario. Solo owner
+// (Diego, unico humano de esta vista) ve botones; el resto nunca ve ninguno.
 export function transicionesValidas(l, rol) {
+  if (rol !== 'owner') return [];
   const est = estadoBase(l);
   return (TRANSICIONES_5_3[est] || [])
     .filter(dest => !(est === 'Descartada' && dest === 'Nueva'))
-    .filter(dest => rolPermite(est, dest, rol));
+    .filter(dest => ROL_TRANSICION[est + '>' + dest] === 'diego');
 }
 
 // D17 (#1355): ESTADOS_H1 y TRANSICIONES_5_3 nacen con el snapshot de schema-v18/v32 como valores por
@@ -130,15 +139,20 @@ export function configurarLicita(cfg) {
   if (nombres.length) { ESTADOS_H1.length = 0; ESTADOS_H1.push(...nombres); }
 
   const transiciones = Array.isArray(cfg?.transiciones) ? cfg.transiciones : [];
-  const g = {};
+  const g = {}, r = {};
   for (const t of transiciones) {
     if (!t || t.activa === false || !t.de || !t.a || t.de === t.a || t.de === '(entrada)') continue;
     const destinos = (g[t.de] ||= []);
     if (!destinos.includes(t.a)) destinos.push(t.a);
+    if (t.rol) r[t.de + '>' + t.a] = t.rol;
   }
   if (Object.keys(g).length) {
     for (const k of Object.keys(TRANSICIONES_5_3)) delete TRANSICIONES_5_3[k];
     Object.assign(TRANSICIONES_5_3, g);
+  }
+  if (Object.keys(r).length) {
+    for (const k of Object.keys(ROL_TRANSICION)) delete ROL_TRANSICION[k];
+    Object.assign(ROL_TRANSICION, r);
   }
 }
 
