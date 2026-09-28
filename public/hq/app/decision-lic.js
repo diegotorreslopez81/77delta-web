@@ -25,23 +25,32 @@ function pedirMotivoDescarte(titulo, motivos) {
       return;
     }
     let elegido = null;
-    const nota = campoTexto({ rows: 2, placeholder: 'Nota' });
+    const errorVisible = el('p', { class: 'ayuda', role: 'alert', style: 'color:var(--error)' });
+    const fallo = texto => { errorVisible.textContent = texto; };
+    const elegir = (motivo, btn) => {
+      for (const b of radios) b.setAttribute('aria-pressed', 'false'), b.classList.remove('activo');
+      btn.setAttribute('aria-pressed', 'true'); btn.classList.add('activo');
+      elegido = motivo; fallo('');
+    };
+    // Un motivo escrito solo como nota (sin chip) marca 'Otro' en vez de dejar el boton muerto (#2118, 1743).
+    const marcarOtroSiHayNota = () => {
+      if (elegido || !nota.value.trim()) return;
+      const i = motivos.indexOf('Otro');
+      if (i >= 0) elegir('Otro', radios[i]);
+    };
+    const nota = campoTexto({ rows: 2, placeholder: 'Nota', oninput: marcarOtroSiHayNota });
     const avisoOtro = el('p', { class: 'ayuda', text: "Nota obligatoria cuando el motivo es 'Otro'." });
     const guardar = el('button', { class: 'btn primario', text: 'Descartar', onclick: () => {
-      if (!elegido) return;
-      if (elegido === 'Otro' && !nota.value.trim()) { nota.focus(); return; }
+      marcarOtroSiHayNota();
+      if (!elegido) { fallo('Elige un motivo, o escribe una nota y se marca Otro.'); return; }
+      if (elegido === 'Otro' && !nota.value.trim()) { fallo("El motivo 'Otro' exige una nota."); nota.focus(); return; }
       m.cerrar(); res({ motivo: elegido, nota: nota.value.trim() });
     } });
-    guardar.disabled = true;
     const radios = motivos.map(motivo => {
-      const btn = el('button', { class: 'chip', type: 'button', 'aria-pressed': 'false', text: motivo, onclick: () => {
-        for (const b of radios) b.setAttribute('aria-pressed', 'false'), b.classList.remove('activo');
-        btn.setAttribute('aria-pressed', 'true'); btn.classList.add('activo');
-        elegido = motivo; guardar.disabled = false;
-      } });
+      const btn = el('button', { class: 'chip', type: 'button', 'aria-pressed': 'false', text: motivo, onclick: () => elegir(motivo, btn) });
       return btn;
     });
-    const m = modal({ titulo, cuerpo: [el('div', { class: 'chips' }, radios), avisoOtro, nota],
+    const m = modal({ titulo, cuerpo: [el('div', { class: 'chips' }, radios), avisoOtro, nota, errorVisible],
       acciones: [el('button', { class: 'btn', text: 'Cancelar', onclick: () => { m.cerrar(); res(null); } }), guardar] });
   });
 }
