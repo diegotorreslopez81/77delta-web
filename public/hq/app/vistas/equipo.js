@@ -307,13 +307,35 @@ function seccionPiezas(ahora) {
   return cont;
 }
 
+const ORDEN_FASES = ['plazo', 'descarga', 'extraccion', 'redaccion', 'revision', 'presentacion', 'avisos'];
+export function separarMotor(ags) {
+  const esMant = a => !a.fase && /^Licita · Motor/.test(a.depto || '');
+  const pos = a => { const i = ORDEN_FASES.indexOf(a.fase); return i < 0 ? ORDEN_FASES.length : i; };
+  return {
+    fases: ags.filter(a => a.fase).sort((x, y) => pos(x) - pos(y)),
+    mantenimiento: ags.filter(esMant),
+    resto: ags.filter(a => !a.fase && !esMant(a)),
+  };
+}
+
 export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
   // NIT #9 (parado, aplicado aqui por ser trivial): x.nombre/y.nombre pueden faltar en un agente mal
   // dado de alta; localeCompare sobre undefined lanza TypeError y tira toda la vista.
   const ags = (S.datos.agentes || []).filter(a => a.activo !== false).sort((x, y) => (x.nivel - y.nivel) || (x.nombre || '').localeCompare(y.nombre || ''));
   if (arg) { const a = ags.find(x => x.id === arg); if (a) return ficha(raiz, S, a, ahora); }
   raiz.append(el('div', { class: 'fila enlace-kpis' }, [el('a', { class: 'btn-enlace', href: '#kpis?grupo=equipo', text: 'KPIs ›' })]));
-  const deptos = [...new Set(ags.map(a => a.depto))];
-  for (const d of deptos) raiz.append(el('section', { class: 'seccion' }, [el('h2', { text: d }), el('div', { class: 'lista-rica' }, ags.filter(a => a.depto === d).map(a => tarjetaAgente(a, S, ahora)))]));
+  // D89/D90: el motor autonomo va aparte y primero, fases en el orden de la cadena (SPEC 12.2), luego su
+  // mantenimiento; el resto del equipo (casos concretos incluidos) debajo, por departamento.
+  const { fases, mantenimiento, resto } = separarMotor(ags);
+  if (fases.length || mantenimiento.length) raiz.append(el('section', { class: 'seccion motor' }, [
+    el('h2', { text: 'Motor Licita autónomo' }),
+    el('p', { class: 'mudo', text: 'Un agente por fase, clonable en réplicas. Solo trabajan en el motor, nunca en casos concretos.' }),
+    fases.length ? el('h3', { text: 'Fases, en orden de la cadena' }) : null,
+    el('div', { class: 'lista-rica' }, fases.map(a => tarjetaAgente(a, S, ahora))),
+    mantenimiento.length ? el('h3', { text: 'Mantenimiento del motor' }) : null,
+    el('div', { class: 'lista-rica' }, mantenimiento.map(a => tarjetaAgente(a, S, ahora)))]));
+  if (resto.length) raiz.append(el('h2', { class: 'titulo-resto', text: 'Resto del equipo' }));
+  const deptos = [...new Set(resto.map(a => a.depto))];
+  for (const d of deptos) raiz.append(el('section', { class: 'seccion' }, [el('h2', { text: d }), el('div', { class: 'lista-rica' }, resto.filter(a => a.depto === d).map(a => tarjetaAgente(a, S, ahora)))]));
   raiz.append(seccionPiezas(ahora));
 }

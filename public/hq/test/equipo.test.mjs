@@ -41,7 +41,7 @@ if (typeof globalThis.localStorage === 'undefined') {
   globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => mem.set(k, String(v)), removeItem: (k) => mem.delete(k) };
 }
 
-const { render, cuadroEquipo, tarjetaAgente, tramo, porDepto, textoAhora } = await import('../app/vistas/equipo.js');
+const { render, cuadroEquipo, tarjetaAgente, tramo, porDepto, textoAhora, separarMotor } = await import('../app/vistas/equipo.js');
 const buscarNodos = (n, f, out = []) => { if (n && n.nodeType === 1) { if (f(n)) out.push(n); n.children.forEach(c => buscarNodos(c, f, out)); } return out; };
 const AHORA = new Date('2026-09-18T20:00:00Z');
 const ags = [
@@ -181,4 +181,26 @@ test('tarjeta y ficha muestran la línea "Ahora: ..."', () => {
   const raiz = crearNodo('div');
   render(raiz, { datos: { ...Sx().datos, agentes: [{ ...ags[1] }] } }, 'sales-licita', {}, AHORA);
   assert.deepEqual(buscarNodos(raiz, n => n.className === 'ahora').map(n => n._text), ['Ahora: libre']);
+});
+
+test('separarMotor: fases en orden de cadena, mantenimiento aparte, casos en el resto', () => {
+  const r = separarMotor([
+    { id: 'q', fase: 'redaccion', depto: 'Licita · Motor: fases' },
+    { id: 'j', fase: 'extraccion', depto: 'Licita · Motor: fases' },
+    { id: 'p', depto: 'Licita · Motor: mantenimiento' },
+    { id: 'b', depto: 'Licita · Casos' },
+    { id: 'c', depto: 'Dirección' },
+  ]);
+  assert.deepEqual(r.fases.map(a => a.id), ['j', 'q']);
+  assert.deepEqual(r.mantenimiento.map(a => a.id), ['p']);
+  assert.deepEqual(r.resto.map(a => a.id), ['b', 'c']);
+});
+
+test('render: el motor va en su bloque antes del resto del equipo', () => {
+  const raiz = crearNodo('main');
+  const S = Sx();
+  render(raiz, { datos: { ...S.datos, agentes: [...S.datos.agentes, { id: 'q', nombre: 'Queralt', nivel: 3, fase: 'redaccion', depto: 'Licita · Motor: fases' }] } }, null, {}, AHORA);
+  const motor = raiz.children.find(s => s.className === 'seccion motor');
+  assert.equal(motor.children[0]._text, 'Motor Licita autónomo');
+  assert.ok(raiz.children.indexOf(motor) < raiz.children.findIndex(s => s.className === 'titulo-resto'));
 });
