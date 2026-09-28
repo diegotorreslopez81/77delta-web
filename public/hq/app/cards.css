@@ -162,3 +162,20 @@ body.con-hoja{overflow:hidden}
 .ahora-mismo h2{font-size:14px;margin:0 0 6px;color:var(--tinta-2)}
 .chips-ahora{flex-wrap:wrap;overflow:visible}
 .chips-ahora .pill{max-width:100%}
+
+/* D91: cadena del motor Licita (equipo.js, lic_cadena_estado). Una columna en movil, sin scroll
+   horizontal; numero de fase en circulo, ejecutor (avatar del agente o etiqueta script/SQL) y piezas. */
+.cadena{list-style:none;margin:0 0 12px;padding:0;display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:900px){.cadena{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.card-fase{background:var(--panel);border:1px solid var(--linea);border-radius:var(--radio);padding:12px 14px;min-width:0;display:flex;flex-direction:column;gap:6px}
+.card-fase .fase-cab{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card-fase h3{margin:0;font-size:15px;flex:1;min-width:0}
+.card-fase .fase-num{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--marino);color:var(--oro);font-weight:700;font-size:14px;flex:none}
+.card-fase .fase-ejecutor{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.card-fase .fase-agente{display:inline-flex;align-items:center;gap:6px;color:inherit;text-decoration:none}
+.card-fase .fase-agente:hover b{text-decoration:underline}
+.card-fase .fase-agente .avatar{width:32px;height:32px}
+.card-fase .fase-agente .avatar.letra{font-size:14px}
+.card-fase .funcion,.card-fase .ahora,.card-fase .sub{margin:0;font-size:13px;overflow-wrap:anywhere}
+.card-fase .sub{color:var(--pizarra)}
+.card-fase .pill{white-space:normal}

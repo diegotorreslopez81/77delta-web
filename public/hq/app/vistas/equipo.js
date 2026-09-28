@@ -318,20 +318,97 @@ export function separarMotor(ags) {
   };
 }
 
+// D91 (schema-v91): la cadena del motor sale entera de Supabase (lic_cadena_estado): orden, fase, quien la
+// ejecuta (agente de IA, script o SQL), que hace, sus piezas de lic_piezas y los contadores vivos de
+// lic_tareas. Nada de la cadena esta escrito aqui. Mismo patron de carga y cache que las piezas.
+let cargaCadena = () => rpc('lic_cadena_estado');
+export function usarCargadorCadena(fn) { if (fn) cargaCadena = fn; }
+let cadenaCache = null;   // { filas, t }
+export function restablecerCadena() { cadenaCache = null; }
+const EJECUTOR_TEXTO = { script: 'script', sql: 'SQL', agente: 'agente IA' };
+// Peor estado de las piezas de la fase (lo calcula la RPC) al semaforo de colorPieza.
+const COLOR_PEOR = { averiada: 'rojo', sin_latido: 'rojo', pausada: 'gris', activa: 'verde' };
+const TEXTO_PEOR = { averiada: 'pieza averiada', sin_latido: 'sin latido', pausada: 'pausada', activa: 'activa' };
+export function textoTareas(t) {
+  if (!t) return null;
+  const n = k => Number(t[k]) || 0;
+  const partes = [n('en_curso') + ' en curso', n('pendiente') + ' en cola', n('esperando') + ' esperando'];
+  if (n('bloqueada')) partes.push(n('bloqueada') + (n('bloqueada') === 1 ? ' bloqueada' : ' bloqueadas'));
+  partes.push(n('hechas_24h') + ' hechas 24 h');
+  return 'Ahora: ' + partes.join(' · ');
+}
+function chipPiezas(f, ahora) {
+  if (!f.peor_estado) return el('span', { class: 'pill gris', text: (f.piezas || []).length ? 'piezas sin registrar' : 'sin pieza registrada' });
+  const col = COLOR_PEOR[f.peor_estado] || 'gris', senal = hace(f.ultimo_latido, ahora);
+  return el('span', { class: 'pill ' + col, title: (f.piezas_estado || []).map(p => p.nombre + ': ' + p.estado + (p.sin_latido ? ' (sin latido)' : '')).join('\n') },
+    [TEXTO_PEOR[f.peor_estado] || f.peor_estado, senal ? ' · ' + senal : '']);
+}
+function ejecutorFase(f) {
+  const piezas = (f.piezas_estado || []).map(p => el('span', { class: 'pill codigo pieza-' + (COLOR_PEOR[p.sin_latido ? 'sin_latido' : p.estado] || 'gris'), text: p.nombre }));
+  const quien = f.ejecutor === 'agente' && f.agente_id
+    ? el('a', { class: 'fase-agente', href: '#equipo/agente/' + encodeURIComponent(f.agente_id) }, [avatar({ id: f.agente_id, nombre: f.agente_nombre, avatar_url: f.agente_avatar_url }), el('b', { text: f.agente_nombre || f.agente_id })])
+    : el('span', { class: 'pill gris ejecutor', text: EJECUTOR_TEXTO[f.ejecutor] || f.ejecutor });
+  return el('div', { class: 'fase-ejecutor' }, [quien, ...piezas]);
+}
+export function tarjetaFase(f, ahora = new Date()) {
+  const vivo = f.con_tareas ? textoTareas(f.tareas || {}) : null;
+  return el('li', { class: 'card-fase', 'data-fase': f.fase }, [
+    el('div', { class: 'fase-cab' }, [
+      f.grupo === 'cadena' ? el('span', { class: 'fase-num', text: String(f.orden) }) : null,
+      el('h3', { text: f.nombre || f.fase }),
+      chipPiezas(f, ahora)]),
+    ejecutorFase(f),
+    f.que_hace ? el('p', { class: 'funcion', text: f.que_hace }) : null,
+    el('p', { class: 'sub', text: f.donde || '' }),
+    vivo ? el('p', { class: 'ahora', text: vivo }) : null]);
+}
+function cuerpoCadena(filas, ahora) {
+  const cadena = filas.filter(f => f.grupo !== 'transversal'), trans = filas.filter(f => f.grupo === 'transversal');
+  return [
+    el('h3', { text: 'Cadena, fase a fase' }),
+    el('ol', { class: 'cadena' }, cadena.map(f => tarjetaFase(f, ahora))),
+    trans.length ? el('h3', { text: 'Piezas transversales' }) : null,
+    trans.length ? el('ul', { class: 'cadena transversal' }, trans.map(f => tarjetaFase(f, ahora))) : null].filter(Boolean);
+}
+// Si la RPC falla y no hay cache, aviso rojo y, como respaldo, las tarjetas de los agentes de fase.
+function seccionCadena(fasesAgs, S, ahora) {
+  const caja = el('div', { class: 'cadena-caja' });
+  const pintar = (filas, aviso) => {
+    caja.innerHTML = '';
+    if (aviso) caja.append(el('p', { class: 'aviso rojo', role: 'alert', text: aviso }));
+    if (filas) caja.append(...cuerpoCadena(filas, ahora));
+    else caja.append(el('div', { class: 'lista-rica' }, fasesAgs.map(a => tarjetaAgente(a, S, ahora))));
+  };
+  if (cadenaCache) pintar(cadenaCache.filas, null);
+  else caja.append(el('p', { class: 'cargando', text: 'Cargando la cadena...' }));
+  if (cadenaCache && Date.now() - cadenaCache.t < PIEZAS_CACHE_MS) return caja;
+  (async () => {
+    try {
+      const r = await cargaCadena();
+      const filas = (Array.isArray(r) ? r : []).slice().sort((x, y) => (x.orden || 0) - (y.orden || 0));
+      cadenaCache = { filas, t: Date.now() };
+      pintar(filas, null);
+    } catch (e) {
+      pintar(cadenaCache ? cadenaCache.filas : null, 'No se pudo cargar la cadena del motor (' + (e?.message || 'error') + ').');
+    }
+  })();
+  return caja;
+}
+
 export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
   // NIT #9 (parado, aplicado aqui por ser trivial): x.nombre/y.nombre pueden faltar en un agente mal
   // dado de alta; localeCompare sobre undefined lanza TypeError y tira toda la vista.
   const ags = (S.datos.agentes || []).filter(a => a.activo !== false).sort((x, y) => (x.nivel - y.nivel) || (x.nombre || '').localeCompare(y.nombre || ''));
   if (arg) { const a = ags.find(x => x.id === arg); if (a) return ficha(raiz, S, a, ahora); }
   raiz.append(el('div', { class: 'fila enlace-kpis' }, [el('a', { class: 'btn-enlace', href: '#kpis?grupo=equipo', text: 'KPIs ›' })]));
-  // D89/D90: el motor autonomo va aparte y primero, fases en el orden de la cadena (SPEC 12.2), luego su
+  // D89/D90/D91: el motor autonomo va aparte y primero: la cadena de fases en orden (lic_cadena, cada fase
+  // con su agente o su script/SQL; los agentes de fase solo salen ahi), las piezas transversales, luego su
   // mantenimiento; el resto del equipo (casos concretos incluidos) debajo, por departamento.
   const { fases, mantenimiento, resto } = separarMotor(ags);
-  if (fases.length || mantenimiento.length) raiz.append(el('section', { class: 'seccion motor' }, [
+  raiz.append(el('section', { class: 'seccion motor' }, [
     el('h2', { text: 'Motor Licita autónomo' }),
-    el('p', { class: 'mudo', text: 'Un agente por fase, clonable en réplicas. Solo trabajan en el motor, nunca en casos concretos.' }),
-    fases.length ? el('h3', { text: 'Fases, en orden de la cadena' }) : null,
-    el('div', { class: 'lista-rica' }, fases.map(a => tarjetaAgente(a, S, ahora))),
+    el('p', { class: 'mudo', text: 'La cadena en orden: cada fase con quien la ejecuta, agente de IA o pieza sin IA. Los agentes se clonan en réplicas y solo trabajan en el motor.' }),
+    seccionCadena(fases, S, ahora),
     mantenimiento.length ? el('h3', { text: 'Mantenimiento del motor' }) : null,
     el('div', { class: 'lista-rica' }, mantenimiento.map(a => tarjetaAgente(a, S, ahora)))]));
   if (resto.length) raiz.append(el('h2', { class: 'titulo-resto', text: 'Resto del equipo' }));
