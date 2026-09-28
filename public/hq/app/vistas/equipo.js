@@ -125,6 +125,8 @@ function ficha(raiz, S, a, ahora = new Date()) {
     el('div', {}, [
       el('h1', { text: a.nombre || a.id }),
       el('p', { class: 'sub', text: subAgente(a) }),
+      // D89: omc_agentes.funcion (que hace y que no hace nunca) viaja solo en to_jsonb(a).
+      a.funcion ? el('p', { class: 'funcion', text: a.funcion }) : null,
       chipsAgente(a, S, ahora),
       sesionUrl ? el('a', { class: 'btn primario', href: sesionUrl, target: '_blank', rel: 'noopener', text: 'Abrir sesión' }) : el('span', { class: 'mudo', text: 'sin sesión publicada' }),
     ]),
@@ -167,6 +169,8 @@ export function tarjetaAgente(a, S, ahora = new Date()) {
     el('div', { class: 'cuerpo-agente' }, [
       el('h3', {}, [el('a', { href: '#equipo/agente/' + a.id, text: a.nombre || a.id })]),
       el('p', { class: 'sub', text: subAgente(a) }),
+      // D89: omc_agentes.funcion (que hace y que no hace nunca) viaja solo en to_jsonb(a).
+      a.funcion ? el('p', { class: 'funcion', text: a.funcion }) : null,
       chipsAgente(a, S, ahora),
     ]),
   ]);
