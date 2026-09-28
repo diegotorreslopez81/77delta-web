@@ -39,7 +39,7 @@ if (typeof globalThis.localStorage === 'undefined') {
   globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => mem.set(k, String(v)), removeItem: (k) => mem.delete(k) };
 }
 
-const { render, urgentes, vencidosYParados, proximosCierres, avisoPlan } = await import('../app/vistas/hoy.js');
+const { render, urgentes, proximosCierres, avisoPlan } = await import('../app/vistas/hoy.js');
 const { enCurso } = await import('../app/estado.js');
 
 const ahora = new Date('2026-09-17T07:00:00Z');
@@ -90,36 +90,28 @@ test('urgentes: prioridad 1-2 o vencimiento en menos de 24 h, ordenadas por prio
   assert.deepEqual(urgentes(undefined, ahora), []);
 });
 
-test('vencidosYParados: hito pasado sin cerrar o rojo, hecho fuera, parados primero y luego lo más vencido, tope 8', () => {
-  const es = vencidosYParados(datosOwner.encargos, ahora);
-  assert.deepEqual(es.map(e => e.id), [2, 1]); // #2 parado primero, luego #1 vencido; #3 esta hecho y no cuenta
-  assert.deepEqual(vencidosYParados(undefined, ahora), []);
-  const muchos = Array.from({ length: 12 }, (_, i) => ({ id: i, columna: 'en_curso', rojo: true }));
-  assert.equal(vencidosYParados(muchos, ahora).length, 8);
-});
-
 test('proximosCierres: aprobadas o presentadas que cierran en los próximos 7 días, ordenadas por fecha', () => {
   const cs = proximosCierres(datosOwner.licitaciones, ahora);
   assert.deepEqual(cs.map(l => l.expediente), ['L1']); // L2 cierra fuera de la ventana, L3 no es Aprobada/Presentada
   assert.deepEqual(proximosCierres(undefined, ahora), []);
 });
 
-test('owner: franja primero, luego el ancla de urgentes, la bandeja de decisiones y por último los tres paneles accionables', () => {
+test('owner: franja primero, luego el ancla de urgentes, la bandeja de decisiones y por último los paneles accionables', () => {
   const raiz = pintar();
   assert.equal(raiz.children[0].className, 'franja');
   // Brief B (19-sep): ancla para el scroll de la píldora "N urgentes tuyas", justo antes de la bandeja
   // (lo primero que se lee), sin tocar el id 'bandeja' que decisiones.js ya usa para su propio scroll.
   assert.equal(raiz.children[1].attrs.id, 'urgentes');
   assert.equal(raiz.children[2].className, 'seccion bandeja');
-  assert.deepEqual(paneles(raiz).map(p => p.children[0].textContent), ['Vencidos y parados · 2 de 2', 'Próximos cierres', 'Sesiones']);
-  assert.deepEqual(paneles(raiz).map(p => p.children[0].children[0].attrs.href), ['#operacion/tablero', '#operacion/licitaciones', '#operacion/expedientes']);
+  assert.deepEqual(paneles(raiz).map(p => p.children[0].textContent), ['Próximos cierres', 'Sesiones']);
+  assert.deepEqual(paneles(raiz).map(p => p.children[0].children[0].attrs.href), ['#operacion/licitaciones', '#operacion/expedientes']);
   // nada de los diez paneles agregados del cuadro anterior (Objetivo, Pipeline, Embudo, Equipo...): eso vive en KPIs
   for (const t of ['Objetivo', 'Pipeline', 'Embudo', 'Frentes', 'Consumo']) assert.ok(!raiz.textContent.includes(t), t);
 });
 
-test('owner: la franja enciende urgentes, parados, cuentas y correo; sin nada, "sin alertas" en verde', () => {
+test('owner: la franja enciende urgentes, cuentas y correo; sin nada, "sin alertas" en verde', () => {
   const t = pintar().children[0].textContent;
-  for (const x of ['1 urgentes tuyas', '1 encargos parados', 'cuentas saturadas', '2 correos sin contestar']) assert.ok(t.includes(x), x);
+  for (const x of ['1 urgentes tuyas', 'cuentas saturadas', '2 correos sin contestar']) assert.ok(t.includes(x), x);
   const raiz = pintar({ rol: 'owner' });
   assert.ok(raiz.children[0].textContent.endsWith('sin alertas'));
   assert.match(raiz.children[0].children.at(-1).className, /verde/);
@@ -127,11 +119,10 @@ test('owner: la franja enciende urgentes, parados, cuentas y correo; sin nada, "
 
 // Brief B (19-sep, feedback móvil de Diego: "los bullets deberían llevarte a su sitio"): cada píldora
 // enlaza a la vista ya filtrada por esa misma alerta, no a una ruta genérica.
-test('franja: "parados" y "sesiones" abren la vista ya filtrada; "urgentes" conserva #hoy como respaldo', () => {
+test('franja: "sesiones" abre la vista ya filtrada; "urgentes" conserva #hoy como respaldo', () => {
   const raiz = pintar();
   const pills = raiz.children[0].children;
   const porTexto = t => pills.find(a => a.textContent.includes(t));
-  assert.equal(porTexto('encargos parados').attrs.href, '#operacion/tablero?estado=parados');
   assert.equal(porTexto('sesiones abiertas').attrs.href, '#operacion/expedientes?tipo=todos&sesion=abierta');
   assert.equal(porTexto('correos sin contestar').attrs.href, '#operacion/expedientes', 'esta píldora no cambia (brief B)');
   assert.equal(porTexto('urgentes tuyas').attrs.href, '#hoy', 'respaldo si el onclick no llega a dispararse');
@@ -167,13 +158,6 @@ test('owner: la franja abre con los agentes activos y enlaza al tablero en curso
   assert.ok(!/EUR|USD|\$|€/.test(pintar(con).textContent), 'Home nunca habla de coste');
 });
 
-test('owner: Vencidos y parados marca alerta y lista lo peor primero', () => {
-  const p = panel(pintar(), 'Vencidos y parados');
-  assert.match(p.className, /alerta/);
-  assert.ok(p.textContent.startsWith('Vencidos y parados · 2 de 22'), p.textContent);
-  assert.ok(p.textContent.includes('#2') && p.textContent.indexOf('#2') < p.textContent.indexOf('#1'));
-});
-
 test('owner: Próximos cierres cuenta solo lo que cierra esta semana', () => {
   const p = panel(pintar(), 'Próximos cierres');
   assert.ok(p.textContent.startsWith('Próximos cierres1licitación cierra esta semana'), p.textContent);
@@ -189,9 +173,7 @@ test('owner: Sesiones cuenta las no cerradas, con agente, expediente y antigüed
 
 test('owner: vacíos no rompen y no marcan alerta', () => {
   const raiz = pintar({ rol: 'owner' });
-  assert.equal(paneles(raiz).length, 3);
-  assert.ok(panel(raiz, 'Vencidos y parados · 0 de 0').textContent.includes('nada parado'));
-  assert.ok(!/alerta/.test(panel(raiz, 'Vencidos y parados').className));
+  assert.equal(paneles(raiz).length, 2);
   assert.ok(!/alerta/.test(panel(raiz, 'Sesiones').className));
   assert.ok(panel(raiz, 'Próximos cierres').textContent.includes('0licitaciones cierran esta semana'));
   assert.ok(panel(raiz, 'Sesiones').textContent.includes('ninguna abierta'));
@@ -237,23 +219,6 @@ test('#1170: aviso de plan en la Home solo si hay actividades vencidas, con enla
   assert.equal(avisoPlan({}, ahora), null);
 });
 
-test('#1170 Vencidos y parados: cada fila con «hito hace N d» o «sin avance N d», agente normalizado y «N de M» con M = abiertos', () => {
-  const agentes = [{ id: 'sales-licita', nombre: 'Guillem' }, { id: 'operaciones', nombre: 'Pol' }];
-  const encargos = [
-    { id: 1, columna: 'en_curso', texto: 'Hito caducado', fecha_hito: '2026-09-10', agente: 'sales-licita' },
-    { id: 2, columna: 'bloqueado', texto: 'Parado con avance', rojo: true, fecha_avance: '2026-09-12T10:00:00Z', agente: 'operaciones' },
-    { id: 3, columna: 'por_hacer', texto: 'Sano', fecha_hito: '2026-09-30', agente: 'Ariadna' },
-    { id: 4, columna: 'hecho', texto: 'Hecho', fecha_hito: '2026-09-01' },
-  ];
-  const p = panel(pintar({ rol: 'owner', encargos, agentes }), 'Vencidos y parados');
-  assert.ok(p.textContent.startsWith('Vencidos y parados · 2 de 32'), p.textContent);            // 2 vencidos/parados de 3 abiertos (el hecho no cuenta)
-  assert.ok(p.textContent.includes('#2 Parado con avance · Pol · sin avance 4 d'), p.textContent);
-  assert.ok(p.textContent.includes('#1 Hito caducado · Guillem · hito hace 7 d'), p.textContent);
-  assert.equal(buscarNodos(p, n => n.tag === 'span' && /rojo/.test(n.className)).length, 2);
-  const muchos = Array.from({ length: 12 }, (_, i) => ({ id: i, columna: 'en_curso', rojo: true }));
-  assert.ok(panel(pintar({ rol: 'owner', encargos: muchos }), 'Vencidos y parados').textContent.startsWith('Vencidos y parados · 12 de 12'));  // la cuenta no se corta a los 8 listados
-});
-
 test('#1170 Próximos cierres: días hasta el cierre y «sin tocar N d» en rojo desde 3 d; sin dato de toque, nada', () => {
   const licitaciones = [
     { expediente: 'C-hoy', estado: 'Presentada', cierre: '2026-09-17', resumen_corto: 'Cierra hoy', toque: '2026-09-17T06:00:00Z' },
@@ -293,18 +258,10 @@ test('#1170 Sesiones: dos grupos, antigüedad por fila y rojo pasadas 48 h', () 
   assert.ok(!p.textContent.includes('Cerrada'));
 });
 
-// #1281: semáforo primero en la rama owner y regla de las cifras (sin fila en omc_datos no se pinta).
-const SEM1281 = { filas: ['correo', 'licitacion', 'encargo', 'tarjeta', 'contacto', 'dato'].map(o => ({ objeto: o, nombre: o, total: 1, rojos: 0, sin_medir: false, enlace: '#hoy', por_dueno: [] })) };
+// #1281: regla de las cifras (sin fila en omc_datos no se pinta).
 const TODAS = ['home.agentes.activos', 'home.sesiones.abiertas', 'home.encargos.parados', 'home.correo.sin_contestar', 'home.cuentas.saturadas', 'home.plan.vencidas',
   'home.encargos.abiertos_hito_pasado', 'home.licitaciones.cierran_semana', 'home.sesiones.mas_48h', 'home.encargos.en_curso', 'home.tarjetas.depende_de_ti', 'home.tarjetas.pospuestas',
   'home.licitaciones.por_decidir', 'home.licitaciones.en_criba_guillem'];
-test('#1281 owner: el semáforo de seis filas va antes que la franja; sin semáforo la franja sigue primera', () => {
-  const con = pintar({ ...datosOwner, semaforo: SEM1281, claves_datos: TODAS });
-  assert.equal(con.children[0].className, 'semaforo-seis');
-  assert.equal(con.children[0].children.length, 6);
-  assert.equal(con.children[1].className, 'franja');
-  assert.equal(pintar().children[0].className, 'franja');
-});
 test('#1281 owner: clave inexistente no se pinta (panel de sesiones y de cierres fuera), claves cargadas se pintan', () => {
   const textoDe = raiz => raiz.textContent;
   const todas = textoDe(pintar({ ...datosOwner, claves_datos: TODAS }));

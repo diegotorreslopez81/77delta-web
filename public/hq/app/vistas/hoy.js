@@ -1,9 +1,12 @@
 // Hoy (#1057 tarea 29, orden de Diego 19-sep): Home deja de ser un cuadro de KPIs (eso vive en KPIs)
 // y vuelve a ser una lista de lo que toca actuar hoy. Owner: la franja de alertas, la bandeja de
-// decisiones justo debajo (lo primero que se lee) y tres paneles compactos de lo que se sale de madre
-// si no se mira: encargos vencidos o parados, licitaciones que cierran esta semana y sesiones abiertas.
+// decisiones justo debajo (lo primero que se lee) y dos paneles compactos de lo que se sale de madre
+// si no se mira: licitaciones que cierran esta semana y sesiones abiertas.
 // Los diez paneles agregados (Objetivo, Pipeline, Embudo, Expedientes, Frentes, Encargos, Cierres,
 // Equipo, Consumo) se fueron a #kpis; aquí no se calcula ni se pinta ningún agregado, solo lo accionable.
+// #2118 (orden de Diego 27-sep): la Home solo enseña lo que a Diego le toca decidir o hacer; el
+// semáforo de seis filas y el contador de encargos vencidos/parados son salud del engranaje, no
+// decisiones suyas, así que se fueron a la vista Salud (que vigilan chief y coo).
 import { el, fecha } from '../ui.js';
 import { enCurso, agentesActivos, frescuraPlan, diasDesde, nombreAgente, sesionesPorGrupo, DIAS_LICITACION_SIN_TOCAR } from '../estado.js';
 import { tarjetaEncargo } from '../tarjeta.js';
@@ -11,7 +14,7 @@ import { panel, cifra } from '../cuadro.js';
 import { urgeTercera } from './recursos.js';
 import { estadoDe } from '../licitaciones.js';
 import * as decisiones from './decisiones.js';
-import { bloque as semaforoSeis, tieneFila } from '../semaforo.js';
+import { tieneFila } from '../semaforo.js';
 
 const DIA = 864e5;
 function bloque(titulo, kids, vacio) { return el('section', { class: 'seccion' }, [el('h2', { text: titulo }), ...(kids.length ? kids : [el('p', { class: 'mudo', text: vacio })])]); }
@@ -25,7 +28,6 @@ const dia = t => new Date(t).toISOString().slice(0, 10);
 // agentesActivos() en estado.js, la misma fuente que la cabecera del Tablero. Nunca coste aquí.
 export function franja(d, urg, ahora = new Date()) {
   const sesiones = (d.sesiones || []).filter(x => x.estado !== 'cerrada').length;
-  const parados = (d.encargos || []).filter(e => e.rojo).length;
   const correo = kpi('correo.pendientes.n', d.kpis) || 0;
   const tercera = kpi('cuentas.urge_tercera', d.kpis) === 1 || urgeTercera(d.cuentas);
   // Cada píldora lleva a su sitio (feedback de Diego, iPhone 19-sep): "urgentes tuyas" baja al bloque
@@ -34,10 +36,9 @@ export function franja(d, urg, ahora = new Date()) {
   const bajarAUrgentes = ev => { ev.preventDefault(); document.getElementById('urgentes')?.scrollIntoView?.({ behavior: 'smooth', block: 'start' }); };
   // #1281: cada cifra se pinta solo si tiene fila en omc_datos (home.*); sin fila se omite, y sin alertas visibles por eso no se dice "sin alertas".
   const fila = k => tieneFila(d.claves_datos, k);
-  const omitidas = [!fila('home.encargos.parados') && parados, !fila('home.cuentas.saturadas') && tercera, !fila('home.correo.sin_contestar') && correo, !fila('home.sesiones.abiertas') && sesiones].some(Boolean);
+  const omitidas = [!fila('home.cuentas.saturadas') && tercera, !fila('home.correo.sin_contestar') && correo, !fila('home.sesiones.abiertas') && sesiones].some(Boolean);
   const pills = [
     urg ? ['rojo', urg + ' urgentes tuyas', '#hoy', bajarAUrgentes] : null,
-    parados && fila('home.encargos.parados') ? ['rojo', parados + ' encargos parados', '#operacion/tablero?estado=parados'] : null,
     tercera && fila('home.cuentas.saturadas') ? ['rojo', 'cuentas saturadas', '#recursos/computo'] : null,
     correo && fila('home.correo.sin_contestar') ? ['ambar', correo + ' correos sin contestar', '#operacion/expedientes'] : null,
     sesiones && fila('home.sesiones.abiertas') ? ['ambar', sesiones + ' sesiones abiertas', '#operacion/expedientes?tipo=todos&sesion=abierta'] : null,
@@ -59,20 +60,6 @@ export function urgentes(pendientes, ahora = new Date()) {
   }).sort((a, b) => ((Number(a.prioridad) || 9) - (Number(b.prioridad) || 9)) || String(a.vence || '9').localeCompare(String(b.vence || '9')));
 }
 
-// Encargos abiertos con el hito pasado sin cerrar o marcados rojo (bloqueados/parados); los parados
-// primero, luego los más vencidos. El detalle completo vive en Operación/Tablero, aquí solo los peores 8.
-function todosVencidosYParados(encargos, ahora) {
-  const hoy = dia(ahora.getTime());
-  return (encargos || [])
-    .filter(e => e.columna !== 'hecho' && ((e.fecha_hito && String(e.fecha_hito).slice(0, 10) < hoy) || e.rojo))
-    .sort((a, b) => (b.rojo ? 1 : 0) - (a.rojo ? 1 : 0) || String(a.fecha_hito || '9999').localeCompare(String(b.fecha_hito || '9999')));
-}
-export function vencidosYParados(encargos, ahora = new Date()) { return todosVencidosYParados(encargos, ahora).slice(0, 8); }
-// «N de M» del título (#1170): N = abiertos con el hito pasado o parados (todos, no solo los 8 que se listan), M = abiertos.
-export function cuentaVencidos(encargos, ahora = new Date()) {
-  return { n: todosVencidosYParados(encargos, ahora).length, m: (encargos || []).filter(e => e.columna !== 'hecho').length };
-}
-
 // Licitaciones aprobadas o presentadas cuyo cierre cae en los próximos `dias` días. Se compara por día natural: la que cierra hoy
 // sigue dentro (es la más urgente), aunque su cierre sea una fecha a las 00:00Z y ya haya pasado esa hora.
 export function proximosCierres(licitaciones, ahora = new Date(), dias = 7) {
@@ -84,20 +71,6 @@ export function proximosCierres(licitaciones, ahora = new Date(), dias = 7) {
 }
 
 const rojo = texto => el('span', { class: 'rojo', text: texto });
-function filaVencido(e, agentes, ahora) {
-  const hito = e.fecha_hito && String(e.fecha_hito).slice(0, 10) < dia(ahora.getTime()) ? diasDesde(e.fecha_hito, ahora) : null;
-  const sinAvance = diasDesde(e.fecha_avance || e.fecha, ahora);
-  const edad = hito != null ? 'hito hace ' + hito + ' d' : sinAvance != null ? 'sin avance ' + sinAvance + ' d' : e.rojo ? 'parado' : '';
-  const quien = nombreAgente(e.agente, agentes);
-  return el('li', {}, ['#' + e.id + ' ' + corto(e.texto, 40) + (quien ? ' · ' + quien : '') + (edad ? ' · ' : ''), edad ? rojo(edad) : null]);
-}
-function panelVencidosParados(encargos, ahora, agentes) {
-  const es = vencidosYParados(encargos, ahora), { n, m } = cuentaVencidos(encargos, ahora);
-  return panel('Vencidos y parados · ' + n + ' de ' + m, '#operacion/tablero', [
-    cifra(String(n), n ? 'abiertos con el hito pasado o parados' : 'nada parado'),
-    es.length ? el('ul', { class: 'lista-corta' }, es.map(e => filaVencido(e, agentes, ahora))) : null,
-  ], n ? 'alerta' : '');
-}
 
 function panelProximosCierres(licitaciones, ahora) {
   const cs = proximosCierres(licitaciones, ahora);
@@ -134,8 +107,6 @@ export function avisoPlan(d, ahora = new Date()) {
 export function render(raiz, S, arg, filtros, ahora = new Date()) {
   const d = S.datos || {};
   if (d.rol === 'owner') {
-    // #1281: el semáforo de seis filas va antes de cualquier otra cosa; sin datos no se pinta nada.
-    raiz.append(semaforoSeis(d.semaforo, d.agentes));
     raiz.append(franja(d, urgentes(d.pendientes, ahora).length, ahora));
     const plan = avisoPlan(d, ahora); if (plan) raiz.append(plan);
     // Ancla de la píldora "N urgentes tuyas" (feedback de Diego, iPhone 19-sep): la bandeja de
@@ -145,8 +116,7 @@ export function render(raiz, S, arg, filtros, ahora = new Date()) {
     raiz.append(el('div', { id: 'urgentes' }));
     decisiones.montar(raiz, S, arg);
     const fila = k => tieneFila(d.claves_datos, k);
-    raiz.append(el('div', { class: 'cuadro' }, [fila('home.encargos.abiertos_hito_pasado') ? panelVencidosParados(d.encargos, ahora, d.agentes) : null,
-      fila('home.licitaciones.cierran_semana') ? panelProximosCierres(d.licitaciones, ahora) : null,
+    raiz.append(el('div', { class: 'cuadro' }, [fila('home.licitaciones.cierran_semana') ? panelProximosCierres(d.licitaciones, ahora) : null,
       fila('home.sesiones.abiertas') ? panelSesiones(d.sesiones, d.agentes, ahora, fila('home.sesiones.mas_48h')) : null]));
   } else {
     // El token de agente no conoce su identidad en el payload (T4-c): d.encargos ya viaja recortado a

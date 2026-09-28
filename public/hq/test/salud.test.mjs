@@ -128,3 +128,58 @@ test('#1281 salud: semáforo de seis filas justo tras el h1 y antes de los grupo
   const sin = await pintar(async () => DATOS);
   assert.equal(buscar(sin, n => clase(n, 'semaforo-seis')).length, 0);
 });
+
+// #2118 (venido de Home, orden de Diego 27-sep): "Vencidos y parados" es salud del engranaje, no una
+// decisión de Diego. Pintado justo después del semáforo de seis filas, antes de los grupos de engranajes.
+const AGENTES = [{ id: 'nuria', nombre: 'Núria' }];
+const E_VENCIDO = { id: 1, columna: 'en_curso', texto: 'Expediente sin tocar hace mucho', fecha_hito: '2026-09-10', agente: 'nuria' };
+const E_PARADO = { id: 2, columna: 'en_curso', texto: 'Encargo rojo sin hito', rojo: true, fecha_avance: '2026-09-05', agente: 'nuria' };
+const E_AL_DIA = { id: 3, columna: 'en_curso', texto: 'Encargo al día', fecha_hito: '2026-10-05' };
+const E_HECHO_VENCIDO = { id: 4, columna: 'hecho', texto: 'Ya cerrado aunque el hito quedó atrás', fecha_hito: '2026-09-01' };
+
+test('vencidosYParados: hito pasado sin cerrar o rojo, nunca lo de columna hecho ni lo al día', () => {
+  const es = V.vencidosYParados([E_VENCIDO, E_PARADO, E_AL_DIA, E_HECHO_VENCIDO], AHORA);
+  assert.deepEqual(es.map(e => e.id), [2, 1]);
+});
+test('vencidosYParados: parados (rojo) antes que los vencidos por fecha, tope 8 filas', () => {
+  const muchos = Array.from({ length: 10 }, (_, i) => ({ id: 10 + i, columna: 'en_curso', fecha_hito: '2026-09-0' + (1 + (i % 9)), rojo: false }));
+  const es = V.vencidosYParados([...muchos, E_PARADO], AHORA);
+  assert.equal(es.length, 8);
+  assert.equal(es[0].id, 2);
+});
+test('cuentaVencidos: «N de M» - N cuenta todos (no solo los 8 listados), M son los abiertos', () => {
+  const muchos = Array.from({ length: 10 }, (_, i) => ({ id: 10 + i, columna: 'en_curso', fecha_hito: '2026-09-01', rojo: false }));
+  const { n, m } = V.cuentaVencidos([...muchos, E_PARADO, E_AL_DIA, E_HECHO_VENCIDO], AHORA);
+  assert.equal(n, 11);
+  assert.equal(m, 12);
+});
+
+test('panelVencidosParados: sin nada que avisar, cifra en 0 y sin alerta', () => {
+  const p = V.panelVencidosParados([E_AL_DIA], AHORA, AGENTES);
+  assert.ok(!clase(p, 'alerta'));
+  assert.match(p.textContent, /Vencidos y parados · 0 de 1/);
+  assert.match(p.textContent, /nada parado/);
+});
+test('panelVencidosParados: con vencidos y parados marca alerta y lista lo peor primero', () => {
+  const p = V.panelVencidosParados([E_VENCIDO, E_PARADO, E_AL_DIA], AHORA, AGENTES);
+  assert.ok(clase(p, 'alerta'));
+  assert.match(p.textContent, /Vencidos y parados · 2 de 3/);
+  const filas = buscar(p, n => n.tag === 'li');
+  assert.equal(filas.length, 2);
+  assert.match(filas[0].textContent, /#2 Encargo rojo sin hito · Núria · sin avance \d+ d/);
+  assert.match(filas[1].textContent, /#1 Expediente sin tocar hace mucho · Núria · hito hace \d+ d/);
+  assert.ok(buscar(filas[0], n => clase(n, 'rojo')).length === 1);
+});
+test('panelVencidosParados: encargo rojo sin hito ni avance dice «parado»', () => {
+  const p = V.panelVencidosParados([{ id: 9, columna: 'en_curso', texto: 'sin fechas', rojo: true }], AHORA, AGENTES);
+  const fila = buscar(p, n => n.tag === 'li')[0];
+  assert.match(fila.textContent, /#9 sin fechas · parado/);
+});
+
+test('salud render: el panel de vencidos y parados va justo después del semáforo', async () => {
+  V.restablecer(); V.usarCargador(async () => DATOS);
+  const raiz = crearNodo('main');
+  await V.render(raiz, { datos: { semaforo: null, agentes: AGENTES, encargos: [E_VENCIDO, E_PARADO] } }, undefined, {}, AHORA); await tick();
+  assert.equal(raiz.children[0].tag, 'h1');
+  assert.match(raiz.children[1].textContent, /Vencidos y parados · 2 de 2/);
+});

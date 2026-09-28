@@ -6,6 +6,8 @@
 // texto del estado. Sin dato o con la RPC caída se dice claro, no se deja la pantalla vacía.
 import { el } from '../ui.js';
 import { bloque as semaforoSeis } from '../semaforo.js';
+import { diasDesde, nombreAgente } from '../estado.js';
+import { panel, cifra } from '../cuadro.js';
 
 let cargaSalud = async () => (await import('../api.js')).rpc('omc_engranajes_lista');
 export function usarCargador(fn) { if (fn) cargaSalud = fn; }
@@ -64,6 +66,38 @@ export function vigiaParado(datos, ahora = new Date()) {
   return !Number.isFinite(t) || ahora.getTime() - t > PARADO_MS;
 }
 
+// #2118 (venido de Home, orden de Diego 27-sep): encargos vencidos o parados es salud del engranaje,
+// no una decisión de Diego, así que el panel vive aquí. Los parados primero, luego los más vencidos;
+// el detalle completo vive en Operación/Tablero, aquí solo los peores 8.
+const diaISO = t => new Date(t).toISOString().slice(0, 10);
+function corto(t, n = 60) { t = String(t || ''); return t.length > n ? t.slice(0, n - 1) + '…' : t; }
+const rojoSpan = texto => el('span', { class: 'rojo', text: texto });
+function todosVencidosYParados(encargos, ahora) {
+  const hoy = diaISO(ahora.getTime());
+  return (encargos || [])
+    .filter(e => e.columna !== 'hecho' && ((e.fecha_hito && String(e.fecha_hito).slice(0, 10) < hoy) || e.rojo))
+    .sort((a, b) => (b.rojo ? 1 : 0) - (a.rojo ? 1 : 0) || String(a.fecha_hito || '9999').localeCompare(String(b.fecha_hito || '9999')));
+}
+export function vencidosYParados(encargos, ahora = new Date()) { return todosVencidosYParados(encargos, ahora).slice(0, 8); }
+// «N de M» del título (#1170): N = abiertos con el hito pasado o parados (todos, no solo los 8 que se listan), M = abiertos.
+export function cuentaVencidos(encargos, ahora = new Date()) {
+  return { n: todosVencidosYParados(encargos, ahora).length, m: (encargos || []).filter(e => e.columna !== 'hecho').length };
+}
+function filaVencido(e, agentes, ahora) {
+  const hito = e.fecha_hito && String(e.fecha_hito).slice(0, 10) < diaISO(ahora.getTime()) ? diasDesde(e.fecha_hito, ahora) : null;
+  const sinAvance = diasDesde(e.fecha_avance || e.fecha, ahora);
+  const edad = hito != null ? 'hito hace ' + hito + ' d' : sinAvance != null ? 'sin avance ' + sinAvance + ' d' : e.rojo ? 'parado' : '';
+  const quien = nombreAgente(e.agente, agentes);
+  return el('li', {}, ['#' + e.id + ' ' + corto(e.texto, 40) + (quien ? ' · ' + quien : '') + (edad ? ' · ' : ''), edad ? rojoSpan(edad) : null]);
+}
+export function panelVencidosParados(encargos, ahora, agentes) {
+  const es = vencidosYParados(encargos, ahora), { n, m } = cuentaVencidos(encargos, ahora);
+  return panel('Vencidos y parados · ' + n + ' de ' + m, '#operacion/tablero', [
+    cifra(String(n), n ? 'abiertos con el hito pasado o parados' : 'nada parado'),
+    es.length ? el('ul', { class: 'lista-corta' }, es.map(e => filaVencido(e, agentes, ahora))) : null,
+  ], n ? 'alerta' : '');
+}
+
 // Lo que el usuario abrió o cerró a mano sobrevive a las recargas: main.js vacía la vista en cada tick.
 const abiertos = new Map();
 let cache = null;   // { datos, t }
@@ -113,6 +147,7 @@ function cuerpo(datos, aviso, ahora) {
 export async function render(raiz, S, arg, filtros, ahora = new Date()) {
   raiz.append(el('h1', { text: 'Salud' }));
   raiz.append(semaforoSeis(S?.datos?.semaforo, S?.datos?.agentes));   // #1281: las seis filas de control encima de los grupos
+  raiz.append(panelVencidosParados(S?.datos?.encargos, ahora, S?.datos?.agentes));   // #2118: venido de Home
   const caja = el('div', { class: 'salud' });
   raiz.append(caja);
   const pintar = (datos, aviso) => { caja.innerHTML = ''; caja.append(...cuerpo(datos, aviso, ahora)); };
