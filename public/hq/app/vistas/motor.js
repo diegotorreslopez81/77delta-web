@@ -130,7 +130,12 @@ export function textoTareas(t) {
   partes.push(n('hechas_24h') + ' hechas 24 h');
   return 'Ahora: ' + partes.join(' · ');
 }
+// Diego 28-sep: el semaforo de la fase dice si la fase trabaja, no el estado de una pieza vieja. Con
+// tareas en curso, verde; con cola y nada en curso, rojo (parada); sin tareas, el peor estado de piezas.
 function chipPiezas(f, ahora) {
+  const t = f.con_tareas ? (f.tareas || {}) : null, curso = Number(t?.en_curso) || 0, cola = Number(t?.pendiente) || 0;
+  if (curso) return el('span', { class: 'pill verde', text: 'trabajando · ' + curso + (curso === 1 ? ' réplica' : ' réplicas') });
+  if (cola) return el('span', { class: 'pill rojo', text: 'parada con ' + cola + ' en cola' });
   if (!f.peor_estado) return el('span', { class: 'pill gris', text: (f.piezas || []).length ? 'piezas sin registrar' : 'sin pieza registrada' });
   const col = COLOR_PEOR[f.peor_estado] || 'gris', senal = hace(f.ultimo_latido, ahora);
   return el('span', { class: 'pill ' + col, title: (f.piezas_estado || []).map(p => p.nombre + ': ' + p.estado + (p.sin_latido ? ' (sin latido)' : '')).join('\n') },
