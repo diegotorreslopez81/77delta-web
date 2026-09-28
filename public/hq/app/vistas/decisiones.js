@@ -25,7 +25,9 @@
 // que construye los nodos <a>/<br> via el() (atributos DOM reales, no interpolacion de string en innerHTML).
 import { rpc } from '../api.js';
 import { el, modal, toast, fecha, eur, enlazar, urlSegura, campoTexto } from '../ui.js';
-import { recargar } from '../main.js';
+import { recargar, render as repintar } from '../main.js';
+import { S } from '../estado.js';
+import { conSalida, resolucionLocal } from '../salida.js';
 import { tieneFila } from '../semaforo.js';
 import { porDecidir, enCriba, solvenciaTexto, tipologia, tipologiaOrgano } from '../licitaciones.js';
 import { botonesTransicion } from '../decision-lic.js';
@@ -50,12 +52,18 @@ async function actuar(p, accion, campo) {
   const texto = campo.value.trim();
   if (accion !== 'aprobada' && !texto) { toast(accion === 'comentar' ? 'Escribe el comentario' : 'Escribe el motivo o la respuesta'); campo.focus?.(); return; }
   try {
-    if (accion === 'comentar') { await rpc('omc_comentar', { p_id: p.id, p_texto: texto }); toast('#' + p.id + ' comentado'); }
-    else { await rpc('omc_resolver', { p_id: p.id, p_estado: accion, p_respuesta: texto }); toast('#' + p.id + ' ' + accion); }
-    // Brief 2021 (capa C): la accion ya triunfo por RPC, el borrador de este campo ya no hace falta.
-    campo.olvidarBorrador?.();
-    await recargar();
-  } catch (err) { toast('HQ rechaza: ' + err.message); }
+    if (accion === 'comentar') {
+      await rpc('omc_comentar', { p_id: p.id, p_texto: texto }); toast('#' + p.id + ' comentado');
+      // Brief 2021 (capa C): la accion ya triunfo por RPC, el borrador de este campo ya no hace falta.
+      campo.olvidarBorrador?.();
+      await recargar();
+    } else {
+      // #2118: aprobar, rechazar o responder hacen desaparecer la tarjeta con fade, sin recargar la lista.
+      await conSalida(campo.closest?.('[data-sale]'), () => rpc('omc_resolver', { p_id: p.id, p_estado: accion, p_respuesta: texto }), {
+        local: () => { resolucionLocal(S, p.id); campo.olvidarBorrador?.(); toast('#' + p.id + ' ' + accion); },
+        pintar: repintar, recargar });
+    }
+  } catch (err) { toast('HQ rechaza: ' + err.message, null, null, 8000); }
 }
 export function textoChat(p, texto) { return '#' + p.id + ' ' + p.titulo + ': ' + String(texto || '').trim(); }
 async function copiar(p, campo) {
@@ -107,7 +115,7 @@ function tarjeta(p, abierta, hilo, soloComentar) {
     if (det.open) history.replaceState(null, '', location.pathname + propio);
     else if (location.hash === propio) history.replaceState(null, '', location.pathname + '#hoy');
   });
-  return el('article', { class: 'tarjeta decision', id: 'd' + p.id }, [det]);
+  return el('article', { class: 'tarjeta decision', id: 'd' + p.id, 'data-sale': soloComentar ? null : '1' }, [det]);
 }
 
 // Slug de 'Elegible' para la clase del pill: minusculas, sin acentos, espacios a '-' (probable, dudosa,
@@ -131,7 +139,7 @@ function enlacesDoc(l) {
 function licitacion(l, rol) {
   const enlaces = enlacesDoc(l);
   const tags = tipologia(l);
-  return el('article', { class: 'tarjeta licitacion' }, [
+  return el('article', { class: 'tarjeta licitacion', 'data-sale': '1' }, [
     el('div', { class: 'fila' }, [el('span', { class: 'pill codigo', text: l.expediente }), el('strong', { text: l.resumen_corto || l.objeto || l.expediente })]),
     el('div', { class: 'lic-tags' }, [
       l.organo ? el('span', { class: 'pill tag-' + colorOrgano(tipologiaOrgano(l.organo)), title: 'Órgano: ' + l.organo, text: l.organo }) : null,
@@ -145,7 +153,7 @@ function licitacion(l, rol) {
       l.motivo_auto ? el('p', { text: 'Motivo: ' + l.motivo_auto }) : null,
     ]),
     enlaces.length ? el('div', { class: 'enlaces-doc' }, enlaces) : null,
-    el('div', { class: 'modal-acciones' }, botonesTransicion(l, recargar, rol)),
+    el('div', { class: 'modal-acciones' }, botonesTransicion(l, recargar, rol, undefined, repintar)),
   ]);
 }
 

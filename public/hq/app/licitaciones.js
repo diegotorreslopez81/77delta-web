@@ -352,6 +352,12 @@ export function estadoPartido(l) {
 }
 export function estadoBase(l) { return estadoPartido(l).estado; }
 
+// Clave de lic_resumen (agregado del servidor) para cada estado; la usan el chip de la vista y salida.js.
+export const CLAVE_RESUMEN = { 'Nueva': 'nueva', 'Criba de pliego': 'criba_pliego', 'Por decidir': 'por_decidir',
+  'Aprobada': 'aprobadas', 'En redacción': 'en_redaccion', 'Por presentar': 'por_presentar', 'Presentada': 'presentadas',
+  'Subsanación': 'subsanacion', 'Propuesta de adjudicación': 'propuesta_adjudicacion', 'Adjudicada': 'adjudicadas',
+  'No adjudicada': 'no_adjudicadas', 'Descartada': 'descartadas', 'Cerrada sin presentar': 'cerradas' };
+
 // Presencialidad (2.0.20, filtro nuevo de la hoja): no hay columna en BD. La senal fiable es el motivo
 // de NO 'Presencial' del catalogo cerrado (lo pone Diego al descartar); para lo que aun no se ha
 // decidido solo queda la heuristica de texto sobre lo que escribe el bot y el pliego.

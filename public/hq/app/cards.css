@@ -136,6 +136,16 @@ body.con-hoja{overflow:hidden}
   .hoja{animation:none}
   .fab-filtros{transition:none}
 }
+
+/* #2118: salida suave de una tarjeta resuelta (salida.js). max-height parte del alto real, puesto en linea por JS */
+[data-sale]{overflow:hidden}
+[data-sale].saliendo{opacity:0;max-height:0!important;margin-top:0!important;margin-bottom:0!important;padding-top:0!important;padding-bottom:0!important;border-width:0!important;
+  pointer-events:none;transform:none;
+  transition:opacity .2s var(--ease),max-height .25s var(--ease),margin .25s var(--ease),padding .25s var(--ease),border-width .25s var(--ease)}
+[data-sale]:not(.saliendo){transition:opacity .2s var(--ease),max-height .25s var(--ease),box-shadow .2s var(--ease),transform .2s var(--ease)}
+@media (prefers-reduced-motion: reduce){
+  [data-sale].saliendo,[data-sale]:not(.saliendo){transition:none}
+}
 @media (min-width:900px){
   .hoja-fondo{align-items:center}
   .hoja{width:520px;max-width:92vw;max-height:80vh;border-radius:var(--radio);animation:none;padding-bottom:10px}

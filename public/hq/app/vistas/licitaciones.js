@@ -7,9 +7,9 @@
 // El cuadro de los cinco paneles (embudo, pipeline...) se queda en Operación/KPIs vía panelesLicitaciones,
 // que sigue leyendo el payload de omc_hq_v2 sin tocar: esa vista es una foto agregada, no necesita fidelidad total.
 import { el, fecha, urlSegura, toast } from '../ui.js';
-import { embudo, porElegible, porDecidir, vencida, esperandoResolucion, sinPresentarUrgente, ordenCierre, estadoDe, estadoBase, estadoPartido, solvenciaTexto, pipelinePorMes, tipologiaOrgano, tipologia, TIPOLOGIAS, filtrar, enlacesLic, ESTADOS_H1, ETAPAS_LIC, etapaDe } from '../licitaciones.js';
+import { embudo, porElegible, porDecidir, vencida, esperandoResolucion, sinPresentarUrgente, ordenCierre, estadoDe, estadoBase, estadoPartido, solvenciaTexto, pipelinePorMes, tipologiaOrgano, tipologia, TIPOLOGIAS, filtrar, enlacesLic, ESTADOS_H1, ETAPAS_LIC, etapaDe, CLAVE_RESUMEN } from '../licitaciones.js';
 import { botonesTransicion, botonClaveSobre, checklistA5, ejecutarTransicion } from '../decision-lic.js';
-import { recargar } from '../main.js';
+import { recargar, render as repintar } from '../main.js';
 import { hojaFiltros, pillsActivos } from '../filtros.js';
 import { donut, barras } from '../graficos.js';
 import { eurCorto, anchoLog, panel, cifra, grafico, leyenda, ejeX, filaBarra } from '../cuadro.js';
@@ -123,10 +123,6 @@ export function filtroCliente(v) {
 // D70 (#2086 spec §2): clave de lic_resumen para cada fase de ESTADOS_H1 (mismo patrón que embudo()
 // en licitaciones.js). El contador del chip sale de aquí, no de la página ya traída, para que cuadre
 // con omc_licitaciones_tabla aunque esa fase no esté en los ~500 resultados servidos.
-const CLAVE_RESUMEN = { 'Nueva': 'nueva', 'Criba de pliego': 'criba_pliego', 'Por decidir': 'por_decidir',
-  'Aprobada': 'aprobadas', 'En redacción': 'en_redaccion', 'Por presentar': 'por_presentar', 'Presentada': 'presentadas',
-  'Subsanación': 'subsanacion', 'Propuesta de adjudicación': 'propuesta_adjudicacion', 'Adjudicada': 'adjudicadas',
-  'No adjudicada': 'no_adjudicadas', 'Descartada': 'descartadas', 'Cerrada sin presentar': 'cerradas' };
 export function nFase(resumen, estado) { return Number(resumen?.[CLAVE_RESUMEN[estado]]?.n) || 0; }
 
 // Paneles del cuadro (se mueven a Operación/KPIs vía panelesLicitaciones; se dejan intactos aquí como
@@ -274,7 +270,7 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
   };
   const alClic = e => { if (e.target?.closest?.('a, button')) return; alternar(e.currentTarget || art); };
   const art = el('article', {
-    class: 'card-lic', tabindex: '0', 'aria-expanded': 'false', 'data-expediente': l.expediente || '',
+    class: 'card-lic', 'data-sale': '1', tabindex: '0', 'aria-expanded': 'false', 'data-expediente': l.expediente || '',
     onclick: alClic, onkeydown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault?.(); alternar(e.currentTarget || art); } },
   }, [
     el('div', { class: 'lic-tags' }, [
@@ -308,7 +304,7 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
     ]),
     el('div', { class: 'lic-pie enlaces enlaces-doc' }, [
       ...enlaces.map(([t, u]) => el('a', { class: 'btn-enlace', href: u, target: '_blank', rel: 'noopener', text: t })),
-      ...botonesTransicion(l, recargarSinCache, rol),
+      ...botonesTransicion(l, recargarSinCache, rol, undefined, repintar),
       botonClaveSobre(l, rol),
       el('button', { class: 'btn', text: 'Copiar para el chat', onclick: () => copiarLic(l) }),
     ]),
@@ -352,9 +348,9 @@ function panelAprobadasAuto(rol) {
   import('../api.js').then(m => m.aprobadasAuto(3)).then(filas => {
     const enPlazo = (Array.isArray(filas) ? filas : []).filter(f => f.dentro_de_plazo);
     if (!enPlazo.length) return;
-    const cuerpo = el('div', { class: 'lic-historial' }, [el('ul', { class: 'lista-corta' }, enPlazo.map(f => el('li', {}, [
+    const cuerpo = el('div', { class: 'lic-historial' }, [el('ul', { class: 'lista-corta' }, enPlazo.map(f => el('li', { 'data-sale': '1' }, [
       el('span', { text: (f.expediente || '#' + f.licitacion_id) + ' · ' + (f.organo || '') + ' · ' + (f.importe ? eurCorto(f.importe) : 'sin importe') + ' · aprobada ' + fecha(f.aprobada_en) + ' ' }),
-      el('button', { class: 'btn peligro chip', text: 'Vetar', onclick: () => ejecutarTransicion({ id: f.licitacion_id, expediente: f.expediente }, 'Descartada', recargarSinCache) }),
+      el('button', { class: 'btn peligro chip', text: 'Vetar', onclick: ev => ejecutarTransicion({ id: f.licitacion_id, expediente: f.expediente }, 'Descartada', recargarSinCache, { nodo: ev?.currentTarget?.closest?.('[data-sale]'), pintar: repintar }) }),
     ])))]);
     caja.append(el('details', { class: 'lic-hist panel-aprobadas-auto', open: true }, [el('summary', { text: 'Auto-aprobadas por criba 2 · veto 12h (D1)' }), cuerpo]));
   }).catch(() => {});

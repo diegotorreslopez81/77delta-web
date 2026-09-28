@@ -5,6 +5,8 @@
 import { transicionLicitacion, catalogoDescarte, claveSobre } from './api.js';
 import { el, modal, toast, pedirTexto, campoTexto } from './ui.js';
 import { transicionesValidas } from './licitaciones.js';
+import { S } from './estado.js';
+import { conSalida, transicionLocal, permanece } from './salida.js';
 
 // H4: catalogo cerrado de motivos de descarte. Se pide en vivo a omc_motivos_no() (nunca copiado a mano)
 // y se cachea en memoria de pestana; si la RPC falla, el modal deja escribir solo la nota y avisa.
@@ -61,7 +63,9 @@ function pedirJustificante(expediente) {
   return pedirTexto('Justificante de presentacion ' + expediente, 'Enlace del justificante (Drive, correo...)', true);
 }
 
-export async function ejecutarTransicion(l, destino, recargar) {
+// salida = { nodo, pintar }: la tarjeta que se desvanece al confirmarse la transicion y el repintado local
+// (main.js:render). Sin salida se recarga desde la red, como antes.
+export async function ejecutarTransicion(l, destino, recargar, salida = {}) {
   let motivo = null, nota = '', justificante = null;
   if (destino === 'Descartada') {
     const r = await pedirMotivoDescarte('Descartar ' + l.expediente, await catalogo());
@@ -78,27 +82,27 @@ export async function ejecutarTransicion(l, destino, recargar) {
     nota = t;
   }
   try {
-    await transicionLicitacion(l.id, destino, { motivo, nota, justificante });
-    toast(l.expediente + ': ' + destino);
-    await recargar();
+    await conSalida(permanece(S, l, destino) ? null : salida.nodo, () => transicionLicitacion(l.id, destino, { motivo, nota, justificante }), {
+      local: () => { transicionLocal(S, l, destino); toast(l.expediente + ': ' + destino); },
+      pintar: salida.pintar, recargar });
   } catch (err) {
     // H4 (24-sep): si el catalogo fallo justo al abrir el modal, motivo llega null y HQ rechaza el
     // descarte sin guardar nada; antes esto se perdia en un toast de 4s. Ahora dura mas, ofrece
     // reintentar sin perder lo escrito y fuerza recargar el catalogo por si ya esta disponible.
     catalogoCache = null;
-    toast('HQ rechaza ' + l.expediente + ': ' + err.message, 'Reintentar', () => ejecutarTransicion(l, destino, recargar), 12000);
+    toast('HQ rechaza ' + l.expediente + ': ' + err.message, 'Reintentar', () => ejecutarTransicion(l, destino, recargar, salida), 12000);
   }
 }
 
 // Un boton por destino valido (tabla 5.3 filtrada por rol, licitaciones.js:transicionesValidas). Descartar
 // siempre en rojo; el resto, primario si es el avance natural (el primero de la lista), secundario si no.
 // Card (Diego 23-sep): 'Cerrada sin presentar' solo tiene sentido con el cierre ya pasado.
-export function botonesTransicion(l, recargar, rol, ahora = new Date()) {
+export function botonesTransicion(l, recargar, rol, ahora = new Date(), pintar = null) {
   const cerro = l.cierre && String(l.cierre).slice(0, 10) < ahora.toISOString().slice(0, 10);
   return transicionesValidas(l, rol).filter(d => d !== 'Cerrada sin presentar' || cerro).map((destino, i) => el('button', {
     class: 'btn' + (destino === 'Descartada' ? ' peligro' : i === 0 ? ' primario' : ''),
     text: destino,
-    onclick: () => ejecutarTransicion(l, destino, recargar),
+    onclick: ev => ejecutarTransicion(l, destino, recargar, { nodo: ev?.currentTarget?.closest?.('[data-sale]'), pintar }),
   }));
 }
 
