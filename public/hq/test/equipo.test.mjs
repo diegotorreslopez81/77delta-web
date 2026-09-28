@@ -41,7 +41,7 @@ if (typeof globalThis.localStorage === 'undefined') {
   globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => mem.set(k, String(v)), removeItem: (k) => mem.delete(k) };
 }
 
-const { render, cuadroEquipo, tarjetaAgente, tramo, porDepto, textoAhora, separarMotor, usarCargadorCadena, restablecerCadena, textoTareas } = await import('../app/vistas/equipo.js');
+const { render, cuadroEquipo, tarjetaAgente, tramo, porDepto, textoAhora, separarMotor } = await import('../app/vistas/equipo.js');
 const buscarNodos = (n, f, out = []) => { if (n && n.nodeType === 1) { if (f(n)) out.push(n); n.children.forEach(c => buscarNodos(c, f, out)); } return out; };
 const AHORA = new Date('2026-09-18T20:00:00Z');
 const ags = [
@@ -196,66 +196,27 @@ test('separarMotor: fases en orden de cadena, mantenimiento aparte, casos en el 
   assert.deepEqual(r.resto.map(a => a.id), ['b', 'c']);
 });
 
-test('render: el motor va en su bloque antes del resto del equipo', () => {
+test('render: el organigrama no pinta el motor, solo el enlace a Licita Engine (D91)', () => {
   const raiz = crearNodo('main');
   const S = Sx();
-  render(raiz, { datos: { ...S.datos, agentes: [...S.datos.agentes, { id: 'q', nombre: 'Queralt', nivel: 3, fase: 'redaccion', depto: 'Licita · Motor: fases' }] } }, null, {}, AHORA);
-  const motor = raiz.children.find(s => s.className === 'seccion motor');
-  assert.equal(motor.children[0]._text, 'Motor Licita autónomo');
-  assert.ok(raiz.children.indexOf(motor) < raiz.children.findIndex(s => s.className === 'titulo-resto'));
+  render(raiz, { datos: { ...S.datos, agentes: [...S.datos.agentes,
+    { id: 'q', nombre: 'Queralt', nivel: 3, fase: 'redaccion', depto: 'Licita · Motor: fases' },
+    { id: 'operaciones', nombre: 'Pol', nivel: 3, depto: 'Licita · Motor: mantenimiento' }] } }, null, {}, AHORA);
+  assert.equal(raiz.children.filter(s => (s.className || '').includes('motor')).filter(s => s.className === 'seccion motor').length, 0);
+  assert.equal(buscarNodos(raiz, n => n.tag === 'a' && n.attrs.href === '#licita-engine' && n._text === 'Motor Licita: ver Licita Engine ›').length, 1);
+  const nombres = buscarNodos(raiz, n => n.className === 'card-agente').map(n => n.textContent);
+  assert.ok(!nombres.some(t => t.includes('Queralt') || t.includes('Pol')));
+  assert.equal(nombres.length, 4);
+  assert.equal(buscarNodos(raiz, n => (n.className || '').includes('piezas')).length, 0);
 });
 
-// D91 (schema-v91): cadena del motor desde lic_cadena_estado, con cargador stub.
-const CADENA = [
-  { orden: 3, fase: 'criba', grupo: 'cadena', nombre: 'Criba', que_hace: 'criba 1 y 2', ejecutor: 'sql', piezas: ['lic_cribar_ficha'], piezas_estado: [{ nombre: 'lic_cribar_ficha', estado: 'activa' }], peor_estado: 'activa', con_tareas: false, donde: 'Supabase' },
-  { orden: 1, fase: 'captacion', grupo: 'cadena', nombre: 'Captación', que_hace: 'scrapers', ejecutor: 'script', piezas: ['barrido'], piezas_estado: [{ nombre: 'barrido', estado: 'averiada' }], peor_estado: 'averiada', con_tareas: false, donde: 'VPS1' },
-  { orden: 5, fase: 'extraccion', grupo: 'cadena', nombre: 'Extracción', que_hace: 'lee el pliego', ejecutor: 'agente', agente_id: 'sales-licita-redaccion-menor', agente_nombre: 'Judit', piezas: [], piezas_estado: [], peor_estado: null, con_tareas: true, donde: 'VPS de agentes',
-    tareas: { en_curso: 3, pendiente: 1, esperando: 0, bloqueada: 0, hechas_24h: 303 } },
-  { orden: 10, fase: 'orquestador', grupo: 'transversal', nombre: 'Orquestador', que_hace: 'crea tareas', ejecutor: 'script', piezas: ['lic-orquestador'], piezas_estado: [{ nombre: 'lic-orquestador', estado: 'pausada' }], peor_estado: 'pausada', con_tareas: false },
-];
-const tick = () => new Promise(r => setTimeout(r, 0));
-
-test('textoTareas: línea viva con en curso, cola, esperando y hechas 24 h', () => {
-  assert.equal(textoTareas({ en_curso: 2, pendiente: 255, esperando: 0, hechas_24h: 307 }), 'Ahora: 2 en curso · 255 en cola · 0 esperando · 307 hechas 24 h');
-  assert.equal(textoTareas({ en_curso: 0, pendiente: 0, esperando: 75, bloqueada: 1, hechas_24h: 5 }), 'Ahora: 0 en curso · 0 en cola · 75 esperando · 1 bloqueada · 5 hechas 24 h');
-  assert.equal(textoTareas(null), null);
-});
-
-test('render: cadena numerada en orden desde Supabase, ejecutor, semáforo de piezas y sin agentes de fase duplicados', async () => {
-  restablecerCadena();
-  usarCargadorCadena(async () => CADENA);
-  const raiz = crearNodo('main');
+test('ficha de un agente del motor vuelve a Licita Engine; la del resto al organigrama', () => {
   const S = Sx();
-  const judit = { id: 'sales-licita-redaccion-menor', nombre: 'Judit', nivel: 3, fase: 'extraccion', depto: 'Licita · Motor: fases' };
-  const pol = { id: 'operaciones', nombre: 'Pol', nivel: 3, depto: 'Licita · Motor: mantenimiento' };
-  render(raiz, { datos: { ...S.datos, agentes: [...S.datos.agentes, judit, pol] } }, null, {}, AHORA);
-  await tick();
-  const motor = raiz.children.find(s => s.className === 'seccion motor');
-  const fases = buscarNodos(motor, n => n.className === 'card-fase');
-  assert.deepEqual(fases.map(f => f.attrs['data-fase']), ['captacion', 'criba', 'extraccion', 'orquestador']);
-  assert.deepEqual(buscarNodos(motor, n => n.className === 'fase-num').map(n => n._text), ['1', '3', '5']);
-  assert.equal(buscarNodos(motor, n => n.className === 'cadena transversal').length, 1);
-  // Judit sale como ejecutora enlazada a su ficha y no como tarjeta de agente duplicada.
-  assert.equal(buscarNodos(motor, n => n.tag === 'a' && n.attrs.href === '#equipo/agente/sales-licita-redaccion-menor').length, 1);
-  assert.equal(buscarNodos(raiz, n => n.className === 'card-agente' && n.textContent.includes('Judit')).length, 0);
-  assert.ok(buscarNodos(motor, n => n.className === 'card-agente' && n.textContent.includes('Pol')).length === 1);
-  assert.ok(textos(fases[1]).includes('SQL') && textos(fases[0]).includes('script'));
-  assert.equal(buscarNodos(fases[0], n => n.className === 'pill rojo').length, 1);
-  assert.equal(buscarNodos(fases[3], n => n.className === 'pill gris').length, 1);
-  assert.ok(textos(fases[2]).includes('Ahora: 3 en curso · 1 en cola · 0 esperando · 303 hechas 24 h'));
-  assert.equal(buscarNodos(fases[0], n => n.className === 'ahora').length, 0);
-  assert.ok(raiz.children.indexOf(motor) < raiz.children.findIndex(s => s.className === 'titulo-resto'));
-});
-
-test('render: si la cadena falla sin caché, aviso rojo y respaldo con las tarjetas de fase', async () => {
-  restablecerCadena();
-  usarCargadorCadena(async () => { throw new Error('token no válido'); });
-  const raiz = crearNodo('main');
-  const S = Sx();
-  render(raiz, { datos: { ...S.datos, agentes: [{ id: 'q', nombre: 'Queralt', nivel: 3, fase: 'redaccion', depto: 'Licita · Motor: fases' }] } }, null, {}, AHORA);
-  await tick();
-  const motor = raiz.children.find(s => s.className === 'seccion motor');
-  assert.match(buscarNodos(motor, n => n.className === 'aviso rojo')[0]._text, /token no válido/);
-  assert.equal(buscarNodos(motor, n => n.className === 'card-agente').length, 1);
-  restablecerCadena();
+  const q = { id: 'q', nombre: 'Queralt', nivel: 3, fase: 'redaccion', depto: 'Licita · Motor: fases' };
+  const f = crearNodo('main');
+  render(f, { datos: { ...S.datos, agentes: [...S.datos.agentes, q] } }, 'q', {}, AHORA);
+  assert.equal(f.children[0].attrs.href, '#licita-engine');
+  const g = crearNodo('main');
+  render(g, S, 'chief', {}, AHORA);
+  assert.equal(g.children[0].attrs.href, '#equipo/organigrama');
 });

@@ -10,6 +10,7 @@ import * as kpis from './vistas/kpis.js';
 import * as objetivo from './vistas/objetivo.js';
 import * as tablero from './vistas/tablero.js';
 import * as equipo from './vistas/equipo.js';
+import * as motor from './vistas/motor.js';
 import * as colaboradores from './vistas/colaboradores.js';
 import * as expedientes from './vistas/expedientes.js';
 import * as licitaciones from './vistas/licitaciones.js';
@@ -21,7 +22,7 @@ import * as admin from './vistas/admin.js';
 // Plan 3a: una vista por clave de ruta (rutas.js). 'equipo/agente' es la ficha de equipo.js (arg = id).
 // #1057 tarea 29: Hoy ya monta la bandeja de decisiones ella misma (decisiones.montar, solo owner),
 // justo debajo de la franja; no hace falta envolverla aquí.
-const VISTAS = { 'hoy': hoy, 'kpis': kpis, 'direccion/objetivo': objetivo, 'operacion/tablero': tablero, 'operacion/expedientes': expedientes, 'operacion/licitaciones': licitaciones, 'operacion/salud': salud, 'operacion/admin': admin, 'equipo/organigrama': equipo, 'equipo/agente': equipo, 'equipo/colaboradores': colaboradores, 'recursos/computo': recursos };
+const VISTAS = { 'hoy': hoy, 'kpis': kpis, 'direccion/objetivo': objetivo, 'operacion/tablero': tablero, 'operacion/expedientes': expedientes, 'operacion/licitaciones': licitaciones, 'operacion/salud': salud, 'operacion/admin': admin, 'equipo/organigrama': equipo, 'equipo/agente': equipo, 'equipo/colaboradores': colaboradores, 'recursos/computo': recursos, 'licita-engine': motor };
 const raiz = document.getElementById('vista');
 document.getElementById('ver').textContent = 'v' + HQ_VERSION.v;
 montarMenu(document.getElementById('nav'));
