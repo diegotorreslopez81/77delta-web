@@ -296,6 +296,35 @@ test('tarjetaLic: colapsada por defecto, tags de estado/organo/importe/plazo y t
   assert.match(plazoSpan.children[0].className, /g-rojo/);
 });
 
+test('tarjetaLic D99: cabecera con pill de tipo CPV (etiqueta) y resumen_corto como titulo; objeto y objeto_real al detalle', () => {
+  const l = {
+    id: 7, expediente: 'X7', estado: 'Por decidir', cpv: '72000000,48000000', etiqueta: 'TI / Desarrollo',
+    resumen_corto: 'Oficina técnica de apoyo a la administración electrónica', objeto: 'CONTRATO SERVICIOS PLAN 2026 LOTE 1',
+    ficha: { objeto_real: 'Soporte a la sede electrónica' },
+  };
+  const t = tarjetaLic(l, AHORA, 'agente');
+  const cab = buscarNodos(t, n => clase(n, 'lic-tags'))[0];
+  const pill = buscarNodos(cab, n => n.textContent === 'TI / Desarrollo')[0];
+  assert.ok(pill, 'pill de tipo CPV en la cabecera');
+  assert.match(pill.getAttribute('title'), /CPV 72000000/);
+  assert.equal(buscarNodos(t, n => clase(n, 'lic-titulo'))[0].textContent, 'Oficina técnica de apoyo a la administración electrónica');
+  const detalle = buscarNodos(t, n => clase(n, 'detalle'))[0].textContent;
+  assert.match(detalle, /Objeto real: Soporte a la sede electrónica/);
+  assert.match(detalle, /CONTRATO SERVICIOS PLAN 2026 LOTE 1/);
+});
+
+test('tarjetaLic D99: sin etiqueta ni resumen_corto no hay pill de tipo y el titulo cae a objeto_real, objeto y expediente', () => {
+  const sin = tarjetaLic({ id: 8, expediente: 'X8', estado: 'Nueva', etiqueta: '', objeto: 'Objeto X8' }, AHORA, 'agente');
+  assert.equal(buscarNodos(sin, n => clase(n, 'lic-tags'))[0].children.filter(c => /tag-teal/.test(c.className || '')).length, 0);
+  assert.equal(buscarNodos(sin, n => clase(n, 'lic-titulo'))[0].textContent, 'Objeto X8');
+  const otros = tarjetaLic({ id: 11, expediente: 'X11', estado: 'Nueva', cpv: '38550000', etiqueta: 'Otros' }, AHORA, 'agente');
+  assert.equal(buscarNodos(otros, n => clase(n, 'lic-tags'))[0].children.filter(c => /tag-teal/.test(c.className || '')).length, 0, "'Otros' no aporta y se oculta");
+  const real = tarjetaLic({ id: 9, expediente: 'X9', estado: 'Nueva', ficha: { objeto_real: 'Real X9' }, objeto: 'Jerga' }, AHORA, 'agente');
+  assert.equal(buscarNodos(real, n => clase(n, 'lic-titulo'))[0].textContent, 'Real X9');
+  const igual = tarjetaLic({ id: 10, expediente: 'X10', estado: 'Nueva', resumen_corto: 'Igual', objeto: 'Igual', ficha: { objeto_real: 'Igual' } }, AHORA, 'agente');
+  assert.doesNotMatch(buscarNodos(igual, n => clase(n, 'detalle'))[0].textContent, /Objeto real/);
+});
+
 test('tarjetaLic: clic alterna aria-expanded; clic en un enlace interno no lo toca', () => {
   const l = { id: 1, expediente: 'X2', estado: 'Nueva', enlace: 'https://perfil/x' };
   const t = tarjetaLic(l, AHORA, 'agente');

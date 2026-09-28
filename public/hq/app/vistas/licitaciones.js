@@ -205,7 +205,7 @@ export function resumenFicha(l) {
   return partes.join(' · ');
 }
 export function textoChatLic(l) {
-  return ['Licitación #' + l.id, l.expediente, corto(l.ficha?.objeto_real || l.resumen_corto || l.objeto || '', 120),
+  return ['Licitación #' + l.id, l.expediente, corto(l.resumen_corto || l.ficha?.objeto_real || l.objeto || '', 120),
     l.importe ? eurCorto(l.importe) + ' sin IVA' : null, l.cierre ? 'cierra ' + fecha(l.cierre) : null].filter(Boolean).join(' · ') + ': ';
 }
 async function copiarLic(l) {
@@ -230,7 +230,9 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
   // desde el catálogo cerrado de omc_motivos_no(). Se muestra tal cual, sin filtrar por ninguna lista.
   const tagsMotivo = par.estado === 'Descartada' && l.motivo_descarte ? [el('span', { class: 'pill', text: corto(l.motivo_descarte, 60) })] : [];
   const etiquetas = Array.isArray(l.etiquetas) ? l.etiquetas : [];
-  const titulo = corto(l.ficha?.objeto_real || l.resumen_corto || l.objeto || l.expediente, 160);
+  // D99 (#2118): el resumen corto humano manda en la cabecera; objeto (jerga del pliego) y objeto_real pasan al detalle si difieren.
+  const titulo = corto(l.resumen_corto || l.ficha?.objeto_real || l.objeto || l.expediente, 160);
+  const objetoReal = l.ficha?.objeto_real;
   const historial = el('div', { class: 'lic-historial' });
   let historialCargado = false;
   const cargarHistorial = () => {
@@ -277,6 +279,7 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
   }, [
     el('div', { class: 'lic-tags' }, [
       el('span', { class: 'pill tag-' + colorEstado(par.estado), title: 'Estado: ' + par.estado }, [el('i', { class: 'punto g-' + (COLOR_ESTADO[par.estado] || 'neutro-3') }), par.estado]),
+      l.etiqueta && l.etiqueta !== 'Otros' ? el('span', { class: 'pill tag-teal', title: 'Tipo (CPV' + (l.cpv ? ' ' + String(l.cpv).split(',')[0].trim() : '') + '): ' + l.etiqueta, text: l.etiqueta }) : null,
       tipo && tipo !== 'Otro' ? el('span', { class: 'pill tag-' + colorOrgano(tipo), title: 'Órgano: ' + tipo, text: tipo }) : null,
       el('span', { class: 'pill ' + importeClase(l.importe), text: l.importe ? eurCorto(l.importe) + ' sin IVA' : 'sin importe' }),
       // D56/Tanda G (#2051): Adjudicada con importe_adjudicado (real, sin IVA) muestra un pill aparte;
@@ -292,7 +295,8 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
     resumenFicha(l) ? el('p', { class: 'sub lic-resumen', text: resumenFicha(l) }) : null,
     l.organo || l.provincia ? el('p', { class: 'lic-organo', text: [l.organo, l.provincia].filter(Boolean).join(' · ') }) : null,
     el('div', { class: 'detalle' }, [
-      l.objeto && norm(l.objeto) !== norm(titulo) ? el('p', { class: 'sub', text: l.objeto }) : null,
+      objetoReal && norm(objetoReal) !== norm(titulo) ? el('p', { class: 'sub', text: 'Objeto real: ' + objetoReal }) : null,
+      l.objeto && norm(l.objeto) !== norm(titulo) && norm(l.objeto) !== norm(objetoReal || '') ? el('p', { class: 'sub', text: l.objeto }) : null,
       l.expediente ? el('p', { class: 'sub', text: 'Expediente ' + l.expediente }) : null,
       solv !== 'sin dato' ? el('p', { class: 'sub', text: 'Solvencia: ' + solv }) : null,
       l.agente ? el('p', { class: 'sub', text: 'Agente: ' + l.agente + (l.tomada_en ? ' · tomada ' + fecha(l.tomada_en) : '') }) : null,
