@@ -11,11 +11,21 @@ const datos = {
 };
 test('por número devuelve todo lo que tenga ese id, con su casa', () => {
   const r = buscar(datos, '#996');
-  assert.deepEqual(r.map(x => [x.tipo, x.href]), [['encargo', '#operacion/tablero/996'], ['decision', '#hoy/996']]);
-  assert.equal(r[0].titulo, 'Cobertura total de fuentes de licitaciones');
+  assert.deepEqual(r.map(x => [x.tipo, x.href]), [['petición', '#hoy/996'], ['encargo', '#operacion/tablero/996']]);
+  assert.equal(r[0].titulo, 'Aprobar gasto');
+  assert.equal(r[1].titulo, 'Cobertura total de fuentes de licitaciones');
+});
+test('número con petición pendiente: la petición va primera y su href es #hoy/<id> (Enter la abre directo)', () => {
+  const r = buscar({ encargos: [{ id: 1426, texto: 'Otro asunto' }], pendientes: [{ id: 1426, titulo: 'Pagar VPS6' }] }, '1426');
+  assert.equal(r[0].tipo, 'petición'); assert.equal(r[0].href, '#hoy/1426');
+  assert.equal(r[1].tipo, 'encargo');
+});
+test('número sin petición pendiente: solo sale el encargo', () => {
+  const r = buscar(datos, '12');
+  assert.deepEqual(r.map(x => x.tipo), ['encargo']);
 });
 test('por texto ignora acentos y mayúsculas y busca en título e id', () => {
-  assert.deepEqual(buscar(datos, 'ciclica').map(x => x.tipo), ['decision', 'expediente']);
+  assert.deepEqual(buscar(datos, 'ciclica').map(x => x.tipo), ['petición', 'expediente']);
   assert.deepEqual(buscar(datos, 'ARIADNA').map(x => x.href), ['#equipo/agente/sales-motor']);
   assert.deepEqual(buscar(datos, 'sales-mot').map(x => x.tipo), ['agente']);
   assert.deepEqual(buscar(datos, 'a1').map(x => x.href), ['#operacion/tablero?frente=A1']);
