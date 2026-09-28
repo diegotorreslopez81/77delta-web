@@ -298,3 +298,4 @@ a{color:inherit}
 .sem-duenos{flex-basis:100%;font-size:12px;color:var(--pizarra)}
 @media(min-width:720px){.semaforo-seis{grid-template-columns:repeat(3,1fr)}}
 .card-agente .funcion,.ficha-cab .funcion{margin:4px 0 0;font-size:13px;line-height:1.4;color:var(--tinta)}
+.card-agente .ahora,.ficha-cab .ahora{margin:4px 0 0;font-size:13px;line-height:1.4;color:var(--tinta-2,var(--tinta));font-weight:600}

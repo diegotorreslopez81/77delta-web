@@ -41,7 +41,7 @@ if (typeof globalThis.localStorage === 'undefined') {
   globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => mem.set(k, String(v)), removeItem: (k) => mem.delete(k) };
 }
 
-const { render, cuadroEquipo, tarjetaAgente, tramo, porDepto } = await import('../app/vistas/equipo.js');
+const { render, cuadroEquipo, tarjetaAgente, tramo, porDepto, textoAhora } = await import('../app/vistas/equipo.js');
 const buscarNodos = (n, f, out = []) => { if (n && n.nodeType === 1) { if (f(n)) out.push(n); n.children.forEach(c => buscarNodos(c, f, out)); } return out; };
 const AHORA = new Date('2026-09-18T20:00:00Z');
 const ags = [
@@ -150,4 +150,35 @@ test('render: enlace a KPIs arriba, secciones por departamento sin inactivos y f
   const f = crearNodo('main');
   render(f, Sx(), 'chief', {}, AHORA);
   assert.ok(textos(f).includes('Marc'));
+});
+
+// D90 (schema-v90): linea "Ahora: ..." determinista desde omc_agentes_lista (fase/trabajando/ahora).
+test('textoAhora: agente de fase con réplicas en curso y cola', () => {
+  const a = { id: 'sales-licita-cat', fase: 'redaccion', trabajando: { tipo: 'fase', fase: 'redaccion', replicas: [{ replica: 2, expediente: '43/2026' }, { replica: 4, expediente: 'LSL-2026-218' }], pendiente: 8, esperando: 0 } };
+  assert.equal(textoAhora(a, AHORA), '2 réplicas: redacción 43/2026, LSL-2026-218 · 8 en cola');
+  const uno = { fase: 'revision', trabajando: { tipo: 'fase', replicas: [{ replica: 1, expediente: 'X1' }], pendiente: 0, esperando: 12 } };
+  assert.equal(textoAhora(uno, AHORA), '1 réplica: revisión X1 · 12 esperando');
+});
+test('textoAhora: agente de fase sin réplicas es libre (con cola si la hay)', () => {
+  assert.equal(textoAhora({ fase: 'avisos', trabajando: { tipo: 'fase', replicas: [], pendiente: 0, esperando: 0 } }, AHORA), 'libre');
+  assert.equal(textoAhora({ fase: 'extraccion', trabajando: { tipo: 'fase', replicas: [], pendiente: 3, esperando: 0 } }, AHORA), 'libre · 3 en cola');
+});
+test('textoAhora: agente tmux usa ahora o el encargo en curso, el más reciente, con tiempo relativo', () => {
+  const enc = { tipo: 'encargo', id: 70, texto: 'Tres arreglos de arranque', updated_at: '2026-09-18T19:00:00Z' };
+  assert.equal(textoAhora({ ahora: 'revisando PR', ahora_desde: '2026-09-18T19:50:00Z', trabajando: enc }, AHORA), 'revisando PR · hace 10 min');
+  assert.equal(textoAhora({ ahora: 'viejo', ahora_desde: '2026-09-18T10:00:00Z', trabajando: enc }, AHORA), '#70 Tres arreglos de arranque · hace 60 min');
+  assert.equal(textoAhora({ trabajando: enc }, AHORA), '#70 Tres arreglos de arranque · hace 60 min');
+});
+test('textoAhora: sin nada, o con un ahora de más de 24 h sin encargo, es libre', () => {
+  assert.equal(textoAhora({ id: 'x' }, AHORA), 'libre');
+  assert.equal(textoAhora({ ahora: 'algo', ahora_desde: '2026-09-16T10:00:00Z', trabajando: null }, AHORA), 'libre');
+  assert.equal(textoAhora({ ahora: 'algo', ahora_desde: '2026-09-18T12:00:00Z', trabajando: null }, AHORA), 'algo · hace 8 h');
+});
+test('tarjeta y ficha muestran la línea "Ahora: ..."', () => {
+  const a = { ...ags[0], ahora: 'cerrando el informe', ahora_desde: '2026-09-18T19:59:30Z' };
+  const t = tarjetaAgente(a, Sx(), AHORA);
+  assert.deepEqual(buscarNodos(t, n => n.className === 'ahora').map(n => n._text), ['Ahora: cerrando el informe · hace menos de 2 min']);
+  const raiz = crearNodo('div');
+  render(raiz, { datos: { ...Sx().datos, agentes: [{ ...ags[1] }] } }, 'sales-licita', {}, AHORA);
+  assert.deepEqual(buscarNodos(raiz, n => n.className === 'ahora').map(n => n._text), ['Ahora: libre']);
 });

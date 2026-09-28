@@ -111,6 +111,33 @@ function chipsAgente(a, S, ahora) {
   ]);
 }
 
+// D90 (schema-v90): "Ahora: ..." de cada agente, determinista y solo desde Supabase (omc_agentes_lista).
+// Agente de fase (a.fase): replicas del motor en curso en su fase (lic_tareas en_curso) y cuantas
+// esperan en cola. Resto: lo que el agente dijo con hq.py agente ahora (o tomar/avance de encargo, que
+// lo fijan solos) o su ultimo encargo en_curso, el mas reciente de los dos. Un "ahora" de mas de 24 h
+// sin encargo en curso ya no dice nada: se muestra libre.
+const FASE_TEXTO = { extraccion: 'extracción', redaccion: 'redacción', revision: 'revisión', presentacion: 'presentación', avisos: 'avisos', descarga: 'descarga', plazo: 'plazo' };
+const AHORA_CADUCA_H = 24;
+export function textoAhora(a, ahora = new Date()) {
+  const t = a.trabajando;
+  if (a.fase || t?.tipo === 'fase') {
+    const reps = t?.replicas || [], cola = Number(t?.pendiente) || 0, esperando = Number(t?.esperando) || 0;
+    const partes = [reps.length ? plural(reps.length, 'réplica', 'réplicas') + ': ' + (FASE_TEXTO[a.fase || t?.fase] || a.fase || t?.fase) + ' ' + reps.map(r => r.expediente || '?').join(', ') : 'libre'];
+    if (cola) partes.push(cola + ' en cola');
+    if (esperando) partes.push(esperando + ' esperando');
+    return partes.join(' · ');
+  }
+  const tAhora = a.ahora && a.ahora_desde ? new Date(a.ahora_desde).getTime() : NaN;
+  const tEnc = t?.tipo === 'encargo' ? new Date(t.updated_at).getTime() : NaN;
+  const conHace = (txt, iso) => { const h = hace(iso, ahora); return h ? txt + ' · ' + h : txt; };
+  if (a.ahora && (!Number.isFinite(tEnc) || !(tAhora < tEnc))) {
+    if (Number.isFinite(tEnc) || !Number.isFinite(tAhora) || ahora.getTime() - tAhora < AHORA_CADUCA_H * 3600e3) return conHace(a.ahora, a.ahora_desde);
+  }
+  if (t?.tipo === 'encargo') return conHace('#' + t.id + ' ' + (t.texto || ''), t.updated_at);
+  return 'libre';
+}
+function lineaAhora(a, ahora) { return el('p', { class: 'ahora', text: 'Ahora: ' + textoAhora(a, ahora) }); }
+
 // Schema-v30: tipo (fase|area|proyecto) y modo (continuo|a_demanda) de omc_agentes viajan solos en el
 // payload (to_jsonb(a) en omc_hq_v2, sin lista de columnas explicita) y se anaden a la misma linea de
 // sub que depto/nivel/modelo; filter(Boolean) los omite si el agente aun no los trae.
@@ -127,6 +154,7 @@ function ficha(raiz, S, a, ahora = new Date()) {
       el('p', { class: 'sub', text: subAgente(a) }),
       // D89: omc_agentes.funcion (que hace y que no hace nunca) viaja solo en to_jsonb(a).
       a.funcion ? el('p', { class: 'funcion', text: a.funcion }) : null,
+      lineaAhora(a, ahora),
       chipsAgente(a, S, ahora),
       sesionUrl ? el('a', { class: 'btn primario', href: sesionUrl, target: '_blank', rel: 'noopener', text: 'Abrir sesión' }) : el('span', { class: 'mudo', text: 'sin sesión publicada' }),
     ]),
@@ -171,6 +199,7 @@ export function tarjetaAgente(a, S, ahora = new Date()) {
       el('p', { class: 'sub', text: subAgente(a) }),
       // D89: omc_agentes.funcion (que hace y que no hace nunca) viaja solo en to_jsonb(a).
       a.funcion ? el('p', { class: 'funcion', text: a.funcion }) : null,
+      lineaAhora(a, ahora),
       chipsAgente(a, S, ahora),
     ]),
   ]);
