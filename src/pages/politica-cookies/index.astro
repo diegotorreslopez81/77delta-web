@@ -21,7 +21,7 @@ const navegadores = [
 
 <Base
   title="Política de cookies"
-  description="Este sitio web no instala cookies propias ni de terceros. La analítica es anónima y sin cookies."
+  description="Este sitio web no instala cookies propias. La analítica es anónima y sin cookies; el calendario de Google en contacto solo se carga, y puede instalar las suyas, si pulsas para verlo."
 >
   <section class="wrap pb-14 pt-20 md:pb-20 md:pt-28">
     <p class="eyebrow" data-reveal>Legal</p>
@@ -29,11 +29,12 @@ const navegadores = [
       class="mt-5 max-w-[16ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
       data-reveal
     >
-      Sin cookies propias. Sin seguimiento.
+      Sin cookies propias. Casi sin terceros.
     </h1>
     <p class="mt-7 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Este sitio web no instala cookies propias ni de terceros. La medición de visitas es anónima, agregada y
-      sin cookies.
+      Este sitio web no instala cookies propias. La medición de visitas es anónima, agregada y sin cookies. La
+      única excepción es el calendario de reserva de Google en la página de contacto, que solo se carga y solo
+      puede instalar las suyas si pulsas el botón para verlo.
     </p>
   </section>
 
@@ -51,41 +52,69 @@ const navegadores = [
 
         <section data-reveal>
           <p class={numero}>02</p>
-          <h2 class={titulo}>¿Qué cookies usamos?</h2>
+          <h2 class={titulo}>¿Qué cookies y tecnologías usamos de verdad?</h2>
           <p class={parrafo}>
-            Ninguna. Este sitio web es estático y no requiere identificación ni sesión de usuario, así que no
-            instala cookies propias. Tampoco utilizamos cookies analíticas ni de terceros: no hay Google
-            Analytics, ni píxeles de redes sociales, ni herramientas de publicidad o de seguimiento entre
-            sitios.
+            Ninguna cookie propia. Este sitio web es estático, no requiere identificación ni sesión de usuario
+            y no instala ninguna cookie propia. Tampoco utilizamos Google Analytics, píxeles de redes sociales
+            ni herramientas de publicidad o de seguimiento entre sitios.
           </p>
           <p class={parrafo}>
             Para saber qué páginas se visitan utilizamos Umami, una herramienta de analítica que no instala
             cookies, no guarda la dirección IP y no identifica al visitante. Registra únicamente datos
-            agregados: página vista, país, tipo de dispositivo y origen de la visita. Se ejecuta en un servidor
-            propio en la Unión Europea.
+            agregados: página vista, país, tipo de dispositivo y origen de la visita. Se ejecuta en nuestro
+            propio servidor, en stats.77delta.com, dentro de la Unión Europea.
           </p>
           <p class={parrafo}>
-            Al no instalarse ninguna cookie propia que requiera consentimiento, no verás un banner pidiéndotelo. El calendario de Google solo se carga en la página de contacto y tiene alternativa sin incrustar.
+            El formulario de contacto envía tu mensaje a api.77delta.com, un subdominio propio con
+            infraestructura en la Unión Europea. Tampoco instala cookies.
+          </p>
+          <p class={parrafo}>
+            Para recordar si prefieres ver la web en castellano o en catalán guardamos un dato en el
+            almacenamiento local del navegador (<code>localStorage</code>), no en una cookie. No se envía a
+            ningún servidor, no caduca por sí solo y puedes borrarlo desde los ajustes de tu navegador. Es una
+            tecnología técnica y necesaria para el propio funcionamiento del selector de idioma, equivalente a
+            una cookie exenta de consentimiento.
+          </p>
+          <p class={parrafo}>
+            La única excepción real es el calendario de reserva de citas de Google, en la <a
+              href={href('/contacto/')}
+              class={enlace}>página de contacto</a
+            >. Es el único elemento de este sitio que no controlamos nosotros y no se carga por defecto: en su
+            lugar verás un botón, "Ver calendario", con un enlace para abrirlo en una pestaña aparte. Hasta que
+            no pulsas ese botón, no se descarga nada de Google. Si lo pulsas, Google puede instalar sus propias
+            cookies para el funcionamiento del calendario y la prevención de abusos; son cookies de tercero, no
+            exentas, y ese clic es tu consentimiento expreso para ellas. Si prefieres no darlo, tienes en la
+            misma página el formulario de contacto y el enlace directo al calendario en una pestaña aparte, que
+            tampoco incrustan nada. Puedes consultar la política de cookies de Google en <a
+              href="https://policies.google.com/technologies/cookies"
+              target="_blank"
+              rel="noopener"
+              class={enlace}>policies.google.com/technologies/cookies</a
+            >.
+          </p>
+          <p class={parrafo}>
+            Los enlaces a LinkedIn y a WhatsApp son enlaces externos, no contenido incrustado: solo interactúas
+            con esos servicios si pulsas en ellos, y entonces se aplican sus propias políticas de cookies y
+            privacidad.
           </p>
         </section>
 
         <section data-reveal>
           <p class={numero}>03</p>
-          <h2 class={titulo}>Recursos externos</h2>
+          <h2 class={titulo}>Por qué no hay un banner de cookies</h2>
           <p class={parrafo}>
-            Las tipografías, las imágenes y el código de esta web se sirven desde nuestro propio dominio. El
-            único recurso externo que se carga es el script de analítica anónima descrito en el punto anterior,
-            alojado en un servidor propio en la Unión Europea.
+            Un banner de consentimiento es obligatorio cuando un sitio instala cookies no exentas antes de que
+            el usuario decida. Ninguna de las cookies que dependen de nosotros, ni la analítica de Umami ni el
+            formulario de contacto, instala cookie alguna, así que no hay nada que pedirte.
           </p>
           <p class={parrafo}>
-            El formulario de contacto envía tu mensaje a un subdominio nuestro, servido desde infraestructura propia en la Unión Europea, y tampoco instala cookies. La página de contacto sí incrusta el calendario de reserva de Google, que al cargarse puede instalar cookies propias de Google: puedes evitarlo escribiendo por el formulario o abriendo el calendario en su propia ventana. Los accesos a LinkedIn son enlaces externos, no contenido
-            incrustado: solo interactúas con esos servicios si pulsas en ellos, y entonces se aplican sus
-            propias políticas de cookies y privacidad.
-          </p>
-          <p class={parrafo}>
-            Si en algún momento incrustamos contenido externo, como vídeos o calendarios de reserva, esos
-            servicios pueden establecer sus propias cookies. En ese caso aparecerá el aviso correspondiente y
-            se solicitará tu consentimiento previo.
+            La excepción es el calendario de Google descrito en el punto anterior, y ahí el bloqueo previo ya
+            existe: en lugar de un banner genérico, el calendario solo se carga si pulsas el botón "Ver
+            calendario". Ese clic hace la misma función que un banner, pedirte permiso antes de que Google
+            instale nada, y es tu consentimiento expreso para esa cookie en concreto. Si no lo pulsas, Google no
+            recibe ni instala nada. Si en el futuro incorporamos otro contenido de terceros que requiera cookies
+            no exentas, como vídeos u otros calendarios, aplicaremos el mismo criterio de carga solo bajo
+            petición o, si no es posible, un consentimiento previo equivalente.
           </p>
         </section>
 
@@ -132,7 +161,7 @@ const navegadores = [
         </section>
 
         <p class="hairline pt-8 font-mono text-[12px] text-pizarra" data-reveal>
-          Última actualización: septiembre de 2026
+          Última actualización: 28 de septiembre de 2026
         </p>
       </article>
     </div>

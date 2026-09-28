@@ -11,7 +11,7 @@ const lista = 'mt-4 list-disc space-y-2 pl-5 text-[16px] text-pizarra marker:tex
 
 <Base
   title="Avís legal"
-  description={`Informació societària de ${site.sociedad}, titular de la marca ${site.nombre}, i condicions d'ús d'aquest lloc web.`}
+  description={`Informació societària de ${site.sociedad}, titular del nom comercial ${site.nombre}, i condicions d'ús d'aquest lloc web.`}
 >
   <section class="wrap pb-14 pt-20 md:pb-20 md:pt-28">
     <p class="eyebrow" data-reveal>Legal</p>
@@ -22,7 +22,7 @@ const lista = 'mt-4 list-disc space-y-2 pl-5 text-[16px] text-pizarra marker:tex
       Informació societària.
     </h1>
     <p class="mt-7 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Dades de la societat que opera sota la marca {site.nombre} i termes d'ús d'aquest lloc web.
+      Dades de la societat que opera sota el nom comercial {site.nombre} i termes d'ús d'aquest lloc web.
     </p>
   </section>
 
@@ -34,13 +34,15 @@ const lista = 'mt-4 list-disc space-y-2 pl-5 text-[16px] text-pizarra marker:tex
           <h2 class={titulo}>Titularitat del lloc web</h2>
           <p class={parrafo}>
             Aquest lloc web és titularitat de {site.sociedad}, societat espanyola que desenvolupa la seva
-            activitat comercial sota el nom {site.nombre}. Tota la contractació, la facturació i la
-            responsabilitat legal derivada dels serveis oferts corresponen a aquesta societat.
+            activitat comercial sota el nom comercial {site.nombre}. {site.nombre} és un nom comercial i no una
+            denominació social diferent: no constitueix una persona jurídica independent de {site.sociedad}.
+            Tota la contractació, la facturació i la responsabilitat legal derivada dels serveis oferts
+            corresponen a aquesta societat.
           </p>
 
           <dl class="mt-8 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-2">
             <div class="bg-panel p-6">
-              <dt class="eyebrow text-pizarra">Raó social</dt>
+              <dt class="eyebrow text-pizarra">Denominació social</dt>
               <dd class="mt-2 text-[15px] text-tinta">{site.sociedad}</dd>
             </div>
             <div class="bg-panel p-6">
@@ -144,7 +146,7 @@ const lista = 'mt-4 list-disc space-y-2 pl-5 text-[16px] text-pizarra marker:tex
         </section>
 
         <p class="hairline pt-8 font-mono text-[12px] text-pizarra" data-reveal>
-          Darrera actualització: setembre de 2026
+          Darrera actualització: 28 de setembre de 2026
         </p>
       </article>
     </div>

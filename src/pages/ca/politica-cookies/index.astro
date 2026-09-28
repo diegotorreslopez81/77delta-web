@@ -21,7 +21,7 @@ const navegadores = [
 
 <Base
   title="Política de cookies"
-  description="Aquest lloc web no instal·la cookies pròpies ni de tercers. L'analítica és anònima i sense cookies."
+  description="Aquest lloc web no instal·la cookies pròpies. L'analítica és anònima i sense cookies; el calendari de Google a contacte només es carrega, i pot instal·lar les seves, si prems per veure'l."
 >
   <section class="wrap pb-14 pt-20 md:pb-20 md:pt-28">
     <p class="eyebrow" data-reveal>Legal</p>
@@ -29,11 +29,12 @@ const navegadores = [
       class="mt-5 max-w-[16ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
       data-reveal
     >
-      Sense cookies pròpies. Sense seguiment.
+      Sense cookies pròpies. Gairebé sense tercers.
     </h1>
     <p class="mt-7 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Aquest lloc web no instal·la cookies pròpies ni de tercers. La mesura de visites és anònima, agregada i
-      sense cookies.
+      Aquest lloc web no instal·la cookies pròpies. La mesura de visites és anònima, agregada i sense cookies.
+      L'única excepció és el calendari de reserva de Google a la pàgina de contacte, que només es carrega i
+      només pot instal·lar les seves si prems el botó per veure'l.
     </p>
   </section>
 
@@ -51,45 +52,69 @@ const navegadores = [
 
         <section data-reveal>
           <p class={numero}>02</p>
-          <h2 class={titulo}>Quines cookies utilitzem?</h2>
+          <h2 class={titulo}>Quines cookies i tecnologies utilitzem de veritat?</h2>
           <p class={parrafo}>
-            Cap. Aquest lloc web és estàtic i no requereix identificació ni sessió d'usuari, així que no
-            instal·la cookies pròpies. Tampoc utilitzem cookies analítiques ni de tercers: no hi ha Google
-            Analytics, ni píxels de xarxes socials, ni eines de publicitat o de seguiment entre llocs.
+            Cap cookie pròpia. Aquest lloc web és estàtic, no requereix identificació ni sessió d'usuari i no
+            instal·la cap cookie pròpia. Tampoc utilitzem Google Analytics, píxels de xarxes socials ni eines de
+            publicitat o de seguiment entre llocs.
           </p>
           <p class={parrafo}>
-            Per saber quines pàgines es visiten utilitzem Umami, una eina d'analítica que no instal·la
-            cookies, no guarda l'adreça IP i no identifica el visitant. Registra únicament dades agregades:
-            pàgina vista, país, tipus de dispositiu i origen de la visita. S'executa en un servidor propi a la
-            Unió Europea.
+            Per saber quines pàgines es visiten utilitzem Umami, una eina d'analítica que no instal·la cookies,
+            no guarda l'adreça IP i no identifica el visitant. Registra únicament dades agregades: pàgina
+            vista, país, tipus de dispositiu i origen de la visita. S'executa en el nostre propi servidor, a
+            stats.77delta.com, dins la Unió Europea.
           </p>
           <p class={parrafo}>
-            En no instal·lar-se cap cookie pròpia que requereixi consentiment, no veuràs cap bàner
-            demanant-t'ho. El calendari de Google només es carrega a la pàgina de contacte i té una
-            alternativa sense incrustar.
+            El formulari de contacte envia el teu missatge a api.77delta.com, un subdomini propi amb
+            infraestructura a la Unió Europea. Tampoc instal·la cookies.
+          </p>
+          <p class={parrafo}>
+            Per recordar si prefereixes veure la web en català o en castellà guardem una dada a
+            l'emmagatzematge local del navegador (<code>localStorage</code>), no en una cookie. No s'envia a cap
+            servidor, no caduca per si sol i el pots esborrar des dels ajustos del teu navegador. És una
+            tecnologia tècnica i necessària per al mateix funcionament del selector d'idioma, equivalent a una
+            cookie exempta de consentiment.
+          </p>
+          <p class={parrafo}>
+            L'única excepció real és el calendari de reserva de cites de Google, a la <a
+              href={href('/contacto/')}
+              class={enlace}>pàgina de contacte</a
+            >. És l'únic element d'aquest lloc que no controlem nosaltres i no es carrega per defecte: en el
+            seu lloc veuràs un botó, "Veure calendari", amb un enllaç per obrir-lo en una pestanya a part. Fins
+            que no prems aquest botó, no es descarrega res de Google. Si el prems, Google pot instal·lar les
+            seves pròpies cookies per al funcionament del calendari i la prevenció d'abusos; són cookies de
+            tercer, no exemptes, i aquest clic és el teu consentiment exprés per a elles. Si prefereixes no
+            donar-lo, tens a la mateixa pàgina el formulari de contacte i l'enllaç directe al calendari en una
+            pestanya a part, que tampoc incrusten res. Pots consultar la política de cookies de Google a <a
+              href="https://policies.google.com/technologies/cookies"
+              target="_blank"
+              rel="noopener"
+              class={enlace}>policies.google.com/technologies/cookies</a
+            >.
+          </p>
+          <p class={parrafo}>
+            Els accessos a LinkedIn i a WhatsApp són enllaços externs, no contingut incrustat: només interactues
+            amb aquests serveis si hi fas clic, i llavors s'apliquen les seves pròpies polítiques de cookies i
+            privacitat.
           </p>
         </section>
 
         <section data-reveal>
           <p class={numero}>03</p>
-          <h2 class={titulo}>Recursos externs</h2>
+          <h2 class={titulo}>Per què no hi ha un bàner de cookies</h2>
           <p class={parrafo}>
-            Les tipografies, les imatges i el codi d'aquesta web se serveixen des del nostre propi domini.
-            L'únic recurs extern que es carrega és l'script d'analítica anònima descrit al punt anterior,
-            allotjat en un servidor propi a la Unió Europea.
+            Un bàner de consentiment és obligatori quan un lloc instal·la cookies no exemptes abans que
+            l'usuari decideixi. Cap de les cookies que depenen de nosaltres, ni l'analítica d'Umami ni el
+            formulari de contacte, instal·la cap cookie, així que no hi ha res a demanar-te.
           </p>
           <p class={parrafo}>
-            El formulari de contacte envia el teu missatge a un subdomini nostre, servit des d'infraestructura
-            pròpia a la Unió Europea, i tampoc instal·la cookies. La pàgina de contacte sí que incrusta el
-            calendari de reserva de Google, que en carregar-se pot instal·lar cookies pròpies de Google: pots
-            evitar-ho escrivint pel formulari o obrint el calendari en la seva pròpia finestra. Els accessos a
-            LinkedIn són enllaços externs, no contingut incrustat: només interactues amb aquests serveis si hi
-            fas clic, i llavors s'apliquen les seves pròpies polítiques de cookies i privacitat.
-          </p>
-          <p class={parrafo}>
-            Si en algun moment incrustem contingut extern, com vídeos o calendaris de reserva, aquests serveis
-            poden establir les seves pròpies cookies. En aquest cas apareixerà l'avís corresponent i se't
-            sol·licitarà el consentiment previ.
+            L'excepció és el calendari de Google descrit al punt anterior, i allà el bloqueig previ ja existeix:
+            en lloc d'un bàner genèric, el calendari només es carrega si prems el botó "Veure calendari". Aquest
+            clic fa la mateixa funció que un bàner, demanar-te permís abans que Google instal·li res, i és el
+            teu consentiment exprés per a aquesta cookie en concret. Si no el prems, Google no rep ni instal·la
+            res. Si en el futur incorporem un altre contingut de tercers que requereixi cookies no exemptes, com
+            vídeos o altres calendaris, aplicarem el mateix criteri de càrrega només sota petició o, si no és
+            possible, un consentiment previ equivalent.
           </p>
         </section>
 
@@ -136,7 +161,7 @@ const navegadores = [
         </section>
 
         <p class="hairline pt-8 font-mono text-[12px] text-pizarra" data-reveal>
-          Darrera actualització: setembre de 2026
+          Darrera actualització: 28 de setembre de 2026
         </p>
       </article>
     </div>

@@ -75,16 +75,37 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
         </p>
       </div>
       <div class="mt-10 overflow-hidden rounded-[8px] border border-linea bg-panel" data-reveal>
-        <iframe
-          src={site.calendarioIncrustado}
-          title="Calendari de reserva de 77 Delta"
-          loading="lazy"
-          class="h-[620px] w-full border-0"
-        ></iframe>
+        <div
+          id="calendario-caja"
+          class="flex h-[620px] flex-col items-center justify-center gap-6 px-8 text-center"
+          data-src={site.calendarioIncrustado}
+        >
+          <p class="max-w-[46ch] text-[15px] text-pizarra">
+            El calendari el serveix Google. No es carrega res de Google fins que no prems el botó: en fer-ho,
+            Google pot instal·lar les seves pròpies cookies.
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-5">
+            <button
+              type="button"
+              id="calendario-boton"
+              class="inline-flex items-center gap-2 whitespace-nowrap rounded-[10px] bg-oro px-6 py-3.5 font-sans text-[15px] font-semibold text-marfil shadow-[0_6px_24px_rgba(167,120,27,.30)] transition-[background-color,transform] duration-200 hover:-translate-y-px hover:bg-tinta"
+            >
+              Veure calendari (carrega Google Calendar, usa cookies) →
+            </button>
+            <a
+              href={site.calendario}
+              target="_blank"
+              rel="noopener"
+              class="text-[14px] text-tinta underline decoration-linea underline-offset-4 transition-colors hover:decoration-oro"
+            >
+              Obrir en una pestanya a part →
+            </a>
+          </div>
+        </div>
       </div>
       <p class="mt-5 max-w-[62ch] text-[13px] text-pizarra">
-        El calendari el serveix Google. En carregar-lo, Google pot instal·lar les seves pròpies cookies. Ho pots
-        evitar fent servir el <a
+        En prémer "Veure calendari" acceptes que Google instal·li les seves pròpies cookies per mostrar el
+        calendari. Si prefereixes no acceptar-les, fes servir el <a
           href="#form-contacto"
           class="text-tinta underline decoration-linea underline-offset-4 transition-colors hover:decoration-oro"
           >formulari</a
@@ -93,11 +114,29 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
           target="_blank"
           rel="noopener"
           class="text-tinta underline decoration-linea underline-offset-4 transition-colors hover:decoration-oro"
-          >enllaç directe</a
-        >.
+          >enllaç de dalt</a
+        >, que obre el calendari de Google sense incrustar-lo en aquesta pàgina.
       </p>
     </div>
   </section>
+
+  <script>
+    // El calendari de Google no es carrega fins que el visitant ho demana: el clic és el consentiment
+    // per a les cookies que Google pugui instal·lar (vegeu la política de cookies).
+    const calendarioCaja = document.querySelector<HTMLDivElement>('#calendario-caja');
+    const calendarioBoton = document.querySelector<HTMLButtonElement>('#calendario-boton');
+
+    calendarioBoton?.addEventListener('click', () => {
+      const src = calendarioCaja?.dataset.src;
+      if (!calendarioCaja || !src) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = src;
+      iframe.title = 'Calendari de reserva de 77 Delta';
+      iframe.className = 'h-[620px] w-full border-0';
+      calendarioCaja.replaceChildren(iframe);
+      calendarioCaja.className = '';
+    });
+  </script>
 
   <!-- Formulario y otras vías -->
   <section class="hairline">

@@ -11,7 +11,7 @@ const lista = 'mt-4 list-disc space-y-2 pl-5 text-[16px] text-pizarra marker:tex
 
 <Base
   title="Aviso legal"
-  description={`Información societaria de ${site.sociedad}, titular de la marca ${site.nombre}, y condiciones de uso de este sitio web.`}
+  description={`Información societaria de ${site.sociedad}, titular del nombre comercial ${site.nombre}, y condiciones de uso de este sitio web.`}
 >
   <section class="wrap pb-14 pt-20 md:pb-20 md:pt-28">
     <p class="eyebrow" data-reveal>Legal</p>
@@ -22,7 +22,7 @@ const lista = 'mt-4 list-disc space-y-2 pl-5 text-[16px] text-pizarra marker:tex
       Información societaria.
     </h1>
     <p class="mt-7 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Datos de la sociedad que opera bajo la marca {site.nombre} y términos de uso de este sitio web.
+      Datos de la sociedad que opera bajo el nombre comercial {site.nombre} y términos de uso de este sitio web.
     </p>
   </section>
 
@@ -34,13 +34,15 @@ const lista = 'mt-4 list-disc space-y-2 pl-5 text-[16px] text-pizarra marker:tex
           <h2 class={titulo}>Titularidad del sitio web</h2>
           <p class={parrafo}>
             Este sitio web es titularidad de {site.sociedad}, sociedad española que desarrolla su actividad
-            comercial bajo el nombre {site.nombre}. Toda la contratación, la facturación y la responsabilidad
-            legal derivada de los servicios ofrecidos corresponden a esta sociedad.
+            comercial bajo el nombre comercial {site.nombre}. {site.nombre} es un nombre comercial y no una
+            denominación social distinta: no constituye una persona jurídica independiente de {site.sociedad}.
+            Toda la contratación, la facturación y la responsabilidad legal derivada de los servicios ofrecidos
+            corresponden a esta sociedad.
           </p>
 
           <dl class="mt-8 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-2">
             <div class="bg-panel p-6">
-              <dt class="eyebrow text-pizarra">Razón social</dt>
+              <dt class="eyebrow text-pizarra">Denominación social</dt>
               <dd class="mt-2 text-[15px] text-tinta">{site.sociedad}</dd>
             </div>
             <div class="bg-panel p-6">
@@ -146,7 +148,7 @@ const lista = 'mt-4 list-disc space-y-2 pl-5 text-[16px] text-pizarra marker:tex
         </section>
 
         <p class="hairline pt-8 font-mono text-[12px] text-pizarra" data-reveal>
-          Última actualización: septiembre de 2026
+          Última actualización: 28 de septiembre de 2026
         </p>
       </article>
     </div>
