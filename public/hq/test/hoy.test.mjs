@@ -39,7 +39,7 @@ if (typeof globalThis.localStorage === 'undefined') {
   globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => mem.set(k, String(v)), removeItem: (k) => mem.delete(k) };
 }
 
-const { render, urgentes, proximosCierres, avisoPlan } = await import('../app/vistas/hoy.js');
+const { render, urgentes, proximosCierres, avisoPlan, porPresentar } = await import('../app/vistas/hoy.js');
 const { enCurso } = await import('../app/estado.js');
 
 const ahora = new Date('2026-09-17T07:00:00Z');
@@ -270,4 +270,33 @@ test('#1281 owner: clave inexistente no se pinta (panel de sesiones y de cierres
   assert.doesNotMatch(sin, /Cíclica/); assert.doesNotMatch(sin, /Resumen L1/);
   // claves null (aún no cargadas): se pinta todo, como antes
   assert.equal(textoDe(pintar({ ...datosOwner, claves_datos: null })), textoDe(pintar()));
+});
+
+const conPorPresentar = { ...datosOwner, licitaciones: [
+  ...datosOwner.licitaciones,
+  { id: 91, expediente: 'P2', estado: 'Por presentar', cierre: '2026-09-25', resumen_corto: 'Segunda' },
+  { id: 90, expediente: 'P1', estado: 'Por presentar', cierre: '2026-09-18', resumen_corto: 'Primera' },
+  { id: 92, expediente: 'P0', estado: 'Por presentar', cierre: '2026-09-16', resumen_corto: 'Cierre pasado' },
+] };
+
+test('D75 porPresentar: solo estado Por presentar, cierre más cercano primero', () => {
+  assert.deepEqual(porPresentar(conPorPresentar.licitaciones).map(l => l.expediente), ['P0', 'P1', 'P2']);
+  assert.deepEqual(porPresentar(undefined), []);
+});
+
+test('D75 owner: bloque «Se presentan solas» con expediente, cierre y Rechazar (sin botón de aprobar)', () => {
+  const p = panel(pintar(conPorPresentar), 'Se presentan solas');
+  assert.ok(p, 'el panel existe');
+  assert.ok(p.textContent.startsWith('Se presentan solas3licitaciones por presentar, sin esperar tu OK'), p.textContent);
+  const filas = buscarNodos(p, n => n.tag === 'li');
+  assert.equal(filas.length, 3);
+  assert.ok(filas[0].textContent.includes('P0') && filas[0].textContent.includes('cierre pasado'));
+  assert.ok(filas[1].textContent.includes('P1') && filas[1].textContent.includes('(en 1 d)'));
+  const botones = buscarNodos(p, n => n.tag === 'button');
+  assert.deepEqual(botones.map(b => b.textContent), ['Rechazar', 'Rechazar', 'Rechazar']);
+  assert.ok(!/aprobar|presentar ya/i.test(botones.map(b => b.textContent).join(' ')));
+});
+
+test('D75 owner: sin licitaciones Por presentar el bloque no sale', () => {
+  assert.equal(panel(pintar(), 'Se presentan solas'), undefined);
 });

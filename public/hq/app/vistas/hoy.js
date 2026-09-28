@@ -12,7 +12,9 @@ import { enCurso, agentesActivos, frescuraPlan, diasDesde, nombreAgente, sesione
 import { tarjetaEncargo } from '../tarjeta.js';
 import { panel, cifra } from '../cuadro.js';
 import { urgeTercera } from './recursos.js';
-import { estadoDe } from '../licitaciones.js';
+import { estadoDe, estadoBase, transicionesValidas } from '../licitaciones.js';
+import { ejecutarTransicion } from '../decision-lic.js';
+import { recargar } from '../main.js';
 import * as decisiones from './decisiones.js';
 import { tieneFila } from '../semaforo.js';
 
@@ -72,6 +74,33 @@ export function proximosCierres(licitaciones, ahora = new Date(), dias = 7) {
 
 const rojo = texto => el('span', { class: 'rojo', text: texto });
 
+// D75 (Diego 28-sep): las licitaciones en Por presentar salen solas, sin OK previo. Aquí solo se ve
+// cuáles son y se puede Rechazar (Descartada con motivo) mientras no se hayan presentado. Cierre más cercano primero.
+export function porPresentar(licitaciones) {
+  return (licitaciones || []).filter(l => estadoBase(l) === 'Por presentar')
+    .sort((a, b) => String(a.cierre || '9').localeCompare(String(b.cierre || '9')));
+}
+
+function panelPorPresentar(licitaciones, ahora, alRechazar) {
+  const ls = porPresentar(licitaciones);
+  if (!ls.length) return null;
+  const fila = l => {
+    const faltan = l.cierre ? -diasDesde(String(l.cierre).slice(0, 10), ahora) : null;
+    const cierre = l.cierre ? ' · cierra ' + fecha(l.cierre) + (faltan === 0 ? ' (hoy)' : faltan > 0 ? ' (en ' + faltan + ' d)' : '') : '';
+    return el('li', {}, [
+      el('span', { text: l.expediente + ' ' + corto(l.resumen_corto || l.objeto || '', 32) + cierre }),
+      faltan != null && faltan < 0 ? el('span', {}, [' · ', rojo('cierre pasado')]) : null,
+      transicionesValidas(l, 'owner').includes('Descartada')
+        ? el('button', { class: 'btn peligro', type: 'button', text: 'Rechazar', onclick: () => ejecutarTransicion(l, 'Descartada', alRechazar) })
+        : null,
+    ]);
+  };
+  return panel('Se presentan solas', '#operacion/licitaciones', [
+    cifra(String(ls.length), ls.length === 1 ? 'licitación por presentar, sin esperar tu OK' : 'licitaciones por presentar, sin esperar tu OK'),
+    el('ul', { class: 'lista-corta' }, ls.map(fila)),
+  ]);
+}
+
 function panelProximosCierres(licitaciones, ahora) {
   const cs = proximosCierres(licitaciones, ahora);
   const fila = l => {
@@ -116,7 +145,7 @@ export function render(raiz, S, arg, filtros, ahora = new Date()) {
     raiz.append(el('div', { id: 'urgentes' }));
     decisiones.montar(raiz, S, arg);
     const fila = k => tieneFila(d.claves_datos, k);
-    raiz.append(el('div', { class: 'cuadro' }, [fila('home.licitaciones.cierran_semana') ? panelProximosCierres(d.licitaciones, ahora) : null,
+    raiz.append(el('div', { class: 'cuadro' }, [panelPorPresentar(d.licitaciones, ahora, recargar), fila('home.licitaciones.cierran_semana') ? panelProximosCierres(d.licitaciones, ahora) : null,
       fila('home.sesiones.abiertas') ? panelSesiones(d.sesiones, d.agentes, ahora, fila('home.sesiones.mas_48h')) : null]));
   } else {
     // El token de agente no conoce su identidad en el payload (T4-c): d.encargos ya viaja recortado a
