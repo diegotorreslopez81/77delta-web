@@ -378,6 +378,15 @@ export function coincideTexto(l, texto) {
 // Tanda E (leftover tanda B/C): con_ute es columna real de omc_licitaciones (boolean), sin consumo en
 // el front hasta ahora. 'Sin plazo' es una licitacion viva (no final) sin fecha de cierre todavia.
 export function esUte(l) { return l?.con_ute === true; }
+
+// Nivel de encaje (LICITA-SPEC 24-09): 1 software sin UTE, 2 software con UTE, 3 el resto.
+export function nivelEncaje(l) {
+  const software = tipologia(l).some(t => t.clave === 'software') || l?.etiqueta === 'Software';
+  const ute = esUte(l);
+  const nivel = software ? (ute ? 2 : 1) : 3;
+  return { nivel, texto: 'nivel ' + nivel + ' (' + (software ? 'software' : 'no software') + (ute ? ', con UTE' : ', sin UTE') + ')' };
+}
+
 export function sinPlazo(l) { return !l?.cierre && !esFinal(l); }
 
 // Filtro puro para la vista: tipologia/solvencia/fuente/tipo/motivo/presencial/texto/desiertas/ute/

@@ -29,7 +29,7 @@ import { recargar, render as repintar } from '../main.js';
 import { S } from '../estado.js';
 import { conSalida, resolucionLocal } from '../salida.js';
 import { tieneFila } from '../semaforo.js';
-import { porDecidir, enCriba, solvenciaTexto, tipologia, tipologiaOrgano } from '../licitaciones.js';
+import { porDecidir, enCriba, solvenciaTexto, tipologia, tipologiaOrgano, nivelEncaje } from '../licitaciones.js';
 import { botonesTransicion } from '../decision-lic.js';
 import { pintarBloques } from '../tarjeta-bloques.js';
 import { colorOrgano, importeClase } from './licitaciones.js';
@@ -90,7 +90,7 @@ function tarjeta(p, abierta, hilo, soloComentar) {
   const campo = campoTexto({ class: 'campo', rows: 2, placeholder: p.tipo === 'duda' ? 'Tu respuesta' : 'Instrucción o motivo (opcional para aprobar)', 'data-conservar': 'd' + p.id });
   const det = el('details', { open: abierta }, [
     el('summary', {}, [el('div', { class: 'fila' }, [el('span', { class: 'pill', text: p.tipo }), el('strong', { text: p.titulo })]),
-      el('p', { class: 'mudo', text: [p.agente, p.importe ? eur(p.importe) : null, p.vence ? 'vence ' + fecha(p.vence, { hora: true }) : null, p.riesgo].filter(Boolean).join(' · ') })]),
+      el('p', { class: 'mudo', text: [p.agente, p.importe ? eur(p.importe) : null, p.vence ? 'tarjeta vence ' + fecha(p.vence) : null, p.riesgo].filter(Boolean).join(' · ') })]),
     // Regla 54 (#1120): tres bloques con titulo si el detalle los trae; las tarjetas viejas siguen como texto plano.
     pintarBloques(p.detalle) || el('div', { class: 'detalle' }, enlazar(p.detalle || '')),
     enlaceSeguro ? el('a', { href: enlaceSeguro, target: '_blank', rel: 'noopener', class: 'btn-enlace', text: 'abrir enlace' }) : null,
@@ -129,9 +129,11 @@ function slugElegible(v) {
 // absoluta (urlSegura, la misma puerta que ya usa tarjeta() para p.enlace) - un 'javascript:...' en
 // cualquiera de los cuatro campos no produce ningun <a>.
 function enlacesDoc(l) {
-  return [['PCAP', l.pcap], ['PPT', l.ppt], ['Perfil', l.enlace], ['Drive', l.carpeta]]
+  const ficha = l.expediente ? '#operacion/licitaciones?texto=' + encodeURIComponent(l.expediente) : null;
+  const externos = [['PCAP', l.pcap_drive || l.pcap], ['PPT', l.ppt_drive || l.ppt], ['Perfil', l.enlace], ['Drive', l.carpeta]]
     .map(([etiqueta, valor]) => { const href = urlSegura(valor); return href ? el('a', { class: 'btn-enlace', href, target: '_blank', rel: 'noopener', text: etiqueta }) : null; })
     .filter(Boolean);
+  return [...externos, ficha ? el('a', { class: 'btn-enlace', href: ficha, text: 'Ficha' }) : null].filter(Boolean);
 }
 
 // Brief 2023: los botones Presentar/Descartar/Estudiar (antes inline aqui) se extraen a
@@ -140,15 +142,16 @@ function licitacion(l, rol) {
   const enlaces = enlacesDoc(l);
   const tags = tipologia(l);
   return el('article', { class: 'tarjeta licitacion', 'data-sale': '1' }, [
-    el('div', { class: 'fila' }, [el('span', { class: 'pill codigo', text: l.expediente }), el('strong', { text: l.resumen_corto || l.objeto || l.expediente })]),
+    el('div', { class: 'fila' }, [el('span', { class: 'pill codigo', text: l.expediente }), el('strong', { text: l.ficha?.objeto_real || l.objeto || l.resumen_corto || l.expediente })]),
     el('div', { class: 'lic-tags' }, [
       l.organo ? el('span', { class: 'pill tag-' + colorOrgano(tipologiaOrgano(l.organo)), title: 'Órgano: ' + l.organo, text: l.organo }) : null,
       el('span', { class: 'pill ' + importeClase(l.importe), text: l.importe ? eur(l.importe) + ' sin IVA' : 'sin importe' }),
     ]),
-    el('p', { class: 'mudo', text: [l.provincia, l.cierre ? 'cierra ' + fecha(l.cierre) : null, l.tipo, l.procedimiento].filter(Boolean).join(' · ') }),
+    el('p', { class: 'mudo', text: [l.provincia, l.cierre ? 'cierra ' + fecha(l.cierre) + (l.cierre_hora ? ' ' + String(l.cierre_hora).slice(0, 5) : '') : null, l.tipo, l.procedimiento].filter(Boolean).join(' · ') }),
     tags.length ? el('div', { class: 'lic-tipologia' }, tags.map(t => el('span', { class: 'pill tag-' + t.color, title: 'Tipología: ' + t.texto, text: t.texto }))) : null,
     el('div', { class: 'datos' }, [
       el('p', {}, ['Elegible: ', el('span', { class: 'pill elegible-' + slugElegible(l.elegible), text: l.elegible })]),
+      el('p', { text: 'Encaje: ' + nivelEncaje(l).texto }),
       el('p', { text: 'Solvencia: ' + solvenciaTexto(l) }),
       l.motivo_auto ? el('p', { text: 'Motivo: ' + l.motivo_auto }) : null,
     ]),

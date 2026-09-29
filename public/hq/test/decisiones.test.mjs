@@ -120,7 +120,7 @@ test('ficha de licitacion: enlaces PCAP/PPT/Drive solo si empiezan por http; jav
   const raiz = raizLic();
   const f1 = fichaCon(raiz, 'EXP-1');
   const enlaces = buscarNodos(f1, n => n.tag === 'a');
-  assert.equal(enlaces.length, 2, 'solo ppt y drive: pcap y perfil venian con javascript:');
+  assert.equal(enlaces.length, 3, 'ppt, drive y Ficha: pcap y perfil venian con javascript:');
   assert.ok(!enlaces.some(a => String(a.attrs.href || '').startsWith('javascript:')), 'ningun <a> con esquema javascript:');
   const porTexto = t => enlaces.find(a => a.textContent === t);
   assert.equal(porTexto('PPT').attrs.href, 'https://contrataciondelestado.es/exp1/ppt.pdf');
@@ -129,7 +129,23 @@ test('ficha de licitacion: enlaces PCAP/PPT/Drive solo si empiezan por http; jav
   assert.equal(porTexto('Drive').attrs.href, 'https://drive.google.com/drive/folders/exp1');
   assert.ok(!porTexto('PCAP'), 'PCAP no se pinta: la url no empezaba por http');
   const f2 = fichaCon(raiz, 'EXP-2');
-  assert.equal(buscarNodos(f2, n => n.tag === 'a').length, 0, 'EXP-2 no trae ningun enlace: no se pinta div.enlaces-doc');
+  assert.deepEqual(buscarNodos(f2, n => n.tag === 'a').map(a => a.textContent), ['Ficha'], 'EXP-2 solo trae el enlace a la ficha HQ');
+});
+
+test('#1445 card Decidir: objeto primero, enlaces compartidos, encaje, cierre honesto e importe es-ES', () => {
+  const l = { id: 139, expediente: 'CN 139/2026', organo: 'X', objeto: 'Servicio de mantenimiento web', resumen_corto: 'Mantenimiento web', ficha: { objeto_real: 'Mantenimiento y evolución del portal web' }, importe: 2601671.48, elegible: 'Probable', estado: 'Por decidir', cierre: '2026-10-05', cierre_hora: '13:30:00', pcap_drive: 'https://drive.google.com/pcap', pcap: 'https://sede/pcap', ppt_drive: 'https://drive.google.com/ppt', enlace: 'https://sede/anuncio', con_ute: false };
+  const raiz = crearNodo('main');
+  render(raiz, { datos: { rol: 'owner', licitaciones: [l] } });
+  const f = fichas(raiz)[0];
+  const strong = buscarNodos(f, n => n.tag === 'strong')[0];
+  assert.equal(strong.textContent, 'Mantenimiento y evolución del portal web', 'el objeto va primero, no el resumen corto');
+  const a = buscarNodos(f, n => n.tag === 'a');
+  assert.equal(a.find(x => x.textContent === 'PCAP').attrs.href, 'https://drive.google.com/pcap', 'pcap_drive gana a pcap');
+  assert.equal(a.find(x => x.textContent === 'PPT').attrs.href, 'https://drive.google.com/ppt');
+  assert.ok(a.find(x => x.textContent === 'Ficha').attrs.href.startsWith('#operacion/licitaciones?texto='), 'enlace a la ficha HQ');
+  assert.ok(f.textContent.includes('Encaje: nivel 1 (software, sin UTE)'));
+  assert.ok(f.textContent.includes('cierra') && f.textContent.includes('13:30'), 'cierre con hora cuando hay cierre_hora');
+  assert.ok(!f.textContent.includes('2601671'), 'importe sin formato crudo');
 });
 
 // #1057 tarea 27: bandeja en Hoy. Arriba solo lo urgente; sin fecha y pospuestas plegadas; un solo campo
