@@ -145,7 +145,7 @@ export function cablearShell() {
   // index.html es de solo lectura en este lote: el placeholder real (busca por encargo/tarjeta o por
   // expediente de licitacion, ver buscador.js FUENTES) y el teclado de iOS (sin autocorrector ni
   // mayuscula automatica en un campo de busqueda) se ajustan aqui (19-sep).
-  campo.setAttribute('placeholder', 'Buscar tarjeta o expediente');
+  campo.setAttribute('placeholder', 'Buscar tarjeta, ID o expediente');
   campo.setAttribute('autocorrect', 'off');
   campo.setAttribute('autocapitalize', 'off');
   const cerrarLista = () => { lista.hidden = true; lista.innerHTML = ''; };

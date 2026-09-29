@@ -369,8 +369,10 @@ export function presencial(l) {
 
 const CAMPOS_TEXTO = l => [l.expediente, l.resumen_corto, l.objeto, l.organo, l.provincia];
 export function coincideTexto(l, texto) {
-  const q = sinAcentos(texto).trim();
-  return !q || sinAcentos(CAMPOS_TEXTO(l).join(' ')).includes(q);
+  const q = sinAcentos(texto).trim().replace(/^#/, '');
+  if (!q) return true;
+  if (/^\d+$/.test(q) && l.id != null && String(l.id) === q) return true;
+  return sinAcentos(CAMPOS_TEXTO(l).join(' ')).includes(q);
 }
 
 // Tanda E (leftover tanda B/C): con_ute es columna real de omc_licitaciones (boolean), sin consumo en

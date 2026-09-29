@@ -1,5 +1,5 @@
 // Buscador global (plan 3a): busca sobre el payload ya cargado, nunca llama a la BD. Sin DOM.
-// Un número encuentra por id exacto en todas las fuentes; un texto busca sin acentos en id y título.
+// Un número encuentra por id exacto en todas las fuentes (licitación: id de omc_licitaciones); un texto busca sin acentos en id y título (licitación: expediente, objeto y órgano).
 // Minor 10 (revision final): comentario corregido, licitaciones ya entraron (fuente de mas abajo).
 import { sinAcentos } from './estado.js';
 
@@ -12,7 +12,7 @@ const FUENTES = [
   ['frente', d => d.frentes, f => f.codigo, f => f.linea, f => '#operacion/tablero?frente=' + f.codigo],
   // I3 (revision final): la ficha completa de una licitacion vive en Operacion/Licitaciones, no en
   // Reglas/Decisiones (que solo lista las decidibles); un resultado de busqueda debe llevar ahi.
-  ['licitación', d => d.licitaciones, l => l.expediente, l => l.resumen_corto || l.objeto, l => '#operacion/licitaciones'],
+  ['licitación', d => d.licitaciones, l => l.id ?? l.expediente, l => [l.expediente, l.resumen_corto || l.objeto, l.organo].filter(Boolean).join(' · '), l => '#operacion/licitaciones'],
 ];
 
 export function buscar(datos, consulta, max = 12) {

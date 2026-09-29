@@ -691,3 +691,11 @@ test('tipologia ignora motivo_auto: notas internas de la criba no generan etique
     motivo_auto: 'Descartado: adquisición de licencia, reventa de producto de tercero, no desarrollo propio' };
   assert.deepEqual(tipologia(l).map(t => t.clave), []);
 });
+
+test('coincideTexto encuentra por id exacto, con o sin # (#2185)', async () => {
+  const { coincideTexto } = await import('../app/licitaciones.js');
+  const l = { id: 1162, expediente: 'X9', objeto: 'Auditoría' };
+  assert.equal(coincideTexto(l, '1162'), true);
+  assert.equal(coincideTexto(l, '#1162'), true);
+  assert.equal(coincideTexto(l, '116'), false);
+});

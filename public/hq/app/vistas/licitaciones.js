@@ -235,12 +235,21 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
     if (historialCargado || !l.id) return;
     historialCargado = true;
     historial.append(el('p', { class: 'mudo', text: 'cargando historial…' }));
-    import('../api.js').then(m => m.licitacionCambios(l.id)).then(cambios => {
+    import('../api.js').then(m => m.licitacionHistoria(l.id)).then(h => {
       historial.innerHTML = '';
-      if (!Array.isArray(cambios) || !cambios.length) { historial.append(el('p', { class: 'mudo', text: 'sin cambios registrados' })); return; }
-      historial.append(el('ul', { class: 'lista-corta' }, cambios.map(c => el('li', {
+      const envios = Array.isArray(h?.presentaciones) ? h.presentaciones.filter(x => x.estado === 'confirmada') : [];
+      const tareas = Array.isArray(h?.tareas) ? h.tareas : [];
+      const cambios = Array.isArray(h?.cambios) ? h.cambios : [];
+      const lista = (titulo, items, vacio) => {
+        historial.append(el('h4', { class: 'mudo', text: titulo }));
+        historial.append(items.length ? el('ul', { class: 'lista-corta' }, items) : el('p', { class: 'mudo', text: vacio }));
+      };
+      lista('Envíos', envios.map(x => el('li', { text: (x.confirmada_en ? fecha(x.confirmada_en) + ' · ' : '') + x.tipo + (x.requerimiento ? ' ' + x.requerimiento : '')
+        + (x.n_registro ? ' · reg ' + x.n_registro : '') + (x.plataforma ? ' · ' + x.plataforma : '') + (x.justificante_drive ? '' : ' · sin justificante en Drive') })), 'sin envíos registrados');
+      lista('Tareas', tareas.map(x => el('li', { text: (x.creada_en ? fecha(x.creada_en) + ' · ' : '') + x.fase + ' · ' + x.estado + (x.resultado?.notificacion ? ' · notif ' + x.resultado.notificacion : '') })), 'sin tareas');
+      lista('Cambios', cambios.map(c => el('li', {
         text: (c.fecha ? fecha(c.fecha) + ' · ' : '') + c.campo + ': ' + (c.antes ?? '-') + ' → ' + (c.despues ?? '-') + (c.actor ? ' · ' + c.actor : '') + (c.motivo ? ' (' + c.motivo + ')' : ''),
-      }))));
+      })), 'sin cambios registrados');
     }).catch(() => { historial.innerHTML = ''; historial.append(el('p', { class: 'mudo', text: 'no se pudo cargar el historial' })); });
   };
   // O13c (D69, tanda E bis): campos extraidos con cita/ubicacion y criterios evaluados GO/NO GO/DUDA,
@@ -274,6 +283,7 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
     onclick: alClic, onkeydown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault?.(); alternar(e.currentTarget || art); } },
   }, [
     el('div', { class: 'lic-tags' }, [
+      l.id != null ? el('span', { class: 'pill', title: 'ID de licitación', text: '#' + l.id }) : null,
       el('span', { class: 'pill tag-' + colorEstado(par.estado), title: 'Estado: ' + par.estado }, [el('i', { class: 'punto g-' + (COLOR_ESTADO[par.estado] || 'neutro-3') }), par.estado]),
       l.etiqueta && l.etiqueta !== 'Otros' ? el('span', { class: 'pill tag-teal', title: 'Tipo (CPV' + (l.cpv ? ' ' + String(l.cpv).split(',')[0].trim() : '') + '): ' + l.etiqueta, text: l.etiqueta }) : null,
       tipo && tipo !== 'Otro' ? el('span', { class: 'pill tag-' + colorOrgano(tipo), title: 'Órgano: ' + tipo, text: tipo }) : null,
@@ -293,6 +303,7 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
     el('div', { class: 'detalle' }, [
       objetoReal && norm(objetoReal) !== norm(titulo) ? el('p', { class: 'sub', text: 'Objeto real: ' + objetoReal }) : null,
       l.objeto && norm(l.objeto) !== norm(titulo) && norm(l.objeto) !== norm(objetoReal || '') ? el('p', { class: 'sub', text: l.objeto }) : null,
+      l.id != null ? el('p', { class: 'sub', text: 'ID ' + l.id }) : null,
       l.expediente ? el('p', { class: 'sub', text: 'Expediente ' + l.expediente }) : null,
       solv !== 'sin dato' ? el('p', { class: 'sub', text: 'Solvencia: ' + solv }) : null,
       l.agente ? el('p', { class: 'sub', text: 'Agente: ' + l.agente + (l.tomada_en ? ' · tomada ' + fecha(l.tomada_en) : '') }) : null,
@@ -314,7 +325,7 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
 
 function filaCriba(l) {
   const perfil = urlSegura(l.enlace);
-  const texto = [l.expediente, l.resumen_corto || l.objeto, l.cierre ? 'cierra ' + fecha(l.cierre) : null, l.importe ? eurCorto(l.importe) + ' sin IVA' : null].filter(Boolean).join(' · ');
+  const texto = [l.id != null ? '#' + l.id : null, l.expediente, l.resumen_corto || l.objeto, l.cierre ? 'cierra ' + fecha(l.cierre) : null, l.importe ? eurCorto(l.importe) + ' sin IVA' : null].filter(Boolean).join(' · ');
   return el('p', {}, [texto, perfil ? el('a', { class: 'btn-enlace', href: perfil, target: '_blank', rel: 'noopener', text: 'Perfil' }) : null]);
 }
 function grupoCriba([nombre, rows], abierto) {

@@ -55,3 +55,10 @@ test('un tipo con muchas coincidencias no agota el tope: los demás tipos tambi�
   assert.equal(r.length, 12);
   assert.ok(r.some(x => x.tipo === 'agente'), 'el agente que casa con "kit" debe estar entre los 12 resultados');
 });
+test('licitación se busca por id de omc_licitaciones, expediente y texto (#2185)', () => {
+  const d = { licitaciones: [{ id: 1162, expediente: 'A31/2025/80', resumen_corto: 'Servicio de limpieza', organo: 'Ajuntament de Girona' }] };
+  assert.equal(buscar(d, '1162')[0].tipo, 'licitación');
+  assert.equal(buscar(d, '#1162').length, 1);
+  assert.equal(buscar(d, 'a31/2025/80').length, 1);
+  assert.equal(buscar(d, 'girona').length, 1);
+});

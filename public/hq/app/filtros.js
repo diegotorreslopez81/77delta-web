@@ -61,7 +61,7 @@ export function hojaFiltros({ titulo = 'Filtros', secciones = [], valores = {}, 
   const fab = el('button', { class: 'fab-filtros', type: 'button', 'aria-label': 'Filtros', 'aria-expanded': 'false', html: EMBUDO, onclick: () => abrir() });
   fab.append(globo);
 
-  const buscador = el('input', { class: 'campo hoja-buscar', type: 'search', placeholder: 'Buscar en la lista', 'aria-label': 'Buscar en la lista',
+  const buscador = el('input', { class: 'campo hoja-buscar', type: 'search', placeholder: 'Buscar por ID, expediente o texto', 'aria-label': 'Buscar por ID, expediente o texto',
     autocorrect: 'off', autocapitalize: 'off', autocomplete: 'off', enterkeyhint: 'search',
     oninput: e => cambiar(claveTexto, e.target.value) });
   const cuerpo = el('div', { class: 'hoja-cuerpo' });

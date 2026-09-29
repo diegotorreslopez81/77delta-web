@@ -51,6 +51,8 @@ export const licAdminFilas = tabla => rpc('lic_admin_filas', { p_tabla: tabla })
 export const licAdminGuardar = (tabla, clave, cambios, motivo) => rpc('lic_admin_guardar', { p_tabla: tabla, p_clave: clave, p_cambios: cambios, p_motivo: motivo || null });
 export const licAdminAlta = (tabla, fila, motivo) => rpc('lic_admin_alta', { p_tabla: tabla, p_fila: fila, p_motivo: motivo || null });
 export const licAdminHistorial = (tabla, clave) => rpc('lic_admin_historial', { p_tabla: tabla, p_clave: clave });
+// #2191: historia completa (tareas + envíos + cambios) de una licitación, omc_licitacion_historia (schema-v109).
+export const licitacionHistoria = id => rpc('omc_licitacion_historia', { p_id: id });
 // Listado unico de la vista de Licitaciones (omc_licitaciones_tabla extendida en schema-v20): filtro server-side
 // por estado, etiqueta(s), importe (Menor = importe_max 20000) y cierre.
 export const licitacionesTabla = (filtro = {}) => rpc('omc_licitaciones_tabla', { p_filtro: filtro });
