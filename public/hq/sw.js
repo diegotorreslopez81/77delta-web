@@ -2,8 +2,8 @@
    Supabase ni el payload omc_hq_v2 (van a otro origen, asi que ya quedan fuera del filtro de fetch).
    Push y notificationclick son el mismo comportamiento real que public/hq/v1/sw.js (mismo payload que
    envia hq-push en el servidor: title, body, url, tag, id, lic). */
-var CACHE = 'hq-v17';
-var SHELL = ['/hq/', '/hq/app/main.js', '/hq/app/api.js', '/hq/app/estado.js', '/hq/app/recargador.js', '/hq/app/rutas.js', '/hq/app/buscador.js', '/hq/app/licitaciones.js', '/hq/app/shell.js', '/hq/app/ui.js', '/hq/app/tarjeta.js', '/hq/app/detalle.js', '/hq/app/dnd.js', '/hq/app/vistas/hoy.js', '/hq/app/vistas/objetivo.js', '/hq/app/vistas/tablero.js', '/hq/app/vistas/decisiones.js', '/hq/app/vistas/licitaciones.js', '/hq/app/vistas/licitaciones-menores.js', '/hq/app/vistas/equipo.js', '/hq/app/vistas/motor.js', '/hq/app/vistas/expedientes.js', '/hq/app/tokens.css', '/hq/app/hq.css', '/hq/manifest.webmanifest', '/hq/icon-192.png', '/hq/icon-512.png'];
+var CACHE = 'hq-v19';
+var SHELL = ['/hq/', '/hq/app/main.js', '/hq/app/api.js', '/hq/app/estado.js', '/hq/app/recargador.js', '/hq/app/rutas.js', '/hq/app/buscador.js', '/hq/app/licitaciones.js', '/hq/app/shell.js', '/hq/app/ui.js', '/hq/app/tarjeta.js', '/hq/app/detalle.js', '/hq/app/dnd.js', '/hq/app/vistas/hoy.js', '/hq/app/vistas/objetivo.js', '/hq/app/vistas/tablero.js', '/hq/app/vistas/decisiones.js', '/hq/app/vistas/licitaciones.js', '/hq/app/vistas/licitaciones-menores.js', '/hq/app/vistas/equipo.js', '/hq/app/vistas/motor.js', '/hq/app/vistas/expedientes.js', '/hq/app/vistas/avisos.js', '/hq/app/avisos.js', '/hq/app/tokens.css', '/hq/app/hq.css', '/hq/manifest.webmanifest', '/hq/icon-192.png', '/hq/icon-512.png'];
 
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(SHELL); }).then(function () { return self.skipWaiting(); }));
@@ -24,31 +24,88 @@ self.addEventListener('fetch', function (e) {
   e.respondWith(fetch(e.request).then(function (r) { if (r.ok) { var copia = r.clone(); caches.open(CACHE).then(function (c) { c.put(e.request, copia); }); } return r; })
     .catch(function () { return caches.match(e.request).then(function (r) { return r || caches.match('/hq/'); }); }));
 });
+// #2159: cada push se guarda en IndexedDB ('hq-avisos'/'avisos', la vista Avisos de la app lo lee) antes de
+// mostrarse, para poder releerlo si la notificacion se cierra o se pierde. El esquema (nombre, version, almacen,
+// clave 'n') lo comparte app/avisos.js.
+var BD_AVISOS = 'hq-avisos', ALMACEN_AVISOS = 'avisos', MAX_AVISOS = 200;
+function abrirBD() {
+  return new Promise(function (ok, ko) {
+    var r = indexedDB.open(BD_AVISOS, 1);
+    r.onupgradeneeded = function () { r.result.createObjectStore(ALMACEN_AVISOS, { keyPath: 'n', autoIncrement: true }); };
+    r.onsuccess = function () { ok(r.result); };
+    r.onerror = function () { ko(r.error); };
+  });
+}
+function guardarAviso(aviso) {
+  return abrirBD().then(function (db) {
+    return new Promise(function (ok, ko) {
+      var tx = db.transaction(ALMACEN_AVISOS, 'readwrite'), s = tx.objectStore(ALMACEN_AVISOS), clave = null;
+      var a = s.add(aviso); a.onsuccess = function () { clave = a.result; };
+      var k = s.getAllKeys(); k.onsuccess = function () { var ks = k.result; for (var i = 0; i < ks.length - MAX_AVISOS; i++) s.delete(ks[i]); };
+      tx.oncomplete = function () { db.close(); ok(clave); };
+      tx.onerror = tx.onabort = function () { db.close(); ko(tx.error); };
+    });
+  });
+}
+function marcarLeido(n) {
+  if (n == null) return Promise.resolve();
+  return abrirBD().then(function (db) {
+    return new Promise(function (ok, ko) {
+      var tx = db.transaction(ALMACEN_AVISOS, 'readwrite'), s = tx.objectStore(ALMACEN_AVISOS);
+      var g = s.get(n); g.onsuccess = function () { if (g.result) { g.result.leido = true; s.put(g.result); } };
+      tx.oncomplete = function () { db.close(); ok(); };
+      tx.onerror = tx.onabort = function () { db.close(); ko(tx.error); };
+    });
+  });
+}
+// Enlace real de cada push: la tarjeta si trae id, la bandeja para una licitacion o un aviso agrupado, y solo
+// como ultimo recurso la url del payload o la vista Avisos. Nunca la raiz '/hq/' a secas.
+function destino(d) {
+  if (d.id) return '/hq/#hoy/' + d.id;
+  if (d.lic || d.tag === 'hq-lote') return '/hq/#hoy/bandeja';
+  try {
+    var u = new URL(d.url, self.location.origin);
+    if (u.origin === self.location.origin && u.pathname.indexOf('/hq/') === 0 && (u.hash || u.search)) return u.pathname + u.search + u.hash;
+  } catch (err) {}
+  return '/hq/#avisos';
+}
+// Etiqueta unica por aviso: 'hq-<id>' por tarjeta, la del payload por licitacion, y para el resto (aviso agrupado
+// con etiqueta fija 'hq-lote', o sin etiqueta) una con marca de tiempo, para que uno nuevo no borre el anterior.
+function etiqueta(d, ahora) {
+  if (d.id) return 'hq-' + d.id;
+  if (d.tag && d.tag !== 'hq' && d.tag !== 'hq-lote') return d.tag;
+  return 'hq-' + ahora + '-' + Math.random().toString(36).slice(2, 7);
+}
+function nuevoAviso(d, ahora) {
+  return { t: ahora, title: d.title || 'HQ', body: d.body || '', url: destino(d), id: d.id || null, lic: d.lic || null, tag: etiqueta(d, ahora), leido: false };
+}
 self.addEventListener('push', function (e) {
   var d = {}; try { d = e.data ? e.data.json() : {}; } catch (err) { d = { body: e.data && e.data.text() }; }
-  e.waitUntil(self.registration.showNotification(d.title || 'HQ', {
-    body: d.body || '', icon: '/hq/icon-192.png', badge: '/hq/icon-192.png', tag: d.tag || 'hq', renotify: true, data: { url: d.url || '/hq/', id: d.id || null, lic: d.lic || null }
+  var aviso = nuevoAviso(d, Date.now());
+  e.waitUntil(guardarAviso(aviso).catch(function () { return null; }).then(function (n) {
+    return self.registration.showNotification(aviso.title, {
+      body: aviso.body, icon: '/hq/icon-192.png', badge: '/hq/icon-192.png', tag: aviso.tag, renotify: true,
+      data: { url: aviso.url, id: aviso.id, lic: aviso.lic, n: n }
+    });
   }));
 });
+// Al tocar: primero focus() (necesita la activacion del toque, se pierde tras un await), luego navigate() a la
+// tarjeta y solo si no hay ninguna ventana de HQ v2 abierta, openWindow(). El aviso se marca leido.
 self.addEventListener('notificationclick', function (e) {
   e.notification.close();
-  // Fix ronda 2 (F-g/D5): sin d.url (push generico sin enlace) pero con d.id, abrir directamente la
-  // tarjeta en vez de caer siempre en /hq/ y perder el deep link.
-  var d = e.notification.data || {}, url = d.url || (d.id ? '/hq/#reglas/decisiones/' + d.id : '/hq/#hoy');
+  var d = e.notification.data || {}, url = d.url || (d.id ? '/hq/#hoy/' + d.id : '/hq/#avisos');
   e.waitUntil(clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (ws) {
-    var abierta = false;
-    for (var i = 0; i < ws.length; i++) {
-      // NIT #14 (revision final, parado en el informe, aplicado aqui por ser trivial): '/hq/v1/...'
-      // tambien contiene la subcadena '/hq/', asi que una pestaña de v1 abierta se marcaba como si
-      // fuera la v2 ya abierta y nunca se abria una ventana nueva para el deep link de v2.
-      if (ws[i].url.indexOf('/hq/') >= 0 && ws[i].url.indexOf('/hq/v1/') < 0) {
-        abierta = true;
-        if (d.id) { try { ws[i].postMessage({ tipo: 'abrir', id: d.id }); } catch (err) {} }
-        if (d.lic) { try { ws[i].postMessage({ tipo: 'abrir-lic', lic: d.lic }); } catch (err) {} }
-        if (ws[i].navigate) { try { ws[i].navigate(url); } catch (err) {} }
-        if (ws[i].focus) { try { ws[i].focus(); } catch (err) {} }
-      }
-    }
-    if (!abierta) return clients.openWindow(url);
+    var propias = ws.filter(function (w) { return w.url.indexOf('/hq/') >= 0 && w.url.indexOf('/hq/v1/') < 0; });
+    var trabajo = [marcarLeido(d.n).catch(function () {})];
+    if (!propias.length) { trabajo.push(clients.openWindow(url)); return Promise.all(trabajo); }
+    propias.forEach(function (w) {
+      if (d.id) { try { w.postMessage({ tipo: 'abrir', id: d.id }); } catch (err) {} }
+      if (d.lic) { try { w.postMessage({ tipo: 'abrir-lic', lic: d.lic }); } catch (err) {} }
+    });
+    var w0 = propias[0];
+    var enfocada = w0.focus ? Promise.resolve(w0.focus()).catch(function () { return w0; }) : Promise.resolve(w0);
+    trabajo.push(enfocada.then(function (c) { c = c || w0; return c.navigate ? c.navigate(url) : null; })
+      .catch(function () { return clients.openWindow(url); }));
+    return Promise.all(trabajo);
   }));
 });

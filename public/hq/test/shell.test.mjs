@@ -35,7 +35,7 @@ const { AREAS } = await import('../app/rutas.js');
 
 test('montarMenu pinta las once áreas del menú nuevo, un enlace por vista y Cómputo en Recursos', () => {
   const nav = document.createElement('nav'); const m = montarMenu(nav);
-  assert.equal(nav.children.length, 12); assert.equal(m.enlaces.size, 12); // brief B 19-sep + Salud #1121 + Admin O13a (D9) + Licita Engine (D91): doce áreas, todas de una sola vista (Equipo ya no agrupa)
+  assert.equal(nav.children.length, 13); assert.equal(m.enlaces.size, 13); // brief B 19-sep + Salud #1121 + Admin O13a (D9) + Licita Engine (D91): trece áreas (Avisos #2159), todas de una sola vista (Equipo ya no agrupa)
   assert.equal(m.enlaces.get('operacion/tablero').attrs.href, '#operacion/tablero');
   // C3 (revision final): data-inicial era codigo muerto (nunca lo leia el CSS ni ningun otro modulo);
   // se retira, y en su lugar se comprueba lo que realmente hace visible el icono en modo plegado.

@@ -281,6 +281,14 @@ a{color:inherit}
 .salud-cab .pill{white-space:normal;overflow:visible;text-overflow:clip;max-width:100%}.pill.gris{background:var(--tag-gris-bg);color:var(--tag-gris-fg);border-color:transparent}
 .salud-critico{font-size:12px;font-weight:600;color:var(--error);border:1px solid var(--error);border-radius:999px;padding:0 7px}
 .salud-detalle{margin:4px 0 0;font-size:14px;color:var(--tinta-2)}.salud-meta{margin:2px 0 0;font-size:12px;color:var(--pizarra)}
+/* Avisos (#2159): notificaciones push guardadas. Una tarjeta por aviso; el no leído lleva borde de acento y la etiqueta "nuevo", nunca solo color */
+.avisos{max-width:720px}.avisos,.avisos *{min-width:0;overflow-wrap:break-word;word-break:normal}
+.avisos-cab{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-bottom:8px}.avisos-cab h2{margin:0;flex:1 1 auto}
+.avisos-lista{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.aviso{padding:10px 12px;border:1px solid var(--linea);border-left:4px solid var(--linea);border-radius:var(--radio);background:var(--panel)}.aviso.sin-leer{border-left-color:var(--oro)}
+.aviso-cab{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline}.aviso-titulo{flex:1 1 12em}.aviso-hora{font-size:12px;color:var(--pizarra)}
+.aviso-nuevo{background:var(--oro-suave);color:var(--oro-oscuro);border-color:transparent}
+.aviso-cuerpo{margin:6px 0;font-size:15px}.aviso-abrir{display:inline-block;padding:6px 0;min-height:24px;color:var(--oro-oscuro);font-weight:600}
 /* Admin (O13a, D69 tanda E bis): panel genérico de D9 sobre las 15 tablas de catálogo. */
 .admin-tablas{list-style:none;margin:0;padding:0;display:grid;gap:6px}
 .admin-fila{margin:8px 0;border:1px solid var(--linea);border-radius:var(--radio);background:var(--panel);padding:0 12px}
