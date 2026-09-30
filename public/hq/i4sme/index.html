@@ -50,7 +50,7 @@ h1 { font-size:20px; margin:0; }
     { id: 'presentada', nombre: 'Presentada', estados: ['Presentada', 'Subsanación', 'Propuesta de adjudicación'] },
     { id: 'resuelta', nombre: 'Adjudicada / Resuelta', estados: ['Adjudicada', 'No adjudicada'] }
   ];
-  var TOKEN = new URLSearchParams(location.search).get('t');
+  var TOKEN = (new URLSearchParams(location.search).get('t') || '').replace(/[^0-9a-zA-Z]/g, '');
   var $ = function (id) { return document.getElementById(id); };
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function fecha(iso, conHora) {
@@ -89,6 +89,7 @@ h1 { font-size:20px; margin:0; }
   }
   async function cargar() {
     if (!TOKEN) return error('Falta el token en el enlace.');
+    if (TOKEN.length !== 64) return error('Enlace incompleto: se ha cortado al copiarlo. Pide el enlace de nuevo y cópialo entero.');
     try {
       var cfg = await (await fetch(API + '/hq/config')).json();
       var r = await fetch(cfg.url + '/rest/v1/rpc/lic_vista_colaborador', {
