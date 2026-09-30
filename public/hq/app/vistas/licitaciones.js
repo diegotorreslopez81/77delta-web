@@ -208,6 +208,24 @@ async function copiarLic(l) {
   try { await navigator.clipboard.writeText(textoChatLic(l)); toast('Copiado: pégalo en el chat del chief'); }
   catch { toast('No se pudo copiar'); }
 }
+// D118: importe publicado, ofertado, coste y margen + hitos de la ficha; solo pinta lo que existe.
+export function economiaLic(l) {
+  const eur = n => (n == null || n === '' ? null : eurCorto(n) + ' sin IVA');
+  const pct = l.margen_pct == null || l.margen_pct === '' ? '' : ' (' + Number(l.margen_pct).toFixed(1).replace('.', ',') + ' %)';
+  const cifras = [
+    ['Publicado', eur(l.importe)], ['Ofertado', eur(l.importe_ofertado)], ['Coste estimado', eur(l.coste_estimado)],
+    ['Margen', eur(l.margen_estimado) ? eur(l.margen_estimado) + pct : null],
+  ].filter(([, v]) => v);
+  const hitos = [['En redacción', l.en_redaccion_en], ['Por presentar', l.por_presentar_en], ['Presentada', l.presentada_en], ['Resuelta', l.resuelta_en]]
+    .filter(([, v]) => v).map(([k, v]) => k + ' ' + fecha(v, { hora: true }));
+  const sinVerificar = l.cierre_fuente === 'fin_de_dia' && !l.cierre_verificado_en;
+  return [
+    cifras.length ? el('p', { class: 'sub lic-economia', text: cifras.map(([k, v]) => k + ' ' + v).join(' · ') }) : null,
+    hitos.length ? el('p', { class: 'sub lic-hitos', text: hitos.join(' · ') }) : null,
+    l.cierre ? el('p', { class: 'sub', text: 'Cierre ' + fecha(l.cierre, { hora: true }) + (sinVerificar ? ' (sin verificar: fin de día supuesto)' : l.cierre_verificado_en ? ' (verificado ' + fecha(l.cierre_verificado_en, { hora: true }) + ')' : '') }) : null,
+  ].filter(Boolean);
+}
+
 export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
   const venc = vencida(l, ahora), espera = esperandoResolucion(l, ahora);
   // #1238: vencida sin resolver en rojo y con lo que falta por hacer; Presentada con cierre pasado no "cerro", espera al organo.
@@ -295,6 +313,7 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
       ...tagsMotivo,
       ...etiquetas.map(e => el('span', { class: 'pill', text: e })),
       el('span', { class: 'plazo' }, [el('i', { class: 'punto g-' + p.color }), el('span', { class: 'plazo-txt ' + claseTexto, text: p.texto })]),
+      l.cierre_fuente === 'fin_de_dia' && !l.cierre_verificado_en ? el('span', { class: 'pill tag-ambar', title: 'La hora de cierre es fin de día supuesto, no leída del pliego ni de la sede', text: 'cierre sin verificar' }) : null,
     ]),
     tags.length ? el('div', { class: 'lic-tipologia' }, tags.map(t => el('span', { class: 'pill tag-' + t.color, title: 'Tipología: ' + t.texto, text: t.texto }))) : null,
     el('h3', { class: 'lic-titulo', text: titulo }),
@@ -304,6 +323,7 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
       objetoReal && norm(objetoReal) !== norm(titulo) ? el('p', { class: 'sub', text: 'Objeto real: ' + objetoReal }) : null,
       l.objeto && norm(l.objeto) !== norm(titulo) && norm(l.objeto) !== norm(objetoReal || '') ? el('p', { class: 'sub', text: l.objeto }) : null,
       l.id != null ? el('p', { class: 'sub', text: 'ID ' + l.id }) : null,
+      ...economiaLic(l),
       l.expediente ? el('p', { class: 'sub', text: 'Expediente ' + l.expediente }) : null,
       solv !== 'sin dato' ? el('p', { class: 'sub', text: 'Solvencia: ' + solv }) : null,
       l.agente ? el('p', { class: 'sub', text: 'Agente: ' + l.agente + (l.tomada_en ? ' · tomada ' + fecha(l.tomada_en) : '') }) : null,
