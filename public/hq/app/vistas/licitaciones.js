@@ -90,7 +90,8 @@ export function estadoChip(valorRuta) {
 export function etapaValor(est) { return est === 'todas-presentadas' ? 'presentadas' : etapaDe(est); }
 export function ordenar(rows, orden = 'cierre', descendente = false) {
   const cmp = orden === 'importe' ? (a, b) => (Number(a.importe) || Infinity) - (Number(b.importe) || Infinity) || ordenCierre(a, b) : ordenCierre;
-  const listado = [...rows].sort(cmp);
+  const prio = r => (r.estado === 'Por decidir' && r.tag_prioritario ? 1 : 0);
+  const listado = [...rows].sort(descendente ? cmp : (x, y) => prio(y) - prio(x) || cmp(x, y));
   return descendente ? listado.reverse() : listado;
 }
 // El buscador de la hoja es el filtro 'texto' de filtrar(); buscar() se mantiene como atajo.
@@ -303,6 +304,7 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
     el('div', { class: 'lic-tags' }, [
       l.id != null ? el('span', { class: 'pill', title: 'ID de licitación', text: '#' + l.id }) : null,
       el('span', { class: 'pill tag-' + colorEstado(par.estado), title: 'Estado: ' + par.estado }, [el('i', { class: 'punto g-' + (COLOR_ESTADO[par.estado] || 'neutro-3') }), par.estado]),
+      ...(Array.isArray(l.tags) ? l.tags.filter(t => ['IA', 'Software'].includes(t)).map(t => el('span', { class: 'pill tag-verde', title: 'Tag prioritario (D127): va primero en Por decidir y en la cola', text: t })) : []),
       l.etiqueta && l.etiqueta !== 'Otros' ? el('span', { class: 'pill tag-teal', title: 'Tipo (CPV' + (l.cpv ? ' ' + String(l.cpv).split(',')[0].trim() : '') + '): ' + l.etiqueta, text: l.etiqueta }) : null,
       tipo && tipo !== 'Otro' ? el('span', { class: 'pill tag-' + colorOrgano(tipo), title: 'Órgano: ' + tipo, text: tipo }) : null,
       el('span', { class: 'pill ' + importeClase(l.importe), text: l.importe ? eurCorto(l.importe) + ' sin IVA' : 'sin importe' }),
