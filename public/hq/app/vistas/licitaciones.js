@@ -211,7 +211,7 @@ async function copiarLic(l) {
 // D118: importe publicado, ofertado, coste y margen + hitos de la ficha; solo pinta lo que existe.
 export function economiaLic(l) {
   const eur = n => (n == null || n === '' ? null : eurCorto(n) + ' sin IVA');
-  const pct = l.margen_pct == null || l.margen_pct === '' ? '' : ' (' + Number(l.margen_pct).toFixed(1).replace('.', ',') + ' %)';
+  const pct = l.margen_pct == null || l.margen_pct === '' ? '' : ' (' + (Number(l.margen_pct) * 100).toFixed(1).replace('.', ',') + ' %)';
   const cifras = [
     ['Publicado', eur(l.importe)], ['Ofertado', eur(l.importe_ofertado)], ['Coste estimado', eur(l.coste_estimado)],
     ['Margen', eur(l.margen_estimado) ? eur(l.margen_estimado) + pct : null],
