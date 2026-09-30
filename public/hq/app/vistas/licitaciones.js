@@ -388,10 +388,31 @@ function panelAprobadasAuto(rol) {
   return caja;
 }
 
+// #2210: deep link #operacion/licitaciones/<id>: la ficha de una sola licitación, sea cual sea su estado (filtro 'id' de la RPC, schema-v122).
+function renderFicha(raiz, S, id, ahora, rol) {
+  const mio = ++turno;
+  const caja = el('div', { class: 'lic-ficha-unica' }, [el('p', { class: 'mudo', text: 'cargando licitación ' + id + '…' })]);
+  raiz.append(cabeceraFuentes(S), el('div', { class: 'fila enlace-kpis' }, [el('a', { class: 'btn-enlace', href: '#operacion/licitaciones', text: '‹ Licitaciones' })]), caja);
+  return cargador({ id, limite: 1 }).then(datos => {
+    if (mio !== turno || raiz.isConnected === false) return;
+    const l = (Array.isArray(datos?.filas) ? datos.filas : []).find(x => Number(x.id) === id);
+    caja.innerHTML = '';
+    if (!l) { caja.append(el('p', { class: 'mudo', text: 'no existe la licitación L-' + id })); return; }
+    const card = tarjetaLic(l, ahora, rol);
+    caja.append(card);
+    if (card.getAttribute?.('aria-expanded') !== 'true') card.click?.();
+  }).catch(() => {
+    if (mio !== turno) return;
+    caja.innerHTML = '';
+    caja.append(el('p', { class: 'mudo', text: 'no se pudo cargar la licitación' }));
+  });
+}
+
 export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
   estadoApp = S;
   const d = S.datos || {};
   const rol = d.rol || 'agente';
+  if (/^\d+$/.test(arg || '')) return renderFicha(raiz, S, Number(arg), ahora, rol);
   const estado = estadoChip(filtrosRuta.estado) || 'Por decidir';
   const valores = { estado, orden: filtrosRuta.orden === 'importe' ? 'importe' : 'cierre' };
   for (const k of ['tipologia', 'solvencia', 'tipo', 'presencial', 'texto', 'motivo', 'etiqueta']) if (filtrosRuta[k]) valores[k] = filtrosRuta[k];

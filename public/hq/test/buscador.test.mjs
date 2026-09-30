@@ -62,3 +62,14 @@ test('licitación se busca por id de omc_licitaciones, expediente y texto (#2185
   assert.equal(buscar(d, 'a31/2025/80').length, 1);
   assert.equal(buscar(d, 'girona').length, 1);
 });
+
+test('#2210: L-<id> abre la ficha de la licitación y no busca en otras fuentes; sin prefijo sigue igual', () => {
+  const d = { ...datos, licitaciones: [{ id: 793, expediente: 'CSE/1', objeto: 'Vall d\'Hebron', organo: 'Hospital' }], encargos: [{ id: 793, texto: 'Otro' }] };
+  assert.deepEqual(buscar(d, 'L-793').map(x => [x.tipo, x.href]), [['licitación', '#operacion/licitaciones/793']]);
+  assert.deepEqual(buscar(d, 'l793').map(x => x.href), ['#operacion/licitaciones/793']);
+  assert.deepEqual(buscar(d, '793').map(x => x.tipo), ['encargo', 'licitación']);
+  assert.equal(buscar(d, '793').at(-1).href, '#operacion/licitaciones/793');
+});
+test('#2210: L-<id> fuera del payload da igualmente el enlace directo', () => {
+  assert.deepEqual(buscar(datos, 'L-5').map(x => x.href), ['#operacion/licitaciones/5']);
+});
