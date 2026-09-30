@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Licitaciones I4SME</title>
+<style>
+:root { --bg:#f6f7f9; --card:#fff; --tx:#1b2330; --mu:#647084; --bd:#dfe3ea; --rojo:#c62828; --rojo-bg:#fdecec; --ac:#1f5fbf; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12161c; --card:#1b212a; --tx:#e7ebf1; --mu:#95a0b1; --bd:#2b3340; --rojo:#ff6b6b; --rojo-bg:#3a1c1e; --ac:#7fb0ff; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--tx); font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+main { max-width:1280px; margin:0 auto; padding:16px; }
+header { display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:4px 16px; margin-bottom:16px; }
+h1 { font-size:20px; margin:0; }
+.mu { color:var(--mu); font-size:13px; }
+.firma { background:var(--rojo-bg); border:1px solid var(--rojo); border-radius:10px; padding:12px 14px; margin-bottom:20px; }
+.firma h2 { color:var(--rojo); font-size:16px; margin:0 0 8px; }
+.firma .fila { padding:8px 0; border-top:1px solid var(--rojo); border-top-color:color-mix(in srgb, var(--rojo) 35%, transparent); }
+.firma .fila:first-of-type { border-top:0; }
+.cols { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:14px; align-items:start; }
+.col h2 { font-size:14px; text-transform:uppercase; letter-spacing:.04em; color:var(--mu); margin:0 0 8px; }
+.card { background:var(--card); border:1px solid var(--bd); border-radius:10px; padding:10px 12px; margin-bottom:8px; }
+.card.roja { border-color:var(--rojo); }
+.card .exp { font-weight:600; }
+.card .obj { margin:2px 0 6px; }
+.tag { display:inline-block; font-size:12px; padding:1px 8px; border-radius:99px; border:1px solid var(--bd); color:var(--mu); margin-right:4px; }
+.tag.rojo { color:var(--rojo); border-color:var(--rojo); font-weight:600; }
+.vacio { color:var(--mu); font-size:13px; padding:6px 2px; }
+#msg { padding:24px 0; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Licitaciones I4SME</h1>
+    <span class="mu" id="act"></span>
+  </header>
+  <div id="msg" class="mu">Cargando...</div>
+  <div id="firma"></div>
+  <div class="cols" id="cols"></div>
+</main>
+<script>
+(function () {
+  var API = 'https://api.77delta.com';
+  var COLS = [
+    { id: 'redaccion', nombre: 'En redacción', estados: ['En redacción'] },
+    { id: 'presentar', nombre: 'Por presentar', estados: ['Por presentar'] },
+    { id: 'presentada', nombre: 'Presentada', estados: ['Presentada', 'Subsanación', 'Propuesta de adjudicación'] },
+    { id: 'resuelta', nombre: 'Adjudicada / Resuelta', estados: ['Adjudicada', 'No adjudicada'] }
+  ];
+  var TOKEN = new URLSearchParams(location.search).get('t');
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function fecha(iso, conHora) {
+    if (!iso) return 'sin fecha';
+    var o = { timeZone: 'Europe/Madrid', day: '2-digit', month: '2-digit', year: 'numeric' };
+    if (conHora) { o.hour = '2-digit'; o.minute = '2-digit'; }
+    return new Date(iso).toLocaleString('es-ES', o);
+  }
+  function error(t) { $('msg').textContent = t; $('msg').style.display = 'block'; }
+  function card(l, roja) {
+    return '<div class="card' + (roja ? ' roja' : '') + '">' +
+      '<div class="exp">' + esc(l.expediente || ('Licitación ' + l.id)) + '</div>' +
+      '<div class="obj">' + esc(l.objeto) + '</div>' +
+      '<div class="mu">' + esc(l.organo) + '</div>' +
+      '<div style="margin-top:6px"><span class="tag">' + esc(l.estado) + '</span>' +
+      (l.firma_pendiente ? '<span class="tag rojo">Firma pendiente</span>' : '') +
+      '<span class="tag">Cierre ' + esc(fecha(l.cierre_en, true)) + '</span></div></div>';
+  }
+  function pintar(d) {
+    var L = d.licitaciones || [];
+    var pend = L.filter(function (l) { return l.firma_pendiente; });
+    $('msg').style.display = 'none';
+    $('act').textContent = 'Actualizado ' + fecha(d.generado_en, true);
+    $('firma').innerHTML = pend.length
+      ? '<div class="firma"><h2>Pendientes de tu firma (' + pend.length + ')</h2>' + pend.map(function (l) {
+          return '<div class="fila"><strong>' + esc(l.expediente || ('Licitación ' + l.id)) + '</strong> ' + esc(l.objeto) +
+            '<div class="mu">' + esc(l.organo) + ' · Enviado a firma ' + esc(fecha(l.firma_enviada_en, false)) +
+            ' · Plazo: cierre ' + esc(fecha(l.cierre_en, true)) + '</div></div>';
+        }).join('') + '</div>'
+      : '<div class="mu" style="margin-bottom:16px">Nada pendiente de tu firma.</div>';
+    $('cols').innerHTML = COLS.map(function (c) {
+      var items = L.filter(function (l) { return c.estados.indexOf(l.estado) >= 0; });
+      return '<section class="col"><h2>' + esc(c.nombre) + ' (' + items.length + ')</h2>' +
+        (items.length ? items.map(function (l) { return card(l, l.firma_pendiente); }).join('') : '<div class="vacio">Ninguna</div>') + '</section>';
+    }).join('');
+  }
+  async function cargar() {
+    if (!TOKEN) return error('Falta el token en el enlace.');
+    try {
+      var cfg = await (await fetch(API + '/hq/config')).json();
+      var r = await fetch(cfg.url + '/rest/v1/rpc/lic_vista_colaborador', {
+        method: 'POST',
+        headers: { apikey: cfg.anon, Authorization: 'Bearer ' + cfg.anon, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p_token: TOKEN })
+      });
+      if (r.status === 403) return error('Enlace no válido o revocado.');
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      pintar(await r.json());
+    } catch (e) { error('No se pudo cargar. Reintenta en unos minutos.'); }
+  }
+  cargar();
+  setInterval(cargar, 300000);
+})();
+</script>
+</body>
+</html>
