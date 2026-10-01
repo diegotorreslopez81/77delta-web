@@ -296,6 +296,26 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
       }
     }).catch(() => { ficha.innerHTML = ''; ficha.append(el('p', { class: 'mudo', text: 'no se pudo cargar' })); });
   };
+  // D136 (LICITA-SPEC 5.9): notificaciones de sede de esta licitacion (abiertas, sin_asignar o en
+  // error). Mismo patron lazy-load; documento/acuse enlazan a Drive, nunca se descargan aqui.
+  const notifs = el('div', { class: 'lic-notificaciones' });
+  let notifsCargadas = false;
+  const cargarNotificaciones = () => {
+    if (notifsCargadas || !l.id) return;
+    notifsCargadas = true;
+    notifs.append(el('p', { class: 'mudo', text: 'cargando…' }));
+    import('../api.js').then(m => m.licitacionNotificaciones(l.id)).then(ns => {
+      notifs.innerHTML = '';
+      if (!Array.isArray(ns) || !ns.length) { notifs.append(el('p', { class: 'mudo', text: 'sin notificaciones' })); return; }
+      notifs.append(el('ul', { class: 'lista-corta' }, ns.map(n => el('li', {}, [
+        el('span', { text: (n.recibido_en ? fecha(n.recibido_en) + ' · ' : '') + n.plataforma + ' · ' + (n.tipo || '?')
+          + ' · ' + n.estado + (n.plazo ? ' · plazo ' + fecha(n.plazo) : '') + (n.organo ? ' · ' + n.organo : '')
+          + (n.estado === 'error' && n.error ? ' · ' + n.error : '') }),
+        n.documento_drive ? el('a', { class: 'btn-enlace', href: urlSegura(n.documento_drive), target: '_blank', rel: 'noopener', text: 'Documento' }) : null,
+        n.acuse_drive ? el('a', { class: 'btn-enlace', href: urlSegura(n.acuse_drive), target: '_blank', rel: 'noopener', text: 'Acuse' }) : null,
+      ]))));
+    }).catch(() => { notifs.innerHTML = ''; notifs.append(el('p', { class: 'mudo', text: 'no se pudo cargar' })); });
+  };
   const alClic = e => { if (e.target?.closest?.('a, button')) return; alternar(e.currentTarget || art); };
   const art = el('article', {
     class: 'card-lic', 'data-sale': '1', tabindex: '0', 'aria-expanded': 'false', 'data-expediente': l.expediente || '',
@@ -334,6 +354,7 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
       checklistA5(l),
       el('details', { class: 'lic-hist', ontoggle: e => { if (e.currentTarget?.open) cargarHistorial(); } }, [el('summary', { text: 'Historial' }), historial]),
       el('details', { class: 'lic-hist', ontoggle: e => { if (e.currentTarget?.open) cargarFicha(); } }, [el('summary', { text: 'Extracción y evaluación' }), ficha]),
+      el('details', { class: 'lic-hist', ontoggle: e => { if (e.currentTarget?.open) cargarNotificaciones(); } }, [el('summary', { text: 'Notificaciones' }), notifs]),
     ]),
     el('div', { class: 'lic-pie enlaces enlaces-doc' }, [
       ...enlaces.map(([t, u]) => el('a', { class: 'btn-enlace', href: u, target: '_blank', rel: 'noopener', text: t })),

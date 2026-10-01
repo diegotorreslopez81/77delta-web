@@ -40,6 +40,8 @@ export const licitacionCambios = id => rpc('omc_licitacion_cambios', { p_id: id 
 // O13c (D69, tanda E bis): ficha de lic_extraccion (campo/valor/cita/ubicacion) y lista de
 // lic_evaluaciones (criterio GO/NO GO/DUDA) de una licitacion (lic_ficha_extraccion, schema-v59).
 export const licitacionFicha = id => rpc('lic_ficha_extraccion', { p_id: id });
+// D136 (LICITA-SPEC 5.9): notificaciones de sede abiertas/con error/sin_asignar para esta licitacion.
+export const licitacionNotificaciones = id => rpc('lic_notificaciones_de', { p_id: id });
 // O13b (D69, tanda E bis): lista de auto-aprobadas por criba 2 (D1) con ventana de veto de 12h
 // (lic_aprobadas_auto, schema-v60). El veto en si reutiliza transicionEstado ya existente.
 export const aprobadasAuto = (dias = 3) => rpc('lic_aprobadas_auto', { p_dias: dias });
