@@ -13,8 +13,10 @@ interface Props {
   ogImage?: string;
   /** Borradores y páginas de prueba: fuera de buscadores. */
   noindex?: boolean;
+  /** false en páginas sin versión en catalán: oculta el selector de idioma. */
+  selectorIdioma?: boolean;
 }
-const { title, description = site.descripcion, ogImage = '/img/og.png', noindex = false } = Astro.props;
+const { title, description = site.descripcion, ogImage = '/img/og.png', noindex = false, selectorIdioma = true } = Astro.props;
 
 const idioma = Astro.currentLocale === 'ca' ? 'ca' : 'es';
 const claimIdioma = idioma === 'ca' ? site.claimCa : site.claim;
@@ -89,7 +91,7 @@ const urlCa = new URL(rutaCa, Astro.site).href;
     </script>
   </head>
   <body class="min-h-screen bg-papel text-tinta">
-    <Nav />
+    <Nav selectorIdioma={selectorIdioma} />
     <main>
       <slot />
     </main>

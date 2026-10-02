@@ -3,6 +3,11 @@
 import Monograma from './Monograma.astro';
 import { nav, navCa, cta, ctaCa, href, hrefCa, equivalenteCa, equivalenteEs } from '../lib/site';
 
+interface Props {
+  /** Oculta el selector de idioma en páginas sin versión en catalán (p. ej. /propuestas/). */
+  selectorIdioma?: boolean;
+}
+const { selectorIdioma = true } = Astro.props;
 const idioma = Astro.currentLocale === 'ca' ? 'ca' : 'es';
 const enlace = idioma === 'ca' ? hrefCa : href;
 const items = idioma === 'ca' ? navCa : nav;
@@ -37,15 +42,17 @@ const enlaceOtroIdioma = idioma === 'ca' ? equivalenteEs(actual) : equivalenteCa
     </nav>
 
     <div class="flex items-center gap-3">
-      <a
-        href={enlaceOtroIdioma}
-        data-selector-idioma
-        data-idioma-destino={otroIdioma}
-        class="hidden shrink-0 rounded-[6px] border border-marfil/25 px-2.5 py-1.5 font-mono text-[12px] font-semibold uppercase tracking-[0.04em] text-marfil/80 transition-colors duration-200 hover:border-marfil/60 hover:text-marfil sm:inline-flex"
-        aria-label={idioma === 'ca' ? 'Canviar a castellà' : 'Cambiar a català'}
-      >
-        {otroIdioma}
-      </a>
+      {selectorIdioma && (
+        <a
+          href={enlaceOtroIdioma}
+          data-selector-idioma
+          data-idioma-destino={otroIdioma}
+          class="hidden shrink-0 rounded-[6px] border border-marfil/25 px-2.5 py-1.5 font-mono text-[12px] font-semibold uppercase tracking-[0.04em] text-marfil/80 transition-colors duration-200 hover:border-marfil/60 hover:text-marfil sm:inline-flex"
+          aria-label={idioma === 'ca' ? 'Canviar a castellà' : 'Cambiar a català'}
+        >
+          {otroIdioma}
+        </a>
+      )}
       <a
         href={enlace(boton.ruta)}
         class="inline-flex items-center whitespace-nowrap rounded-[8px] bg-oro px-4 py-2.5 text-[13px] font-semibold text-marfil transition-[background-color,color,box-shadow] duration-200 hover:bg-marfil hover:text-tinta hover:shadow-[0_6px_20px_rgba(0,0,0,.3)] sm:px-5"
@@ -81,14 +88,16 @@ const enlaceOtroIdioma = idioma === 'ca' ? equivalenteEs(actual) : equivalenteCa
           </a>
         ))
       }
-      <a
-        href={enlaceOtroIdioma}
-        data-selector-idioma
-        data-idioma-destino={otroIdioma}
-        class="mt-2 rounded-[8px] border-t border-marfil/10 px-3 py-3 pt-4 font-mono text-[13px] font-semibold uppercase tracking-[0.04em] text-marfil/80"
-      >
-        {idioma === 'ca' ? 'Castellano' : 'Català'}
-      </a>
+      {selectorIdioma && (
+        <a
+          href={enlaceOtroIdioma}
+          data-selector-idioma
+          data-idioma-destino={otroIdioma}
+          class="mt-2 rounded-[8px] border-t border-marfil/10 px-3 py-3 pt-4 font-mono text-[13px] font-semibold uppercase tracking-[0.04em] text-marfil/80"
+        >
+          {idioma === 'ca' ? 'Castellano' : 'Català'}
+        </a>
+      )}
     </nav>
   </div>
 </header>
