@@ -310,3 +310,57 @@ a{color:inherit}
 .seccion.motor{border:1px solid var(--linea,#ddd);border-radius:8px;padding:12px 16px}
 .seccion.motor h3{margin:12px 0 6px;font-size:14px}
 .titulo-resto{margin-top:28px}
+
+/* #2239 visor CRM de ventas (vistas/ventas.js): franja, alertas, tablero por etapa, ficha lateral y actividad. */
+.ventas{min-width:0;display:grid;gap:12px}
+.vt-tabs{display:flex;gap:4px;border-bottom:1px solid var(--linea)}
+.vt-tabs button{font:500 13px inherit;background:none;border:0;border-bottom:2px solid transparent;color:var(--pizarra);padding:8px 10px;cursor:pointer;min-height:40px}
+.vt-tabs button[aria-selected="true"]{color:var(--tinta);border-color:var(--oro)}
+.vt-franja{display:flex;gap:8px;overflow-x:auto;align-items:stretch;padding-bottom:4px}
+.vt-etapa{flex:1 0 96px;background:var(--panel);border:1px solid var(--linea);border-radius:6px;padding:8px 10px;text-align:left;cursor:pointer;color:inherit;font:inherit}
+.vt-etapa.activa{border-color:var(--oro)}
+.vt-n{display:block;font-size:22px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.vt-l{display:block;font-size:11.5px;color:var(--pizarra);text-transform:uppercase;letter-spacing:.02em;margin-top:4px}
+.vt-meta{flex:0 0 auto;align-self:center;padding-left:12px;font-size:12.5px;color:var(--pizarra);white-space:nowrap}
+.vt-alertas{display:grid;gap:6px}
+.vt-alerta{display:flex;gap:8px;align-items:baseline;font-size:13px;color:var(--tinta-2)}
+.vt-alerta::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--tag-ambar-fg);flex:0 0 auto}
+.vt-alerta.critico::before{background:var(--error)}
+.vt-tablero{display:flex;gap:12px;overflow-x:auto;align-items:flex-start;scroll-snap-type:x proximity;padding-bottom:8px}
+.vt-col{flex:0 0 272px;min-width:0;scroll-snap-align:start}
+.vt-col h2{display:flex;justify-content:space-between;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--pizarra);margin:0 0 8px}
+.vt-col.activa h2{color:var(--oro-oscuro)}
+.vt-k{font-variant-numeric:tabular-nums;color:var(--tinta)}
+.vt-cards{display:grid;gap:8px}
+.vt-card{display:grid;gap:6px;text-align:left;width:100%;background:var(--panel);border:1px solid var(--linea);border-radius:6px;padding:10px 12px;cursor:pointer;color:inherit;font:inherit}
+.vt-card:hover{border-color:var(--pizarra-tenue)}
+.vt-cab{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.vt-dias{font-size:11.5px;color:var(--pizarra);white-space:nowrap}
+.vt-dom{font-size:12px;color:var(--pizarra-tenue);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vt-fila{display:grid;grid-template-columns:68px 1fr;gap:6px;font-size:12.5px;color:var(--tinta-2)}
+.vt-e{color:var(--pizarra-tenue)}
+.vt-sig{font-weight:500}.vt-sig.nada{color:var(--pizarra-tenue);font-weight:400}.vt-sig.vencida{color:var(--error)}
+.vt-chip{justify-self:start;font-size:11px;border:1px solid var(--linea);border-radius:999px;padding:1px 8px;color:var(--oro-oscuro);text-decoration:none}
+.vt-vacio{font-size:12.5px;color:var(--pizarra-tenue);font-style:italic;margin:0}
+.vt-col summary{cursor:pointer;font-size:12.5px;color:var(--pizarra);margin-bottom:8px}
+.vt-filtros{display:flex;gap:8px;flex-wrap:wrap}
+.vt-filtros select{font:13px inherit;color:var(--tinta);background:var(--panel);border:1px solid var(--linea);border-radius:4px;padding:6px 8px;max-width:100%}
+.vt-feed{display:grid;gap:12px;max-width:760px}
+.vt-feed h3,.vt-ficha h3{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--pizarra);margin:0 0 6px}
+.vt-feed ul{list-style:none;margin:0;padding:0}
+.vt-feed li{display:grid;grid-template-columns:44px 1fr;gap:10px;font-size:13px;color:var(--tinta-2);padding:6px 0;border-bottom:1px solid var(--linea)}
+.vt-h{font-size:11.5px;color:var(--pizarra-tenue);font-variant-numeric:tabular-nums}
+.vt-q{color:var(--pizarra-tenue);font-size:12px}
+.vt-velo{position:fixed;inset:0;z-index:50;background:rgba(6,16,31,.35)}
+.vt-ficha{position:absolute;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--papel);border-left:1px solid var(--linea);padding:18px 16px;overflow-y:auto}
+.vt-ficha h2{font-size:18px;line-height:1.2;margin:0 0 2px;padding-right:64px}
+.vt-ficha h3{margin-top:14px}
+.vt-cerrar{position:absolute;top:12px;right:12px;background:none;border:1px solid var(--linea);border-radius:4px;color:var(--pizarra);font:13px inherit;padding:6px 10px;cursor:pointer}
+.vt-dl{display:grid;grid-template-columns:104px 1fr;gap:4px 10px;font-size:13px;margin:12px 0 0}
+.vt-dl dt{color:var(--pizarra-tenue)}.vt-dl dd{margin:0;overflow-wrap:anywhere}
+.vt-fechas{font-size:12.5px;color:var(--tinta-2);margin:0}
+.vt-cron{list-style:none;margin:0;padding:0 0 0 12px;border-left:2px solid var(--linea);display:grid;gap:8px}
+.vt-cron li{position:relative;font-size:13px;color:var(--tinta-2)}
+.vt-cron li::before{content:"";position:absolute;left:-17px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--oro)}
+.vt-cron .vt-h{display:block}
+@media (max-width:520px){.vt-col{flex-basis:84vw}}
