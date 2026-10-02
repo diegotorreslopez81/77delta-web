@@ -52,7 +52,7 @@ if (typeof globalThis.localStorage === 'undefined') {
   globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => mem.set(k, String(v)), removeItem: (k) => mem.delete(k) };
 }
 
-const { agrupar, bandeja, textoChat } = await import('../app/vistas/decisiones.js');
+const { agrupar, bandeja, textoChat, enSnapshot, tarjetaPorId } = await import('../app/vistas/decisiones.js');
 const render = (raiz, S) => raiz.append(bandeja(S, undefined, new Date('2026-09-16T12:00:00Z')));
 const ahora = new Date('2026-09-16T12:00:00Z');
 test('agrupar por vencimiento', () => {
@@ -246,4 +246,31 @@ test('#1281 bandeja: contador sin fila en omc_datos se omite del título; con fi
   assert.match(titulos({ ...datos, claves_datos: null })[0], /depende de ti \(\d+\)/);
   assert.deepEqual(titulos({ ...datos, claves_datos: ['home.tarjetas.depende_de_ti'] })[0], titulos(datos)[0]);
   assert.equal(titulos({ ...datos, claves_datos: [] })[0], 'Bandeja · depende de ti');
+});
+
+// #hoy/<id> abre siempre la ficha: fuera del snapshot se pide por id y se pinta abierta arriba.
+test('#hoy/<id>: enSnapshot ve pendientes, pospuestas y seguimiento; el resto no', () => {
+  const S = { datos: { pendientes: [{ id: 1 }], pospuestas: [{ id: 2 }], seguimiento: [{ id: 3 }] } };
+  assert.deepEqual([1, 2, 3, 4].map(i => enSnapshot(S, i)), [true, true, true, false]);
+  assert.equal(enSnapshot({ datos: {} }, 1), false);
+});
+test('#hoy/<id>: tarjeta fuera del snapshot se pide por id y se pinta abierta; cerrada solo Copiar/Comentar', async () => {
+  const S = { datos: { pendientes: [{ id: 1, tipo: 'aprobacion', titulo: 'A' }] } };
+  const b = crearNodo('section'); b.isConnected = true;
+  const llamadas = [];
+  const pedir = async (fn, a) => { llamadas.push([fn, a]); return { id: 9, tipo: 'estrategia', estado: 'aprobada', titulo: 'Cerrada Z', agente: 'x', detalle: 'd', hilo: [{ ts: '2026-09-16T10:00:00Z', autor: 'diego', texto: 'hola' }] }; };
+  const n = await tarjetaPorId(S, 9, b, pedir);
+  assert.deepEqual(llamadas, [['omc_estado', { p_id: 9 }]]);
+  assert.ok(n); assert.equal(b.children[0], n);
+  const textos = []; (function rec(x) { if (x.nodeType === 1) { if (x.tag === 'button') textos.push(x.textContent); if (x.tag === 'h3') textos.push(x.textContent); x.children.forEach(rec); } })(n);
+  assert.ok(textos.includes('Tarjeta #9 · aprobada'));
+  assert.deepEqual(textos.filter(t => !t.startsWith('Tarjeta')), ['Copiar para el chat', 'Comentar']);
+});
+test('#hoy/<id>: tarjeta ya en snapshot no pide nada; id inexistente avisa y no pinta', async () => {
+  const S = { datos: { pendientes: [{ id: 1 }] } };
+  const b = crearNodo('section'); b.isConnected = true;
+  let pidio = 0;
+  assert.equal(await tarjetaPorId(S, 1, b, async () => { pidio++; }), null); assert.equal(pidio, 0);
+  assert.equal(await tarjetaPorId(S, 5, b, async () => { throw new Error('solicitud no encontrada'); }), null);
+  assert.equal(b.children.length, 0);
 });

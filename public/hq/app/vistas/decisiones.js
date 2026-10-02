@@ -195,9 +195,32 @@ export function bandeja(S, arg, ahora = new Date()) {
       el('a', { class: 'btn-enlace', href: '/hq/v1/#licita', text: 'histórico y fichas completas en HQ v1' })]) : lineaCriba,
   ]);
 }
+// Ids que la bandeja ya pinta (pendientes, pospuestas y seguimiento del snapshot).
+export function enSnapshot(S, id) {
+  const d = S.datos || {};
+  return [...(d.pendientes || []), ...(d.pospuestas || []), ...(d.seguimiento || [])].some(p => p.id === id);
+}
+// #hoy/<id> abre siempre la ficha: si la tarjeta no esta en el snapshot (cerrada, sin fecha fuera del
+// recorte...), se pide por id (omc_estado) y se pinta arriba de la bandeja, abierta. Las que ya no estan
+// pendientes van solo con Copiar/Comentar. Devuelve el nodo pintado o null.
+export async function tarjetaPorId(S, id, bandejaEl, pedir = rpc) {
+  if (!id || enSnapshot(S, id)) return null;
+  let p;
+  try { p = await pedir('omc_estado', { p_id: id }); } catch (err) { toast('Tarjeta #' + id + ': ' + err.message); return null; }
+  if (!p || !bandejaEl?.isConnected) return null;
+  const hilo = p.hilo || [];
+  const nodo = el('section', { class: 'seccion', id: 'ficha-' + id }, [
+    el('h3', { text: 'Tarjeta #' + id + (p.estado && p.estado !== 'pendiente' ? ' · ' + p.estado : '') }),
+    tarjeta(p, true, hilo, p.estado !== 'pendiente')]);
+  bandejaEl.prepend(nodo);
+  return nodo;
+}
 export function montar(raiz, S, arg) {
   if (S.datos?.rol !== 'owner') return;
-  raiz.append(bandeja(S, arg));
-  const destino = Number(arg) ? 'd' + Number(arg) : arg === 'bandeja' ? 'bandeja' : null;
-  if (destino) setTimeout(() => document.getElementById(destino)?.scrollIntoView({ block: 'start' }), 50);
+  const b = bandeja(S, arg); raiz.append(b);
+  const id = Number(arg) || null;
+  const destino = id ? 'd' + id : arg === 'bandeja' ? 'bandeja' : null;
+  const ir = () => document.getElementById(destino)?.scrollIntoView({ block: 'start' });
+  if (destino) setTimeout(ir, 50);
+  if (id && !enSnapshot(S, id)) tarjetaPorId(S, id, b).then(n => { if (n) setTimeout(ir, 0); });
 }
