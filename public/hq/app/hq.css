@@ -317,10 +317,10 @@ a{color:inherit}
 .vt-tabs button{font:500 13px inherit;background:none;border:0;border-bottom:2px solid transparent;color:var(--pizarra);padding:8px 10px;cursor:pointer;min-height:40px}
 .vt-tabs button[aria-selected="true"]{color:var(--tinta);border-color:var(--oro)}
 .vt-franja{display:flex;gap:8px;overflow-x:auto;align-items:stretch;padding-bottom:4px}
-.vt-etapa{flex:1 0 96px;background:var(--panel);border:1px solid var(--linea);border-radius:6px;padding:8px 10px;text-align:left;cursor:pointer;color:inherit;font:inherit}
+.vt-etapa{flex:1 0 auto;min-width:96px;background:var(--panel);border:1px solid var(--linea);border-radius:6px;padding:8px 10px;text-align:left;cursor:pointer;color:inherit;font:inherit}
 .vt-etapa.activa{border-color:var(--oro)}
 .vt-n{display:block;font-size:22px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
-.vt-l{display:block;font-size:11.5px;color:var(--pizarra);text-transform:uppercase;letter-spacing:.02em;margin-top:4px}
+.vt-l{display:block;white-space:nowrap;font-size:11.5px;color:var(--pizarra);text-transform:uppercase;letter-spacing:.02em;margin-top:4px}
 .vt-meta{flex:0 0 auto;align-self:center;padding-left:12px;font-size:12.5px;color:var(--pizarra);white-space:nowrap}
 .vt-alertas{display:grid;gap:6px}
 .vt-alerta{display:flex;gap:8px;align-items:baseline;font-size:13px;color:var(--tinta-2)}

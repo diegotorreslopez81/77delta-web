@@ -45,3 +45,11 @@ test('cronología de la ficha incluye transición y tarea hecha', () => {
   assert.deepEqual(V.cronologia(ops[14]).map(e => e.tipo).sort(), ['tarea_creada', 'tarea_hecha', 'transicion']);
 });
 test('RPC caída: aviso, no pantalla vacía', async () => assert.match((await pintar(async () => { throw new Error('boom'); })).textContent, /No se pudo leer el embudo de ventas \(boom\)/));
+test('render llamado como main.js (2º arg = estado) no da NaN', async () => {
+  V.usarCargador(async () => DATOS); const raiz = crearNodo('main'); await V.render(raiz, { clave: 'x' }, undefined, {});
+  assert.doesNotMatch(raiz.textContent, /NaN/);
+});
+test('ficha sin movimientos dice Sin movimientos', async () => {
+  const sin = { ...DATOS, oportunidades: [ops[0]] }; V.usarCargador(async () => sin);
+  const raiz = crearNodo('main'); await V.render(raiz, AHORA); assert.ok(raiz.textContent.includes('E0'));
+});

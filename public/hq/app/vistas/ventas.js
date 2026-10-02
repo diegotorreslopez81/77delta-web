@@ -96,7 +96,7 @@ function ficha(o, cerrar, ahora) {
     f.length ? el('h3', { text: 'Fechas por etapa' }) : null,
     f.length ? el('p', { class: 'vt-fechas', text: f.map(([e, v]) => `${nombre(e)} ${fhora(v)}`).join(' · ') }) : null,
     el('h3', { text: 'Cronología' }),
-    el('ol', { class: 'vt-cron' }, cronologia(o).map(e => el('li', {}, [el('span', { class: 'vt-h', text: `${fhora(e.cuando)} · ${e.quien || '-'}` }), textoEvento(e)]))),
+    el('ol', { class: 'vt-cron' }, cronologia(o).length ? cronologia(o).map(e => el('li', {}, [el('span', { class: 'vt-h', text: `${fhora(e.cuando)} · ${e.quien || '-'}` }), textoEvento(e)])) : [el('li', { class: 'mudo', text: 'Sin movimientos' })]),
   ]);
 }
 
@@ -143,7 +143,9 @@ function pintarActividad(raiz, d, estado, redibujar) {
       : [el('p', { class: 'vt-vacio', text: 'Sin movimientos.' })]));
 }
 
-export async function render(raiz, ahora = new Date()) {
+// main.js llama render(raiz, S, arg, filtros): el 2º parámetro solo cuenta como reloj si es una Date (tests).
+export async function render(raiz, reloj) {
+  const ahora = reloj instanceof Date ? reloj : new Date();
   raiz.append(el('h1', { text: 'Ventas' }));
   const caja = el('div', { class: 'ventas' });
   raiz.append(caja);
