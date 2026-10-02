@@ -2,7 +2,7 @@
    Supabase ni el payload omc_hq_v2 (van a otro origen, asi que ya quedan fuera del filtro de fetch).
    Push y notificationclick son el mismo comportamiento real que public/hq/v1/sw.js (mismo payload que
    envia hq-push en el servidor: title, body, url, tag, id, lic). */
-var CACHE = 'hq-v22';
+var CACHE = 'hq-v23';
 var SHELL = ['/hq/', '/hq/app/main.js', '/hq/app/api.js', '/hq/app/estado.js', '/hq/app/recargador.js', '/hq/app/rutas.js', '/hq/app/buscador.js', '/hq/app/licitaciones.js', '/hq/app/shell.js', '/hq/app/ui.js', '/hq/app/tarjeta.js', '/hq/app/detalle.js', '/hq/app/dnd.js', '/hq/app/vistas/hoy.js', '/hq/app/vistas/objetivo.js', '/hq/app/vistas/tablero.js', '/hq/app/vistas/decisiones.js', '/hq/app/vistas/licitaciones.js', '/hq/app/vistas/licitaciones-menores.js', '/hq/app/vistas/equipo.js', '/hq/app/vistas/motor.js', '/hq/app/vistas/expedientes.js', '/hq/app/vistas/avisos.js', '/hq/app/avisos.js', '/hq/app/tokens.css', '/hq/app/hq.css', '/hq/manifest.webmanifest', '/hq/icon-192.png', '/hq/icon-512.png'];
 
 self.addEventListener('install', function (e) {
@@ -89,8 +89,9 @@ self.addEventListener('push', function (e) {
     });
   }));
 });
-// Al tocar: primero focus() (necesita la activacion del toque, se pierde tras un await), luego navigate() a la
-// tarjeta y solo si no hay ninguna ventana de HQ v2 abierta, openWindow(). El aviso se marca leido.
+// Al tocar: la app abierta recibe siempre {tipo:'ir', url} y aplica el hash ella misma (iOS WebKit no tiene
+// Client.navigate()); focus() va el primero, sin awaits previos, y si no hay ventana de HQ v2 o focus() falla,
+// openWindow(url). El aviso se marca leido.
 self.addEventListener('notificationclick', function (e) {
   e.notification.close();
   var d = e.notification.data || {}, url = d.url || (d.id ? '/hq/#hoy/' + d.id : '/hq/#avisos');
@@ -98,14 +99,14 @@ self.addEventListener('notificationclick', function (e) {
     var propias = ws.filter(function (w) { return w.url.indexOf('/hq/') >= 0 && w.url.indexOf('/hq/v1/') < 0; });
     var trabajo = [marcarLeido(d.n).catch(function () {})];
     if (!propias.length) { trabajo.push(clients.openWindow(url)); return Promise.all(trabajo); }
+    var w0 = propias[0], enfoque;
+    try { enfoque = w0.focus ? Promise.resolve(w0.focus()) : Promise.reject(new Error('sin focus')); } catch (err) { enfoque = Promise.reject(err); }
     propias.forEach(function (w) {
+      try { w.postMessage({ tipo: 'ir', url: url }); } catch (err) {}
       if (d.id) { try { w.postMessage({ tipo: 'abrir', id: d.id }); } catch (err) {} }
       if (d.lic) { try { w.postMessage({ tipo: 'abrir-lic', lic: d.lic }); } catch (err) {} }
     });
-    var w0 = propias[0];
-    var enfocada = w0.focus ? Promise.resolve(w0.focus()).catch(function () { return w0; }) : Promise.resolve(w0);
-    trabajo.push(enfocada.then(function (c) { c = c || w0; return c.navigate ? c.navigate(url) : null; })
-      .catch(function () { return clients.openWindow(url); }));
+    trabajo.push(enfoque.catch(function () { return clients.openWindow(url); }));
     return Promise.all(trabajo);
   }));
 });

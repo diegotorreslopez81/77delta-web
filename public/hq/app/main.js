@@ -122,7 +122,10 @@ if ('serviceWorker' in navigator) {
   // hace postMessage en vez de navegar la pestana existente). #1057 tarea 27: las decisiones viven en
   // la bandeja de Hoy ('#hoy/N'; las licitaciones por decidir, plegadas en la misma bandeja).
   navigator.serviceWorker.addEventListener('message', ev => {
-    if (ev.data?.tipo === 'abrir' && ev.data.id) location.hash = '#hoy/' + ev.data.id;
+    if (ev.data?.tipo === 'ir' && typeof ev.data.url === 'string') {
+      // El sw manda siempre la url del aviso (iOS no tiene Client.navigate()): solo se aplica su hash, mismo origen.
+      try { const u = new URL(ev.data.url, location.origin); if (u.origin === location.origin && u.pathname.startsWith('/hq/') && u.hash) location.hash = u.hash; } catch {}
+    } else if (ev.data?.tipo === 'abrir' && ev.data.id) location.hash = '#hoy/' + ev.data.id;
     else if (ev.data?.tipo === 'abrir-lic' && ev.data.lic) location.hash = '#hoy/bandeja';
   });
 }
