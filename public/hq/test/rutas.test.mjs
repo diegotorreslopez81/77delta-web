@@ -6,8 +6,8 @@ import { AREAS, CLAVES, resolver } from '../app/rutas.js';
 // Expedientes, Tablero (Diego: "así deberían ir ordenados y no al revés"); Equipo ya no agrupa: se
 // reparte en Organigrama y Colaboradores, en la posición que ocupaba Equipo (justo antes de Recursos).
 // O13a (D69, tanda E bis): Admin (panel generico de D9) justo despues de Salud.
-test('AREAS tiene las trece áreas del menú nuevo en orden y cada vista es una clave válida', () => {
-  assert.deepEqual(AREAS.map(a => a.id), ['hoy', 'avisos', 'kpis', 'licitaciones', 'licita-engine', 'expedientes', 'tablero', 'salud', 'admin', 'organigrama', 'colaboradores', 'recursos', 'direccion']);
+test('AREAS tiene las catorce áreas del menú nuevo en orden y cada vista es una clave válida', () => {
+  assert.deepEqual(AREAS.map(a => a.id), ['hoy', 'avisos', 'kpis', 'licitaciones', 'licita-engine', 'expedientes', 'tablero', 'ventas', 'salud', 'admin', 'organigrama', 'colaboradores', 'recursos', 'direccion']);
   for (const a of AREAS) for (const v of a.vistas) assert.ok(CLAVES.has(v.clave), v.clave);
   assert.deepEqual(AREAS.find(a => a.id === 'organigrama').vistas.map(v => v.clave), ['equipo/organigrama']);
   assert.deepEqual(AREAS.find(a => a.id === 'colaboradores').vistas.map(v => v.clave), ['equipo/colaboradores']);
