@@ -25,3 +25,6 @@ __pycache__/
 
 # semillas del CRM con datos de clientes (NIF, carpetas de Drive): solo en local y en la base de datos
 scripts/hq/seed-crm-*.sql
+
+# skills locales de claude-seo (terceros, SHA fijado en ~/dev/ventas/seo-revision.md), no se publican
+.claude/skills/
