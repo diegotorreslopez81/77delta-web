@@ -22,6 +22,7 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
+      filter: (page) => !page.includes('/propuestas/'),
       i18n: {
         defaultLocale: 'es',
         locales: { es: 'es-ES', ca: 'ca-ES' },
