@@ -1,0 +1,57 @@
+---
+/**
+ * JSON-LD: Organization en la home (es/ca) y Service en /servicios/<x>/.
+ * Todo sale de site.ts y de los props de la página; nada inventado.
+ */
+import { site } from '../lib/site';
+
+interface Props {
+  title: string;
+  description: string;
+  idioma: 'es' | 'ca';
+  canonical: string;
+}
+const { title, description, idioma, canonical } = Astro.props;
+const origen = new URL('/', Astro.site).href;
+const ruta = new URL(canonical).pathname.replace(/^\/ca(?=\/)/, '');
+const esHome = ruta === '/';
+const esServicio = /^\/servicios\/[^/]+\/$/.test(ruta);
+
+const organizacion = {
+  '@type': 'Organization',
+  '@id': `${origen}#organizacion`,
+  name: site.nombre,
+  legalName: site.sociedad,
+  url: origen,
+  description: idioma === 'ca' ? site.descripcionCa : site.descripcion,
+  image: new URL('/img/og.png', Astro.site).href,
+  telephone: `+${site.whatsapp}`,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Carrer Penedès 27',
+    postalCode: '08184',
+    addressLocality: 'Palau-solità i Plegamans',
+    addressRegion: 'Barcelona',
+    addressCountry: 'ES',
+  },
+  areaServed: 'ES',
+  knowsLanguage: ['es', 'ca'],
+};
+
+const datos = esHome
+  ? { '@context': 'https://schema.org', ...organizacion }
+  : esServicio
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        name: title,
+        description,
+        url: canonical,
+        inLanguage: idioma,
+        provider: { '@id': `${origen}#organizacion` },
+        areaServed: 'ES',
+      }
+    : null;
+---
+
+{datos && <script type="application/ld+json" set:html={JSON.stringify(datos)} />}

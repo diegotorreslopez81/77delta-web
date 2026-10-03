@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import WhatsApp from '../components/WhatsApp.astro';
+import Schema from '../components/Schema.astro';
 import { site, umami, searchConsole, href, equivalenteCa, equivalenteEs } from '../lib/site';
 
 interface Props {
@@ -89,6 +90,7 @@ const urlCa = new URL(rutaCa, Astro.site).href;
         }
       } catch (e) {}
     </script>
+    {!noindex && <Schema title={title} description={description} idioma={idioma} canonical={canonical} />}
   </head>
   <body class="min-h-screen bg-papel text-tinta">
     <Nav selectorIdioma={selectorIdioma} />
