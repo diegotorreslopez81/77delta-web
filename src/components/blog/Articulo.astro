@@ -1,0 +1,81 @@
+---
+import Base from '../../layouts/Base.astro';
+import Boton from '../../components/Boton.astro';
+import { render } from 'astro:content';
+import { href as hrefEs, hrefCa, site } from '../../lib/site';
+import { clusters, fecha, type Entrada, type Idioma } from '../../lib/blog';
+
+interface Props {
+  entrada: Entrada;
+  idioma: Idioma;
+}
+const { entrada, idioma } = Astro.props;
+const href = idioma === 'ca' ? hrefCa : hrefEs;
+const { Content } = await render(entrada);
+const d = entrada.data;
+const t =
+  idioma === 'ca'
+    ? { volver: '← Blog', faq: 'Preguntes freqüents', fuentes: 'Fonts', actualizado: 'Actualitzat', ctaT: 'Parlem-ne 20 minuts', ctaP: 'Sense compromís. Mirem on podria començar la teva empresa.', ctaB: 'Reservar 20 minuts' }
+    : { volver: '← Blog', faq: 'Preguntas frecuentes', fuentes: 'Fuentes', actualizado: 'Actualizado', ctaT: 'Hablemos 20 minutos', ctaP: 'Sin compromiso. Vemos por dónde podría empezar tu empresa.', ctaB: 'Reservar 20 minutos' };
+---
+
+<Base title={d.title} description={d.description}>
+  <article class="wrap py-20 md:py-28">
+    <p class="font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra">
+      <a href={href('/blog/')} class="hover:text-oro-oscuro">{t.volver}</a> · {clusters[idioma][d.cluster]}
+    </p>
+    <h1 class="mt-6 max-w-[22ch] font-display text-[clamp(34px,5vw,60px)] font-extralight leading-[1.06] tracking-[-0.03em]">{d.title}</h1>
+    <p class="mt-6 font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra">
+      <time datetime={d.pubDate.toISOString()}>{fecha(d.pubDate, idioma)}</time>
+      {d.updatedDate && <> · {t.actualizado} <time datetime={d.updatedDate.toISOString()}>{fecha(d.updatedDate, idioma)}</time></>}
+    </p>
+    <div class="prosa mt-12 max-w-[68ch]"><Content /></div>
+
+    {
+      d.faq.length > 0 && (
+        <section class="prosa mt-16 max-w-[68ch]">
+          <h2>{t.faq}</h2>
+          {d.faq.map((f) => (
+            <>
+              <h3>{f.q}</h3>
+              <p>{f.a}</p>
+            </>
+          ))}
+        </section>
+      )
+    }
+    {
+      d.fuentes.length > 0 && (
+        <section class="prosa mt-16 max-w-[68ch]">
+          <h2>{t.fuentes}</h2>
+          <ul>
+            {d.fuentes.map((f) => (
+              <li><a href={f.url} target="_blank" rel="noopener">{f.titulo}</a></li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <aside class="mt-20 max-w-[68ch] rounded-[14px] border border-linea bg-panel p-8 md:p-10">
+      <h2 class="font-display text-[clamp(22px,2.4vw,30px)] font-semibold leading-[1.2]">{t.ctaT}</h2>
+      <p class="mt-3 text-pizarra">{t.ctaP}</p>
+      <Boton href={site.calendario} externo class="mt-6">{t.ctaB} →</Boton>
+    </aside>
+  </article>
+</Base>
+
+<style is:global>
+  .prosa { font-size: clamp(17px, 1.4vw, 19px); line-height: 1.7; }
+  .prosa > * + * { margin-top: 1.2em; }
+  .prosa h2 { margin-top: 2.2em; font-family: var(--font-display, inherit); font-size: clamp(24px, 2.6vw, 32px); font-weight: 600; line-height: 1.2; }
+  .prosa h3 { margin-top: 1.8em; font-size: clamp(19px, 1.8vw, 22px); font-weight: 600; line-height: 1.3; }
+  .prosa ul, .prosa ol { padding-left: 1.4em; }
+  .prosa ul { list-style: disc; }
+  .prosa ol { list-style: decimal; }
+  .prosa li + li { margin-top: 0.4em; }
+  .prosa a { text-decoration: underline; text-underline-offset: 3px; }
+  .prosa blockquote { border-left: 3px solid currentColor; padding-left: 1.2em; opacity: 0.85; }
+  .prosa table { width: 100%; border-collapse: collapse; font-size: 0.95em; }
+  .prosa th, .prosa td { border-bottom: 1px solid rgba(10, 22, 40, 0.15); padding: 0.6em 0.8em; text-align: left; }
+</style>
