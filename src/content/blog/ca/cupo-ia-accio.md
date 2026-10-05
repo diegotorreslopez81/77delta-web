@@ -7,6 +7,8 @@ cluster: ayudas
 keyword: "Cupó IA ACCIÓ"
 draft: false
 lang: ca
+relacionados:
+  - "/servicios/diagnostico/"
 puntos:
   - "La informació oficial del Cupó IA és a accio.gencat.cat; aquí no en repetim les condicions."
   - "Prepara una fitxa d'una pàgina: problema, procés, línia base, abast, dades, indicadors i responsable."
