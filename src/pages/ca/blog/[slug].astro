@@ -1,0 +1,11 @@
+---
+import Articulo from '../../../components/blog/Articulo.astro';
+import { entradas } from '../../../lib/blog';
+
+export async function getStaticPaths() {
+  return (await entradas('ca')).map((entrada) => ({ params: { slug: entrada.id }, props: { entrada } }));
+}
+const { entrada } = Astro.props;
+---
+
+<Articulo entrada={entrada} idioma="ca" />

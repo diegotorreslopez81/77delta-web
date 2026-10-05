@@ -1,0 +1,45 @@
+---
+import Base from '../../layouts/Base.astro';
+import { href as hrefEs, hrefCa } from '../../lib/site';
+import { entradas, clusters, fecha, type Idioma } from '../../lib/blog';
+
+interface Props {
+  idioma: Idioma;
+}
+const { idioma } = Astro.props;
+const href = idioma === 'ca' ? hrefCa : hrefEs;
+const lista = await entradas(idioma);
+const t =
+  idioma === 'ca'
+    ? { title: 'Blog', eyebrow: 'Blog', h1: 'IA aplicada a la pime industrial.', lead: 'Guies pràctiques per aplicar intel·ligència artificial a ventes, administració, qualitat i operacions.', buit: 'Aviat publicarem els primers articles.', rss: 'RSS' }
+    : { title: 'Blog', eyebrow: 'Blog', h1: 'IA aplicada a la pyme industrial.', lead: 'Guías prácticas para aplicar inteligencia artificial en ventas, administración, calidad y operaciones.', buit: 'Pronto publicaremos los primeros artículos.', rss: 'RSS' };
+---
+
+<Base title={t.title} description={t.lead} noindex={lista.length === 0}>
+  <section class="wrap py-24 md:py-32">
+    <p class="eyebrow" data-reveal>{t.eyebrow}</p>
+    <h1 class="mt-7 max-w-[18ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]" data-reveal>{t.h1}</h1>
+    <p class="mt-8 max-w-[58ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>{t.lead}</p>
+  </section>
+  <section class="hairline">
+    <div class="wrap py-8 md:py-12">
+      {lista.length === 0 && <p class="py-14 text-pizarra">{t.buit}</p>}
+      <ol role="list">
+        {
+          lista.map((e) => (
+            <li class="border-b border-linea last:border-b-0">
+              <a href={href(`/blog/${e.id}/`)} class="group block py-10 md:py-14" data-reveal>
+                <p class="font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra">
+                  {clusters[idioma][e.data.cluster]} · {fecha(e.data.pubDate, idioma)}
+                </p>
+                <h2 class="mt-4 max-w-[28ch] font-display text-[clamp(22px,2.4vw,30px)] font-semibold leading-[1.2] group-hover:text-oro-oscuro">{e.data.title}</h2>
+                <p class="mt-3 max-w-[64ch] text-pizarra">{e.data.description}</p>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="pb-10"><a class="font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra hover:text-oro-oscuro" href={href('/blog/rss.xml')}>{t.rss}</a></p>
+    </div>
+  </section>
+</Base>
