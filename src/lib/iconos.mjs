@@ -17,8 +17,12 @@ export const iconos = {
   lupa: '<circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/>',
   objetivo: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
   candado: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  brujula: '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"/>',
   flecha: '<path d="M4 12h16M14 6l6 6-6 6"/>',
 };
+// Alias usados en frontmatter.
+iconos.usuarios = iconos.personas;
+iconos.grafico = iconos.dato;
 
 const svg = (c) =>
   `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'>${c}</svg>`;
