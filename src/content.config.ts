@@ -4,6 +4,8 @@ import { z } from 'astro/zod';
 
 const esquema = z.object({
   title: z.string(),
+  /** Título SEO corto (<title> y og:title). Con ' · 77 Delta' no pasa de 60. El H1 sigue siendo title. */
+  tituloSeo: z.string().max(49).optional(),
   description: z.string().max(170),
   pubDate: z.coerce.date(),
   updatedDate: z.coerce.date().optional(),

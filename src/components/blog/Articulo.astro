@@ -51,7 +51,7 @@ const jsonld = [
 ];
 ---
 
-<Base title={d.title} description={d.description} ogImage={imagenOg}>
+<Base title={d.tituloSeo ?? d.title} description={d.description} ogImage={imagenOg} ogType="article">
   <article class="wrap py-14 md:py-24">
     <div class="art-col">
       <p class="font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra">

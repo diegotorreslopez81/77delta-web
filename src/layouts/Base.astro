@@ -26,8 +26,10 @@ interface Props {
   idiomas?: IdiomaOpcion[];
   /** Mapa idioma -> ruta: activa la detección del idioma del navegador entre es, ca, gl y eu. */
   deteccion?: Record<string, string>;
+  /** og:type. 'article' en artículos del blog. */
+  ogType?: 'website' | 'article';
 }
-const { title: tituloProp, description: descripcionProp = site.descripcion, ogImage = '/img/og.png', noindex = false, selectorIdioma = true, lang, alternates, idiomas, deteccion } = Astro.props;
+const { title: tituloProp, description: descripcionProp = site.descripcion, ogImage = '/img/og.png', noindex = false, selectorIdioma = true, lang, alternates, idiomas, deteccion, ogType = 'website' } = Astro.props;
 
 const metaPagina = metas[Astro.url.pathname];
 const title = metaPagina?.title ?? tituloProp;
@@ -78,7 +80,7 @@ const urlCa = new URL(rutaCa, Astro.site).href;
     {searchConsole && <meta name="google-site-verification" content={searchConsole} />}
     {umami.script && <script defer src={umami.script} data-website-id={umami.websiteId} is:inline />}
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={site.nombre} />
     <meta property="og:title" content={tituloCompleto} />
     <meta property="og:description" content={description} />
