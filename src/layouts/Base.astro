@@ -4,6 +4,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import WhatsApp from '../components/WhatsApp.astro';
 import Schema from '../components/Schema.astro';
+import { metas } from '../lib/metas';
 import { site, umami, searchConsole, href, equivalenteCa, equivalenteEs } from '../lib/site';
 
 interface Props {
@@ -17,7 +18,11 @@ interface Props {
   /** false en páginas sin versión en catalán: oculta el selector de idioma. */
   selectorIdioma?: boolean;
 }
-const { title, description = site.descripcion, ogImage = '/img/og.png', noindex = false, selectorIdioma = true } = Astro.props;
+const { title: tituloProp, description: descripcionProp = site.descripcion, ogImage = '/img/og.png', noindex = false, selectorIdioma = true } = Astro.props;
+
+const metaPagina = metas[Astro.url.pathname];
+const title = metaPagina?.title ?? tituloProp;
+const description = metaPagina?.description ?? descripcionProp;
 
 const idioma = Astro.currentLocale === 'ca' ? 'ca' : 'es';
 const claimIdioma = idioma === 'ca' ? site.claimCa : site.claim;
