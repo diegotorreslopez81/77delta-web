@@ -7,6 +7,18 @@ cluster: ayudas
 keyword: "ayudas inteligencia artificial pymes Catalunya"
 draft: false
 lang: es
+puntos:
+  - "Las ayudas cambian: mira siempre la web oficial del organismo el día que decidas."
+  - "Antes de pedir nada, documenta problema, proceso actual, línea base, alcance, datos e indicadores."
+  - "Elige un proveedor con casos publicados y entregables claros; 77 Delta es proveedor acreditado por ACCIÓ."
+imagen: "/blog/ayudas-ia-pyme-catalunya.svg"
+imagenAlt: "Ilustración esquemática de una hoja de ruta con tres paradas hacia un proyecto de IA"
+iconos:
+  "Dónde mirar": "brujula"
+  "Qué documentar antes de pedir cualquier ayuda": "lista"
+  "Cómo elegir proveedor": "escudo"
+  "Errores habituales": "alerta"
+  "Por dónde seguir": "flujo"
 faq:
   - q: "¿Dónde consulto las ayudas vigentes para IA en Catalunya?"
     a: "En la web oficial de ACCIÓ, la agencia de competitividad de la Generalitat, y en las webs de los organismos que convocan. Las condiciones cambian, así que conviene mirar la fuente oficial el día que vayas a decidir."
@@ -27,13 +39,13 @@ fuentes:
 
 Cuando una pyme piensa en implantar inteligencia artificial, enseguida aparece la pregunta de si hay ayudas. Es una buena pregunta. Pero las ayudas cambian: se abren, se cierran, se modifican sus condiciones. Este artículo no te da una lista que mañana puede estar desactualizada. Te dice dónde mirar, qué preparar y cómo elegir con quién trabajar.
 
-Regla básica: la fuente de verdad es la web del organismo que convoca la ayuda, el día que vayas a decidir. Cualquier otra página, incluida esta, puede quedarse atrás.
+> **Ojo:** Regla básica: la fuente de verdad es la web del organismo que convoca la ayuda, el día que vayas a decidir. Cualquier otra página, incluida esta, puede quedarse atrás.
 
 ## Dónde mirar
 
 **ACCIÓ.** Es la agencia para la competitividad de la empresa de la Generalitat de Catalunya. En su web oficial, [accio.gencat.cat](https://www.accio.gencat.cat), recoge sus servicios y convocatorias. Tiene un servicio de inteligencia artificial para empresas industriales que, según describe, "combina formación práctica y asesoramiento personalizado" para aplicar la IA, y que termina con "un plan de acción personalizado y realista" para desarrollar el proyecto. Las condiciones de acceso y los plazos están en su página: no las repetimos aquí porque pueden cambiar.
 
-**Kit Digital.** Es la iniciativa del Gobierno de España para subvencionar la implantación de soluciones digitales en pequeñas y medianas empresas, microempresas y autónomos. En la consulta que hicimos el 5 de octubre de 2026, la web oficial indicaba: "Las convocatorias del Programa Kit Digital han finalizado." Si lees esto más adelante, vuelve a comprobarlo en [acelerapyme.gob.es](https://www.acelerapyme.gob.es/kit-digital).
+> **Dato:** Kit Digital: Es la iniciativa del Gobierno de España para subvencionar la implantación de soluciones digitales en pequeñas y medianas empresas, microempresas y autónomos. En la consulta que hicimos el 5 de octubre de 2026, la web oficial indicaba: "Las convocatorias del Programa Kit Digital han finalizado." Si lees esto más adelante, vuelve a comprobarlo en [acelerapyme.gob.es](https://www.acelerapyme.gob.es/kit-digital).
 
 **Otros organismos.** Según tu sector y tamaño, pueden existir líneas de otros organismos autonómicos, estatales o europeos. Mira sus webs y suscríbete a sus avisos de convocatorias. Si tienes dudas, consúltalo con tu asesor o con la cámara de comercio de tu zona.
 
