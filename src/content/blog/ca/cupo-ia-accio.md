@@ -7,6 +7,19 @@ cluster: ayudas
 keyword: "Cupó IA ACCIÓ"
 draft: false
 lang: ca
+puntos:
+  - "La informació oficial del Cupó IA és a accio.gencat.cat; aquí no en repetim les condicions."
+  - "Prepara una fitxa d'una pàgina: problema, procés, línia base, abast, dades, indicadors i responsable."
+  - "77 Delta és proveïdor acreditat per ACCIÓ."
+imagen: "/blog/cupo-ia-accio.svg"
+imagenAlt: "Il·lustració esquemàtica d'una fitxa de projecte d'una pàgina amb set apartats"
+iconos:
+  "Què ofereix ACCIÓ en intel·ligència artificial": "brujula"
+  "La fitxa d'una pàgina": "lista"
+  "Exemple il·lustratiu (hipotètic)": "documento"
+  "Preguntes que convé fer": "usuarios"
+  "Errors habituals": "alerta"
+  "Per on seguir": "flujo"
 faq:
   - q: "On trobo la informació oficial del Cupó IA?"
     a: "A la web d'ACCIÓ, accio.gencat.cat. Les condicions, els terminis i els proveïdors acreditats els publica ACCIÓ, i és l'única font que has de prendre com a referència."
@@ -29,7 +42,7 @@ El que sí podem fer és ajudar-te a arribar preparat. Un projecte ben plantejat
 
 ## Què ofereix ACCIÓ en intel·ligència artificial
 
-ACCIÓ, l'agència per a la competitivitat de l'empresa de la Generalitat, té un servei d'intel·ligència artificial per a empreses industrials. La seva pàgina el descriu així: el servei "combina formació pràctica i assessorament personalitzat" perquè puguis aplicar la IA. Amb el suport d'un expert tecnològic, l'empresa analitza les seves necessitats i reptes específics, i acaba "amb un pla d'acció personalitzat i realista" per desenvolupar el projecte.
+> **Dada:** ACCIÓ, l'agència per a la competitivitat de l'empresa de la Generalitat, té un servei d'intel·ligència artificial per a empreses industrials. La seva pàgina el descriu així: el servei "combina formació pràctica i assessorament personalitzat" perquè puguis aplicar la IA. Amb el suport d'un expert tecnològic, l'empresa analitza les seves necessitats i reptes específics, i acaba "amb un pla d'acció personalitzat i realista" per desenvolupar el projecte.
 
 Fixa't en la idea de fons: el resultat no és una eina, és un pla. Per treure-li partit convé arribar amb les idees clares sobre quin problema vols resoldre.
 
@@ -53,11 +66,11 @@ Abans de parlar amb ACCIÓ o amb qualsevol proveïdor, escriu una fitxa d'una p�
 
 ## Exemple il·lustratiu (hipotètic)
 
-Imagina una empresa de components metàl·lics que rep comandes per correu en formats diferents. Dues persones les transcriuen a l'ERP cada matí.
+> **Exemple:** Imagina una empresa de components metàl·lics que rep comandes per correu en formats diferents. Dues persones les transcriuen a l'ERP cada matí.
 
 La seva fitxa podria dir: problema, transcripció manual de comandes amb errors ocasionals; línia base, el temps setmanal dedicat i els errors de l'últim mes; abast, només comandes dels clients que envien PDF; indicadors, temps de transcripció i errors; responsable, el cap d'administració.
 
-Aquest exemple és inventat i serveix només per mostrar el format. No són dades d'un client. Amb una fitxa així, qualsevol expert pot opinar en vint minuts si el projecte és viable.
+> **Compte:** Aquest exemple és inventat i serveix només per mostrar el format. No són dades d'un client. Amb una fitxa així, qualsevol expert pot opinar en vint minuts si el projecte és viable.
 
 ## Preguntes que convé fer
 

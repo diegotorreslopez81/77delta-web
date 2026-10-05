@@ -7,6 +7,19 @@ cluster: ayudas
 keyword: "Cupó IA ACCIÓ"
 draft: false
 lang: es
+puntos:
+  - "La información oficial del Cupó IA está en accio.gencat.cat; aquí no repetimos condiciones."
+  - "Prepara una ficha de una página: problema, proceso, línea base, alcance, datos, indicadores y responsable."
+  - "77 Delta es proveedor acreditado por ACCIÓ."
+imagen: "/blog/cupo-ia-accio.svg"
+imagenAlt: "Ilustración esquemática de una ficha de proyecto de una página con siete apartados"
+iconos:
+  "Qué ofrece ACCIÓ en inteligencia artificial": "brujula"
+  "La ficha de una página": "lista"
+  "Ejemplo ilustrativo (hipotético)": "documento"
+  "Preguntas que conviene hacer": "usuarios"
+  "Errores habituales": "alerta"
+  "Por dónde seguir": "flujo"
 faq:
   - q: "¿Dónde encuentro la información oficial del Cupó IA?"
     a: "En la web de ACCIÓ, accio.gencat.cat. Las condiciones, los plazos y los proveedores acreditados los publica ACCIÓ, y es la única fuente que debes tomar como referencia."
@@ -29,7 +42,7 @@ Lo que sí podemos hacer es ayudarte a llegar preparado. Un proyecto bien plante
 
 ## Qué ofrece ACCIÓ en inteligencia artificial
 
-ACCIÓ, la agencia para la competitividad de la empresa de la Generalitat, tiene un servicio de inteligencia artificial para empresas industriales. Su página lo describe así: el servicio "combina formación práctica y asesoramiento personalizado" para que puedas aplicar la IA. Con el apoyo de un experto tecnológico, la empresa analiza sus necesidades y retos específicos, y acaba "con un plan de acción personalizado y realista" para desarrollar el proyecto.
+> **Dato:** ACCIÓ, la agencia para la competitividad de la empresa de la Generalitat, tiene un servicio de inteligencia artificial para empresas industriales. Su página lo describe así: el servicio "combina formación práctica y asesoramiento personalizado" para que puedas aplicar la IA. Con el apoyo de un experto tecnológico, la empresa analiza sus necesidades y retos específicos, y acaba "con un plan de acción personalizado y realista" para desarrollar el proyecto.
 
 Fíjate en la idea de fondo: el resultado no es una herramienta, es un plan. Para sacarle partido conviene llegar con las ideas claras sobre qué problema quieres resolver.
 
@@ -53,11 +66,11 @@ Antes de hablar con ACCIÓ o con cualquier proveedor, escribe una ficha de una p
 
 ## Ejemplo ilustrativo (hipotético)
 
-Imagina una empresa de componentes metálicos que recibe pedidos por correo en formatos distintos. Dos personas los transcriben al ERP cada mañana.
+> **Ejemplo:** Imagina una empresa de componentes metálicos que recibe pedidos por correo en formatos distintos. Dos personas los transcriben al ERP cada mañana.
 
 Su ficha podría decir: problema, transcripción manual de pedidos con errores ocasionales; línea base, el tiempo semanal dedicado y los errores del último mes; alcance, solo pedidos de los clientes que envían PDF; indicadores, tiempo de transcripción y errores; responsable, el jefe de administración.
 
-Este ejemplo es inventado y sirve solo para mostrar el formato. No son datos de un cliente. Con una ficha así, cualquier experto puede opinar en veinte minutos si el proyecto es viable.
+> **Ojo:** Este ejemplo es inventado y sirve solo para mostrar el formato. No son datos de un cliente. Con una ficha así, cualquier experto puede opinar en veinte minutos si el proyecto es viable.
 
 ## Preguntas que conviene hacer
 
