@@ -7,6 +7,9 @@ cluster: ayudas
 keyword: "ajuts intel·ligència artificial pimes Catalunya"
 draft: false
 lang: ca
+relacionados:
+  - "/servicios/diagnostico/"
+  - "/servicios/partner/"
 puntos:
   - "Els ajuts canvien: mira sempre la web oficial de l'organisme el dia que decideixis."
   - "Abans de demanar res, documenta problema, procés actual, línia base, abast, dades i indicadors."

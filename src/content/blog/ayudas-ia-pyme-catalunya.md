@@ -7,6 +7,9 @@ cluster: ayudas
 keyword: "ayudas inteligencia artificial pymes Catalunya"
 draft: false
 lang: es
+relacionados:
+  - "/servicios/diagnostico/"
+  - "/servicios/partner/"
 puntos:
   - "Las ayudas cambian: mira siempre la web oficial del organismo el día que decidas."
   - "Antes de pedir nada, documenta problema, proceso actual, línea base, alcance, datos e indicadores."
