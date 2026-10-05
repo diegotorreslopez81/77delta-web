@@ -6,6 +6,21 @@ cluster: automatizacion
 keyword: "automatización de procesos con IA"
 draft: false
 lang: es
+puntos:
+  - "Puntúa cada tarea por frecuencia, volumen, coste del error y datos disponibles."
+  - "El orden habitual: facturas y albaranes, pedidos, informes y documentación interna."
+  - "Mide horas, errores y plazo antes y después para saber si compensa."
+imagen: "/blog/automatizacion-procesos-ia-que-automatizar-primero.svg"
+imagenAlt: "Ilustración esquemática de un proceso de tareas ordenadas de menor a mayor complejidad"
+iconos:
+  "Qué cambia con IA": "flujo"
+  "Cuatro criterios para puntuar una tarea": "lista"
+  "El orden que suele funcionar": "pasos"
+  "Qué no automatizar primero": "alerta"
+  "La persona en el circuito": "usuarios"
+  "Un caso publicado: pedidos por WhatsApp conectados al ERP": "grafico"
+  "Cómo medir si funciona": "reloj"
+  "Errores habituales": "alerta"
 faq:
   - q: "¿Qué diferencia hay entre automatizar con IA y con reglas clásicas?"
     a: "La automatización clásica sigue reglas fijas y necesita datos con formato estable. La IA puede leer textos y documentos sin formato fijo, como emails, facturas o albaranes, y extraer lo que importa. Las dos se combinan."
@@ -26,7 +41,7 @@ fuentes:
 
 Casi todas las pymes tienen más tareas automatizables de las que pueden abordar. El error habitual es empezar por la que suena mejor y no por la que más compensa.
 
-Según el INE, el 21,1% de las empresas españolas de 10 o más empleados usaba inteligencia artificial en el primer trimestre de 2025. Según Eurostat, el uso más habitual en la Unión Europea es analizar lenguaje escrito (11,8%). Es decir, leer textos y sacar de ellos lo que importa.
+> **Dato:** Según el INE, el 21,1% de las empresas españolas de 10 o más empleados usaba inteligencia artificial en el primer trimestre de 2025. Según Eurostat, el uso más habitual en la Unión Europea es analizar lenguaje escrito (11,8%). Es decir, leer textos y sacar de ellos lo que importa.
 
 Eso apunta a dónde está el valor para una pyme: en los documentos y mensajes que hoy alguien lee y teclea. Este artículo te da una regla para ordenar tus tareas y decidir cuál automatizar primero. Si buscas una visión por áreas de la empresa, empieza por la [guía de IA en la pyme industrial](/blog/ia-pyme-industrial-guia-por-areas/).
 
@@ -36,7 +51,7 @@ La automatización clásica funciona con reglas fijas. Si el campo X vale Y, haz
 
 La IA añade una capacidad: entender documentos y mensajes que no tienen formato fijo. Una factura de un proveedor nuevo, un pedido escrito en el cuerpo de un email, una pregunta de un cliente por WhatsApp. Antes, eso lo resolvía una persona. Ahora un sistema lo lee, lo interpreta y propone la acción.
 
-No sustituye a la automatización clásica. Se combinan: la IA entiende, las reglas ejecutan.
+> **Ojo:** No sustituye a la automatización clásica. Se combinan: la IA entiende, las reglas ejecutan.
 
 ## Cuatro criterios para puntuar una tarea
 
@@ -77,7 +92,7 @@ Define desde el inicio qué se revisa siempre, qué se revisa por muestreo y qu�
 
 ## Un caso publicado: pedidos por WhatsApp conectados al ERP
 
-Una distribuidora industrial con 12 comerciales conectó un asistente de WhatsApp a su ERP. Los resultados publicados: 2 horas al día recuperadas, un 25% más de capacidad comercial y cero errores de transcripción, en 6 semanas.
+> **Ejemplo:** Una distribuidora industrial con 12 comerciales conectó un asistente de WhatsApp a su ERP. Los resultados publicados: 2 horas al día recuperadas, un 25% más de capacidad comercial y cero errores de transcripción, en 6 semanas.
 
 No cambió de ERP. El asistente lee y escribe en el que ya tenía. Puedes ver el detalle en la [historia de éxito de la distribuidora](/historias-de-exito/distribuidora-industrial/) y otros ejemplos en el catálogo de [casos de uso](/casos-de-uso/).
 

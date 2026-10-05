@@ -6,6 +6,21 @@ cluster: automatizacion
 keyword: "automatització de processos amb IA"
 draft: false
 lang: ca
+puntos:
+  - "Puntua cada tasca per freqüència, volum, cost de l'error i dades disponibles."
+  - "L'ordre habitual: factures i albarans, comandes, informes i documentació interna."
+  - "Mesura hores, errors i termini abans i després per saber si compensa."
+imagen: "/blog/automatizacion-procesos-ia-que-automatizar-primero.svg"
+imagenAlt: "Il·lustració esquemàtica d'un procés de tasques ordenades de menor a major complexitat"
+iconos:
+  "Què canvia amb IA": "flujo"
+  "Quatre criteris per puntuar una tasca": "lista"
+  "L'ordre que sol funcionar": "pasos"
+  "Què no automatitzar primer": "alerta"
+  "La persona al circuit": "usuarios"
+  "Un cas publicat: comandes per WhatsApp connectades a l'ERP": "grafico"
+  "Com mesurar si funciona": "reloj"
+  "Errors habituals": "alerta"
 faq:
   - q: "Quina diferència hi ha entre automatitzar amb IA i amb regles clàssiques?"
     a: "L'automatització clàssica segueix regles fixes i necessita dades amb format estable. La IA pot llegir textos i documents sense format fix, com correus, factures o albarans, i extreure'n el que importa. Les dues es combinen."
@@ -26,7 +41,7 @@ fuentes:
 
 Gairebé totes les pimes tenen més tasques automatitzables de les que poden abordar. L'error habitual és començar per la que sona millor i no per la que més compensa.
 
-Segons l'INE, el 21,1% de les empreses espanyoles de 10 o més empleats feia servir intel·ligència artificial el primer trimestre de 2025. Segons Eurostat, l'ús més habitual a la Unió Europea és analitzar llenguatge escrit (11,8%). És a dir, llegir textos i treure'n el que importa.
+> **Dada:** Segons l'INE, el 21,1% de les empreses espanyoles de 10 o més empleats feia servir intel·ligència artificial el primer trimestre de 2025. Segons Eurostat, l'ús més habitual a la Unió Europea és analitzar llenguatge escrit (11,8%). És a dir, llegir textos i treure'n el que importa.
 
 Això apunta a on és el valor per a una pime: en els documents i missatges que avui algú llegeix i teclega. Aquest article et dona una regla per ordenar les teves tasques i decidir quina automatitzar primer. Si busques una visió per àrees de l'empresa, comença per la [guia d'IA a la pime industrial](/ca/blog/ia-pyme-industrial-guia-por-areas/).
 
@@ -36,7 +51,7 @@ L'automatització clàssica funciona amb regles fixes. Si el camp X val Y, fes Z
 
 La IA afegeix una capacitat: entendre documents i missatges que no tenen format fix. Una factura d'un proveïdor nou, una comanda escrita al cos d'un correu, una pregunta d'un client per WhatsApp. Abans, això ho resolia una persona. Ara un sistema ho llegeix, ho interpreta i proposa l'acció.
 
-No substitueix l'automatització clàssica. Es combinen: la IA entén, les regles executen.
+> **Compte:** No substitueix l'automatització clàssica. Es combinen: la IA entén, les regles executen.
 
 ## Quatre criteris per puntuar una tasca
 
@@ -77,7 +92,7 @@ Defineix des de l'inici què es revisa sempre, què es revisa per mostreig i qu�
 
 ## Un cas publicat: comandes per WhatsApp connectades a l'ERP
 
-Una distribuïdora industrial amb 12 comercials va connectar un assistent de WhatsApp al seu ERP. Els resultats publicats: 2 hores al dia recuperades, un 25% més de capacitat comercial i zero errors de transcripció, en 6 setmanes.
+> **Exemple:** Una distribuïdora industrial amb 12 comercials va connectar un assistent de WhatsApp al seu ERP. Els resultats publicats: 2 hores al dia recuperades, un 25% més de capacitat comercial i zero errors de transcripció, en 6 setmanes.
 
 No va canviar d'ERP. L'assistent llegeix i escriu en el que ja tenia. Pots veure el detall a la [història d'èxit de la distribuïdora](/ca/historias-de-exito/distribuidora-industrial/) i altres exemples al catàleg de [casos d'ús](/ca/casos-de-uso/).
 
