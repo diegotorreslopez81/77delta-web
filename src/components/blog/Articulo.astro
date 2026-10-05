@@ -27,6 +27,8 @@ const slug = entrada.id.replace(/^ca\//, '');
 const minutos = Math.max(1, Math.round(((entrada.body ?? '').split(/\s+/).length + d.faq.reduce((n, f) => n + (f.q + f.a).split(/\s+/).length, 0)) / 200));
 const indice = headings.filter((h) => h.depth === 2);
 const imagen = d.imagen ?? `/blog/cluster-${d.cluster}.png`;
+// og:image y schema no admiten SVG: se usa el PNG hermano.
+const imagenOg = imagen.replace(/\.svg$/, '.png');
 const url = new URL(href(`/blog/${slug}/`), Astro.site).href;
 const abs = (p: string) => new URL(hrefEs(p), Astro.site).href;
 const jsonld = [
@@ -35,7 +37,7 @@ const jsonld = [
     '@type': 'Article',
     headline: d.title,
     description: d.description,
-    image: abs(imagen),
+    image: abs(imagenOg),
     datePublished: d.pubDate.toISOString(),
     dateModified: (d.updatedDate ?? d.pubDate).toISOString(),
     inLanguage: idioma,
@@ -49,7 +51,7 @@ const jsonld = [
 ];
 ---
 
-<Base title={d.title} description={d.description} ogImage={imagen}>
+<Base title={d.title} description={d.description} ogImage={imagenOg}>
   <article class="wrap py-14 md:py-24">
     <div class="art-col">
       <p class="font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra">
