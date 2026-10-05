@@ -1,5 +1,6 @@
 ---
 title: "Automatización de procesos con IA en la empresa: qué automatizar primero"
+tituloSeo: "Qué automatizar primero con IA en tu empresa"
 description: "Cómo elegir qué automatizar con IA en una pyme: cuatro criterios para puntuar tareas, el orden recomendado y un caso real publicado de una distribuidora industrial."
 pubDate: 2026-10-05
 cluster: automatizacion

@@ -1,5 +1,6 @@
 ---
 title: "Automatització de processos amb IA a l'empresa: què automatitzar primer"
+tituloSeo: "Què automatitzar primer amb IA a l'empresa"
 description: "Com triar què automatitzar amb IA en una pime: quatre criteris per puntuar tasques, l'ordre recomanat i un cas real publicat d'una distribuïdora industrial."
 pubDate: 2026-10-05
 cluster: automatizacion
