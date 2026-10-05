@@ -4,78 +4,232 @@ import Boton from '../../components/Boton.astro';
 import { render } from 'astro:content';
 import { href as hrefEs, hrefCa, site } from '../../lib/site';
 import { clusters, fecha, type Entrada, type Idioma } from '../../lib/blog';
+import { cssIconos } from '../../lib/iconos.mjs';
+import { transformar } from '../../lib/blog-html.mjs';
 
 interface Props {
   entrada: Entrada;
   idioma: Idioma;
+  hayOtro?: boolean;
 }
-const { entrada, idioma } = Astro.props;
+const { entrada, idioma, hayOtro = false } = Astro.props;
 const href = idioma === 'ca' ? hrefCa : hrefEs;
-const { Content } = await render(entrada);
+const otro = idioma === 'ca' ? hrefEs : hrefCa;
+const { headings } = await render(entrada);
 const d = entrada.data;
 const t =
   idioma === 'ca'
-    ? { volver: '← Blog', faq: 'Preguntes freqüents', fuentes: 'Fonts', actualizado: 'Actualitzat', ctaT: 'Parlem-ne 20 minuts', ctaP: 'Sense compromís. Mirem on podria començar la teva empresa.', ctaB: 'Reservar 20 minuts' }
-    : { volver: '← Blog', faq: 'Preguntas frecuentes', fuentes: 'Fuentes', actualizado: 'Actualizado', ctaT: 'Hablemos 20 minutos', ctaP: 'Sin compromiso. Vemos por dónde podría empezar tu empresa.', ctaB: 'Reservar 20 minutos' };
+    ? { volver: '← Blog', puntos: 'En 3 punts', indice: 'Índex', min: 'min de lectura', faq: 'Preguntes freqüents', fuentes: 'Fonts', fuente: 'Font', actualizado: 'Actualitzat', otroIdioma: 'Leer en castellano', ctaT: 'Parlem-ne 20 minuts', ctaP: 'Sense compromís. Mirem on podria començar la teva empresa.', ctaB: 'Reservar 20 minuts' }
+    : { volver: '← Blog', puntos: 'En 3 puntos', indice: 'Índice', min: 'min de lectura', faq: 'Preguntas frecuentes', fuentes: 'Fuentes', fuente: 'Fuente', actualizado: 'Actualizado', otroIdioma: 'Llegir en català', ctaT: 'Hablemos 20 minutos', ctaP: 'Sin compromiso. Vemos por dónde podría empezar tu empresa.', ctaB: 'Reservar 20 minutos' };
+
+const cuerpo = transformar(entrada.rendered?.html ?? '', entrada.data);
+const slug = entrada.id.replace(/^ca\//, '');
+const minutos = Math.max(1, Math.round(((entrada.body ?? '').split(/\s+/).length + d.faq.reduce((n, f) => n + (f.q + f.a).split(/\s+/).length, 0)) / 200));
+const indice = headings.filter((h) => h.depth === 2);
+const imagen = d.imagen ?? `/blog/cluster-${d.cluster}.png`;
+const url = new URL(href(`/blog/${slug}/`), Astro.site).href;
+const abs = (p: string) => new URL(hrefEs(p), Astro.site).href;
+const jsonld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: d.title,
+    description: d.description,
+    image: abs(imagen),
+    datePublished: d.pubDate.toISOString(),
+    dateModified: (d.updatedDate ?? d.pubDate).toISOString(),
+    inLanguage: idioma,
+    mainEntityOfPage: url,
+    author: { '@type': 'Organization', name: site.nombre },
+    publisher: { '@type': 'Organization', name: site.nombre },
+  },
+  ...(d.faq.length
+    ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: d.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }]
+    : []),
+];
 ---
 
-<Base title={d.title} description={d.description}>
-  <article class="wrap py-20 md:py-28">
-    <p class="font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra">
-      <a href={href('/blog/')} class="hover:text-oro-oscuro">{t.volver}</a> · {clusters[idioma][d.cluster]}
-    </p>
-    <h1 class="mt-6 max-w-[22ch] font-display text-[clamp(34px,5vw,60px)] font-extralight leading-[1.06] tracking-[-0.03em]">{d.title}</h1>
-    <p class="mt-6 font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra">
-      <time datetime={d.pubDate.toISOString()}>{fecha(d.pubDate, idioma)}</time>
-      {d.updatedDate && <> · {t.actualizado} <time datetime={d.updatedDate.toISOString()}>{fecha(d.updatedDate, idioma)}</time></>}
-    </p>
-    <div class="prosa mt-12 max-w-[68ch]"><Content /></div>
+<Base title={d.title} description={d.description} ogImage={imagen}>
+  <article class="wrap py-14 md:py-24">
+    <div class="art-col">
+      <p class="font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra">
+        <a href={href('/blog/')} class="hover:text-oro-oscuro">{t.volver}</a> · {clusters[idioma][d.cluster]}
+      </p>
+      <h1 class="mt-5 font-display text-[clamp(32px,4.6vw,54px)] font-extralight leading-[1.08] tracking-[-0.03em]">{d.title}</h1>
+      <p class="mt-5 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra">
+        <time datetime={d.pubDate.toISOString()}>{fecha(d.pubDate, idioma)}</time>
+        {d.updatedDate && <span>{t.actualizado} <time datetime={d.updatedDate.toISOString()}>{fecha(d.updatedDate, idioma)}</time></span>}
+        <span>{minutos} {t.min}</span>
+      </p>
+    </div>
 
-    {
-      d.faq.length > 0 && (
-        <section class="prosa mt-16 max-w-[68ch]">
-          <h2>{t.faq}</h2>
-          {d.faq.map((f) => (
-            <>
-              <h3>{f.q}</h3>
-              <p>{f.a}</p>
-            </>
-          ))}
-        </section>
-      )
-    }
-    {
-      d.fuentes.length > 0 && (
-        <section class="prosa mt-16 max-w-[68ch]">
-          <h2>{t.fuentes}</h2>
-          <ul>
-            {d.fuentes.map((f) => (
-              <li><a href={f.url} target="_blank" rel="noopener">{f.titulo}</a></li>
+    <img class="art-cab" src={href(imagen)} width="1200" height="630" alt={d.imagenAlt} fetchpriority="high" />
+
+    <div class="art-col">
+      {
+        d.puntos.length > 0 && (
+          <aside class="puntos">
+            <p class="puntos-t"><span class="ico i-lista"></span>{t.puntos}</p>
+            <ul>{d.puntos.map((p) => <li>{p}</li>)}</ul>
+          </aside>
+        )
+      }
+
+      {
+        d.cifras.length > 0 && (
+          <div class="cifras">
+            {d.cifras.map((c) => (
+              <div class="cifra">
+                <p class="cifra-v">{c.valor}</p>
+                <p class="cifra-t">{c.texto}</p>
+                <p class="cifra-f">{t.fuente}: {c.fuente}</p>
+              </div>
             ))}
-          </ul>
-        </section>
-      )
-    }
+          </div>
+        )
+      }
 
-    <aside class="mt-20 max-w-[68ch] rounded-[14px] border border-linea bg-panel p-8 md:p-10">
-      <h2 class="font-display text-[clamp(22px,2.4vw,30px)] font-semibold leading-[1.2]">{t.ctaT}</h2>
-      <p class="mt-3 text-pizarra">{t.ctaP}</p>
-      <Boton href={site.calendario} externo class="mt-6">{t.ctaB} →</Boton>
-    </aside>
+      {
+        indice.length > 2 && (
+          <details class="toc">
+            <summary><span class="ico i-lista"></span>{t.indice}</summary>
+            <ol>{indice.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+          </details>
+        )
+      }
+
+      <div class="prosa mt-10" set:html={cuerpo} />
+
+      {
+        d.faq.length > 0 && (
+          <section class="faq mt-16">
+            <h2 class="faq-h"><span class="ico i-pregunta"></span>{t.faq}</h2>
+            {d.faq.map((f, i) => (
+              <details open={i === 0}>
+                <summary>{f.q}</summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </section>
+        )
+      }
+      {
+        d.fuentes.length > 0 && (
+          <section class="prosa mt-14">
+            <h2 class="h2-ico i-documento">{t.fuentes}</h2>
+            <ul>
+              {d.fuentes.map((f) => (
+                <li><a href={f.url} target="_blank" rel="noopener">{f.titulo}</a></li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      <aside class="mt-16 rounded-[14px] border border-linea bg-panel p-8 md:p-10">
+        <h2 class="font-display text-[clamp(22px,2.4vw,30px)] font-semibold leading-[1.2]">{t.ctaT}</h2>
+        <p class="mt-3 text-pizarra">{t.ctaP}</p>
+        <Boton href={site.calendario} externo class="mt-6">{t.ctaB} →</Boton>
+      </aside>
+
+      <p class="mt-10 flex flex-wrap justify-between gap-4 font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra">
+        <a href={href('/blog/')} class="hover:text-oro-oscuro">{t.volver}</a>
+        {hayOtro && <a href={otro(`/blog/${slug}/`)} hreflang={idioma === 'ca' ? 'es' : 'ca'} class="hover:text-oro-oscuro">{t.otroIdioma}</a>}
+      </p>
+    </div>
   </article>
+  {jsonld.map((j) => <script type="application/ld+json" set:html={JSON.stringify(j)} />)}
 </Base>
 
+<style is:inline set:html={cssIconos}></style>
+
 <style is:global>
-  .prosa { font-size: clamp(17px, 1.4vw, 19px); line-height: 1.7; }
-  .prosa > * + * { margin-top: 1.2em; }
-  .prosa h2 { margin-top: 2.2em; font-family: var(--font-display, inherit); font-size: clamp(24px, 2.6vw, 32px); font-weight: 600; line-height: 1.2; }
-  .prosa h3 { margin-top: 1.8em; font-size: clamp(19px, 1.8vw, 22px); font-weight: 600; line-height: 1.3; }
-  .prosa ul, .prosa ol { padding-left: 1.4em; }
-  .prosa ul { list-style: disc; }
-  .prosa ol { list-style: decimal; }
-  .prosa li + li { margin-top: 0.4em; }
-  .prosa a { text-decoration: underline; text-underline-offset: 3px; }
-  .prosa blockquote { border-left: 3px solid currentColor; padding-left: 1.2em; opacity: 0.85; }
-  .prosa table { width: 100%; border-collapse: collapse; font-size: 0.95em; }
-  .prosa th, .prosa td { border-bottom: 1px solid rgba(10, 22, 40, 0.15); padding: 0.6em 0.8em; text-align: left; }
+  .art-col { max-width: 44rem; margin-inline: auto; }
+  .art-cab { display: block; width: 100%; max-width: 62rem; height: auto; margin: 2.5rem auto 0; border-radius: 14px; border: 1px solid var(--color-linea-oscura); background: var(--color-marino); }
+
+  /* iconos: máscara con el color del texto */
+  .ico, .h2-ico::before, .llamada::before, .dg-ico, .dg-flecha { -webkit-mask: var(--i) center / contain no-repeat; mask: var(--i) center / contain no-repeat; background: currentColor; }
+  .ico { display: inline-block; width: 1.25em; height: 1.25em; margin-right: 0.6em; vertical-align: -0.25em; color: var(--color-oro); }
+
+  /* En 3 puntos */
+  .puntos { margin-top: 2rem; padding: 1.4rem 1.6rem; border-radius: 14px; background: var(--color-marino); color: var(--color-marfil); border-left: 3px solid var(--color-oro-luz); }
+  .puntos-t { font: 500 12px/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-oro-luz); }
+  .puntos .ico { color: var(--color-oro-luz); }
+  .puntos ul { margin-top: 1rem; display: grid; gap: 0.7rem; list-style: none; padding: 0; }
+  .puntos li { position: relative; padding-left: 1.5rem; font-size: 1.02rem; line-height: 1.55; }
+  .puntos li::before { content: ''; position: absolute; left: 0; top: 0.62em; width: 0.6rem; height: 0.6rem; background: var(--color-oro-luz); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+
+  /* tarjetas de cifra */
+  .cifras { margin-top: 1.5rem; display: grid; gap: 0.9rem; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); }
+  .cifra { padding: 1.1rem 1.3rem; border: 1px solid var(--color-linea); border-radius: 12px; background: var(--color-panel); }
+  .cifra-v { font: 200 2.6rem/1 var(--font-display); letter-spacing: -0.03em; color: var(--color-oro-oscuro); }
+  .cifra-t { margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.45; }
+  .cifra-f { margin-top: 0.5rem; font: 400 11px/1.3 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-pizarra); }
+
+  /* índice plegable */
+  .toc { margin-top: 1.5rem; border: 1px solid var(--color-linea); border-radius: 12px; background: var(--color-panel); }
+  .toc summary, .faq summary { cursor: pointer; list-style: none; }
+  .toc summary::-webkit-details-marker, .faq summary::-webkit-details-marker { display: none; }
+  .toc summary { padding: 0.9rem 1.2rem; font: 500 12px/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-tinta-2); }
+  .toc ol { padding: 0 1.4rem 1.1rem 2.6rem; list-style: decimal; display: grid; gap: 0.45rem; font-size: 0.97rem; }
+  .toc a:hover { color: var(--color-oro-oscuro); text-decoration: underline; }
+
+  /* texto */
+  .prosa { font-size: clamp(17px, 1.3vw, 18px); line-height: 1.7; }
+  .prosa > * + * { margin-top: 1.15em; }
+  .prosa h2 { margin-top: 2.6em; padding-top: 0.2em; font-family: var(--font-display); font-size: clamp(24px, 2.6vw, 31px); font-weight: 600; line-height: 1.2; letter-spacing: -0.01em; scroll-margin-top: 5rem; }
+  .prosa h2.h2-ico::before { content: ''; display: block; width: 2.6rem; height: 2.6rem; margin-bottom: 0.7rem; padding: 0; border-radius: 10px; background: var(--color-oro); -webkit-mask: none; mask: none; background: var(--color-marino) var(--i) center / 1.5rem no-repeat; box-shadow: inset 0 0 0 1px var(--color-linea-oscura); }
+  .prosa h2.h2-ico { --c: var(--color-oro-luz); }
+  .prosa h3 { margin-top: 1.8em; font-size: clamp(19px, 1.8vw, 21px); font-weight: 600; line-height: 1.3; }
+  .prosa ul, .prosa ol { padding-left: 0; list-style: none; display: grid; gap: 0.6em; }
+  .prosa ul > li { position: relative; padding-left: 1.5rem; }
+  .prosa ul > li::before { content: ''; position: absolute; left: 0.1rem; top: 0.62em; width: 0.55rem; height: 0.55rem; background: var(--color-oro); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+  .prosa ol { counter-reset: p; }
+  .prosa ol > li { position: relative; padding-left: 2.6rem; counter-increment: p; }
+  .prosa ol > li::before { content: counter(p); position: absolute; left: 0; top: 0.05em; width: 1.8rem; height: 1.8rem; display: grid; place-items: center; border-radius: 50%; background: var(--color-marino); color: var(--color-oro-luz); font: 500 0.85rem/1 var(--font-mono); }
+  .prosa a { color: var(--color-oro-oscuro); text-decoration: underline; text-underline-offset: 3px; }
+  .prosa strong { font-weight: 600; }
+
+  /* llamadas */
+  .prosa blockquote { opacity: 1; }
+  .llamada { position: relative; padding: 1.1rem 1.3rem 1.1rem 3.6rem; border-radius: 12px; border: 1px solid var(--color-linea); border-left: 4px solid var(--color-oro); background: var(--color-panel); }
+  .llamada::before { content: ''; position: absolute; left: 1.1rem; top: 1.2rem; width: 1.6rem; height: 1.6rem; color: var(--color-oro-oscuro); }
+  .llamada > * + * { margin-top: 0.7em; }
+  .llamada p { font-size: 0.97em; line-height: 1.6; }
+  .ll-alerta { border-left-color: #b4452f; background: #fbf1ee; }
+  .ll-alerta::before { color: #b4452f; }
+  .ll-ejemplo { border-left-color: var(--color-marino); background: #eef1f6; }
+  .ll-ejemplo::before { color: var(--color-tinta-2); }
+
+  /* tablas */
+  .prosa table { display: block; overflow-x: auto; width: 100%; border-collapse: collapse; font-size: 0.95em; border: 1px solid var(--color-linea); border-radius: 12px; }
+  .prosa th { background: var(--color-marino); color: var(--color-marfil); font-weight: 500; white-space: nowrap; }
+  .prosa th, .prosa td { padding: 0.7em 0.9em; text-align: left; border-bottom: 1px solid var(--color-linea); }
+  .prosa tbody tr:nth-child(even) { background: var(--color-panel); }
+
+  /* diagrama */
+  .diagrama { margin-block: 2em; padding: 1.4rem; border-radius: 14px; background: var(--color-marino); color: var(--color-marfil); }
+  .diagrama figcaption { font: 500 12px/1.3 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-oro-luz); }
+  .diagrama ol { margin-top: 1.1rem; display: grid; gap: 0.7rem; padding: 0; counter-reset: none; }
+  .diagrama ol > li { position: relative; display: grid; gap: 0.15rem; padding: 0.8rem 1rem 0.8rem 3.4rem; border: 1px solid var(--color-linea-oscura); border-radius: 10px; font-size: 0.95rem; line-height: 1.45; counter-increment: none; }
+  .diagrama ol > li::before { content: none; }
+  .diagrama ol > li > strong { color: var(--color-marfil); }
+  .diagrama ol > li > span:last-child { color: var(--color-pizarra-clara); font-size: 0.9rem; }
+  .dg-n { position: absolute; left: 0.8rem; top: 0.8rem; width: 1.8rem; height: 1.8rem; display: grid; place-items: center; border-radius: 50%; background: var(--color-oro-luz); color: var(--color-marino); font: 600 0.85rem/1 var(--font-mono); }
+  .dg-cols { margin-top: 1.1rem; display: grid; gap: 0.9rem; }
+  .dg-col { padding: 1rem 1.1rem; border-radius: 10px; border: 1px solid var(--color-linea-oscura); }
+  .dg-despues { border-color: var(--color-oro-luz); }
+  .dg-tit { font: 600 1rem/1.2 var(--font-display); display: flex; align-items: center; gap: 0.5rem; }
+  .dg-ico { width: 1.3rem; height: 1.3rem; color: var(--color-oro-luz); display: inline-block; }
+  .dg-col ul { margin-top: 0.7rem; padding: 0; display: grid; gap: 0.4rem; list-style: none; font-size: 0.93rem; line-height: 1.45; color: var(--color-pizarra-clara); }
+  .dg-flecha { display: none; width: 1.8rem; height: 1.8rem; color: var(--color-oro-luz); align-self: center; }
+  @media (min-width: 720px) { .dg-cols { grid-template-columns: 1fr auto 1fr; } .dg-flecha { display: block; } .diagrama.dg-pasos ol { grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); } .dg-pasos ol > li { padding: 3rem 0.9rem 0.9rem; } .dg-pasos .dg-n { left: 0.9rem; top: 0.9rem; } }
+
+  /* FAQ */
+  .faq-h { font: 600 clamp(24px, 2.6vw, 31px)/1.2 var(--font-display); margin-bottom: 1rem; }
+  .faq details { border-bottom: 1px solid var(--color-linea); }
+  .faq summary { position: relative; padding: 1rem 2.2rem 1rem 0; font-weight: 600; line-height: 1.4; }
+  .faq summary::after { content: '+'; position: absolute; right: 0.3rem; top: 0.8rem; font: 300 1.5rem/1 var(--font-display); color: var(--color-oro); }
+  .faq details[open] summary::after { content: '-'; }
+  .faq details p { padding: 0 0 1.2rem; line-height: 1.65; }
 </style>
