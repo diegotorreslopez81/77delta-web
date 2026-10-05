@@ -1,5 +1,6 @@
 ---
 title: "Ajuts per implantar intel·ligència artificial en una pime a Catalunya: per on començar"
+tituloSeo: "Ajuts per implantar IA en una pime catalana"
 description: "On consultar els ajuts per implantar IA en una pime catalana, què documentar abans de demanar cap ajut i com triar un proveïdor acreditat."
 pubDate: 2026-10-05
 updatedDate: 2026-10-05

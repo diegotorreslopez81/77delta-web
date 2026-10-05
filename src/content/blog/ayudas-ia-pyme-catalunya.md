@@ -1,5 +1,6 @@
 ---
 title: "Ayudas para implantar inteligencia artificial en una pyme en Catalunya: por dónde empezar"
+tituloSeo: "Ayudas para implantar IA en una pyme catalana"
 description: "Dónde consultar las ayudas para implantar IA en una pyme catalana, qué documentar antes de pedir cualquier ayuda y cómo elegir un proveedor acreditado."
 pubDate: 2026-10-05
 updatedDate: 2026-10-05
