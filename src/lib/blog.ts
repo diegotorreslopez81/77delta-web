@@ -16,3 +16,7 @@ export async function entradas(idioma: Idioma): Promise<Entrada[]> {
 
 export const fecha = (d: Date, idioma: Idioma) =>
   d.toLocaleDateString(idioma === 'ca' ? 'ca-ES' : 'es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+
+/** Minutos de lectura: cuerpo + preguntas frecuentes, 200 palabras por minuto. */
+export const minutosLectura = (e: Entrada) =>
+  Math.max(1, Math.round(((e.body ?? '').split(/\s+/).length + e.data.faq.reduce((n, f) => n + (f.q + f.a).split(/\s+/).length, 0)) / 200));

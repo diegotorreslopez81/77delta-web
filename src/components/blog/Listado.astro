@@ -1,7 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { href as hrefEs, hrefCa } from '../../lib/site';
-import { entradas, clusters, fecha, type Idioma } from '../../lib/blog';
+import { entradas, clusters, fecha, minutosLectura, type Idioma } from '../../lib/blog';
+import { cssDelta } from '../../lib/iconos.mjs';
 
 interface Props {
   idioma: Idioma;
@@ -11,35 +12,152 @@ const href = idioma === 'ca' ? hrefCa : hrefEs;
 const lista = await entradas(idioma);
 const t =
   idioma === 'ca'
-    ? { title: 'Blog', eyebrow: 'Blog', h1: 'IA aplicada a la pime industrial.', lead: 'Guies pràctiques per aplicar intel·ligència artificial a ventes, administració, qualitat i operacions.', buit: 'Aviat publicarem els primers articles.', rss: 'RSS' }
-    : { title: 'Blog', eyebrow: 'Blog', h1: 'IA aplicada a la pyme industrial.', lead: 'Guías prácticas para aplicar inteligencia artificial en ventas, administración, calidad y operaciones.', buit: 'Pronto publicaremos los primeros artículos.', rss: 'RSS' };
+    ? { title: 'Blog', eyebrow: 'Blog', h1: 'IA aplicada a la pime industrial.', lead: 'Guies pràctiques per aplicar intel·ligència artificial a ventes, administració, qualitat i operacions.', buit: 'Aviat publicarem els primers articles.', rss: 'RSS', min: 'min de lectura', tots: 'Tots', destacat: 'Destacat', llegir: 'Llegir article', proximament: 'Aviat', properes: 'Propers temes', quees: 'Què trobaràs aquí', quees1: 'Guies escrites per a qui dirigeix una pime, no per a tècnics.', quees2: 'Passos concrets, errors habituals i què no fa la IA.', quees3: 'Cada article, amb les seves fonts.' }
+    : { title: 'Blog', eyebrow: 'Blog', h1: 'IA aplicada a la pyme industrial.', lead: 'Guías prácticas para aplicar inteligencia artificial en ventas, administración, calidad y operaciones.', buit: 'Pronto publicaremos los primeros artículos.', rss: 'RSS', min: 'min de lectura', tots: 'Todos', destacat: 'Destacado', llegir: 'Leer artículo', proximament: 'Próximamente', properes: 'Próximos temas', quees: 'Qué encontrarás aquí', quees1: 'Guías escritas para quien dirige una pyme, no para técnicos.', quees2: 'Pasos concretos, errores habituales y lo que la IA no hace.', quees3: 'Cada artículo, con sus fuentes.' };
+const temasDesc = {
+  es: { 'ia-pymes': 'Dónde y cómo aplicar IA en una pyme industrial.', automatizacion: 'Qué automatizar primero y cómo medir el resultado.', ayudas: 'Ayudas y financiación para proyectos de IA.' },
+  ca: { 'ia-pymes': 'On i com aplicar IA en una pime industrial.', automatizacion: 'Què automatitzar primer i com mesurar el resultat.', ayudas: 'Ajuts i finançament per a projectes d\'IA.' },
+} as const;
+type Cluster = keyof (typeof clusters)['es'];
+const todos = Object.keys(clusters.es) as Cluster[];
+const usados = todos.filter((c) => lista.some((e) => e.data.cluster === c));
+const vacios = todos.filter((c) => !usados.includes(c));
+const imagenDe = (e: (typeof lista)[number]) => e.data.imagen ?? `/blog/cluster-${e.data.cluster}.png`;
+const [primero, ...resto] = lista;
 ---
 
 <Base title={t.title} description={t.lead} noindex={lista.length === 0}>
-  <section class="wrap py-24 md:py-32">
-    <p class="eyebrow" data-reveal>{t.eyebrow}</p>
-    <h1 class="mt-7 max-w-[18ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]" data-reveal>{t.h1}</h1>
-    <p class="mt-8 max-w-[58ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>{t.lead}</p>
-  </section>
-  <section class="hairline">
-    <div class="wrap py-8 md:py-12">
-      {lista.length === 0 && <p class="py-14 text-pizarra">{t.buit}</p>}
-      <ol role="list">
-        {
-          lista.map((e) => (
-            <li class="border-b border-linea last:border-b-0">
-              <a href={href(`/blog/${e.id}/`)} class="group block py-10 md:py-14" data-reveal>
-                <p class="font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra">
-                  {clusters[idioma][e.data.cluster]} · {fecha(e.data.pubDate, idioma)}
-                </p>
-                <h2 class="mt-4 max-w-[28ch] font-display text-[clamp(22px,2.4vw,30px)] font-semibold leading-[1.2] group-hover:text-oro-oscuro">{e.data.title}</h2>
-                <p class="mt-3 max-w-[64ch] text-pizarra">{e.data.description}</p>
-              </a>
-            </li>
-          ))
-        }
-      </ol>
-      <p class="pb-10"><a class="font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra hover:text-oro-oscuro" href={href('/blog/rss.xml').replace(/\/$/, '')}>{t.rss}</a></p>
+  <section class="bl-cab">
+    <div class="wrap bl-cab-in">
+      <p class="eyebrow" style="color: var(--color-oro-luz)">{t.eyebrow}</p>
+      <h1 class="mt-5 max-w-[20ch] font-display text-[clamp(32px,4.8vw,56px)] font-extralight leading-[1.06] tracking-[-0.03em] text-marfil">{t.h1}</h1>
+      <p class="mt-5 max-w-[58ch] text-[clamp(16px,1.4vw,18px)] text-pizarra-clara">{t.lead}</p>
     </div>
   </section>
+
+  <section class="wrap py-12 md:py-16">
+    {lista.length === 0 && <p class="py-14 text-pizarra">{t.buit}</p>}
+
+    {
+      usados.length > 1 && (
+        <div class="bl-filtro" role="group" aria-label="Filtro por tema">
+          <button type="button" data-tema="todos" aria-pressed="true">{t.tots}</button>
+          {usados.map((c) => <button type="button" data-tema={c} aria-pressed="false">{clusters[idioma][c]}</button>)}
+        </div>
+      )
+    }
+
+    {
+      primero && (
+        <a href={href(`/blog/${primero.id.replace(/^ca\//, '')}/`)} class="bl-dest" data-tema={primero.data.cluster}>
+          <span class="bl-img"><img src={href(imagenDe(primero))} width="1200" height="630" alt={primero.data.imagenAlt} fetchpriority="high" /></span>
+          <span class="bl-txt">
+            <span class="bl-etq">{t.destacat} · {clusters[idioma][primero.data.cluster]}</span>
+            <span class="bl-h">{primero.data.title}</span>
+            <span class="bl-p">{primero.data.description}</span>
+            <span class="bl-meta">{fecha(primero.data.pubDate, idioma)} · {minutosLectura(primero)} {t.min}</span>
+            <span class="bl-cta">{t.llegir} →</span>
+          </span>
+        </a>
+      )
+    }
+
+    {
+      resto.length > 0 && (
+        <ul class="bl-grid" role="list">
+          {resto.map((e) => (
+            <li data-tema={e.data.cluster}>
+              <a href={href(`/blog/${e.id.replace(/^ca\//, '')}/`)} class="bl-card">
+                <span class="bl-img"><img src={href(imagenDe(e))} width="1200" height="630" alt={e.data.imagenAlt} loading="lazy" /></span>
+                <span class="bl-etq">{clusters[idioma][e.data.cluster]}</span>
+                <span class="bl-h2">{e.data.title}</span>
+                <span class="bl-meta">{fecha(e.data.pubDate, idioma)} · {minutosLectura(e)} {t.min}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    {
+      lista.length > 0 && vacios.length > 0 && (
+        <div class="bl-prox">
+          <h2 class="bl-prox-t">{t.properes}</h2>
+          <ul class="bl-grid" role="list">
+            {vacios.map((c) => (
+              <li>
+                <div class="bl-card bl-card-off" aria-disabled="true">
+                  <span class="bl-img"><img src={href(`/blog/cluster-${c}.png`)} width="1200" height="630" alt="" loading="lazy" /></span>
+                  <span class="bl-etq">{t.proximament}</span>
+                  <span class="bl-h2">{clusters[idioma][c]}</span>
+                  <span class="bl-p">{temasDesc[idioma][c]}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    <div class="bl-quees">
+      <h2 class="bl-prox-t">{t.quees}</h2>
+      <ul role="list">
+        <li>{t.quees1}</li>
+        <li>{t.quees2}</li>
+        <li>{t.quees3}</li>
+      </ul>
+    </div>
+
+    <p class="mt-10"><a class="font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra hover:text-oro-oscuro" href={href('/blog/rss.xml').replace(/\/$/, '')}>{t.rss}</a></p>
+  </section>
 </Base>
+
+<style is:inline set:html={cssDelta}></style>
+<style is:global>
+  .bl-cab { position: relative; overflow: hidden; background: var(--color-marino); border-bottom: 1px solid var(--color-linea-oscura); }
+  .bl-cab::after { content: ''; position: absolute; right: 6%; bottom: -1.2rem; width: 11rem; height: 10.8rem; background: var(--color-oro-luz); opacity: 0.1; pointer-events: none; -webkit-mask: var(--delta) center / contain no-repeat; mask: var(--delta) center / contain no-repeat; }
+  .bl-cab-in { padding-top: 3.5rem; padding-bottom: 3.5rem; }
+  .bl-filtro { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
+  .bl-filtro button { font: 500 12px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; padding: 0.7rem 1rem; border-radius: 999px; border: 1px solid var(--color-linea); background: var(--color-panel); color: var(--color-tinta); cursor: pointer; }
+  .bl-filtro button[aria-pressed="true"] { background: var(--color-marino); color: var(--color-oro-luz); border-color: var(--color-marino); }
+  .bl-img { display: block; position: relative; overflow: hidden; border-radius: 12px; background: var(--color-marino); border: 1px solid var(--color-linea-oscura); }
+  .bl-img img { display: block; width: 100%; height: auto; transition: transform 0.4s; }
+  .bl-img::after { content: ''; position: absolute; right: 0.8rem; bottom: 0.7rem; width: 3rem; height: 2.9rem; background: var(--color-oro-luz); opacity: 0.16; -webkit-mask: var(--delta) center / contain no-repeat; mask: var(--delta) center / contain no-repeat; }
+  .bl-etq { display: block; font: 500 11px/1.3 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-oro-oscuro); }
+  .bl-meta { display: block; font: 500 12px/1.4 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-pizarra); }
+  .bl-dest { display: grid; gap: 1.6rem; padding: 1.2rem; border-radius: 16px; background: var(--color-panel); border: 1px solid var(--color-linea); text-decoration: none; color: inherit; }
+  .bl-dest .bl-txt { display: flex; flex-direction: column; gap: 0.9rem; justify-content: center; padding: 0.4rem 0.4rem 0.8rem; }
+  .bl-h { font: 600 clamp(24px, 3vw, 36px)/1.15 var(--font-display); letter-spacing: -0.02em; }
+  .bl-h2 { display: block; margin-top: 0.5rem; font: 600 clamp(19px, 1.9vw, 22px)/1.25 var(--font-display); }
+  .bl-p { display: block; color: var(--color-pizarra); line-height: 1.55; }
+  .bl-cta { font: 600 14px/1 var(--font-sans); color: var(--color-oro-oscuro); }
+  .bl-dest:hover .bl-h, .bl-card:hover .bl-h2 { color: var(--color-oro-oscuro); }
+  .bl-dest:hover img, .bl-card:hover img { transform: scale(1.03); }
+  .bl-grid { display: grid; gap: 1.6rem; margin-top: 1.6rem; list-style: none; padding: 0; }
+  .bl-card { display: flex; flex-direction: column; gap: 0.5rem; height: 100%; padding: 1rem; border-radius: 14px; background: var(--color-panel); border: 1px solid var(--color-linea); text-decoration: none; color: inherit; }
+  .bl-card .bl-img { margin-bottom: 0.6rem; }
+  .bl-card-off { opacity: 0.72; border-style: dashed; }
+  .bl-card-off .bl-img img { filter: saturate(0.6); }
+  .bl-prox, .bl-quees { margin-top: 3.5rem; }
+  .bl-prox-t { font: 500 12px/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-pizarra); }
+  .bl-quees ul { margin-top: 1.2rem; display: grid; gap: 0.8rem; list-style: none; padding: 0; }
+  .bl-quees li { position: relative; padding-left: 1.5rem; max-width: 62ch; }
+  .bl-quees li::before { content: ''; position: absolute; left: 0.1rem; top: 0.5em; width: 0.7rem; height: 0.7rem; background: var(--color-oro); -webkit-mask: var(--delta) center / contain no-repeat; mask: var(--delta) center / contain no-repeat; }
+  @media (min-width: 768px) {
+    .bl-dest { grid-template-columns: 1.25fr 1fr; gap: 2.2rem; padding: 1.4rem; }
+    .bl-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+
+<script>
+  const botones = document.querySelectorAll<HTMLButtonElement>('.bl-filtro button');
+  botones.forEach((b) =>
+    b.addEventListener('click', () => {
+      const tema = b.dataset.tema;
+      botones.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      document.querySelectorAll<HTMLElement>('.bl-dest, .bl-grid > li[data-tema]').forEach((el) => {
+        el.hidden = tema !== 'todos' && el.dataset.tema !== tema;
+      });
+    }),
+  );
+</script>
