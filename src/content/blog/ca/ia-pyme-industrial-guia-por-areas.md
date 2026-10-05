@@ -7,6 +7,9 @@ cluster: ia-pymes
 keyword: "intel·ligència artificial en pimes industrials"
 draft: false
 lang: ca
+relacionados:
+  - "/servicios/diagnostico/"
+  - "/servicios/transformacion/"
 puntos:
   - "Comença per una tasca que es repeteix, usa dades que ja tens i es mesura en hores."
   - "Vendes, administració, qualitat i operacions tenen tasques que la IA pot assumir amb revisió humana."

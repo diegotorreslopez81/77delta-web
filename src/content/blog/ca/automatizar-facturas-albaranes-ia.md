@@ -7,6 +7,9 @@ cluster: automatizacion
 keyword: "automatitzar factures amb intel·ligència artificial"
 draft: false
 lang: ca
+relacionados:
+  - "/servicios/transformacion/"
+  - "/servicios/diagnostico/"
 puntos:
   - "Una persona deixa de teclejar factures i albarans i passa a revisar només les excepcions."
   - "El sistema llegeix, valida contra comandes i proveïdors, i prepara l'apunt; el pagament continua autoritzant-lo qui l'autoritzava."

@@ -7,6 +7,9 @@ cluster: ia-pymes
 keyword: "inteligencia artificial en pymes industriales"
 draft: false
 lang: es
+relacionados:
+  - "/servicios/diagnostico/"
+  - "/servicios/transformacion/"
 puntos:
   - "Empieza por una tarea que se repite, usa datos que ya tienes y se mide en horas."
   - "Ventas, administración, calidad y operaciones tienen tareas que la IA puede asumir con revisión humana."

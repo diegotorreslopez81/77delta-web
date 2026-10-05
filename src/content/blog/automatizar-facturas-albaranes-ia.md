@@ -7,6 +7,9 @@ cluster: automatizacion
 keyword: "automatizar facturas con inteligencia artificial"
 draft: false
 lang: es
+relacionados:
+  - "/servicios/transformacion/"
+  - "/servicios/diagnostico/"
 puntos:
   - "Una persona deja de teclear facturas y albaranes y pasa a revisar solo las excepciones."
   - "El sistema lee, valida contra pedidos y proveedores, y prepara el apunte; el pago lo sigue autorizando quien lo autorizaba."
