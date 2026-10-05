@@ -7,6 +7,9 @@ cluster: automatizacion
 keyword: "automatización de procesos con IA"
 draft: false
 lang: es
+relacionados:
+  - "/servicios/diagnostico/"
+  - "/servicios/transformacion/"
 puntos:
   - "Puntúa cada tarea por frecuencia, volumen, coste del error y datos disponibles."
   - "El orden habitual: facturas y albaranes, pedidos, informes y documentación interna."

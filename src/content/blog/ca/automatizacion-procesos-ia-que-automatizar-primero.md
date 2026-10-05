@@ -7,6 +7,9 @@ cluster: automatizacion
 keyword: "automatització de processos amb IA"
 draft: false
 lang: ca
+relacionados:
+  - "/servicios/diagnostico/"
+  - "/servicios/transformacion/"
 puntos:
   - "Puntua cada tasca per freqüència, volum, cost de l'error i dades disponibles."
   - "L'ordre habitual: factures i albarans, comandes, informes i documentació interna."
