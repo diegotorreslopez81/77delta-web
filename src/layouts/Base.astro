@@ -17,8 +17,12 @@ interface Props {
   noindex?: boolean;
   /** false en páginas sin versión en catalán: oculta el selector de idioma. */
   selectorIdioma?: boolean;
+  /** Idioma de la página cuando no es es ni ca (gl, eu): fija <html lang>, hreflang propios y desactiva la detección. */
+  lang?: string;
+  /** hreflang propios, solo junto a `lang`. */
+  alternates?: { hreflang: string; href: string }[];
 }
-const { title: tituloProp, description: descripcionProp = site.descripcion, ogImage = '/img/og.png', noindex = false, selectorIdioma = true } = Astro.props;
+const { title: tituloProp, description: descripcionProp = site.descripcion, ogImage = '/img/og.png', noindex = false, selectorIdioma = true, lang, alternates } = Astro.props;
 
 const metaPagina = metas[Astro.url.pathname];
 const title = metaPagina?.title ?? tituloProp;
@@ -37,7 +41,7 @@ const urlCa = new URL(rutaCa, Astro.site).href;
 ---
 
 <!doctype html>
-<html lang={idioma}>
+<html lang={lang ?? idioma}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -45,7 +49,16 @@ const urlCa = new URL(rutaCa, Astro.site).href;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     {
-      !noindex && (
+      !noindex && alternates && (
+        <>
+          {alternates.map((a) => (
+            <link rel="alternate" hreflang={a.hreflang} href={a.href} />
+          ))}
+        </>
+      )
+    }
+    {
+      !noindex && !alternates && (
         <>
           <link rel="alternate" hreflang="es-ES" href={urlEs} />
           <link rel="alternate" hreflang="ca-ES" href={urlCa} />
@@ -75,7 +88,7 @@ const urlCa = new URL(rutaCa, Astro.site).href;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={og} />
 
-    <script is:inline define:vars={{ idioma, rutaCa, rutaEs }}>
+    {!lang && <script is:inline define:vars={{ idioma, rutaCa, rutaEs }}>
       // Detección de idioma por navegador, con selección recordada y sin pisar una elección manual.
       // Corre lo antes posible (antes de pintar el body) para minimizar el parpadeo de idioma.
       try {
@@ -94,7 +107,7 @@ const urlCa = new URL(rutaCa, Astro.site).href;
           }
         }
       } catch (e) {}
-    </script>
+    </script>}
     {!noindex && <Schema title={title} description={description} idioma={idioma} canonical={canonical} />}
   </head>
   <body class="min-h-screen bg-papel text-tinta">
