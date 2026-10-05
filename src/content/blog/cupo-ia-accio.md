@@ -1,5 +1,6 @@
 ---
 title: "Cupó IA de ACCIÓ: qué es y cómo plantear tu proyecto"
+tituloSeo: "Cupó IA de ACCIÓ: cómo plantear tu proyecto"
 description: "Cómo preparar un proyecto de IA para presentarlo con el Cupó IA de ACCIÓ: ficha de una página, preguntas que hacer y errores que evitar."
 pubDate: 2026-10-05
 updatedDate: 2026-10-05

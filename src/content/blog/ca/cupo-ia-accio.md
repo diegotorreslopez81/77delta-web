@@ -1,5 +1,6 @@
 ---
 title: "Cupó IA d'ACCIÓ: què és i com plantejar el teu projecte"
+tituloSeo: "Cupó IA d'ACCIÓ: com plantejar el teu projecte"
 description: "Com preparar un projecte d'IA per presentar-lo amb el Cupó IA d'ACCIÓ: fitxa d'una pàgina, preguntes que cal fer i errors que cal evitar."
 pubDate: 2026-10-05
 updatedDate: 2026-10-05
