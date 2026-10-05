@@ -7,21 +7,28 @@ keyword: "automatitzar factures amb intel·ligència artificial"
 draft: false
 lang: ca
 puntos:
-  - "La IA llegeix factures i albarans de formats diferents i proposa les dades per a l'ERP; una persona confirma el dubtós."
-  - "Evita errors de transcripció, duplicats i diferències entre albarà i factura, si es defineixen aquestes comprovacions."
-  - "Es mesura amb tres números: hores setmanals, errors al mes i dies fins al registre."
-imagen: "/blog/automatizar-facturas-albaranes-ia.svg"
-imagenAlt: "Il·lustració esquemàtica de documents que passen per una lectura automàtica cap a un sistema de gestió"
+  - "Una persona deixa de teclejar factures i albarans i passa a revisar només les excepcions."
+  - "El sistema llegeix, valida contra comandes i proveïdors, i prepara l'apunt; el pagament continua autoritzant-lo qui l'autoritzava."
+  - "Compensa si baixen les hores sense que pugin els errors: es mesura amb tres números abans i després."
+imagen: "/blog/automatizar-facturas-albaranes-ia.png"
+imagenAlt: "Pila de documents que passen per un filtre i surten validats amb una marca de verificació"
+cifras:
+  - valor: "11,8%"
+    texto: "Ús més habitual de la IA a les empreses de la UE: analitzar llenguatge escrit."
+    fuente: "Eurostat, 2025"
 iconos:
-  "El problema: transcripció manual": "alerta"
-  "Com funciona, pas a pas": "flujo"
-  "Quins errors evita": "escudo"
-  "Què no fa": "cruz"
-  "Què cal abans de començar": "lista"
-  "Un cas publicat relacionat: transcripció a l'ERP": "grafico"
-  "Com mesurar si compensa": "reloj"
-  "Errors habituals en implantar-ho": "alerta"
-  "Per on continuar": "brujula"
+  "Quins errors evita": alerta
+  "Què no fa": cruz
+diagrama:
+  tipo: pasos
+  titulo: "Del document a l'apunt en 5 passos"
+  ubicacion: "Com funciona, pas a pas"
+  items:
+    - {t: "Recepció", d: "Correu, carpeta o portal"}
+    - {t: "Lectura", d: "Proveïdor, imports, línies"}
+    - {t: "Validació", d: "Contra comandes i registres"}
+    - {t: "Proposta", d: "Apunt per a l'ERP"}
+    - {t: "Confirmació", d: "Una persona revisa el dubtós"}
 faq:
   - q: "Pot la IA llegir factures de qualsevol proveïdor?"
     a: "Pot llegir factures amb formats diferents sense plantilla fixa per a cada proveïdor. Els casos dubtosos, com un document il·legible o un import que no quadra, els revisa una persona."
@@ -40,7 +47,7 @@ fuentes:
 
 En moltes pimes industrials, algú rep factures i albarans per correu, els obre, llegeix proveïdor, import i línies, i els teclega a l'ERP o al programa de comptabilitat. Cada dia. És una tasca repetitiva, amb volum i amb poc marge per a l'error.
 
-> **Dada:** També és una de les tasques on la IA encaixa millor. Segons Eurostat, l'ús més habitual de la IA a les empreses de la Unió Europea és analitzar llenguatge escrit, amb un 11,8%. Llegir un document i extreure'n el contingut és justament això.
+També és una de les tasques on la IA encaixa millor. Segons Eurostat, l'ús més habitual de la IA a les empreses de la Unió Europea és analitzar llenguatge escrit, amb un 11,8%. Llegir un document i extreure'n el contingut és justament això.
 
 Aquest article explica com funciona, quins errors evita, què no fa i com saber si compensa.
 
@@ -58,7 +65,7 @@ Això consumeix hores, i les hores se'n van en feina sense valor afegit. A més,
 4. **Proposta.** Prepara l'apunt per a l'ERP o el programa de comptabilitat, amb les dades extretes.
 5. **Confirmació.** El clar passa. El dubtós ho revisa una persona, que veu el document i les dades al costat.
 
-> **Compte:** El pas 5 és una decisió de disseny. La persona no desapareix. Deixa de teclejar i passa a revisar només les excepcions.
+El pas 5 és una decisió de disseny. La persona no desapareix. Deixa de teclejar i passa a revisar només les excepcions.
 
 ## Quins errors evita
 
@@ -70,7 +77,9 @@ Sempre que es defineixin les comprovacions, el sistema pot evitar:
 - **Dades fiscals mal copiades.** Un NIF o una raó social amb una errada.
 - **Retards.** Una factura que espera en una safata d'entrada perquè ningú no ha tingut temps.
 
-> **Compte:** Fixa't en la condició: *sempre que es defineixin*. La IA no sap per si sola quina diferència és acceptable. Cal dir-li quan ha d'avisar i quan no.
+> **Compte:** *sempre que es defineixin*. La IA no sap per si sola quina diferència és acceptable.
+
+Fixa't en la condició: *sempre que es defineixin*. La IA no sap per si sola quina diferència és acceptable. Cal dir-li quan ha d'avisar i quan no.
 
 ## Què no fa
 
@@ -89,7 +98,7 @@ Sempre que es defineixin les comprovacions, el sistema pot evitar:
 
 ## Un cas publicat relacionat: transcripció a l'ERP
 
-> **Exemple:** 77 Delta ha publicat el cas d'una distribuïdora industrial amb 12 comercials. Va connectar un assistent de WhatsApp al seu ERP i va aconseguir zero errors de transcripció, 2 hores al dia recuperades i un 25% més de capacitat comercial, en 6 setmanes. Aquest cas tracta de comandes, no de factures, però el principi és el mateix: la IA llegeix el missatge, escriu les dades a l'ERP que ja existia i s'acaba la transcripció manual. Tens el detall a la [història d'èxit de la distribuïdora](/ca/historias-de-exito/distribuidora-industrial/).
+77 Delta ha publicat el cas d'una distribuïdora industrial amb 12 comercials. Va connectar un assistent de WhatsApp al seu ERP i va aconseguir zero errors de transcripció, 2 hores al dia recuperades i un 25% més de capacitat comercial, en 6 setmanes. Aquest cas tracta de comandes, no de factures, però el principi és el mateix: la IA llegeix el missatge, escriu les dades a l'ERP que ja existia i s'acaba la transcripció manual. Tens el detall a la [història d'èxit de la distribuïdora](/ca/historias-de-exito/distribuidora-industrial/).
 
 ## Com mesurar si compensa
 
