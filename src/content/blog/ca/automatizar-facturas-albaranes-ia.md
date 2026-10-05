@@ -121,6 +121,4 @@ Si no tens la línia base, no sabràs si ha millorat o si només ho sembla.
 
 ## Per on continuar
 
-Si dubtes de si aquesta és la primera tasca que has d'automatitzar, la [guia per decidir què automatitzar primer](/ca/blog/automatizacion-procesos-ia-que-automatizar-primero/) et dona quatre criteris per puntuar-la. Per veure altres àrees de l'empresa, la [guia d'IA a la pime industrial](/ca/blog/ia-pyme-industrial-guia-por-areas/) les recorre una a una.
-
 Si vols valorar amb 77 Delta si l'entrada de factures i albarans de la teva empresa és una bona primera tasca, reserva amb el botó de sota una reunió de 20 minuts.

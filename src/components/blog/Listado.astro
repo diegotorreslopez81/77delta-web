@@ -39,7 +39,7 @@ const t =
           ))
         }
       </ol>
-      <p class="pb-10"><a class="font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra hover:text-oro-oscuro" href={href('/blog/rss.xml')}>{t.rss}</a></p>
+      <p class="pb-10"><a class="font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra hover:text-oro-oscuro" href={href('/blog/rss.xml').replace(/\/$/, '')}>{t.rss}</a></p>
     </div>
   </section>
 </Base>

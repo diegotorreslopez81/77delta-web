@@ -121,6 +121,4 @@ Si no tienes la línea base, no sabrás si ha mejorado o si solo lo parece.
 
 ## Por dónde seguir
 
-Si dudas de si esta es la primera tarea que debes automatizar, la [guía para decidir qué automatizar primero](/blog/automatizacion-procesos-ia-que-automatizar-primero/) te da cuatro criterios para puntuarla. Para ver otras áreas de la empresa, la [guía de IA en la pyme industrial](/blog/ia-pyme-industrial-guia-por-areas/) las recorre una a una.
-
 Si quieres valorar con 77 Delta si la entrada de facturas y albaranes de tu empresa es una buena primera tarea, reserva con el botón de abajo una reunión de 20 minutos.
