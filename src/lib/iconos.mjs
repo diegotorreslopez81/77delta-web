@@ -42,3 +42,7 @@ export const porPalabra = [
   [/seguridad|seguretat|datos|dades/i, 'escudo'],
   [/prioridad|criteri|empezar|començar/i, 'objetivo'],
 ];
+
+/** Delta de marca (brand/delta.svg), como máscara. */
+const delta = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 745 730'><path fill='black' fill-rule='evenodd' transform='translate(0 730.0)' d='M721.2 0L24 0L277.3-730L468.9-730L721.2 0M369.9-566.4L224.4-124L521.8-124L375.8-566.4'/></svg>`;
+export const cssDelta = `:root{--delta:url("data:image/svg+xml,${encodeURIComponent(delta)}")}`;

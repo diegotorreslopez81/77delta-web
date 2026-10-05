@@ -22,14 +22,18 @@ export const idAscii = (id) => id.normalize('NFD').replace(/[\u0300-\u036f]/g, '
 export function transformar(html, d) {
   const mapa = d.iconos ?? {};
   let pendiente = false;
+  let primero = true;
   // h2 e inserción del diagrama al final de la sección indicada
   let out = html.replace(/<h2([^>]*)>([\s\S]*?)<\/h2>/g, (m, attrs, inner) => {
     const t = plano(inner);
+    const esPrimero = primero;
     let previo = '';
     if (pendiente) { previo = diagrama(d.diagrama); pendiente = false; }
     if (d.diagrama && t === d.diagrama.ubicacion) pendiente = true;
     const ico = mapa[t] ?? porPalabra.find(([re]) => re.test(t))?.[1];
-    return previo + (ico ? `<h2${attrs} class="h2-ico i-${ico}">${inner}</h2>` : m);
+    const sep = '<div class="sep" role="presentation"><span></span></div>';
+    primero = false;
+    return previo + (esPrimero ? '' : sep) + (ico ? `<h2${attrs} class="h2-ico i-${ico}">${inner}</h2>` : m);
   });
   if (pendiente) out += diagrama(d.diagrama);
   // llamadas
