@@ -16,6 +16,9 @@ function diagrama(d) {
     .join('')}</ol></figure>`;
 }
 
+/** Id ASCII: sin acentos ni signos. */
+export const idAscii = (id) => id.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').toLowerCase();
+
 export function transformar(html, d) {
   const mapa = d.iconos ?? {};
   let pendiente = false;
@@ -34,5 +37,6 @@ export function transformar(html, d) {
     const k = llamadas[clave.toLowerCase().replace(/[:.\s]/g, '')];
     return k ? `<blockquote class="llamada ll-${k} i-${k}">${resto}` : m;
   });
+  out = out.replace(/<(h[23])([^>]*?) id="([^"]+)"/g, (m, h, a, id) => `<${h}${a} id="${idAscii(id)}"`);
   return out;
 }

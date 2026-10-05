@@ -5,7 +5,7 @@ import { render } from 'astro:content';
 import { href as hrefEs, hrefCa, site } from '../../lib/site';
 import { clusters, fecha, type Entrada, type Idioma } from '../../lib/blog';
 import { cssIconos } from '../../lib/iconos.mjs';
-import { transformar } from '../../lib/blog-html.mjs';
+import { transformar, idAscii } from '../../lib/blog-html.mjs';
 
 interface Props {
   entrada: Entrada;
@@ -93,7 +93,7 @@ const jsonld = [
         indice.length > 2 && (
           <details class="toc">
             <summary><span class="ico i-lista"></span>{t.indice}</summary>
-            <ol>{indice.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+            <ol>{indice.map((h) => <li><a href={`#${idAscii(h.slug)}`}>{h.text}</a></li>)}</ol>
           </details>
         )
       }
