@@ -1,0 +1,45 @@
+---
+/** Píldoras de idioma ES CA GL EU para la cabecera (solo páginas de ayuntamientos). */
+import Icono from './Icono.astro';
+
+export interface IdiomaOpcion {
+  codigo: string;
+  etiqueta: string;
+  ruta: string;
+  hreflang: string;
+  activo: boolean;
+}
+
+interface Props {
+  idiomas: IdiomaOpcion[];
+  /** Muestra el icono de globo delante del grupo. */
+  globo?: boolean;
+  class?: string;
+}
+const { idiomas, globo = false, class: clase = '' } = Astro.props;
+---
+
+<div class:list={['flex items-center gap-1.5', clase]} role="group" aria-label="Idioma / Llengua / Lingua / Hizkuntza">
+  {globo && <Icono nombre="propuesta" class="mr-1 h-4 w-4 text-marfil/60" />}
+  {
+    idiomas.map((i) => (
+      <a
+        href={i.ruta}
+        hreflang={i.hreflang}
+        lang={i.codigo}
+        data-selector-idioma
+        data-idioma-destino={i.codigo}
+        aria-label={i.etiqueta}
+        aria-current={i.activo ? 'page' : undefined}
+        class:list={[
+          'inline-flex min-w-[2.25rem] items-center justify-center rounded-full border px-2.5 py-1.5 font-mono text-[12px] font-semibold uppercase tracking-[0.04em] transition-colors duration-200',
+          i.activo
+            ? 'border-oro bg-oro text-marfil'
+            : 'border-marfil/40 text-marfil/85 hover:border-marfil hover:text-marfil',
+        ]}
+      >
+        {i.codigo}
+      </a>
+    ))
+  }
+</div>

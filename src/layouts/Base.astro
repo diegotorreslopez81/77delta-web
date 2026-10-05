@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
+import type { IdiomaOpcion } from '../components/SelectorIdiomas.astro';
 import Footer from '../components/Footer.astro';
 import WhatsApp from '../components/WhatsApp.astro';
 import Schema from '../components/Schema.astro';
@@ -21,8 +22,12 @@ interface Props {
   lang?: string;
   /** hreflang propios, solo junto a `lang`. */
   alternates?: { hreflang: string; href: string }[];
+  /** Píldoras de idioma en la cabecera (ES CA GL EU). */
+  idiomas?: IdiomaOpcion[];
+  /** Mapa idioma -> ruta: activa la detección del idioma del navegador entre es, ca, gl y eu. */
+  deteccion?: Record<string, string>;
 }
-const { title: tituloProp, description: descripcionProp = site.descripcion, ogImage = '/img/og.png', noindex = false, selectorIdioma = true, lang, alternates } = Astro.props;
+const { title: tituloProp, description: descripcionProp = site.descripcion, ogImage = '/img/og.png', noindex = false, selectorIdioma = true, lang, alternates, idiomas, deteccion } = Astro.props;
 
 const metaPagina = metas[Astro.url.pathname];
 const title = metaPagina?.title ?? tituloProp;
@@ -88,7 +93,7 @@ const urlCa = new URL(rutaCa, Astro.site).href;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={og} />
 
-    {!lang && <script is:inline define:vars={{ idioma, rutaCa, rutaEs }}>
+    {!lang && !deteccion && <script is:inline define:vars={{ idioma, rutaCa, rutaEs }}>
       // Detección de idioma por navegador, con selección recordada y sin pisar una elección manual.
       // Corre lo antes posible (antes de pintar el body) para minimizar el parpadeo de idioma.
       try {
@@ -108,10 +113,26 @@ const urlCa = new URL(rutaCa, Astro.site).href;
         }
       } catch (e) {}
     </script>}
+    {deteccion && <script is:inline define:vars={{ actual: lang ?? idioma, deteccion }}>
+      // Detección entre es, ca, gl y eu. Una elección guardada manda; sin ella, primer idioma del navegador soportado.
+      // Nunca se redirige a castellano de forma automática: así los buscadores y quien llega por enlace a gl, eu o ca ven esa versión.
+      try {
+        if (!localStorage.getItem('idioma-77delta')) {
+          var langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
+          var codigo = 'es';
+          for (var n = 0; n < langs.length; n++) {
+            var p = String(langs[n]).toLowerCase().slice(0, 2);
+            if (p === 'ca' || p === 'gl' || p === 'eu') { codigo = p; break; }
+          }
+          localStorage.setItem('idioma-77delta', codigo);
+          if (codigo !== 'es' && codigo !== actual && deteccion[codigo]) location.replace(deteccion[codigo]);
+        }
+      } catch (e) {}
+    </script>}
     {!noindex && <Schema title={title} description={description} idioma={idioma} canonical={canonical} />}
   </head>
   <body class="min-h-screen bg-papel text-tinta">
-    <Nav selectorIdioma={selectorIdioma} />
+    <Nav selectorIdioma={selectorIdioma} idiomas={idiomas} />
     <main>
       <slot />
     </main>

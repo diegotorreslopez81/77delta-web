@@ -20,6 +20,14 @@ const alternates = [
   ...orden.map((i) => ({ hreflang: hreflangs[i], href: abs(rutas[i]) })),
   { hreflang: 'x-default', href: abs(rutas.es) },
 ];
+const opciones = orden.map((i) => ({
+  codigo: i,
+  etiqueta: contenidos[i].etiquetaIdioma,
+  ruta: href(rutas[i]),
+  hreflang: hreflangs[i],
+  activo: i === idioma,
+}));
+const deteccion = Object.fromEntries(orden.map((i) => [i, href(rutas[i])]));
 ---
 
 <Base
@@ -28,26 +36,13 @@ const alternates = [
   selectorIdioma={false}
   lang={idioma === 'es' || idioma === 'ca' ? undefined : idioma}
   alternates={alternates}
+  idiomas={opciones}
+  deteccion={deteccion}
 >
   <!-- Hero corto -->
   <section class="wrap pb-10 pt-16 md:pt-24">
     <div class="flex flex-wrap items-center justify-between gap-4" data-reveal>
       <p class="eyebrow">{c.eyebrow}</p>
-      <nav aria-label={c.selector} class="flex flex-wrap gap-x-5 gap-y-2 font-mono text-[12px]">
-        {
-          orden.map((i) => (
-            <a
-              href={href(rutas[i])}
-              hreflang={hreflangs[i]}
-              lang={i}
-              aria-current={i === idioma ? 'page' : undefined}
-              class={i === idioma ? 'text-oro-oscuro underline underline-offset-4' : 'text-pizarra hover:text-tinta'}
-            >
-              {contenidos[i].etiquetaIdioma}
-            </a>
-          ))
-        }
-      </nav>
     </div>
     <h1 class="mt-6 max-w-[18ch] font-display text-[clamp(34px,5.4vw,60px)] font-bold leading-[1.06] tracking-[-0.02em]" data-reveal>
       {c.h1[0]}<span class="text-oro-oscuro">{c.h1[1]}</span>{c.h1[2]}

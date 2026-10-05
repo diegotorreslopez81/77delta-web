@@ -1,13 +1,16 @@
 ---
 /** Cabecera en tinta con el monograma en marfil; botón de acción en ocre. */
 import Monograma from './Monograma.astro';
+import SelectorIdiomas, { type IdiomaOpcion } from './SelectorIdiomas.astro';
 import { nav, navCa, cta, ctaCa, href, hrefCa, equivalenteCa, equivalenteEs } from '../lib/site';
 
 interface Props {
   /** Oculta el selector de idioma en páginas sin versión en catalán (p. ej. /propuestas/). */
   selectorIdioma?: boolean;
+  /** Si llega, se pinta el selector de píldoras (ES CA GL EU) en lugar del enlace es/ca. */
+  idiomas?: IdiomaOpcion[];
 }
-const { selectorIdioma = true } = Astro.props;
+const { selectorIdioma = true, idiomas } = Astro.props;
 const idioma = Astro.currentLocale === 'ca' ? 'ca' : 'es';
 const enlace = idioma === 'ca' ? hrefCa : href;
 const items = idioma === 'ca' ? navCa : nav;
@@ -42,7 +45,8 @@ const enlaceOtroIdioma = idioma === 'ca' ? equivalenteEs(actual) : equivalenteCa
     </nav>
 
     <div class="flex items-center gap-3">
-      {selectorIdioma && (
+      {idiomas && <SelectorIdiomas idiomas={idiomas} globo class="hidden sm:flex" />}
+      {!idiomas && selectorIdioma && (
         <a
           href={enlaceOtroIdioma}
           data-selector-idioma
@@ -75,6 +79,7 @@ const enlaceOtroIdioma = idioma === 'ca' ? equivalenteEs(actual) : equivalenteCa
 
   <div id="menu-movil" class="hidden border-t border-marfil/10 bg-marino shadow-[0_16px_40px_rgba(0,0,0,.35)] lg:hidden" data-menu>
     <nav aria-label="Principal, móvil" class="wrap flex flex-col py-3">
+      {idiomas && <SelectorIdiomas idiomas={idiomas} class="px-3 pb-3 pt-1 sm:hidden" />}
       {
         items.map((n) => (
           <a
@@ -88,7 +93,7 @@ const enlaceOtroIdioma = idioma === 'ca' ? equivalenteEs(actual) : equivalenteCa
           </a>
         ))
       }
-      {selectorIdioma && (
+      {!idiomas && selectorIdioma && (
         <a
           href={enlaceOtroIdioma}
           data-selector-idioma
