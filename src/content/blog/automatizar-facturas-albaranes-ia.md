@@ -1,11 +1,15 @@
 ---
 title: "Automatizar facturas y albaranes con IA: cómo funciona y qué errores evita"
+tituloSeo: "Automatizar facturas y albaranes con IA"
 description: "Cómo se automatiza la entrada de facturas y albaranes con IA: pasos, validaciones, errores que evita, qué no hace y cómo medir el resultado en una pyme."
 pubDate: 2026-10-05
 cluster: automatizacion
 keyword: "automatizar facturas con inteligencia artificial"
 draft: false
 lang: es
+relacionados:
+  - "/servicios/transformacion/"
+  - "/servicios/diagnostico/"
 puntos:
   - "Una persona deja de teclear facturas y albaranes y pasa a revisar solo las excepciones."
   - "El sistema lee, valida contra pedidos y proveedores, y prepara el apunte; el pago lo sigue autorizando quien lo autorizaba."
