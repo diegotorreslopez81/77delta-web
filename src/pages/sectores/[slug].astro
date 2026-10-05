@@ -1,4 +1,5 @@
 ---
+import GuiasRelacionadas from '../../components/blog/GuiasRelacionadas.astro';
 import Base from '../../layouts/Base.astro';
 import Cta from '../../components/Cta.astro';
 import { href } from '../../lib/site';
@@ -146,6 +147,8 @@ const sufijo = partes ? partes[2] : '';
       </section>
     )
   }
+
+  <GuiasRelacionadas ruta={`/sectores/${sector.slug}/`} idioma="es" />
 
   <Cta
     titulo={sector.ctaTitulo}

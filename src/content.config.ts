@@ -34,6 +34,8 @@ const esquema = z.object({
       despues: z.object({ titulo: z.string(), items: z.array(z.string()) }).optional(),
     })
     .optional(),
+  /** Páginas relacionadas (rutas en castellano: /servicios/<x>/ o /sectores/<x>/). Enlazan en ambos sentidos. */
+  relacionados: z.array(z.string().regex(/^\/(servicios|sectores)\/[a-z0-9-]+\/$/)).default([]),
   draft: z.boolean().default(false),
   faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]),
   fuentes: z.array(z.object({ titulo: z.string(), url: z.string().url() })).default([]),

@@ -5,6 +5,10 @@ import { render } from 'astro:content';
 import { href as hrefEs, hrefCa, site } from '../../lib/site';
 import { clusters, fecha, type Entrada, type Idioma } from '../../lib/blog';
 import { cssIconos, cssDelta } from '../../lib/iconos.mjs';
+import { resumen as resEs } from '../../data/servicios';
+import { resumen as resCa } from '../../data/servicios.ca';
+import { sectores as secEs } from '../../data/sectores';
+import { sectores as secCa } from '../../data/sectores.ca';
 import { transformar, idAscii } from '../../lib/blog-html.mjs';
 
 interface Props {
@@ -31,6 +35,15 @@ const imagen = d.imagen ?? `/blog/cluster-${d.cluster}.png`;
 const imagenOg = imagen.replace(/\.svg$/, '.png');
 const url = new URL(href(`/blog/${slug}/`), Astro.site).href;
 const abs = (p: string) => new URL(hrefEs(p), Astro.site).href;
+const nombres = new Map<string, string>([
+  ...(idioma === 'ca' ? resCa : resEs).map((r) => [r.ruta, r.titulo] as [string, string]),
+  ...(idioma === 'ca' ? secCa : secEs).map((x) => [`/sectores/${x.slug}/`, x.nombre] as [string, string]),
+]);
+const relacionados = d.relacionados.filter((r) => nombres.has(r)).map((r) => ({ ruta: r, nombre: nombres.get(r)! }));
+const migas = [
+  { nombre: 'Blog', ruta: href('/blog/') },
+  { nombre: d.title, ruta: href(`/blog/${slug}/`) },
+];
 const jsonld = [
   {
     '@context': 'https://schema.org',
@@ -51,7 +64,7 @@ const jsonld = [
 ];
 ---
 
-<Base title={d.tituloSeo ?? d.title} description={d.description} ogImage={imagenOg} ogType="article">
+<Base title={d.tituloSeo ?? d.title} description={d.description} ogImage={imagenOg} ogType="article" migas={migas}>
   <article class="wrap py-14 md:py-24">
     <div class="art-col">
       <p class="font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra">
@@ -122,6 +135,19 @@ const jsonld = [
             <ul>
               {d.fuentes.map((f) => (
                 <li><a href={f.url} target="_blank" rel="noopener">{f.titulo}</a></li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      {
+        relacionados.length > 0 && (
+          <section class="mt-14">
+            <h2 class="font-display text-[22px] font-semibold">{idioma === 'ca' ? 'Serveis relacionats' : 'Servicios relacionados'}</h2>
+            <ul class="mt-4 flex flex-wrap gap-3">
+              {relacionados.map((r) => (
+                <li><a href={href(r.ruta)} class="inline-block rounded-full border border-linea px-4 py-2 text-[14px] hover:border-oro-oscuro hover:text-oro-oscuro">{r.nombre}</a></li>
               ))}
             </ul>
           </section>

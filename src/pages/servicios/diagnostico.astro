@@ -1,4 +1,5 @@
 ---
+import GuiasRelacionadas from '../../components/blog/GuiasRelacionadas.astro';
 import Base from '../../layouts/Base.astro';
 import Boton from '../../components/Boton.astro';
 import Cta from '../../components/Cta.astro';
@@ -106,6 +107,8 @@ const otros = resumen.filter((r) => r.titulo !== 'Diagnóstico');
       </ul>
     </div>
   </section>
+
+  <GuiasRelacionadas ruta={'/servicios/diagnostico/'} idioma="es" />
 
   <Cta />
 </Base>

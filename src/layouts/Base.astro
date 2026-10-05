@@ -26,10 +26,12 @@ interface Props {
   idiomas?: IdiomaOpcion[];
   /** Mapa idioma -> ruta: activa la detección del idioma del navegador entre es, ca, gl y eu. */
   deteccion?: Record<string, string>;
+  /** Migas propias para el schema BreadcrumbList (artículos). */
+  migas?: { nombre: string; ruta: string }[];
   /** og:type. 'article' en artículos del blog. */
   ogType?: 'website' | 'article';
 }
-const { title: tituloProp, description: descripcionProp = site.descripcion, ogImage = '/img/og.png', noindex = false, selectorIdioma = true, lang, alternates, idiomas, deteccion, ogType = 'website' } = Astro.props;
+const { title: tituloProp, description: descripcionProp = site.descripcion, ogImage = '/img/og.png', noindex = false, selectorIdioma = true, lang, alternates, idiomas, deteccion, ogType = 'website', migas } = Astro.props;
 
 const metaPagina = metas[Astro.url.pathname];
 const title = metaPagina?.title ?? tituloProp;
@@ -131,7 +133,7 @@ const urlCa = new URL(rutaCa, Astro.site).href;
         }
       } catch (e) {}
     </script>}
-    {!noindex && <Schema title={title} description={description} idioma={idioma} canonical={canonical} />}
+    {!noindex && <Schema title={title} description={description} idioma={idioma} canonical={canonical} lang={lang} migas={migas} />}
   </head>
   <body class="min-h-screen bg-papel text-tinta">
     <Nav selectorIdioma={selectorIdioma} idiomas={idiomas} />

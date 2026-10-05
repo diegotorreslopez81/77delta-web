@@ -182,4 +182,12 @@ import { resumen, recorrido, faq } from '../../data/servicios';
     texto="30 minutos para entender tu realidad y orientarte sobre cómo aplicar IA en tu empresa con criterio."
     boton="Reservar diagnóstico gratuito"
   />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.pregunta, acceptedAnswer: { '@type': 'Answer', text: f.respuesta } })),
+    })}
+  />
 </Base>

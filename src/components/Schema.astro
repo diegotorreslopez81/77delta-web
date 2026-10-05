@@ -3,19 +3,24 @@
  * JSON-LD: Organization en la home (es/ca) y Service en /servicios/<x>/.
  * Todo sale de site.ts y de los props de la página; nada inventado.
  */
-import { site } from '../lib/site';
+import { site, nav, navCa } from '../lib/site';
 
 interface Props {
   title: string;
   description: string;
   idioma: 'es' | 'ca';
   canonical: string;
+  /** Idioma real de la página (es, ca, gl, eu). */
+  lang?: string;
+  /** Migas propias (artículos): sustituyen a las derivadas de la ruta. */
+  migas?: { nombre: string; ruta: string }[];
 }
-const { title, description, idioma, canonical } = Astro.props;
+const { title, description, idioma, canonical, lang, migas } = Astro.props;
 const origen = new URL('/', Astro.site).href;
 const ruta = new URL(canonical).pathname.replace(/^\/ca(?=\/)/, '');
 const esHome = ruta === '/';
-const esServicio = /^\/servicios\/[^/]+\/$/.test(ruta);
+const esServicio = /^\/servicios\/[^/]+\/$/.test(ruta) || /^\/(ayuntamientos|ajuntaments|gl\/concellos|eu\/udalak)\/$/.test(ruta);
+const esProducto = /^\/productos\/[^/]+\/$/.test(ruta);
 
 const organizacion = {
   '@type': 'Organization',
@@ -38,20 +43,55 @@ const organizacion = {
   knowsLanguage: ['es', 'ca'],
 };
 
-const datos = esHome
-  ? { '@context': 'https://schema.org', ...organizacion }
-  : esServicio
-    ? {
-        '@context': 'https://schema.org',
-        '@type': 'Service',
-        name: title,
-        description,
-        url: canonical,
-        inLanguage: idioma,
-        provider: { '@id': `${origen}#organizacion` },
-        areaServed: 'ES',
-      }
-    : null;
+const nodoWebSite = {
+  '@type': 'WebSite',
+  '@id': `${origen}#web`,
+  name: site.nombre,
+  url: origen,
+  inLanguage: ['es', 'ca'],
+  publisher: { '@id': `${origen}#organizacion` },
+};
+
+const nodoServicio = {
+  '@type': 'Service',
+  name: title,
+  description,
+  url: canonical,
+  inLanguage: lang ?? idioma,
+  provider: { '@id': `${origen}#organizacion` },
+  areaServed: 'ES',
+};
+
+const nodoProducto = {
+  '@type': 'SoftwareApplication',
+  name: title,
+  description,
+  url: canonical,
+  applicationCategory: 'BusinessApplication',
+  inLanguage: lang ?? idioma,
+  publisher: { '@id': `${origen}#organizacion` },
+};
+
+// Migas: inicio > sección (etiqueta del menú) > página. Solo ruta real, sin inventar niveles.
+const items = idioma === 'ca' ? navCa : nav;
+const prefijo = idioma === 'ca' ? '/ca' : '';
+const partes = new URL(canonical).pathname.replace(/\/$/, '').split('/').filter(Boolean).filter((x, i) => !(i === 0 && x === 'ca'));
+const derivadas = partes.map((seg, i) => {
+  const r = '/' + partes.slice(0, i + 1).join('/') + '/';
+  const esUltima = i === partes.length - 1;
+  const etiqueta = items.find((n) => n.ruta === r)?.texto;
+  return { nombre: esUltima ? title : etiqueta, ruta: prefijo + r };
+}).filter((m) => m.nombre);
+const lista = [{ nombre: site.nombre, ruta: prefijo + '/' }, ...(migas ?? derivadas)];
+const nodoMigas = {
+  '@type': 'BreadcrumbList',
+  itemListElement: lista.map((m, i) => ({ '@type': 'ListItem', position: i + 1, name: m.nombre, item: new URL(m.ruta, Astro.site).href })),
+};
+
+const grafo = esHome
+  ? [organizacion, nodoWebSite]
+  : [esServicio ? nodoServicio : esProducto ? nodoProducto : null, partes.length > 0 || migas ? nodoMigas : null].filter(Boolean);
+const datos = grafo.length ? { '@context': 'https://schema.org', '@graph': grafo } : null;
 ---
 
 {datos && <script type="application/ld+json" set:html={JSON.stringify(datos)} />}
