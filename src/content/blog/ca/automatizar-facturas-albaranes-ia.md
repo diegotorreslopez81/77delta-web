@@ -1,5 +1,6 @@
 ---
 title: "Automatitzar factures i albarans amb IA: com funciona i quins errors evita"
+tituloSeo: "Automatitzar factures i albarans amb IA"
 description: "Com s'automatitza l'entrada de factures i albarans amb IA: passos, validacions, errors que evita, què no fa i com mesurar el resultat en una pime."
 pubDate: 2026-10-05
 cluster: automatizacion

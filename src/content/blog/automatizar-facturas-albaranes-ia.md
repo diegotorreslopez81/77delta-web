@@ -1,5 +1,6 @@
 ---
 title: "Automatizar facturas y albaranes con IA: cómo funciona y qué errores evita"
+tituloSeo: "Automatizar facturas y albaranes con IA"
 description: "Cómo se automatiza la entrada de facturas y albaranes con IA: pasos, validaciones, errores que evita, qué no hace y cómo medir el resultado en una pyme."
 pubDate: 2026-10-05
 cluster: automatizacion
