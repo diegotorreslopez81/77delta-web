@@ -1,0 +1,39 @@
+# 77 Delta
+
+> Consultora tecnológica para pymes con sede en Barcelona. Aplicamos la IA para ahorrar costes a tu empresa: diagnóstico gratuito, transformación operativa con IA, auditoría de seguridad de asistentes y partner tecnológico. Sitio en castellano y catalán (/ca/). Titular: Next Gen Academy SL.
+
+## Servicios
+
+- [Diagnóstico](https://77delta.com/servicios/diagnostico/): treinta minutos de entrevista y una propuesta con el estado inicial, plan de trabajo y presupuesto. Gratuito y sin compromiso.
+- [Transformación operativa con IA](https://77delta.com/servicios/transformacion/): implantación, integración con tus sistemas, automatización de procesos y capacitación. De cuatro a doce semanas, siempre con un piloto controlado.
+- [Seguridad de IA](https://77delta.com/servicios/seguridad-ia/): auditoría de chatbots y agentes con IA de una web: qué información se les puede sacar y cómo se cierra.
+- [Partner tecnológico](https://77delta.com/servicios/partner/): revisión de propuestas de proveedores, interlocución técnica, hoja de ruta trimestral y auditoría de software.
+
+## Productos
+
+- [LeakAI](https://77delta.com/productos/leakai/): auditoría de seguridad para los chatbots con IA de tu web. Producto propio.
+- [Licita](https://77delta.com/licita/): motor de licitaciones que filtra por lo que tu empresa puede firmar y resume cada pliego.
+- [Todos los productos](https://77delta.com/productos/): portfolio del grupo tecnológico (compliance europeo, atención al cliente, educación y más).
+
+## Sectores
+
+- [Sectores](https://77delta.com/sectores/): clínicas, despachos, distribución, industria, formación y administración pública.
+
+## Pruebas y datos propios
+
+- [Estudio sobre asistentes de IA en webs españolas](https://77delta.com/estudio-asistentes-ia/): datos propios, septiembre de 2026.
+- [Historias de éxito](https://77delta.com/historias-de-exito/)
+- [Casos de uso](https://77delta.com/casos-de-uso/): capacidades de IA aplicada por familia, sector y tecnología.
+- [Proyectos en curso](https://77delta.com/proyectos-en-curso/): proyectos con clientes acreditados en el Cupó IA d'ACCIÓ.
+
+## Empresa
+
+- [Sobre nosotros](https://77delta.com/sobre-nosotros/)
+- [Contacto](https://77delta.com/contacto/): respuesta en 24 horas hábiles o reserva de una conversación inicial de 30 minutos.
+- [Aviso legal](https://77delta.com/aviso-legal/)
+
+## Optional
+
+- [Versión en catalán](https://77delta.com/ca/)
+- [Política de privacidad](https://77delta.com/politica-privacidad/)
+- [Política de cookies](https://77delta.com/politica-cookies/)

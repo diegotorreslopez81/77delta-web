@@ -25,6 +25,7 @@ Disallow: /propuestas/
 # Google Gemini y AI Overviews (Google-Extended solo controla el uso en Gemini; el rastreo lo hace Googlebot)
 User-agent: Google-Extended
 Allow: /
+Disallow: /propuestas/
 
 # Perplexity, Apple, Amazon, Meta, DuckDuckGo, Mistral, Common Crawl
 User-agent: PerplexityBot
@@ -39,3 +40,4 @@ Allow: /
 Disallow: /propuestas/
 
 Sitemap: https://77delta.com/sitemap-index.xml
+# llms.txt: https://77delta.com/llms.txt
