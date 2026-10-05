@@ -71,6 +71,7 @@ export const nav = [
   { texto: 'Casos de uso', ruta: '/casos-de-uso/' },
   { texto: 'Historias de éxito', ruta: '/historias-de-exito/' },
   { texto: 'Productos', ruta: '/productos/' },
+  { texto: 'Blog', ruta: '/blog/' },
   { texto: 'Sobre nosotros', ruta: '/sobre-nosotros/' },
   { texto: 'Contacto', ruta: '/contacto/' },
 ] as const;
@@ -94,6 +95,7 @@ export const navCa = [
   { texto: "Casos d'ús", ruta: '/casos-de-uso/' },
   { texto: "Històries d'èxit", ruta: '/historias-de-exito/' },
   { texto: 'Productes', ruta: '/productos/' },
+  { texto: 'Blog', ruta: '/blog/' },
   { texto: 'Sobre nosaltres', ruta: '/sobre-nosotros/' },
   { texto: 'Contacte', ruta: '/contacto/' },
 ] as const;
