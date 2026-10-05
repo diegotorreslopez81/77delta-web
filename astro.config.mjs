@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
+import { lastmod } from './scripts/lastmod.mjs';
 
 // Dominio propio (public/CNAME). Para una previsualización bajo otra ruta, exportar SITE_URL y SITE_BASE.
 const site = process.env.SITE_URL ?? 'https://77delta.com';
@@ -23,6 +24,11 @@ export default defineConfig({
   integrations: [
     sitemap({
       filter: (page) => !page.includes('/propuestas/'),
+      serialize: (item) => {
+        const f = lastmod(new URL(item.url).pathname);
+        if (f) item.lastmod = f;
+        return item;
+      },
       i18n: {
         defaultLocale: 'es',
         locales: { es: 'es-ES', ca: 'ca-ES' },
