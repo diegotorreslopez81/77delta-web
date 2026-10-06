@@ -86,6 +86,6 @@ Si el projecte el fa un proveïdor extern, algunes preguntes ajuden a filtrar:
 
 ## Per on seguir
 
-Per decidir quina tasca convé abordar primer, tens la [guia per decidir què automatitzar primer](/ca/blog/automatizacion-procesos-ia-que-automatizar-primero/). Per veure en quines àrees d'una pime industrial s'aplica la IA, la [guia d'IA a la pime industrial](/ca/blog/ia-pyme-industrial-guia-por-areas/).
+Per veure en quines àrees d'una pime industrial s'aplica la IA, la [guia d'IA a la pime industrial](/ca/blog/ia-pyme-industrial-guia-por-areas/).
 
 Si vols veure amb 77 Delta quin projecte té sentit a la teva empresa i com preparar-lo, reserva amb el botó de sota una reunió de 20 minuts.

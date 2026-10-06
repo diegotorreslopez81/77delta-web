@@ -86,6 +86,6 @@ Si el proyecto lo hace un proveedor externo, algunas preguntas ayudan a filtrar:
 
 ## Por dónde seguir
 
-Para decidir qué tarea conviene abordar primero, tienes la [guía para decidir qué automatizar primero](/blog/automatizacion-procesos-ia-que-automatizar-primero/). Para ver en qué áreas de una pyme industrial se aplica la IA, la [guía de IA en la pyme industrial](/blog/ia-pyme-industrial-guia-por-areas/).
+Para ver en qué áreas de una pyme industrial se aplica la IA, la [guía de IA en la pyme industrial](/blog/ia-pyme-industrial-guia-por-areas/).
 
 Si quieres ver con 77 Delta qué proyecto tiene sentido en tu empresa y cómo prepararlo, reserva con el botón de abajo una reunión de 20 minutos.
