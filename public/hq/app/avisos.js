@@ -40,7 +40,9 @@ export function vaciar(idb = globalThis.indexedDB) {
 export const sinLeer = avisos => avisos.filter(a => !a.leido).length;
 
 // Enlace dentro de la app: el hash de la url del aviso ('/hq/#hoy/12' da '#hoy/12'); sin hash, la Home.
-export function enlaceApp(url) {
+export const enlaceLic = exp => '#operacion/licitaciones?exp=' + encodeURIComponent(exp);
+export function enlaceApp(url, lic) {
+  if (lic) return enlaceLic(lic);
   const i = String(url || '').indexOf('#');
   return i >= 0 && url.length > i + 1 ? url.slice(i) : '#hoy';
 }

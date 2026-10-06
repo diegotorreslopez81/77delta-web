@@ -126,7 +126,7 @@ if ('serviceWorker' in navigator) {
       // El sw manda siempre la url del aviso (iOS no tiene Client.navigate()): solo se aplica su hash, mismo origen.
       try { const u = new URL(ev.data.url, location.origin); if (u.origin === location.origin && u.pathname.startsWith('/hq/') && u.hash) location.hash = u.hash; } catch {}
     } else if (ev.data?.tipo === 'abrir' && ev.data.id) location.hash = '#hoy/' + ev.data.id;
-    else if (ev.data?.tipo === 'abrir-lic' && ev.data.lic) location.hash = '#hoy/bandeja';
+    else if (ev.data?.tipo === 'abrir-lic' && ev.data.lic) location.hash = '#operacion/licitaciones?exp=' + encodeURIComponent(ev.data.lic);
   });
 }
 

@@ -2,7 +2,7 @@
    Supabase ni el payload omc_hq_v2 (van a otro origen, asi que ya quedan fuera del filtro de fetch).
    Push y notificationclick son el mismo comportamiento real que public/hq/v1/sw.js (mismo payload que
    envia hq-push en el servidor: title, body, url, tag, id, lic). */
-var CACHE = 'hq-v27';
+var CACHE = 'hq-v28';
 var SHELL = ['/hq/', '/hq/app/main.js', '/hq/app/api.js', '/hq/app/estado.js', '/hq/app/recargador.js', '/hq/app/rutas.js', '/hq/app/buscador.js', '/hq/app/licitaciones.js', '/hq/app/shell.js', '/hq/app/ui.js', '/hq/app/tarjeta.js', '/hq/app/detalle.js', '/hq/app/dnd.js', '/hq/app/vistas/hoy.js', '/hq/app/vistas/objetivo.js', '/hq/app/vistas/tablero.js', '/hq/app/vistas/decisiones.js', '/hq/app/vistas/licitaciones.js', '/hq/app/vistas/licitaciones-menores.js', '/hq/app/vistas/equipo.js', '/hq/app/vistas/motor.js', '/hq/app/vistas/expedientes.js', '/hq/app/vistas/avisos.js', '/hq/app/avisos.js', '/hq/app/tokens.css', '/hq/app/hq.css', '/hq/manifest.webmanifest', '/hq/icon-192.png', '/hq/icon-512.png'];
 
 self.addEventListener('install', function (e) {
@@ -62,7 +62,8 @@ function marcarLeido(n) {
 // como ultimo recurso la url del payload o la vista Avisos. Nunca la raiz '/hq/' a secas.
 function destino(d) {
   if (d.id) return '/hq/#hoy/' + d.id;
-  if (d.lic || d.tag === 'hq-lote') return '/hq/#hoy/bandeja';
+  if (d.lic) return '/hq/#operacion/licitaciones?exp=' + encodeURIComponent(d.lic);
+  if (d.tag === 'hq-lote') return '/hq/#hoy/bandeja';
   try {
     var u = new URL(d.url, self.location.origin);
     if (u.origin === self.location.origin && u.pathname.indexOf('/hq/') === 0 && (u.hash || u.search)) return u.pathname + u.search + u.hash;

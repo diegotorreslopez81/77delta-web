@@ -17,7 +17,7 @@ function fila(a) {
       el('b', { class: 'aviso-titulo', text: a.title || 'HQ' }),
       el('span', { class: 'sub aviso-hora', text: Number.isFinite(t.getTime()) ? fecha(t.toISOString(), { hora: true }) : '' })]),
     a.body ? el('p', { class: 'aviso-cuerpo', text: a.body }) : null,
-    el('a', { class: 'aviso-abrir', href: enlaceApp(a.url), text: 'Abrir', onclick: () => { acciones.marcarLeido(a.n).catch(() => {}); } })]);
+    el('a', { class: 'aviso-abrir', href: enlaceApp(a.url, a.lic), text: 'Abrir', onclick: () => { acciones.marcarLeido(a.n).catch(() => {}); } })]);
 }
 
 export async function render(raiz, S, arg, filtros, ahora = new Date()) {

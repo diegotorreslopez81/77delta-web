@@ -411,6 +411,25 @@ function panelAprobadasAuto(rol) {
   return caja;
 }
 
+// Avisos y push de licitación (06-10, Diego: "cuando pico en abrir no lo abre"): el aviso solo trae el
+// expediente, así que '#operacion/licitaciones?exp=<expediente>' busca su id y salta a la ficha.
+function renderPorExpediente(raiz, S, exp) {
+  const mio = ++turno;
+  const caja = el('div', { class: 'lic-ficha-unica' }, [el('p', { class: 'mudo', text: 'buscando licitación ' + exp + '…' })]);
+  raiz.append(cabeceraFuentes(S), caja);
+  return cargador({ texto: exp, limite: 20 }).then(datos => {
+    if (mio !== turno || raiz.isConnected === false) return;
+    const l = (Array.isArray(datos?.filas) ? datos.filas : []).find(x => x.expediente === exp);
+    if (l) { location.replace('#operacion/licitaciones/' + l.id); return; }
+    caja.innerHTML = '';
+    caja.append(el('p', { class: 'mudo', text: 'no se encuentra la licitación ' + exp }));
+  }).catch(() => {
+    if (mio !== turno) return;
+    caja.innerHTML = '';
+    caja.append(el('p', { class: 'mudo', text: 'no se pudo cargar la licitación' }));
+  });
+}
+
 // #2210: deep link #operacion/licitaciones/<id>: la ficha de una sola licitación, sea cual sea su estado (filtro 'id' de la RPC, schema-v122).
 function renderFicha(raiz, S, id, ahora, rol) {
   const mio = ++turno;
@@ -436,6 +455,7 @@ export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
   const d = S.datos || {};
   const rol = d.rol || 'agente';
   if (/^\d+$/.test(arg || '')) return renderFicha(raiz, S, Number(arg), ahora, rol);
+  if (filtrosRuta.exp) return renderPorExpediente(raiz, S, filtrosRuta.exp);
   const estado = estadoChip(filtrosRuta.estado) || 'Por decidir';
   const valores = { estado, orden: filtrosRuta.orden === 'importe' ? 'importe' : 'cierre' };
   for (const k of ['tipologia', 'solvencia', 'tipo', 'presencial', 'texto', 'motivo', 'etiqueta']) if (filtrosRuta[k]) valores[k] = filtrosRuta[k];
