@@ -23,7 +23,9 @@ const act = [...Array.from({ length: 6 }, (_, i) => ({ tipo: 'transicion', cuand
 const DATOS = { meta: { n: 50, fecha: '2026-12-31' }, oportunidades: ops, actividad: act };
 const pintar = async c => { V.usarCargador(c); const raiz = crearNodo('main'); await V.render(raiz, AHORA); return raiz; };
 
-test('etapas son las del enum ven_etapa', () => assert.deepEqual(V.ETAPAS, ['lista', 'contactada', 'respondio', 'reunion_agendada', 'reunion_hecha', 'propuesta_enviada', 'ganada', 'perdida', 'baja']));
+test('etapas son las del enum ven_etapa', () => assert.deepEqual(V.ETAPAS, ['lista', 'contactada', 'respondio', 'reunion_agendada', 'reunion_hecha', 'propuesta_redaccion', 'propuesta_enviada', 'negociacion', 'ganada', 'perdida', 'baja']));
+test('abiertas son las 8 primeras', () => assert.equal(V.ABIERTAS.length, 8));
+test('modeloCampana: etapas nuevas', () => { const c = V.modeloCampana({ clave: 'a', etapas: { negociacion: 2, propuesta_redaccion: 1, perdida: 1 }, tareas_vencidas: 3 }); assert.equal(c.etapas.find(e => e.etapa === 'negociacion').n, 2); assert.equal(c.etapas.find(e => e.etapa === 'propuesta_redaccion').nombre, 'Propuesta en redacción'); assert.equal(c.perdidas, 1); assert.equal(c.vencidas, 3); });
 test('alertas: 15 abiertas sin siguiente acción (la tarea hecha no cuenta)', () => assert.equal(V.alertas(ops, AHORA).sinTarea.length, 15));
 test('tarea vencida se detecta por fecha, sin umbrales', () => {
   assert.equal(V.vencida({ vence: '2026-10-02' }, AHORA), true);

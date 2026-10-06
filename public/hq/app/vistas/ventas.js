@@ -7,10 +7,10 @@ let carga = async () => (await import('../api.js')).rpc('ven_hq');
 export function usarCargador(fn) { if (fn) carga = fn; }
 
 // Mismo orden y mismos nombres que el enum ven_etapa.
-export const ETAPAS = ['lista', 'contactada', 'respondio', 'reunion_agendada', 'reunion_hecha', 'propuesta_enviada', 'ganada', 'perdida', 'baja'];
-export const ABIERTAS = ETAPAS.slice(0, 6);
-const CERRADAS = ETAPAS.slice(6);
-export const NOMBRE = { lista: 'Lista', contactada: 'Contactada', respondio: 'Respondió', reunion_agendada: 'Reunión agendada', reunion_hecha: 'Reunión hecha', propuesta_enviada: 'Propuesta enviada', ganada: 'Ganada', perdida: 'Perdida', baja: 'Baja' };
+export const ETAPAS = ['lista', 'contactada', 'respondio', 'reunion_agendada', 'reunion_hecha', 'propuesta_redaccion', 'propuesta_enviada', 'negociacion', 'ganada', 'perdida', 'baja'];
+export const ABIERTAS = ETAPAS.slice(0, 8);
+const CERRADAS = ETAPAS.slice(8);
+export const NOMBRE = { lista: 'Lista', contactada: 'Contactada', respondio: 'Respondió', reunion_agendada: 'Reunión agendada', reunion_hecha: 'Reunión hecha', propuesta_redaccion: 'Propuesta en redacción', propuesta_enviada: 'Propuesta enviada', negociacion: 'Negociación', ganada: 'Ganada', perdida: 'Perdida', baja: 'Baja' };
 const nombre = e => NOMBRE[e] || e || '?';
 
 const dia = iso => (iso || '').slice(0, 10);
@@ -129,6 +129,31 @@ function pintarTablero(raiz, d, ahora, estado, redibujar) {
   raiz.append(...nodos);
 }
 
+// Embudo por campaña (v143, HQ #358): etapas {etapa: n} y ritmo de envíos. Solo conteos, fechas y claves.
+export function modeloCampana(c = {}) {
+  const pe = c.etapas || {}, n = e => Number(pe[e]) || 0;
+  return { clave: c.clave || '', nombre: c.nombre || c.clave || '', activa: c.activa !== false,
+    etapas: ETAPAS.slice(0, 9).map(e => ({ etapa: e, nombre: nombre(e), n: n(e) })), perdidas: n('perdida'), bajas: n('baja'),
+    abiertas: Number(c.abiertas) || 0, ganadas: Number(c.ganadas) || 0, importe: Number(c.importe_ganado) || 0, aprobados: Number(c.aprobados) || 0,
+    proximo: c.proximo_envio || '', ultimo: c.ultimo_envio || '', vencidas: Number(c.tareas_vencidas) || 0 };
+}
+
+function pintarEmbudos(raiz, d) {
+  const cs = (d.campanas || []).map(modeloCampana);
+  if (!cs.length) { raiz.append(el('p', { class: 'vt-vacio', text: 'Sin campañas todavía.' })); return; }
+  const hora = x => (x ? String(x).slice(0, 16).replace('T', ' ') : 'sin fecha');
+  raiz.append(el('div', { class: 'vt-embudos' }, cs.map(c => {
+    const max = Math.max(1, ...c.etapas.map(x => x.n));
+    return el('section', { class: 'vt-col' }, [
+      el('h2', {}, [el('span', { text: c.nombre + (c.activa ? '' : ' (pausada)') })]),
+      el('p', { class: 'vt-meta', text: `${c.ganadas} ganadas · ${c.abiertas} abiertas` + (c.importe ? ` · ${c.importe} € ganados` : '') }),
+      el('p', { class: 'vt-meta', text: `${c.aprobados} envíos aprobados · próximo ${hora(c.proximo)} · último ${hora(c.ultimo)}` }),
+      el('div', {}, c.etapas.map(x => el('div', { class: 'vt-fila-embudo' }, [el('span', { text: x.nombre + ' ' }), el('b', { text: String(x.n) }),
+        el('div', { style: `height:6px;border-radius:3px;background:currentColor;opacity:.35;width:${Math.round(100 * x.n / max)}%` })]))),
+      el('p', { class: 'vt-meta', text: `${c.perdidas} perdidas · ${c.bajas} bajas · ${c.vencidas} tareas vencidas` })]);
+  })));
+}
+
 function pintarActividad(raiz, d, estado, redibujar) {
   const act = d.actividad || [];
   const emp = [...new Set(act.map(e => e.empresa))].sort(), quien = [...new Set(act.map(e => e.quien).filter(Boolean))].sort();
@@ -156,8 +181,8 @@ export async function render(raiz, reloj) {
     const estado = { tab: 'tablero', etapa: null, ficha: null, fEmpresa: '', fQuien: '' };
     const redibujar = () => {
       caja.innerHTML = '';
-      caja.append(el('div', { class: 'vt-tabs', role: 'tablist' }, ['tablero', 'actividad'].map(t => el('button', { type: 'button', role: 'tab', 'aria-selected': String(estado.tab === t), text: t === 'tablero' ? 'Tablero' : 'Actividad', onclick: () => { estado.tab = t; redibujar(); } }))));
-      if (estado.tab === 'tablero') pintarTablero(caja, d, ahora, estado, redibujar); else pintarActividad(caja, d, estado, redibujar);
+      caja.append(el('div', { class: 'vt-tabs', role: 'tablist' }, ['tablero', 'embudos', 'actividad'].map(t => el('button', { type: 'button', role: 'tab', 'aria-selected': String(estado.tab === t), text: t === 'tablero' ? 'Tablero' : t === 'embudos' ? 'Embudos' : 'Actividad', onclick: () => { estado.tab = t; redibujar(); } }))));
+      if (estado.tab === 'tablero') pintarTablero(caja, d, ahora, estado, redibujar); else if (estado.tab === 'embudos') pintarEmbudos(caja, d); else pintarActividad(caja, d, estado, redibujar);
       const o = d.oportunidades.find(x => x.id === estado.ficha);
       if (o) { const cerrar = () => { estado.ficha = null; redibujar(); }; caja.append(el('div', { class: 'vt-velo', onclick: ev => { if (ev.target === ev.currentTarget) cerrar(); } }, ficha(o, cerrar, ahora))); }
     };
