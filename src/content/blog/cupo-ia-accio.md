@@ -101,6 +101,6 @@ Su ficha podría decir: problema, transcripción manual de pedidos con errores o
 
 ## Por dónde seguir
 
-Si aún no sabes qué proceso atacar primero, lee la [guía para decidir qué automatizar primero](/blog/automatizacion-procesos-ia-que-automatizar-primero/). Para el panorama completo de la IA en una pyme industrial, la [guía por áreas](/blog/ia-pyme-industrial-guia-por-areas/). Y para saber dónde consultar ayudas y cómo elegir proveedor, [ayudas para implantar IA en una pyme en Catalunya](/blog/ayudas-ia-pyme-catalunya/).
+Para el panorama completo de la IA en una pyme industrial, tienes la [guía por áreas](/blog/ia-pyme-industrial-guia-por-areas/).
 
 Si quieres revisar tu ficha con el equipo de 77 Delta y ver si el proyecto tiene sentido, reserva con el botón de abajo una reunión de 20 minutos.

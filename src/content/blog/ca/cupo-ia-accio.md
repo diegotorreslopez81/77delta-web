@@ -101,6 +101,6 @@ La seva fitxa podria dir: problema, transcripció manual de comandes amb errors 
 
 ## Per on seguir
 
-Si encara no saps quin procés atacar primer, llegeix la [guia per decidir què automatitzar primer](/ca/blog/automatizacion-procesos-ia-que-automatizar-primero/). Per al panorama complet de la IA en una pime industrial, la [guia per àrees](/ca/blog/ia-pyme-industrial-guia-por-areas/). I per saber on consultar ajuts i com triar proveïdor, [ajuts per implantar IA en una pime a Catalunya](/ca/blog/ayudas-ia-pyme-catalunya/).
+Per al panorama complet de la IA en una pime industrial, tens la [guia per àrees](/ca/blog/ia-pyme-industrial-guia-por-areas/).
 
 Si vols revisar la teva fitxa amb l'equip de 77 Delta i veure si el projecte té sentit, reserva amb el botó de sota una reunió de 20 minuts.
