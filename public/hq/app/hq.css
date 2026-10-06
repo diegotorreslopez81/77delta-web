@@ -340,6 +340,10 @@ a{color:inherit}
 .vt-fila{display:grid;grid-template-columns:68px 1fr;gap:6px;font-size:12.5px;color:var(--tinta-2)}
 .vt-e{color:var(--pizarra-tenue)}
 .vt-sig{font-weight:500}.vt-sig.nada{color:var(--pizarra-tenue);font-weight:400}.vt-sig.vencida{color:var(--error)}
+.vt-card.compacta{gap:4px;padding:8px 10px}
+.vt-card.compacta .vt-fila{display:flex;gap:6px;align-items:center;min-width:0}
+.vt-card.compacta .vt-sig{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vt-camp{flex:none;color:var(--pizarra-tenue)}
 .vt-chip{justify-self:start;font-size:11px;border:1px solid var(--linea);border-radius:999px;padding:1px 8px;color:var(--oro-oscuro);text-decoration:none}
 .vt-vacio{font-size:12.5px;color:var(--pizarra-tenue);font-style:italic;margin:0}
 .vt-col summary{cursor:pointer;font-size:12.5px;color:var(--pizarra);margin-bottom:8px}

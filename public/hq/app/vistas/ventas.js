@@ -67,22 +67,22 @@ export function agruparPorDia(eventos) {
 const urlPagina = slug => 'https://77delta.com/propuestas/' + slug;
 
 function tarjeta(o, ahora, abrir) {
-  const t = pendiente(o), u = o.ultima;
-  return el('button', { type: 'button', class: 'vt-card', onclick: () => abrir(o) }, [
+  const t = pendiente(o);
+  const sig = !abierta(o) ? (o.motivo_cierre || 'sin motivo de cierre')
+    : t ? `${t.accion}${t.vence ? ' · vence ' + fdia(t.vence) : ''}` : 'sin tarea asignada';
+  return el('button', { type: 'button', class: 'vt-card compacta', onclick: () => abrir(o) }, [
     el('div', { class: 'vt-cab' }, [el('b', { text: o.empresa }), el('span', { class: 'vt-dias', text: o.etapa && abierta(o) ? enEtapa(o, ahora) : '' })]),
-    el('div', { class: 'vt-dom', text: o.dominio }),
-    el('div', { class: 'vt-fila' }, [el('span', { class: 'vt-e', text: o.motivo_cierre && !abierta(o) ? 'Cierre' : 'Último' }),
-      el('span', { text: !abierta(o) && o.motivo_cierre ? o.motivo_cierre : u ? `${u.motivo || 'sin motivo'} · ${u.quien} · ${fhora(u.cuando)}` : 'sin movimientos' })]),
-    !abierta(o) ? null : el('div', { class: 'vt-fila' }, [el('span', { class: 'vt-e', text: 'Siguiente' }),
-      t ? el('span', { class: 'vt-sig' + (vencida(t, ahora) ? ' vencida' : ''), text: `${t.accion}${t.vence ? ' · vence ' + fdia(t.vence) : ''}${t.quien ? ' · ' + t.quien : ''}` })
-        : el('span', { class: 'vt-sig nada', text: 'sin tarea asignada' })]),
-    !o.slug ? null : el('a', { class: 'vt-chip', href: urlPagina(o.slug), target: '_blank', rel: 'noopener', text: 'página personalizada', onclick: ev => ev.stopPropagation() }),
+    el('div', { class: 'vt-fila' }, [
+      o.campana ? el('span', { class: 'vt-chip vt-camp', text: o.campana }) : null,
+      el('span', { class: 'vt-sig' + (abierta(o) && t && vencida(t, ahora) ? ' vencida' : '') + (abierta(o) && !t ? ' nada' : ''), text: sig })]),
   ]);
 }
 
 function ficha(o, cerrar, ahora) {
   const t = pendiente(o), dl = el('dl', { class: 'vt-dl' });
   const par = (k, v) => { if (v) dl.append(el('dt', { text: k }), el('dd', {}, v)); };
+  par('Campaña', o.campana && el('span', { text: o.campana }));
+  par('Último movimiento', o.ultima && el('span', { text: `${o.ultima.motivo || 'sin motivo'} · ${o.ultima.quien} · ${fhora(o.ultima.cuando)}` }));
   par('Buzón', o.buzon && el('span', { text: o.buzon }));
   par('Página', o.slug && el('a', { href: urlPagina(o.slug), target: '_blank', rel: 'noopener', text: '77delta.com/propuestas/' + o.slug }));
   par('Importe', o.importe != null ? el('span', { text: Number(o.importe).toLocaleString('es-ES') + ' €' }) : el('span', { class: 'mudo', text: 'sin importe' }));
