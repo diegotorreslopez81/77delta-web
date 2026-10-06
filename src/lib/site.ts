@@ -17,7 +17,7 @@ export const site = {
   calendario: 'https://calendar.app.google/ao7C7FPBjBN75rXEA',
   /** El mismo calendario en su forma incrustable, para el iframe de /contacto/. */
   calendarioIncrustado:
-    'https://calendar.google.com/calendar/appointments/schedules/AcZssZ19nS10xCn7247I-0Oo6XBzmvsAUqfXGe1F44Ty1IW2iY7Rk7X7Qx76fmwd32sbdawpNV22e8og?gv=true',
+    'https://calendar.google.com/calendar/appointments/schedules/AcZssZ3pfbrqEtWjhAnykMUU6mUm29AMTInOz-4caDB41ZZdulctouHVZMdU-94Ou_JvoLRQRKeKY7Us?gv=true',
   /** Endpoint del formulario de contacto (carpeta api/ del repo). Si falla, el formulario cae a mailto. */
   formulario: 'https://api.77delta.com/contacto',
   linkedin: 'https://www.linkedin.com/in/diegotorreslopez',
