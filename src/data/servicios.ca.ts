@@ -19,7 +19,7 @@ export const resumen = [
   {
     etiqueta: 'Acompanyament continu',
     titulo: 'Soci tecnològic',
-    pie: 'Criteri qualificat cada mes',
+    pie: 'Tota la teva tecnologia, no només la IA',
     ruta: '/servicios/partner/',
   },
   {
@@ -141,7 +141,7 @@ export const cadaMes = [
     texto: 'T’acompanyem en reunions tècniques perquè no et portin per on no vols anar.',
   },
   {
-    titulo: 'Full de ruta d’IA actualitzat',
+    titulo: 'Full de ruta tecnològic actualitzat',
     texto: 'Cada trimestre revisem prioritats, inversions i mètriques. El full de ruta és viu.',
   },
   {

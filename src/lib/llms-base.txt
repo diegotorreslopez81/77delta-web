@@ -8,7 +8,7 @@
 - [Diagnóstico](https://77delta.com/servicios/diagnostico/): treinta minutos de entrevista y una propuesta con el estado inicial, plan de trabajo y presupuesto. Gratuito y sin compromiso.
 - [Transformación operativa con IA](https://77delta.com/servicios/transformacion/): implantación, integración con tus sistemas, automatización de procesos y capacitación. De cuatro a doce semanas, siempre con un piloto controlado.
 - [Seguridad de IA](https://77delta.com/servicios/seguridad-ia/): auditoría de chatbots y agentes con IA de una web: qué información se les puede sacar y cómo se cierra.
-- [Partner tecnológico](https://77delta.com/servicios/partner/): revisión de propuestas de proveedores, interlocución técnica, hoja de ruta trimestral y auditoría de software.
+- [Partner tecnológico](https://77delta.com/servicios/partner/): socio técnico para toda la tecnología de la empresa, no solo la IA: software a medida (Java, .NET, Python), CRM y ERP, entorno Microsoft y nube, hardware e IoT, I+D. Revisión de propuestas de proveedores, interlocución técnica, hoja de ruta trimestral y auditoría de software. Tres paquetes desde 1.000 € al mes.
 
 ## Productos
 

@@ -18,7 +18,7 @@ export const resumen = [
   {
     etiqueta: 'Acompañamiento continuo',
     titulo: 'Partner tecnológico',
-    pie: 'Criterio cualificado cada mes',
+    pie: 'Toda tu tecnología, no solo la IA',
     ruta: '/servicios/partner/',
   },
   {
@@ -140,7 +140,7 @@ export const cadaMes = [
     texto: 'Te acompañamos en reuniones técnicas para que no te lleven por donde no quieres ir.',
   },
   {
-    titulo: 'Hoja de ruta IA actualizada',
+    titulo: 'Hoja de ruta tecnológica actualizada',
     texto: 'Cada trimestre revisamos prioridades, inversiones y métricas. La hoja de ruta vive.',
   },
   {
