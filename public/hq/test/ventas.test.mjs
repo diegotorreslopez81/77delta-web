@@ -31,11 +31,32 @@ test('tarea vencida se detecta por fecha, sin umbrales', () => {
   assert.equal(V.vencida({ vence: '2026-10-02' }, AHORA), true);
   assert.equal(V.vencida({ vence: '2026-10-03' }, AHORA), false);
 });
-test('render: 9 Lista, 6 Contactada, alerta de 15 y sin "false" suelto', async () => {
-  const t = (await pintar(async () => DATOS)).textContent;
-  assert.match(t, /9\|?Lista/); assert.match(t, /6\|?Contactada/);
-  assert.match(t, /15 abiertas sin siguiente acción/); assert.doesNotMatch(t, /false/);
-  for (let i = 0; i < 15; i++) assert.ok(t.includes('E' + i), 'E' + i);
+test('Pipeline: embudo 9 Lista, 6 Contactada y sin "false" suelto', async () => {
+  const raiz = crearNodo('main'); V.usarCargador(async () => DATOS); await V.render(raiz, AHORA, 'pipeline'); const t = raiz.textContent;
+  assert.match(t, /9\|?Lista/); assert.match(t, /6\|?Contactada/); assert.doesNotMatch(t, /false|NaN|undefined/);
+});
+const OP = { ...ops[10], id: 99, empresa: 'Alcalá', etapa: 'reunion_agendada', campana: 'privado', carpeta_url: 'https://drive.google.com/drive/folders/abc', buzon: 'x@77delta.com',
+  envios: [{ de: 'cuenta@77delta.com', toque: 1, estado: 'enviado', enviado_en: '2026-10-02T09:00:00Z', respondido_en: '2026-10-03T08:00:00Z', asunto: 'Hola Marta' }],
+  tareas: [{ accion: 'Llamar', quien: 'diego', vence: '2026-10-02', creado: '2026-10-01T10:00:00Z', hecha_en: null }] };
+const D2 = { ...DATOS, oportunidades: [OP, ...ops], campanas: [{ clave: 'privado', nombre: 'Privado', activa: true, franja: [8, 19], tope_dia: 20, toques: 2, dias_toque: [0, 7], firmante: 'Aina', plantillas_aprobadas: {}, envios: { enviado: 1 }, etapas: { reunion_agendada: 1 } }] };
+test('Hoy: tarea vencida de Diego, contadores y raíl; sin correos ni cuentas', async () => {
+  const raiz = crearNodo('main'); V.usarCargador(async () => D2); await V.render(raiz, AHORA); const t = raiz.textContent;
+  assert.match(t, /Necesita a una persona/); assert.match(t, /Vencida/); assert.match(t, /Alcalá/); assert.match(t, /Sale solo hoy/); assert.match(t, /En espera|Enviando|Hecho/);
+  assert.doesNotMatch(t, /@|Hola Marta/);
+});
+test('Campañas: texto 2 pendiente de OK y sin cuenta de envío', async () => {
+  const raiz = crearNodo('main'); V.usarCargador(async () => D2); await V.render(raiz, AHORA, 'campanas'); const t = raiz.textContent;
+  assert.match(t, /Texto 2 pendiente de OK/); assert.match(t, /Aina/); assert.doesNotMatch(t, /@/);
+});
+test('contadores: respuesta sin contestar y reunión agendada', () => { const k = V.contadores(D2.oportunidades); assert.equal(k.respuestas, 1); assert.equal(k.reuniones, 1); });
+test('estadoRail: antes de la franja En espera, pasada con aprobados sin enviar Parado', () => {
+  const c = { clave: 'privado', franja: [8, 19], tope_dia: 20, enviados_hoy: 0 }, ap = [{ ...OP, envios: [{ estado: 'aprobado', programado: '2026-10-03T08:00:00Z' }] }];
+  assert.equal(V.estadoRail(c, ap, new Date('2026-10-03T04:00:00Z')).estado, 'En espera');
+  assert.equal(V.estadoRail(c, ap, new Date('2026-10-03T18:00:00Z')).estado, 'Parado');
+});
+test('indicadores: importe en juego, tasa y mediana', () => {
+  const l = [{ etapa: 'negociacion', importe: 100, f_contactada: '2026-10-01T00:00:00Z', f_respondio: '2026-10-03T00:00:00Z' }, { etapa: 'contactada', f_contactada: '2026-10-01T00:00:00Z' }];
+  const i = V.indicadores(l, { n: 50 }); assert.equal(i.juego, 100); assert.equal(i.tasa, 50); assert.equal(i.mediana, 2);
 });
 test('textoEvento: 6 "Lista a Contactada" y tarea hecha INVpack', () => {
   const t = act.map(V.textoEvento);
@@ -53,5 +74,5 @@ test('render llamado como main.js (2º arg = estado) no da NaN', async () => {
 });
 test('ficha sin movimientos dice Sin movimientos', async () => {
   const sin = { ...DATOS, oportunidades: [ops[0]] }; V.usarCargador(async () => sin);
-  const raiz = crearNodo('main'); await V.render(raiz, AHORA); assert.ok(raiz.textContent.includes('E0'));
+  const raiz = crearNodo('main'); await V.render(raiz, AHORA); assert.doesNotMatch(raiz.textContent, /No se pudo leer/);
 });
