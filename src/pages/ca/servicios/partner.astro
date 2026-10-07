@@ -4,15 +4,15 @@ import Base from '../../../layouts/Base.astro';
 import Boton from '../../../components/Boton.astro';
 import Cta from '../../../components/Cta.astro';
 import { hrefCa as href } from '../../../lib/site';
-import { paquetes, ritmo, cadaMes, resumen } from '../../../data/servicios.ca';
-import { ambitosCa as ambitos } from '../../../data/partner';
+import { resumen } from '../../../data/servicios.ca';
+import { ambitosCa as ambitos, modalidadesCa as modalidades } from '../../../data/partner';
 
 const otros = resumen.filter((r) => r.titulo !== 'Soci tecnològic');
 ---
 
 <Base
   title="Soci tecnològic"
-  description="Soci tècnic per a tota la teva tecnologia, no només la IA: programari a mida, CRM i ERP, entorn Microsoft, Java, maquinari, infraestructura i R+D. Revisió de proveïdors, interlocució tècnica i full de ruta trimestral. Tres paquets des de 1.000 € al mes."
+  description="Soci tècnic per a tota la tecnologia de la teva empresa: programari a mida, integració, CRM i ERP, Microsoft, núvol, ciberseguretat, maquinari i planta, web, dades, IA i R+D. Un sol interlocutor, sense fabricants imposats."
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
@@ -23,23 +23,18 @@ const otros = resumen.filter((r) => r.titulo !== 'Soci tecnològic');
       class="mt-7 max-w-[19ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
       data-reveal
     >
-      Un soci tècnic per a tota la teva tecnologia, <span class="font-semibold text-oro-oscuro">no només per a la IA</span>.
+      Tota la tecnologia de la teva empresa, <span class="font-semibold text-oro-oscuro">amb un sol interlocutor</span>.
     </h1>
-    <p class="mt-8 max-w-[54ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Programari a mida, CRM i ERP, entorn Microsoft, Java, maquinari, infraestructura, R+D. Revisem el que et
-      proposen, parlem amb els teus proveïdors de tu a tu i decidim amb tu on va cada euro de tecnologia.
+    <p class="mt-8 max-w-[56ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+      Programari a mida, integració, CRM i ERP, Microsoft, núvol, ciberseguretat, maquinari i planta, web, dades, IA
+      i R+D. Un soci tècnic que entén tot el que t’envolta i t’ho explica en el teu idioma.
     </p>
 
     <div class="mt-14 flex flex-wrap items-center gap-8" data-reveal>
-      <div class="rounded-[4px] border border-linea bg-panel px-8 py-6">
-        <p class="font-display text-[30px] font-extralight leading-none tracking-[-0.03em] text-oro-oscuro">
-          Des de 1.000 €/mes
-        </p>
-        <p class="mt-3 max-w-[34ch] font-mono text-[12px] leading-[1.6] text-pizarra">
-          Tres paquets amb descompte per volum · revisió trimestral
-        </p>
-      </div>
-      <Boton href={href('/contacto/')}>Sol·licitar proposta →</Boton>
+      <p class="font-mono text-[12px] leading-[1.6] tracking-[0.04em] text-pizarra">
+        Dotze àmbits · Un interlocutor · Sense fabricants imposats
+      </p>
+      <Boton href={href('/contacto/')}>Explica’ns el teu cas →</Boton>
     </div>
   </section>
 
@@ -56,8 +51,8 @@ const otros = resumen.filter((r) => r.titulo !== 'Soci tecnològic');
         <p class="text-[17px] text-pizarra">
           Per a empreses amb tecnologia de diversos proveïdors i ningú a dins que la governi: l’ERP d’un, el CRM
           d’un altre, el web d’una agència, les màquines amb el seu propi programari. Posem un responsable tècnic
-          al teu costat per molt menys del que costa un CTO en plantilla. Si el que necessites és només IA, el
-          servei és el <a href={href('/servicios/director-ia/')} class="font-medium text-tinta underline decoration-oro/60 underline-offset-4 transition-colors hover:text-oro-oscuro">Director d’IA extern</a>.
+          al teu costat que coneix totes aquestes peces. Si el que necessites és només IA, el servei és el
+          <a href={href('/servicios/director-ia/')} class="font-medium text-tinta underline decoration-oro/60 underline-offset-4 transition-colors hover:text-oro-oscuro">Director d’IA extern</a>.
         </p>
       </div>
     </div>
@@ -69,7 +64,7 @@ const otros = resumen.filter((r) => r.titulo !== 'Soci tecnològic');
       <div class="max-w-[62ch]" data-reveal>
         <p class="eyebrow">Què cobrim</p>
         <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
-          Tota la tecnologia de l’empresa, amb un sol interlocutor.
+          De la nau al núvol: dotze àmbits i les tecnologies de cadascun.
         </h2>
       </div>
       <ul class="mt-14 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-2 lg:grid-cols-3" role="list">
@@ -78,7 +73,12 @@ const otros = resumen.filter((r) => r.titulo !== 'Soci tecnològic');
             <li class="flex flex-col bg-panel p-8 md:p-10" data-reveal>
               <span class="font-mono text-[11px] tracking-[0.14em] text-pizarra">{a.n}</span>
               <h3 class="mt-3 font-display text-[20px] font-semibold leading-[1.3]">{a.titulo}</h3>
-              <p class="mt-3 flex-1 text-[15px] text-pizarra">{a.texto}</p>
+              <p class="mt-3 text-[15px] text-pizarra">{a.texto}</p>
+              <ul class="mt-5 flex flex-1 flex-wrap content-start gap-2" role="list">
+                {a.tecnologias.map((t) => (
+                  <li class="rounded-[3px] border border-linea bg-papel px-2.5 py-1 font-mono text-[11px] text-tinta/80">{t}</li>
+                ))}
+              </ul>
               {a.enlace && (
                 <a href={href(a.enlace.ruta)} class="mt-6 font-mono text-[12px] text-tinta/80 transition-colors hover:text-oro-oscuro">
                   {a.enlace.texto} →
@@ -91,65 +91,26 @@ const otros = resumen.filter((r) => r.titulo !== 'Soci tecnològic');
     </div>
   </section>
 
-  <!-- Paquets -->
-  <section class="hairline bg-panel">
-    <div class="wrap py-24 md:py-32">
-      <div class="max-w-[62ch]" data-reveal>
-        <p class="eyebrow">Tres paquets</p>
-        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
-          Amb descompte per volum. Sense permanència llarga.
-        </h2>
-      </div>
-      <ul class="mt-14 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea md:grid-cols-3" role="list">
-        {
-          paquetes.map((p) => (
-            <li class="bg-papel p-8 md:p-10" data-reveal>
-              <p class="eyebrow text-pizarra">{p.nombre}</p>
-              <p class="mt-5 font-display text-[30px] font-extralight tracking-[-0.03em] text-oro-oscuro">
-                {p.precio}
-              </p>
-              <p class="mt-3 text-[15px] text-tinta/85">{p.horas}</p>
-              <p class="mt-2 font-mono text-[12px] text-pizarra">{p.pie}</p>
-            </li>
-          ))
-        }
-      </ul>
-      <p class="mt-8 font-mono text-[12px] text-pizarra" data-reveal>
-        Canal directe per Slack o WhatsApp · sempre actiu · sis mesos mínim
-      </p>
-    </div>
-  </section>
-
-  <!-- El ritme mensual -->
+  <!-- Com treballem -->
   <section class="hairline bg-marino text-marfil">
     <div class="wrap py-24 md:py-32">
       <div class="max-w-[62ch]" data-reveal>
-        <p class="eyebrow text-oro-luz">El ritme mensual</p>
+        <p class="eyebrow text-oro-luz">Com treballem</p>
         <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
-          Què passa cada mes, sense que ho hagis de demanar.
+          Què pots esperar de nosaltres, sigui quina sigui la tecnologia.
         </h2>
       </div>
       <ol class="mt-14 grid gap-8 md:grid-cols-4" role="list">
         {
-          ritmo.map((r) => (
+          modalidades.map((m) => (
             <li class="border-t border-marfil/15 pt-6" data-reveal>
-              <span class="font-mono text-[11px] tracking-[0.14em] text-oro-luz">{r.n}</span>
-              <h3 class="mt-3 font-display text-[18px] font-semibold leading-[1.3]">{r.titulo}</h3>
-              <p class="mt-2 text-[14px] text-marfil/65">{r.texto}</p>
+              <span class="font-mono text-[11px] tracking-[0.14em] text-oro-luz">{m.n}</span>
+              <h3 class="mt-3 font-display text-[18px] font-semibold leading-[1.3]">{m.titulo}</h3>
+              <p class="mt-2 text-[14px] text-marfil/65">{m.texto}</p>
             </li>
           ))
         }
       </ol>
-      <ul class="mt-16 grid gap-x-12 gap-y-8 md:grid-cols-2" role="list">
-        {
-          cadaMes.map((c) => (
-            <li class="border-t border-marfil/12 pt-6" data-reveal>
-              <h3 class="font-display text-[18px] font-semibold leading-[1.3]">{c.titulo}</h3>
-              <p class="mt-2 text-[15px] text-marfil/65">{c.texto}</p>
-            </li>
-          ))
-        }
-      </ul>
     </div>
   </section>
 

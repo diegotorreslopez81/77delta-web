@@ -102,57 +102,6 @@ export const fases = [
   },
 ];
 
-export const paquetes = [
-  {
-    nombre: 'Light',
-    precio: '1.000 €/mes',
-    horas: '10 horas mensuales',
-    pie: '100 €/hora · ideal para arrancar',
-  },
-  {
-    nombre: 'Standard',
-    precio: '2.000 €/mes',
-    horas: '25 horas mensuales',
-    pie: '80 €/hora · empresas en fase activa',
-  },
-  {
-    nombre: 'Plus',
-    precio: '5.000 €/mes',
-    horas: '75 horas mensuales',
-    pie: '66 €/hora · transformación intensa',
-  },
-];
-
-export const ritmo = [
-  { n: '01', titulo: 'Revisión', texto: 'mensual conjunta' },
-  { n: '02', titulo: 'Interlocución', texto: 'con tus proveedores' },
-  { n: '03', titulo: 'Hoja de ruta', texto: 'trimestral' },
-  { n: '04', titulo: 'Auditoría', texto: 'SaaS y software' },
-];
-
-export const cadaMes = [
-  {
-    titulo: 'Revisión de propuestas de proveedores',
-    texto: 'Filtramos lo que llega a tu mesa: descartamos lo que no aporta, negociamos lo que sí.',
-  },
-  {
-    titulo: 'Interlocución con consultoras y agencias',
-    texto: 'Te acompañamos en reuniones técnicas para que no te lleven por donde no quieres ir.',
-  },
-  {
-    titulo: 'Hoja de ruta tecnológica actualizada',
-    texto: 'Cada trimestre revisamos prioridades, inversiones y métricas. La hoja de ruta vive.',
-  },
-  {
-    titulo: 'Auditoría de software y SaaS',
-    texto: 'Identificamos solapamientos, gastos no usados y oportunidades de consolidación.',
-  },
-  {
-    titulo: 'Canal directo Slack/WhatsApp',
-    texto: 'Disponibilidad inmediata para consultas puntuales sin esperar a la reunión mensual.',
-  },
-];
-
 export const recorrido = [
   {
     n: '01',

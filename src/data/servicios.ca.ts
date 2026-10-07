@@ -103,57 +103,6 @@ export const fases = [
   },
 ];
 
-export const paquetes = [
-  {
-    nombre: 'Light',
-    precio: '1.000 €/mes',
-    horas: '10 hores mensuals',
-    pie: '100 €/hora · ideal per començar',
-  },
-  {
-    nombre: 'Standard',
-    precio: '2.000 €/mes',
-    horas: '25 hores mensuals',
-    pie: '80 €/hora · empreses en fase activa',
-  },
-  {
-    nombre: 'Plus',
-    precio: '5.000 €/mes',
-    horas: '75 hores mensuals',
-    pie: '66 €/hora · transformació intensa',
-  },
-];
-
-export const ritmo = [
-  { n: '01', titulo: 'Revisió', texto: 'mensual conjunta' },
-  { n: '02', titulo: 'Interlocució', texto: 'amb els teus proveïdors' },
-  { n: '03', titulo: 'Full de ruta', texto: 'trimestral' },
-  { n: '04', titulo: 'Auditoria', texto: 'SaaS i programari' },
-];
-
-export const cadaMes = [
-  {
-    titulo: 'Revisió de propostes de proveïdors',
-    texto: 'Filtrem el que arriba a la teva taula: descartem el que no aporta, negociem el que sí.',
-  },
-  {
-    titulo: 'Interlocució amb consultores i agències',
-    texto: 'T’acompanyem en reunions tècniques perquè no et portin per on no vols anar.',
-  },
-  {
-    titulo: 'Full de ruta tecnològic actualitzat',
-    texto: 'Cada trimestre revisem prioritats, inversions i mètriques. El full de ruta és viu.',
-  },
-  {
-    titulo: 'Auditoria de programari i SaaS',
-    texto: 'Identifiquem solapaments, despeses no usades i oportunitats de consolidació.',
-  },
-  {
-    titulo: 'Canal directe Slack/WhatsApp',
-    texto: 'Disponibilitat immediata per a consultes puntuals sense esperar la reunió mensual.',
-  },
-];
-
 export const recorrido = [
   {
     n: '01',

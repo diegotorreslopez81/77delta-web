@@ -1,91 +1,315 @@
 /**
- * Ámbitos que cubre el Partner tecnológico. Decisión de Diego (07-10-2026): el servicio es un socio
- * técnico de amplitud, para toda la tecnología de la empresa, no solo para la IA. La IA tiene su propio
- * servicio (Director de IA externo) y aquí solo se enlaza.
+ * Partner tecnológico: ficha de capacidades. Decisión de Diego (07-10-2026): es el socio técnico de
+ * amplitud de la empresa, para toda su tecnología, no solo la IA, y la página habla de qué tecnologías
+ * tocamos y podemos ofrecer, no de precios ni paquetes. La IA tiene su propio servicio (Director de IA
+ * externo) y aquí solo se enlaza.
  */
 export interface Ambito {
   n: string;
   titulo: string;
   texto: string;
+  tecnologias: readonly string[];
   enlace?: { texto: string; ruta: string };
+}
+
+export interface Modalidad {
+  n: string;
+  titulo: string;
+  texto: string;
 }
 
 export const ambitos: readonly Ambito[] = [
   {
     n: '01',
-    titulo: 'IA y automatización',
+    titulo: 'Software a medida',
     texto:
-      'Agentes, automatizaciones y modelos de lenguaje aplicados a tus procesos. Cuando la IA es el centro, tiene servicio propio.',
-    enlace: { texto: 'Ver Director de IA externo', ruta: '/servicios/director-ia/' },
+      'Aplicaciones web, móviles y de escritorio, APIs y mantenimiento de software heredado. Desarrollo nuevo o rescate del que ya tienes.',
+    tecnologias: ['Java', 'Spring', '.NET', 'C#', 'Python', 'Node.js', 'TypeScript', 'PHP', 'iOS y Android', 'APIs REST'],
   },
   {
     n: '02',
-    titulo: 'Software a medida e integración',
+    titulo: 'Integración de sistemas y datos',
     texto:
-      'Java, .NET, Python y APIs. Desarrollo nuevo, mantenimiento de lo heredado y conexión entre sistemas que hoy no se hablan.',
+      'Que el ERP, el CRM, la web, la tienda y las máquinas se hablen entre sí sin picar datos dos veces.',
+    tecnologias: ['APIs', 'EDI', 'ETL', 'SQL Server', 'Oracle', 'PostgreSQL', 'MySQL', 'Webhooks', 'Make y n8n'],
   },
   {
     n: '03',
-    titulo: 'CRM y ERP',
-    texto:
-      'Elegir, negociar, implantar e integrar: Dynamics 365, HubSpot, Odoo, Salesforce o el que ya tengas. Sin casarnos con ningún fabricante.',
+    titulo: 'CRM',
+    texto: 'Elegir, implantar, integrar y formar. Que el equipo comercial lo use de verdad.',
+    tecnologias: ['Dynamics 365', 'HubSpot', 'Salesforce', 'Zoho', 'Odoo CRM', 'Pipedrive'],
   },
   {
     n: '04',
-    titulo: 'Entorno Microsoft y nube',
+    titulo: 'ERP y gestión',
     texto:
-      'Microsoft 365, Azure, SharePoint, Power Platform, copias de seguridad, accesos e identidades. Orden en la nube que ya pagas.',
+      'Selección, implantación, migración e integración con producción, almacén, contabilidad y facturación electrónica.',
+    tecnologias: ['SAP Business One', 'Business Central', 'Odoo', 'Sage', 'A3', 'Holded', 'Facturación electrónica'],
   },
   {
     n: '05',
-    titulo: 'Hardware, planta e IoT',
-    texto:
-      'Sensores y captura de datos de máquina, dispositivos en almacén o tienda, redes y puestos de trabajo. Lo físico también es tecnología.',
+    titulo: 'Entorno Microsoft',
+    texto: 'Orden en el entorno que ya pagas: licencias, identidades, dispositivos y automatización.',
+    tecnologias: [
+      'Microsoft 365',
+      'Teams',
+      'SharePoint',
+      'Exchange',
+      'Entra ID',
+      'Intune',
+      'Power Apps',
+      'Power Automate',
+      'Power BI',
+    ],
   },
   {
     n: '06',
+    titulo: 'Nube e infraestructura',
+    texto:
+      'Servidores, nube, copias de seguridad, redes y continuidad. Migramos lo que conviene y dejamos en casa lo que no.',
+    tecnologias: [
+      'Azure',
+      'AWS',
+      'Google Cloud',
+      'VMware',
+      'Proxmox',
+      'Linux y Windows Server',
+      'Copias y recuperación',
+      'Redes y VPN',
+      'Telefonía IP',
+    ],
+  },
+  {
+    n: '07',
+    titulo: 'Ciberseguridad',
+    texto: 'Accesos, copias, parches y continuidad. Lo básico bien hecho antes que cualquier herramienta cara.',
+    tecnologias: [
+      'Doble factor',
+      'Gestión de identidades',
+      'Copias inmutables',
+      'Cortafuegos',
+      'Protección de puestos',
+      'Concienciación',
+      'RGPD',
+    ],
+  },
+  {
+    n: '08',
+    titulo: 'Hardware, planta e IoT',
+    texto:
+      'Lo físico también es tecnología: puestos de trabajo, servidores, redes de planta, sensores y captura de datos de máquina.',
+    tecnologias: [
+      'Puestos y servidores',
+      'Wifi industrial',
+      'PLC y SCADA',
+      'OPC UA',
+      'Modbus',
+      'Sensores IoT',
+      'Terminales de almacén',
+      'Códigos de barras y RFID',
+      'Impresoras de etiquetas',
+      'Pantallas de planta',
+    ],
+  },
+  {
+    n: '09',
+    titulo: 'Web, e-commerce y marketing digital',
+    texto: 'Web corporativa, tienda online, SEO técnico y analítica. Conectado al ERP y a los medios de pago.',
+    tecnologias: ['WordPress', 'WooCommerce', 'Shopify', 'PrestaShop', 'Astro', 'SEO técnico', 'Analítica', 'Pasarelas de pago'],
+  },
+  {
+    n: '10',
+    titulo: 'Datos y Business Intelligence',
+    texto: 'Cuadros de mando que la dirección mira cada lunes, con datos limpios y de una sola fuente.',
+    tecnologias: ['Power BI', 'Looker Studio', 'Metabase', 'Almacén de datos', 'Informes automáticos'],
+  },
+  {
+    n: '11',
+    titulo: 'IA y automatización',
+    texto:
+      'Agentes, automatizaciones, OCR y modelos de lenguaje aplicados a tus procesos. Cuando la IA es el centro, tiene servicio propio.',
+    tecnologias: ['Agentes de IA', 'Modelos de lenguaje', 'OCR', 'RPA', 'Automatización de procesos'],
+    enlace: { texto: 'Ver Director de IA externo', ruta: '/servicios/director-ia/' },
+  },
+  {
+    n: '12',
     titulo: 'I+D e innovación',
     texto:
       'Prototipos, pruebas de concepto y memorias técnicas de proyectos de I+D, incluida la documentación técnica para ayudas a la innovación.',
+    tecnologias: ['Prototipos', 'Pruebas de concepto', 'Memorias técnicas', 'Documentación para ayudas'],
+  },
+];
+
+export const modalidades: readonly Modalidad[] = [
+  {
+    n: '01',
+    titulo: 'Un solo interlocutor',
+    texto:
+      'Hablamos con tus proveedores de tú a tú, revisamos sus ofertas y contratos y te traducimos lo técnico a decisiones de negocio.',
+  },
+  {
+    n: '02',
+    titulo: 'Proyecto o acompañamiento',
+    texto:
+      'Un proyecto cerrado con alcance y entrega, o un responsable técnico continuo a tu lado. Lo que pida tu caso.',
+  },
+  {
+    n: '03',
+    titulo: 'Sin casarnos con nadie',
+    texto:
+      'Elegimos por criterio técnico y coste total. Fabricante, nube o software libre: lo que encaje con tu empresa.',
+  },
+  {
+    n: '04',
+    titulo: 'Presupuesto a medida',
+    texto: 'Tras el diagnóstico gratuito, propuesta con alcance, orden y presupuesto cerrado. Sin sorpresas.',
   },
 ];
 
 export const ambitosCa: readonly Ambito[] = [
   {
     n: '01',
-    titulo: 'IA i automatització',
+    titulo: 'Programari a mida',
     texto:
-      'Agents, automatitzacions i models de llenguatge aplicats als teus processos. Quan la IA és el centre, té servei propi.',
-    enlace: { texto: 'Veure Director d’IA extern', ruta: '/servicios/director-ia/' },
+      'Aplicacions web, mòbils i d’escriptori, APIs i manteniment de programari heretat. Desenvolupament nou o rescat del que ja tens.',
+    tecnologias: ['Java', 'Spring', '.NET', 'C#', 'Python', 'Node.js', 'TypeScript', 'PHP', 'iOS i Android', 'APIs REST'],
   },
   {
     n: '02',
-    titulo: 'Programari a mida i integració',
+    titulo: 'Integració de sistemes i dades',
     texto:
-      'Java, .NET, Python i APIs. Desenvolupament nou, manteniment del que ja tens i connexió entre sistemes que avui no es parlen.',
+      'Que l’ERP, el CRM, el web, la botiga i les màquines es parlin entre si sense picar dades dues vegades.',
+    tecnologias: ['APIs', 'EDI', 'ETL', 'SQL Server', 'Oracle', 'PostgreSQL', 'MySQL', 'Webhooks', 'Make i n8n'],
   },
   {
     n: '03',
-    titulo: 'CRM i ERP',
-    texto:
-      'Triar, negociar, implantar i integrar: Dynamics 365, HubSpot, Odoo, Salesforce o el que ja tinguis. Sense casar-nos amb cap fabricant.',
+    titulo: 'CRM',
+    texto: 'Triar, implantar, integrar i formar. Que l’equip comercial el faci servir de debò.',
+    tecnologias: ['Dynamics 365', 'HubSpot', 'Salesforce', 'Zoho', 'Odoo CRM', 'Pipedrive'],
   },
   {
     n: '04',
-    titulo: 'Entorn Microsoft i núvol',
+    titulo: 'ERP i gestió',
     texto:
-      'Microsoft 365, Azure, SharePoint, Power Platform, còpies de seguretat, accessos i identitats. Ordre al núvol que ja pagues.',
+      'Selecció, implantació, migració i integració amb producció, magatzem, comptabilitat i facturació electrònica.',
+    tecnologias: ['SAP Business One', 'Business Central', 'Odoo', 'Sage', 'A3', 'Holded', 'Facturació electrònica'],
   },
   {
     n: '05',
-    titulo: 'Maquinari, planta i IoT',
-    texto:
-      'Sensors i captura de dades de màquina, dispositius al magatzem o a la botiga, xarxes i llocs de treball. El que és físic també és tecnologia.',
+    titulo: 'Entorn Microsoft',
+    texto: 'Ordre a l’entorn que ja pagues: llicències, identitats, dispositius i automatització.',
+    tecnologias: [
+      'Microsoft 365',
+      'Teams',
+      'SharePoint',
+      'Exchange',
+      'Entra ID',
+      'Intune',
+      'Power Apps',
+      'Power Automate',
+      'Power BI',
+    ],
   },
   {
     n: '06',
+    titulo: 'Núvol i infraestructura',
+    texto:
+      'Servidors, núvol, còpies de seguretat, xarxes i continuïtat. Migrem el que convé i deixem a casa el que no.',
+    tecnologias: [
+      'Azure',
+      'AWS',
+      'Google Cloud',
+      'VMware',
+      'Proxmox',
+      'Linux i Windows Server',
+      'Còpies i recuperació',
+      'Xarxes i VPN',
+      'Telefonia IP',
+    ],
+  },
+  {
+    n: '07',
+    titulo: 'Ciberseguretat',
+    texto: 'Accessos, còpies, pedaços i continuïtat. El bàsic ben fet abans que cap eina cara.',
+    tecnologias: [
+      'Doble factor',
+      'Gestió d’identitats',
+      'Còpies immutables',
+      'Tallafocs',
+      'Protecció de llocs de treball',
+      'Conscienciació',
+      'RGPD',
+    ],
+  },
+  {
+    n: '08',
+    titulo: 'Maquinari, planta i IoT',
+    texto:
+      'El que és físic també és tecnologia: llocs de treball, servidors, xarxes de planta, sensors i captura de dades de màquina.',
+    tecnologias: [
+      'Llocs i servidors',
+      'Wifi industrial',
+      'PLC i SCADA',
+      'OPC UA',
+      'Modbus',
+      'Sensors IoT',
+      'Terminals de magatzem',
+      'Codis de barres i RFID',
+      'Impressores d’etiquetes',
+      'Pantalles de planta',
+    ],
+  },
+  {
+    n: '09',
+    titulo: 'Web, comerç electrònic i màrqueting digital',
+    texto: 'Web corporatiu, botiga en línia, SEO tècnic i analítica. Connectat a l’ERP i als mitjans de pagament.',
+    tecnologias: ['WordPress', 'WooCommerce', 'Shopify', 'PrestaShop', 'Astro', 'SEO tècnic', 'Analítica', 'Passarel·les de pagament'],
+  },
+  {
+    n: '10',
+    titulo: 'Dades i Business Intelligence',
+    texto: 'Quadres de comandament que la direcció mira cada dilluns, amb dades netes i d’una sola font.',
+    tecnologias: ['Power BI', 'Looker Studio', 'Metabase', 'Magatzem de dades', 'Informes automàtics'],
+  },
+  {
+    n: '11',
+    titulo: 'IA i automatització',
+    texto:
+      'Agents, automatitzacions, OCR i models de llenguatge aplicats als teus processos. Quan la IA és el centre, té servei propi.',
+    tecnologias: ['Agents d’IA', 'Models de llenguatge', 'OCR', 'RPA', 'Automatització de processos'],
+    enlace: { texto: 'Veure Director d’IA extern', ruta: '/servicios/director-ia/' },
+  },
+  {
+    n: '12',
     titulo: 'R+D i innovació',
     texto:
       'Prototips, proves de concepte i memòries tècniques de projectes d’R+D, inclosa la documentació tècnica per a ajuts a la innovació.',
+    tecnologias: ['Prototips', 'Proves de concepte', 'Memòries tècniques', 'Documentació per a ajuts'],
+  },
+];
+
+export const modalidadesCa: readonly Modalidad[] = [
+  {
+    n: '01',
+    titulo: 'Un sol interlocutor',
+    texto:
+      'Parlem amb els teus proveïdors de tu a tu, revisem les seves ofertes i contractes i et traduïm el que és tècnic a decisions de negoci.',
+  },
+  {
+    n: '02',
+    titulo: 'Projecte o acompanyament',
+    texto:
+      'Un projecte tancat amb abast i lliurament, o un responsable tècnic continu al teu costat. El que demani el teu cas.',
+  },
+  {
+    n: '03',
+    titulo: 'Sense casar-nos amb ningú',
+    texto:
+      'Triem per criteri tècnic i cost total. Fabricant, núvol o programari lliure: el que encaixi amb la teva empresa.',
+  },
+  {
+    n: '04',
+    titulo: 'Pressupost a mida',
+    texto: 'Després del diagnòstic gratuït, proposta amb abast, ordre i pressupost tancat. Sense sorpreses.',
   },
 ];
