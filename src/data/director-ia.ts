@@ -50,14 +50,14 @@ export const contenidos: Record<Idioma, Contenido> = {
     meta: {
       title: 'Director de IA externo desde 1.200 € al mes',
       description:
-        'Un director de IA para tu empresa con cuota fija mensual: una mañana al mes en tus instalaciones con tu técnico, el resto a distancia y garantía de ahorro al tercer mes. Tres paquetes desde 1.200 € al mes.',
+        'Un director de IA para tu empresa con cuota fija mensual: una mañana al mes en tus instalaciones junto a tu equipo técnico y el resto del trabajo a distancia, con ahorro garantizado por contrato. Tres paquetes desde 1.200 € al mes.',
     },
     miga: 'Servicios',
     eyebrow: 'Servicio principal · Cuota fija mensual',
     h1: ['Tu director de IA ', 'desde 1.200 € al mes', '.'],
-    lead: 'Una mañana al mes en tu empresa con tu técnico, el resto del trabajo a distancia y una garantía clara: si al tercer mes el ahorro no dobla la cuota, lo paras.',
+    lead: 'Una mañana al mes en tu empresa, junto a tu equipo técnico, y el resto del trabajo a distancia, con un objetivo: identificar y reducir al máximo las horas dedicadas a tareas repetitivas. El ahorro queda garantizado por contrato y se mide contigo cada mes.',
     precio: 'Desde 1.200 €/mes',
-    precioPie: 'Tres paquetes · cuota fija · garantía de ahorro al tercer mes',
+    precioPie: 'Tres paquetes · cuota fija · ahorro garantizado por contrato',
     botonWhatsapp: 'Hablar por WhatsApp',
     botonSesion: 'Primera sesión sin coste',
     whatsappTexto: 'Hola Diego, me interesa el servicio de director de IA.',
@@ -65,7 +65,7 @@ export const contenidos: Record<Idioma, Contenido> = {
       eyebrow: 'Para quién es',
       titulo: 'Para empresas con informático, pero sin nadie que piense la IA.',
       texto:
-        'Empresas de 10 a 250 personas con un informático o un responsable de sistemas que resuelve el día a día, pero sin nadie sénior que piense los procesos, la automatización y dónde encaja la IA. Nosotros ponemos esa cabeza por una cuota fija al mes, y trabajamos con tu técnico, no en su lugar.',
+        'Empresas de 10 a 250 personas con un informático o un responsable de sistemas que resuelve el día a día, pero sin nadie sénior que piense los procesos, la automatización y dónde encaja la IA. Aportamos esa visión estratégica por una cuota fija al mes, y trabajamos con tu técnico, no en su lugar.',
     },
     comoFunciona: {
       eyebrow: 'Cómo funciona',
@@ -118,14 +118,14 @@ export const contenidos: Record<Idioma, Contenido> = {
           para: 'Para cambiar el ritmo de toda la empresa',
         },
       ],
-      nota: 'Contrato anual con cuota fija mensual. Factura a principio de mes. Las horas no se acumulan de un mes a otro. Las licencias de herramientas van aparte y siempre con tu OK.',
+      nota: 'Contrato anual con cuota fija mensual. Factura a principio de mes. Las horas no se acumulan de un mes a otro. Las licencias de herramientas van aparte y siempre con tu aprobación previa.',
       accio: '77 Delta es consultora acreditada por ACCIÓ para el Cupó IA. Te decimos si tu caso encaja.',
     },
     garantia: {
       eyebrow: 'Garantía',
-      titulo: 'Si al tercer mes el ahorro no dobla la cuota, lo paras.',
+      titulo: 'Ahorro garantizado por contrato, medido cada mes.',
       texto:
-        'A partir del tercer mes, si el ahorro mensual en marcha no llega al doble de la cuota, puedes salir ese mismo mes sin coste. Después de ese punto, preaviso de 30 días.',
+        'Nos comprometemos a que, a partir del tercer mes, el ahorro mensual en marcha alcance al menos el doble de la cuota. Si no se alcanza, puedes finalizar el contrato ese mismo mes sin coste alguno. A partir de ese punto, basta un preaviso de 30 días.',
       medida:
         'El ahorro se mide así: estimación de horas en la sesión del mes y comprobación con tu técnico cuatro semanas después.',
     },
@@ -136,12 +136,12 @@ export const contenidos: Record<Idioma, Contenido> = {
         {
           area: 'Administración',
           texto:
-            'Cuadrar albaranes de proveedor con pedidos y pasarlos al programa de gestión costaba unas 35 horas al mes. Ahora lo deja preparado una acción pequeña de IA y una persona lo revisa en una o dos horas.',
+            'Cuadrar albaranes de proveedor con pedidos y pasarlos al programa de gestión costaba unas 35 horas al mes. Ahora lo deja preparado un proceso automatizado con IA y una persona lo revisa en una o dos horas.',
         },
         {
           area: 'Operaciones',
           texto:
-            'Los partes de producción y las órdenes de trabajo se pasaban a mano del papel al sistema, unas 65 horas al mes. Hoy se leen solos y solo se corrige lo que no cuadra.',
+            'Los partes de producción y las órdenes de trabajo se pasaban a mano del papel al sistema, unas 65 horas al mes. Hoy se leen automáticamente y solo se corrige lo que no cuadra.',
         },
       ],
       cierre: 'En ningún caso cambiaron de programa ni de forma de trabajar.',
@@ -150,16 +150,16 @@ export const contenidos: Record<Idioma, Contenido> = {
       eyebrow: 'Preguntas frecuentes',
       titulo: 'Lo que suelen preguntarnos antes de empezar.',
       lista: [
-        { pregunta: '¿Sustituye a mi informático?', respuesta: 'No. Trabajamos con él y aprende a hacer lo mismo sin nosotros.' },
+        { pregunta: '¿Sustituye a mi informático?', respuesta: 'No. Trabajamos con tu técnico, que adquiere la capacidad de continuar sin nosotros.' },
         {
           pregunta: '¿Y si no hay ahorro?',
-          respuesta: 'Se aplica la garantía: al tercer mes, si el ahorro no dobla la cuota, sales ese mes sin coste.',
+          respuesta: 'Se aplica la garantía: si al tercer mes el ahorro no alcanza el doble de la cuota, puedes finalizar el contrato ese mismo mes sin coste.',
         },
         {
           pregunta: '¿Hay permanencia?',
           respuesta: 'Contrato anual, con esa salida al tercer mes y preaviso de 30 días a partir de entonces.',
         },
-        { pregunta: '¿Qué herramientas usáis?', respuesta: 'Las vuestras. Añadimos IA solo donde ahorra horas de verdad.' },
+        { pregunta: '¿Qué herramientas usáis?', respuesta: 'Las vuestras. Incorporamos IA únicamente donde supone un ahorro de horas.' },
         {
           pregunta: '¿Puedo pagarlo con ayudas?',
           respuesta: '77 Delta es consultora acreditada por ACCIÓ para el Cupó IA. Te decimos si tu caso encaja.',
@@ -172,8 +172,8 @@ export const contenidos: Record<Idioma, Contenido> = {
     },
     otros: { eyebrow: 'Otras formas de trabajar', enlace: 'Ver el detalle →' },
     cta: {
-      titulo: 'Empieza con la sesión sin coste.',
-      texto: '90 minutos con tu técnico. Si no encaja, te lo decimos en esa misma sesión.',
+      titulo: 'Comienza con la sesión sin coste.',
+      texto: '90 minutos con tu técnico. Si no encaja, te lo comunicamos en esa misma sesión.',
       boton: 'Pedir la primera sesión',
     },
   },
@@ -183,14 +183,14 @@ export const contenidos: Record<Idioma, Contenido> = {
     meta: {
       title: "Director d'IA extern des de 1.200 € al mes",
       description:
-        "Un director d'IA per a la teva empresa amb quota fixa mensual: un matí al mes a les teves instal·lacions amb el teu tècnic, la resta a distància i garantia d'estalvi al tercer mes. Tres paquets des de 1.200 € al mes.",
+        "Un director d'IA per a la teva empresa amb quota fixa mensual: un matí al mes a les teves instal·lacions amb el teu equip tècnic i la resta de la feina a distància, amb estalvi garantit per contracte. Tres paquets des de 1.200 € al mes.",
     },
     miga: 'Serveis',
     eyebrow: 'Servei principal · Quota fixa mensual',
     h1: ["El teu director d'IA ", 'des de 1.200 € al mes', '.'],
-    lead: "Un matí al mes a la teva empresa amb el teu tècnic, la resta de la feina a distància i una garantia clara: si al tercer mes l'estalvi no dobla la quota, ho atures.",
+    lead: "Un matí al mes a la teva empresa, amb el teu equip tècnic, i la resta de la feina a distància, amb un objectiu: identificar i reduir al màxim les hores dedicades a tasques repetitives. L'estalvi queda garantit per contracte i es mesura amb tu cada mes.",
     precio: 'Des de 1.200 €/mes',
-    precioPie: "Tres paquets · quota fixa · garantia d'estalvi al tercer mes",
+    precioPie: 'Tres paquets · quota fixa · estalvi garantit per contracte',
     botonWhatsapp: 'Parlar per WhatsApp',
     botonSesion: 'Primera sessió sense cost',
     whatsappTexto: "Hola Diego, m'interessa el servei de director d'IA.",
@@ -198,7 +198,7 @@ export const contenidos: Record<Idioma, Contenido> = {
       eyebrow: 'Per a qui és',
       titulo: 'Per a empreses amb informàtic, però sense ningú que pensi la IA.',
       texto:
-        "Empreses de 10 a 250 persones amb un informàtic o un responsable de sistemes que resol el dia a dia, però sense ningú sènior que pensi els processos, l'automatització i on encaixa la IA. Nosaltres hi posem aquest cap per una quota fixa al mes, i treballem amb el teu tècnic, no en lloc seu.",
+        "Empreses de 10 a 250 persones amb un informàtic o un responsable de sistemes que resol el dia a dia, però sense ningú sènior que pensi els processos, l'automatització i on encaixa la IA. Hi aportem aquesta visió estratègica per una quota fixa al mes, i treballem amb el teu tècnic, no en lloc seu.",
     },
     comoFunciona: {
       eyebrow: 'Com funciona',
@@ -251,14 +251,14 @@ export const contenidos: Record<Idioma, Contenido> = {
           para: "Per canviar el ritme de tota l'empresa",
         },
       ],
-      nota: "Contracte anual amb quota fixa mensual. Factura a principi de mes. Les hores no s'acumulen d'un mes a l'altre. Les llicències d'eines van a part i sempre amb el teu vistiplau.",
+      nota: "Contracte anual amb quota fixa mensual. Factura a principi de mes. Les hores no s'acumulen d'un mes a l'altre. Les llicències d'eines van a part i sempre amb la teva aprovació prèvia.",
       accio: '77 Delta és consultora acreditada per ACCIÓ per al Cupó IA. Et diem si el teu cas hi encaixa.',
     },
     garantia: {
       eyebrow: 'Garantia',
-      titulo: "Si al tercer mes l'estalvi no dobla la quota, ho atures.",
+      titulo: 'Estalvi garantit per contracte, mesurat cada mes.',
       texto:
-        "A partir del tercer mes, si l'estalvi mensual en marxa no arriba al doble de la quota, pots sortir aquell mateix mes sense cost. Després d'aquest punt, preavís de 30 dies.",
+        "Ens comprometem que, a partir del tercer mes, l'estalvi mensual en marxa arribi com a mínim al doble de la quota. Si no s'hi arriba, pots finalitzar el contracte aquell mateix mes sense cap cost. A partir d'aquest punt, n'hi ha prou amb un preavís de 30 dies.",
       medida:
         "L'estalvi es mesura així: estimació d'hores a la sessió del mes i comprovació amb el teu tècnic quatre setmanes després.",
     },
@@ -269,12 +269,12 @@ export const contenidos: Record<Idioma, Contenido> = {
         {
           area: 'Administració',
           texto:
-            "Quadrar albarans de proveïdor amb comandes i passar-los al programa de gestió costava unes 35 hores al mes. Ara ho deixa preparat una acció petita d'IA i una persona ho revisa en una o dues hores.",
+            "Quadrar albarans de proveïdor amb comandes i passar-los al programa de gestió costava unes 35 hores al mes. Ara ho deixa preparat un procés automatitzat amb IA i una persona ho revisa en una o dues hores.",
         },
         {
           area: 'Operacions',
           texto:
-            'Els comunicats de producció i les ordres de treball es passaven a mà del paper al sistema, unes 65 hores al mes. Avui es llegeixen sols i només es corregeix el que no quadra.',
+            'Els comunicats de producció i les ordres de treball es passaven a mà del paper al sistema, unes 65 hores al mes. Avui es llegeixen automàticament i només es corregeix el que no quadra.',
         },
       ],
       cierre: 'En cap cas van canviar de programa ni de manera de treballar.',
@@ -283,16 +283,16 @@ export const contenidos: Record<Idioma, Contenido> = {
       eyebrow: 'Preguntes freqüents',
       titulo: 'El que ens solen preguntar abans de començar.',
       lista: [
-        { pregunta: 'Substitueix el meu informàtic?', respuesta: 'No. Treballem amb ell i aprèn a fer el mateix sense nosaltres.' },
+        { pregunta: 'Substitueix el meu informàtic?', respuesta: 'No. Treballem amb el teu tècnic, que adquireix la capacitat de continuar sense nosaltres.' },
         {
           pregunta: 'I si no hi ha estalvi?',
-          respuesta: "S'aplica la garantia: al tercer mes, si l'estalvi no dobla la quota, surts aquell mes sense cost.",
+          respuesta: "S'aplica la garantia: si al tercer mes l'estalvi no arriba al doble de la quota, pots finalitzar el contracte aquell mateix mes sense cost.",
         },
         {
           pregunta: 'Hi ha permanència?',
           respuesta: 'Contracte anual, amb aquesta sortida al tercer mes i preavís de 30 dies a partir de llavors.',
         },
-        { pregunta: 'Quines eines feu servir?', respuesta: 'Les vostres. Hi afegim IA només on estalvia hores de debò.' },
+        { pregunta: 'Quines eines feu servir?', respuesta: 'Les vostres. Hi incorporem IA únicament on suposa un estalvi d’hores.' },
         {
           pregunta: 'Ho puc pagar amb ajuts?',
           respuesta: '77 Delta és consultora acreditada per ACCIÓ per al Cupó IA. Et diem si el teu cas hi encaixa.',
@@ -316,14 +316,14 @@ export const contenidos: Record<Idioma, Contenido> = {
     meta: {
       title: 'External AI director from 1,200 € a month',
       description:
-        'An AI director for your company on a fixed monthly fee: one morning a month on site with your IT person, the rest remote, and a savings guarantee at month three. Three plans from 1,200 € a month.',
+        'An AI director for your company on a fixed monthly fee: one morning a month on site with your technical team and the rest of the work remote, with savings guaranteed by contract. Three plans from 1,200 € a month.',
     },
     miga: 'Services',
     eyebrow: 'Main service · Fixed monthly fee',
     h1: ['Your AI director ', 'from 1,200 € a month', '.'],
-    lead: 'One morning a month at your company with your IT person, the rest of the work remote, and a clear guarantee: if by month three the savings do not double the fee, you stop.',
+    lead: 'One morning a month at your company, alongside your technical team, and the rest of the work remote, with one goal: to identify and reduce as far as possible the hours spent on repetitive tasks. The savings are guaranteed by contract and measured with you every month.',
     precio: 'From 1,200 €/month',
-    precioPie: 'Three plans · fixed fee · savings guarantee at month three',
+    precioPie: 'Three plans · fixed fee · savings guaranteed by contract',
     botonWhatsapp: 'Chat on WhatsApp',
     botonSesion: 'First session at no cost',
     whatsappTexto: 'Hi Diego, I am interested in the AI director service.',
@@ -331,7 +331,7 @@ export const contenidos: Record<Idioma, Contenido> = {
       eyebrow: 'Who it is for',
       titulo: 'For companies with an IT person, but nobody thinking about AI.',
       texto:
-        'Companies of 10 to 250 people with an IT person or systems manager who handles the day to day, but nobody senior to think about processes, automation and where AI fits. We provide that head for a fixed monthly fee, and we work with your IT person, not instead of them.',
+        'Companies of 10 to 250 people with an IT person or systems manager who handles the day to day, but nobody senior to think about processes, automation and where AI fits. We provide that senior expertise for a fixed monthly fee, and we work with your IT person, not instead of them.',
     },
     comoFunciona: {
       eyebrow: 'How it works',
@@ -389,9 +389,9 @@ export const contenidos: Record<Idioma, Contenido> = {
     },
     garantia: {
       eyebrow: 'Guarantee',
-      titulo: 'If by month three the savings do not double the fee, you stop.',
+      titulo: 'Savings guaranteed by contract, measured every month.',
       texto:
-        'From month three, if the monthly savings in place do not reach twice the fee, you can leave that same month at no cost. After that point, 30 days notice.',
+        'We commit that, from month three onwards, the monthly savings in place will reach at least twice the fee. If they do not, you may end the contract that same month at no cost. From that point on, 30 days notice is sufficient.',
       medida:
         'Savings are measured like this: hours estimated in the month session and checked with your IT person four weeks later.',
     },
@@ -402,7 +402,7 @@ export const contenidos: Record<Idioma, Contenido> = {
         {
           area: 'Administration',
           texto:
-            'Matching supplier delivery notes with orders and entering them in the management system took about 35 hours a month. Now a small AI step prepares it and one person reviews it in one or two hours.',
+            'Matching supplier delivery notes with orders and entering them in the management system took about 35 hours a month. Now an automated AI step prepares it and one person reviews it in one or two hours.',
         },
         {
           area: 'Operations',
@@ -416,16 +416,16 @@ export const contenidos: Record<Idioma, Contenido> = {
       eyebrow: 'FAQ',
       titulo: 'What we are usually asked before starting.',
       lista: [
-        { pregunta: 'Does it replace my IT person?', respuesta: 'No. We work with them and they learn to do the same without us.' },
+        { pregunta: 'Does it replace my IT person?', respuesta: 'No. We work with your IT person, who gains the ability to continue without us.' },
         {
           pregunta: 'What if there are no savings?',
-          respuesta: 'The guarantee applies: by month three, if savings do not double the fee, you leave that month at no cost.',
+          respuesta: 'The guarantee applies: if by month three the savings do not reach twice the fee, you may end the contract that same month at no cost.',
         },
         {
           pregunta: 'Is there a lock-in?',
           respuesta: 'Annual contract, with that exit at month three and 30 days notice from then on.',
         },
-        { pregunta: 'Which tools do you use?', respuesta: 'Yours. We add AI only where it really saves hours.' },
+        { pregunta: 'Which tools do you use?', respuesta: 'Yours. We add AI only where it saves measurable hours.' },
         {
           pregunta: 'Can I pay for it with grants?',
           respuesta: '77 Delta is a consultancy accredited by ACCIÓ for the Cupó IA programme. We will tell you if your case fits.',

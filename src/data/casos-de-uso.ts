@@ -21,11 +21,11 @@ export interface Caso {
 
 export const familias: Familia[] = [
   { slug: 'conversacional', num: '01', titulo: 'Asistentes conversacionales', texto: 'Chatbots y asistentes de voz para web, WhatsApp y teléfono, con búsqueda sobre tu información, escalado a persona y analítica de conversaciones. Atención al cliente, salud, formación y soporte interno.' },
-  { slug: 'agentes', num: '02', titulo: 'Agentes autónomos', texto: 'Agentes que ejecutan procesos de verdad: consultan sistemas internos, responden preguntas de negocio sobre tus datos, vigilan, prueban y hacen prospección. Con traza completa de cada paso para poder auditarlo.' },
+  { slug: 'agentes', num: '02', titulo: 'Agentes autónomos', texto: 'Agentes que ejecutan procesos reales de la empresa: consultan sistemas internos, responden preguntas de negocio sobre tus datos, vigilan, prueban y hacen prospección. Con traza completa de cada paso para poder auditarlo.' },
   { slug: 'rag', num: '03', titulo: 'Búsqueda y conocimiento', texto: 'Búsqueda semántica sobre tu intranet, tu normativa o tus grabaciones. Control de acceso por rol, cita obligatoria de la fuente en cada respuesta e indexación incremental.' },
-  { slug: 'workflow', num: '04', titulo: 'Automatización de procesos', texto: 'Integración entre sistemas que no se hablan, gestión de incidencias, comunicación multicanal, informes automáticos y memorias técnicas para licitaciones.' },
-  { slug: 'governance', num: '05', titulo: 'Gobernanza y cumplimiento', texto: 'Gobernanza de sistemas de IA según el Reglamento Europeo de IA, auditoría ALTAI y cumplimiento multi-marco con RGPD, NIS2 y la norma de accesibilidad. La documentación obligatoria se genera sola.' },
-  { slug: 'seguridad', num: '06', titulo: 'Seguridad de IA', texto: 'Auditoría y blindaje de los asistentes que ya tienes publicados: qué se les puede sacar, cómo se les saca y cómo se cierra. Incluye pruebas adversarias, guardarraíles y vigilancia continua.' },
+  { slug: 'workflow', num: '04', titulo: 'Automatización de procesos', texto: 'Integración entre sistemas que no están conectados, gestión de incidencias, comunicación multicanal, informes automáticos y memorias técnicas para licitaciones.' },
+  { slug: 'governance', num: '05', titulo: 'Gobernanza y cumplimiento', texto: 'Gobernanza de sistemas de IA según el Reglamento Europeo de IA, auditoría ALTAI y cumplimiento multi-marco con RGPD, NIS2 y la norma de accesibilidad. La documentación obligatoria se genera de forma automática.' },
+  { slug: 'seguridad', num: '06', titulo: 'Seguridad de IA', texto: 'Auditoría y blindaje de los asistentes que ya tienes publicados: qué información pueden revelar, cómo se provoca y cómo se corrige. Incluye pruebas adversarias, guardarraíles y vigilancia continua.' },
   { slug: 'verticales', num: '07', titulo: 'Plataformas verticales y datos sintéticos', texto: 'Plataformas de IA para un sector concreto (seguros, legal, sanidad, aceleración empresarial), simulación digital y generación de datos sintéticos que preservan la privacidad.' },
   { slug: 'modelos', num: '08', titulo: 'Modelos propios y predicción', texto: 'Ajuste fino de modelos abiertos para un vertical, previsión y detección de anomalías, clasificación supervisada, reconocimiento de documentos a medida y evaluación de modelos.' },
 ];
@@ -92,7 +92,7 @@ export const casos: Caso[] = [
     familia: 'conversacional',
     titulo: 'Recepcionista IA por WhatsApp para clínicas',
     texto:
-      'Bot que gestiona citas contra Google Calendar, transcribe notas de voz y escala a humano cuando detecta urgencia. Metered billing.',
+      'Asistente que gestiona citas en Google Calendar, transcribe notas de voz y escala a una persona cuando detecta una urgencia. Facturación por uso.',
     sectores: ['salud'],
     tecnologias: ['chat', 'agentes'],
   },
@@ -110,7 +110,7 @@ export const casos: Caso[] = [
     familia: 'agentes',
     titulo: 'Agentes IA para módulos de back-office',
     texto:
-      'Agentes LangGraph que ejecutan procesos administrativos del cliente, con observability predictiva y audit log para AI Act.',
+      'Agentes LangGraph que ejecutan procesos administrativos del cliente, con observabilidad predictiva y registro de auditoría para el Reglamento de IA.',
     sectores: ['publico', 'b2b'],
     tecnologias: ['agentes', 'compliance'],
   },
@@ -146,14 +146,14 @@ export const casos: Caso[] = [
     familia: 'agentes',
     titulo: 'Agente de observabilidad predictiva',
     texto:
-      'Monitoriza logs y métricas, predice incidencias antes de que ocurran, propone remediation en lenguaje natural.',
+      'Monitoriza logs y métricas, predice incidencias antes de que ocurran, propone medidas correctoras en lenguaje natural.',
     sectores: ['b2b'],
     tecnologias: ['agentes', 'datos'],
   },
   {
     id: 'agente-outreach',
     familia: 'agentes',
-    titulo: 'Agente comercial de outreach multi-canal',
+    titulo: 'Agente comercial de prospección multicanal',
     texto:
       'Prospección y secuencias por LinkedIn, email y X con personalización IA, detección de respuestas reales y supresión automática.',
     sectores: ['b2b'],
@@ -164,7 +164,7 @@ export const casos: Caso[] = [
     familia: 'agentes',
     titulo: 'Agente de generación de evaluaciones',
     texto:
-      'Cuestionarios desde texto, PDF, URL o YouTube. Tipos test, abiertas, relación, orden. Anti-cheat y auto-corrección.',
+      'Cuestionarios desde texto, PDF, URL o YouTube. Tipos test, abiertas, relación, orden. Control antifraude y autocorrección.',
     sectores: ['edu', 'b2b'],
     tecnologias: ['agentes', 'modelos'],
   },
@@ -245,14 +245,14 @@ export const casos: Caso[] = [
     familia: 'workflow',
     titulo: 'Memorias técnicas asistidas por IA',
     texto:
-      'RAG sobre histórico de propuestas ganadas + análisis del pliego. Reduce time-to-bid de 40-80 horas a 5-10.',
+      'RAG sobre histórico de propuestas ganadas + análisis del pliego. Reduce el tiempo de preparación de la oferta de 40-80 horas a 5-10.',
     sectores: ['b2b', 'publico'],
     tecnologias: ['agentes', 'rag'],
   },
   {
     id: 'governance-ai-act',
     familia: 'governance',
-    titulo: 'Plataforma de governance AI Act',
+    titulo: 'Plataforma de gobernanza del Reglamento de IA',
     texto:
       'Registro de sistemas IA, clasificación por riesgo, evaluación de impacto y monitorización de drift y bias.',
     sectores: ['b2b', 'publico'],
@@ -272,7 +272,7 @@ export const casos: Caso[] = [
     familia: 'governance',
     titulo: 'Compliance multi-marco automatizado',
     texto:
-      'Scanner técnico + generador de docs (declaración accesibilidad, política privacidad, registro IA) para PYMEs europeas.',
+      'Escáner técnico y generador de documentos (declaración accesibilidad, política privacidad, registro IA) para PYMEs europeas.',
     sectores: ['b2b', 'publico'],
     tecnologias: ['compliance', 'rag'],
   },
@@ -290,7 +290,7 @@ export const casos: Caso[] = [
     familia: 'seguridad',
     titulo: 'Pruebas adversarias sobre LLM y agentes',
     texto:
-      'Batería de pruebas contra el asistente y las herramientas que tiene conectadas: inyección de instrucciones, jailbreak y salida de guion, puntuadas por un modelo juez con rúbrica.',
+      'Batería de pruebas contra el asistente y las herramientas que tiene conectadas: inyección de instrucciones, jailbreak y desvío del comportamiento previsto, puntuadas por un modelo juez con rúbrica.',
     sectores: ['b2b', 'publico'],
     tecnologias: ['seguridad', 'agentes'],
   },
@@ -344,7 +344,7 @@ export const casos: Caso[] = [
     familia: 'verticales',
     titulo: 'Aceleradora empresarial con tooling IA',
     texto:
-      'Gestión de programas con diagnóstico automático de startups, matching con mentores y reporting a financiadores EU.',
+      'Gestión de programas con diagnóstico automático de startups, asignación de mentores e informes a financiadores europeos.',
     sectores: ['b2b', 'publico'],
     tecnologias: ['agentes', 'datos'],
   },
@@ -405,7 +405,7 @@ export const casos: Caso[] = [
   {
     id: 'ocr-custom',
     familia: 'modelos',
-    titulo: 'OCR custom para documentación específica',
+    titulo: 'OCR a medida para documentación específica',
     texto:
       'Extracción estructurada de campos en pólizas, facturas, recetas o expedientes. Re-entrenamiento incremental con feedback.',
     sectores: ['legal', 'b2b', 'publico'],
@@ -416,7 +416,7 @@ export const casos: Caso[] = [
     familia: 'modelos',
     titulo: 'Evaluación y benchmarking de modelos',
     texto:
-      'Harness reproducible para comparar LLMs y modelos clásicos sobre tu tarea concreta con métricas tuyas, no genéricas.',
+      'Harness reproducible para comparar LLMs y modelos clásicos sobre tu tarea concreta con métricas propias de tu caso, no genéricas.',
     sectores: ['b2b'],
     tecnologias: ['modelos', 'compliance'],
   },

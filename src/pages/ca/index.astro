@@ -19,11 +19,11 @@ const familiesCa = [
 ];
 const familiesTextCa: Record<string, string> = {
   conversacional: 'Chatbots i assistents de veu per a web, WhatsApp i telèfon, amb cerca sobre la teva informació, escalat a persona i analítica de converses. Atenció al client, salut, formació i suport intern.',
-  agentes: 'Agents que executen processos de debò: consulten sistemes interns, responen preguntes de negoci sobre les teves dades, vigilen, proven i fan prospecció. Amb traça completa de cada pas per poder-ho auditar.',
+  agentes: 'Agents que executen processos reals: consulten sistemes interns, responen preguntes de negoci sobre les teves dades, vigilen, proven i fan prospecció. Amb traça completa de cada pas per poder-ho auditar.',
   rag: 'Cerca semàntica sobre la teva intranet, la teva normativa o les teves gravacions. Control d’accés per rol, citació obligatòria de la font a cada resposta i indexació incremental.',
-  workflow: 'Integració entre sistemes que no es parlen, gestió d’incidències, comunicació multicanal, informes automàtics i memòries tècniques per a licitacions.',
-  governance: 'Governança de sistemes d’IA segons el Reglament Europeu d’IA, auditoria ALTAI i compliment multi-marc amb RGPD, NIS2 i la norma d’accessibilitat. La documentació obligatòria es genera sola.',
-  seguridad: 'Auditoria i blindatge dels assistents que ja tens publicats: què se’ls pot treure, com se’ls treu i com es tanca. Inclou proves adversàries, barreres de protecció i vigilància contínua.',
+  workflow: 'Integració entre sistemes que no estan connectats, gestió d’incidències, comunicació multicanal, informes automàtics i memòries tècniques per a licitacions.',
+  governance: 'Governança de sistemes d’IA segons el Reglament Europeu d’IA, auditoria ALTAI i compliment multi-marc amb RGPD, NIS2 i la norma d’accessibilitat. La documentació obligatòria es genera automàticament.',
+  seguridad: 'Auditoria i blindatge dels assistents que ja tens publicats: quina informació se’n pot extreure, com s’extreu i com es corregeix. Inclou proves adversàries, barreres de protecció i vigilància contínua.',
   verticales: 'Plataformes d’IA per a un sector concret (assegurances, legal, sanitat, acceleració empresarial), simulació digital i generació de dades sintètiques que preserven la privacitat.',
   modelos: 'Ajust fi de models oberts per a un vertical, previsió i detecció d’anomalies, classificació supervisada, reconeixement de documents a mida i avaluació de models.',
 };
@@ -77,8 +77,8 @@ const familiesTextCa: Record<string, string> = {
       <div>
         <span class="section-tag">El problema</span>
         <h2>La intel·ligència artificial està reordenant el teu sector. <em>La pregunta no és si t’afectarà, sinó com aplicar-la bé.</em></h2>
-        <p class="lead">La informació disponible és abundant, però distingir el que realment transforma el teu negoci del que només sona interessant requereix criteri i experiència. La transformació no és només tecnològica: toca processos, equips i formes de decidir.</p>
-        <p class="questions">Quines tasques repetitives consumeixen el dia a dia del teu equip? Quines decisions es prenen sense dades suficients? Quines àrees estan saturades? Què passa quan una persona clau no hi és? Quina és la inversió real per començar i com es mesura el retorn?</p>
+        <p class="lead">La informació disponible és abundant, però distingir el que realment transforma el teu negoci del que només resulta cridaner requereix criteri i experiència. La transformació no és només tecnològica: toca processos, equips i formes de decidir.</p>
+        <p class="questions">Quines tasques repetitives consumeixen el dia a dia del teu equip? Quines decisions es prenen sense dades suficients? Quines àrees estan saturades? Què passa quan una persona clau s’absenta? Quina és la inversió real per començar i com es mesura el retorn?</p>
       </div>
     </div>
   </div>
@@ -115,7 +115,7 @@ const familiesTextCa: Record<string, string> = {
       <a href="/ca/servicios/partner/" class="svc-card">
         <div class="num">03 · Acompanyament continu</div>
         <h3>Soci tecnològic</h3>
-        <p>Un soci tècnic per a tota la tecnologia de la teva empresa, no només la IA: programari a mida, integració, CRM i ERP, Microsoft, núvol, ciberseguretat, maquinari i planta, web, dades i R+D. Un sol interlocutor que parla amb els teus proveïdors de tu a tu i decideix amb tu.</p>
+        <p>Un soci tècnic per a tota la tecnologia de la teva empresa, no només la IA: programari a mida, integració, CRM i ERP, Microsoft, núvol, ciberseguretat, maquinari i planta, web, dades i R+D. Un sol interlocutor que tracta amb els teus proveïdors en igualtat de condicions i decideix amb tu.</p>
         <div class="price"><span>Abast i pressupost a mida</span><span class="arrow">→</span></div>
       </a>
     </div>
@@ -138,7 +138,7 @@ const familiesTextCa: Record<string, string> = {
       </ul>
       <div class="director-pie">
         <div>
-          <p class="garantia"><strong>Garantia:</strong> si al tercer mes l’estalvi no dobla la quota, ho atures sense cost.</p>
+          <p class="garantia"><strong>Garantia:</strong> si al tercer mes l’estalvi no arriba al doble de la quota, pots finalitzar el contracte sense cost.</p>
           <p class="nota">Preus sense IVA. Contracte anual amb quota fixa mensual.</p>
         </div>
         <a href="/ca/servicios/director-ia/" class="btn-primary">Veure el servei <span>→</span></a>
@@ -153,9 +153,9 @@ const familiesTextCa: Record<string, string> = {
     <div class="aisec-grid">
       <div>
         <span class="section-tag">Seguretat d’IA</span>
-        <h2>El teu chatbot <em>explica més del que et penses.</em></h2>
-        <p>Posar un assistent amb IA a la web porta una tarda. Auditar-lo no ho fa gairebé ningú. El provem com el provaria algú amb males intencions i et mostrem què se li escapa: les instruccions internes, els preus que no hauria de donar, les dades de clients a què arriba i el que diu quan algú el treu de guió.</p>
-        <p class="aisec-nota">Ho fem amb LeakAI, l’eina que hem construït per a això. Amb ella vam rastrejar 391 webs espanyoles el setembre de 2026 i seguim auditant a fons els assistents amb IA que hem trobat. El diagnòstic és gratuït. El que es paga és deixar-ho tancat.</p>
+        <h2>El teu chatbot <em>revela més informació de la que et penses.</em></h2>
+        <p>Publicar un assistent amb IA a la web és ràpid. Auditar-lo és poc habitual. El provem com ho faria un atacant i et mostrem quina informació se li escapa: les instruccions internes, els preus que no hauria de donar, les dades de clients a què arriba i el que diu quan se l’aparta del seu guió.</p>
+        <p class="aisec-nota">Ho fem amb LeakAI, l’eina que hem construït per a això. Amb ella vam rastrejar 391 webs espanyoles el setembre de 2026 i seguim auditant a fons els assistents amb IA que hem trobat. El diagnòstic és gratuït. El servei de pagament consisteix a corregir les vulnerabilitats detectades.</p>
         <p class="aisec-nota"><a href="/ca/estudio-asistentes-ia/" class="aisec-enlace">Veure l’estudi amb les dades &#8594;</a></p>
         <div class="ctas">
           <a href="/ca/servicios/seguridad-ia/" class="btn-primary">Demanar l’escaneig gratuït <span>&#8594;</span></a>
@@ -254,7 +254,7 @@ const familiesTextCa: Record<string, string> = {
     <div class="section-head">
       <span class="section-tag">Què sabem fer</span>
       <h2>{casos.length} capacitats catalogades, en vuit famílies.</h2>
-      <p>Dels assistents conversacionals a la seguretat d’IA, passant per agents, cerca sobre la teva documentació, automatització de processos, compliment europeu i models propis. Totes estan en producció en algun lloc. Els exemples són representatius i estan anonimitzats.</p>
+      <p>Dels assistents conversacionals a la seguretat d’IA, passant per agents, cerca sobre la teva documentació, automatització de processos, compliment europeu i models propis. Totes estan en producció en entorns reals. Els exemples són representatius i estan anonimitzats.</p>
     </div>
     <ul class="caps-grid">
       {
@@ -360,7 +360,7 @@ const familiesTextCa: Record<string, string> = {
         <div>
           <span class="section-tag">Cas 5 de 5 · Formació professional · València</span>
           <h3>Un centre de FP tenia cua d’un mes per a tutories personalitzades.</h3>
-          <p>Els formadors no donaven l’abast amb els dubtes individuals. Els alumnes esperaven fins a un mes per a una tutoria, cosa que afectava la taxa d’aprovat.</p>
+          <p>Els formadors no podien atendre tots els dubtes individuals. Els alumnes esperaven fins a un mes per a una tutoria, cosa que afectava la taxa d’aprovat.</p>
           <p>Vam construir un assistent formatiu entrenat amb el seu material. Resol dubtes 24/7 i escala a tutor humà només en casos complexos. La cua es va eliminar.</p>
           <a href="/ca/sectores/formacion/" class="arrow-btn">Veure el sector <span>→</span></a>
         </div>
@@ -397,7 +397,7 @@ const familiesTextCa: Record<string, string> = {
       <div class="why-item">
         <div class="icon">02</div>
         <h3>La IA augmenta les persones, no les substitueix</h3>
-        <p>Dissenyem cada implantació amb el teu equip al centre. Human-in-the-loop per defecte: alliberem temps de tasques repetitives perquè la teva gent es dediqui al que aporta valor.</p>
+        <p>Dissenyem cada implantació amb el teu equip al centre. Supervisió humana per defecte: alliberem temps de tasques repetitives perquè el teu equip es dediqui a les tasques que aporten valor.</p>
       </div>
       <div class="why-item">
         <div class="icon">03</div>
@@ -417,7 +417,7 @@ const familiesTextCa: Record<string, string> = {
       <div class="why-item">
         <div class="icon">06</div>
         <h3>Sense dependència tecnològica</h3>
-        <p>En finalitzar el projecte, la teva empresa conserva el codi, les claus, les dades i la documentació. Independència real.</p>
+        <p>En finalitzar el projecte, la teva empresa conserva el codi, les claus, les dades i la documentació. Independència completa.</p>
       </div>
     </div>
   </div>
@@ -431,9 +431,9 @@ const familiesTextCa: Record<string, string> = {
         <span class="section-tag">Sobre nosaltres</span>
         <h2>Una consultora amb història, <em>nascuda des de dins del problema.</em></h2>
         <p>Més de 20 anys aplicant tecnologia a empreses reals. Acreditats per la Generalitat de Catalunya. Amb clients des de Barcelona fins a Dubai. I amb una convicció: la IA només aporta valor quan s’aplica amb criteri.</p>
-        <p>77 Delta neix de l’experiència acumulada per Diego Torres al llarg de dues dècades. Després d’acompanyar més de 500 startups, va observar un patró: les grans empreses tenien consultores estratègiques, les pimes quedaven desorientades davant l’allau tecnològica. Va néixer per ser aquest interlocutor de confiança per a la teva empresa.</p>
+        <p>77 Delta neix de l’experiència acumulada per Diego Torres al llarg de dues dècades. Després d’acompanyar més de 500 startups, va observar un patró: les grans empreses tenien consultores estratègiques, les pimes quedaven desorientades davant la ràpida evolució tecnològica. Va néixer per ser aquest interlocutor de confiança per a la teva empresa.</p>
         <p class="signature"><strong>Diego Torres</strong>, fundador</p>
-        <a href="/ca/sobre-nosotros/" class="arrow-btn">La nostra missió és ajudar-te, coneix-nos <span>→</span></a>
+        <a href="/ca/sobre-nosotros/" class="arrow-btn">Coneix la nostra missió <span>→</span></a>
       </div>
       <div class="photo">
         <img src="/img/fotos/campus-1600.webp" alt="Campus tecnològic" loading="lazy" decoding="async">
@@ -446,7 +446,7 @@ const familiesTextCa: Record<string, string> = {
 <section class="closing" id="contacto">
   <img class="bg" src="/img/fotos/oficina-1600.webp" alt="Oficina amb vistes" srcset="/img/fotos/oficina-900.webp 900w, /img/fotos/oficina-1600.webp 1600w" sizes="100vw" loading="lazy" decoding="async">
   <div class="cont">
-    <h2>30 minuts. <em>Sense compromís.</em><br>Tu decideixes després.</h2>
+    <h2>30 minuts. <em>Sense compromís.</em><br>La decisió és teva.</h2>
     <p>Entrevista estructurada amb la teva empresa. Et lliurem una proposta personalitzada amb estat inicial, pla de treball i pressupost.</p>
     <a href="/ca/contacto/" class="btn-primary">Reservar diagnòstic gratuït →</a>
   </div>

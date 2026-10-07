@@ -55,7 +55,7 @@ Una tasca serveix per començar si compleix tres condicions:
 - Treballa amb dades que l'empresa ja té: correus, comandes, albarans, informes, documentació.
 - El seu cost es mesura en hores, errors o terminis.
 
-Si no es pot mesurar, no es pot decidir si funciona. Comença per la que més hores consumeix a gent cara. Una persona de vendes o d'administració que copia dades d'un document a un altre n'és el cas típic.
+Si no es pot mesurar, no es pot decidir si funciona. Comença per la que més hores consumeix a les persones amb un cost salarial més alt. Una persona de vendes o d'administració que copia dades d'un document a un altre n'és el cas típic.
 
 > **Dada:** Segons Eurostat, l'ús més habitual de la IA a les empreses europees és analitzar llenguatge escrit (11,8%). És a dir, llegir textos i extreure el que importa. En una pime industrial, aquests textos són comandes per correu, factures, albarans, ofertes i missatges de clients.
 
@@ -81,7 +81,7 @@ Què pot assumir la IA:
 - Convertir comandes que arriben per correu en comandes del sistema.
 - Detectar diferències entre un albarà i una factura.
 
-> **Compte:** Aquí el control humà és una regla de disseny: la IA proposa i una persona confirma el que no està clar.
+> **Important:** Aquí el control humà és una regla de disseny: la IA proposa i una persona confirma el que no està clar.
 
 ## Qualitat: informes, no conformitats i traçabilitat
 
@@ -97,7 +97,7 @@ Un agent de qualitat que treballa sobre la documentació pròpia estalvia la cer
 
 ## Operacions: informes de producció i coneixement intern
 
-A planta, la informació està repartida entre l'ERP, fulls de càlcul i el cap de les persones amb més anys a l'empresa.
+A planta, la informació està repartida entre l'ERP, fulls de càlcul i l'experiència de les persones amb més antiguitat a l'empresa.
 
 Què pot assumir la IA:
 
@@ -111,7 +111,7 @@ El catàleg de [casos d'ús](/ca/casos-de-uso/) de 77 Delta recull exemples publ
 
 > **Exemple:** Una distribuïdora industrial amb 12 comercials va connectar un assistent de WhatsApp al seu ERP. Els resultats publicats: 2 hores al dia recuperades, un 25% més de capacitat comercial i zero errors de transcripció, en 6 setmanes.
 
-El projecte no va canviar l'ERP. Va canviar qui teclega. Tens el detall a la [història d'èxit de la distribuïdora](/ca/historias-de-exito/distribuidora-industrial/).
+El projecte no va canviar l'ERP. Va canviar qui introdueix les dades. Tens el detall a la [història d'èxit de la distribuïdora](/ca/historias-de-exito/distribuidora-industrial/).
 
 ## Errors que convé evitar
 
@@ -128,6 +128,6 @@ El projecte no va canviar l'ERP. Va canviar qui teclega. Tens el detall a la [hi
 4. Defineix un indicador abans de començar: hores, errors o termini.
 5. Prova en petit, amb una persona i un període curt. Si l'indicador millora, amplia.
 
-Evita començar per diverses àrees alhora. Cada àrea té la seva gent i les seves dades. Una tasca ben resolta convenç més que cinc a mitges.
+Evita començar per diverses àrees alhora. Cada àrea té el seu equip i les seves dades. Una tasca ben resolta convenç més que cinc a mitges.
 
 Si vols veure en quina àrea de la teva empresa començaries, el botó de sota reserva una reunió de 20 minuts amb 77 Delta.

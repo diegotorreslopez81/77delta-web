@@ -14,7 +14,7 @@ const fugas = [
   {
     titulo: 'Precios, descuentos y márgenes',
     texto:
-      'Rangos de honorarios, condiciones especiales y umbrales de negociación que están en el contexto del bot porque alguien los pegó ahí para que respondiera mejor.',
+      'Rangos de honorarios, condiciones especiales y umbrales de negociación que están en el contexto del bot porque se incluyeron para mejorar sus respuestas.',
   },
   {
     titulo: 'Datos de clientes',
@@ -24,7 +24,7 @@ const fugas = [
   {
     titulo: 'Comportamiento fuera de guion',
     texto:
-      'Con una inyección de instrucciones, el bot de tu web puede acabar diciendo lo que decida un tercero. Sale con tu logotipo al lado.',
+      'Con una inyección de instrucciones, el bot de tu web puede acabar diciendo lo que decida un tercero. Lo hace bajo la imagen de tu marca.',
   },
   {
     titulo: 'Promesas que no puedes cumplir',
@@ -42,7 +42,7 @@ const pasos = [
   {
     titulo: 'Detección',
     texto:
-      'Recorremos tu web como lo haría un visitante y localizamos los asistentes con IA que hay publicados, incluidos los que el equipo de marketing puso sin avisar a sistemas.',
+      'Recorremos tu web como lo haría un visitante y localizamos los asistentes con IA que hay publicados, incluidos los que el equipo de marketing publicó sin informar al departamento de sistemas.',
   },
   {
     titulo: 'Pruebas',
@@ -72,7 +72,7 @@ const entregables = [
     etiqueta: 'Con la remediación',
     titulo: 'Informe completo',
     texto:
-      'El detalle reproducible de cada hallazgo, con la conversación exacta y la recomendación técnica. Se entrega al contratar el arreglo, no se vende suelto.',
+      'El detalle reproducible de cada hallazgo, con la conversación exacta y la recomendación técnica. Se entrega al contratar la corrección, no se ofrece por separado.',
   },
   {
     etiqueta: 'Opcional',
@@ -112,11 +112,11 @@ const normas = [
       class="mt-7 max-w-[18ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
       data-reveal
     >
-      Tu chatbot <span class="font-semibold text-oro-oscuro">cuenta más de lo que crees</span>.
+      Tu chatbot <span class="font-semibold text-oro-oscuro">revela más información de la que crees</span>.
     </h1>
     <p class="mt-8 max-w-[54ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Poner un asistente con IA en la web lleva una tarde. Auditarlo no lo hace casi nadie. Nosotros lo
-      probamos como lo probaría alguien con malas intenciones y te enseñamos qué se le escapa.
+      Publicar un asistente con IA en la web es rápido. Auditarlo es poco habitual. Nosotros lo
+      probamos como lo haría un atacante y te mostramos qué información se le escapa.
     </p>
     <div class="mt-12 flex flex-wrap gap-4" data-reveal>
       <Boton href={href('/contacto/')}>Pedir el escaneo gratuito →</Boton>
@@ -130,10 +130,10 @@ const normas = [
       <div class="max-w-[62ch]" data-reveal>
         <p class="eyebrow">Lo que se le puede sacar</p>
         <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
-          No hace falta ser un atacante sofisticado. Basta con insistir bien.
+          No hace falta ser un atacante sofisticado. Basta con formular las preguntas adecuadas.
         </h2>
         <p class="mt-6 text-[17px] text-pizarra">
-          En septiembre de 2026 rastreamos 391 webs españolas. Un puñado de los asistentes con IA que
+          En septiembre de 2026 rastreamos 391 webs españolas. Algunos de los asistentes con IA que
           encontramos dejaron escapar algo al probarlos a fondo, con una segunda revisión adversa sobre cada
           hallazgo. Nadie vulneró nada: solo hubo que escribir en el chat. El rastreo sigue en marcha.
         </p>
@@ -170,14 +170,14 @@ const normas = [
           <h2
             class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]"
           >
-            Cuatro pasos, con LeakAI haciendo el trabajo pesado.
+            Cuatro pasos, con LeakAI realizando el trabajo de análisis.
           </h2>
         </div>
         <div class="text-[17px] text-pizarra md:col-span-6 md:pt-12" data-reveal>
           <p>
             LeakAI es nuestra herramienta de auditoría. Detecta los asistentes publicados, los prueba y puntúa
             cada hallazgo. La construimos nosotros y la usamos en cada proyecto, así que el diagnóstico no
-            depende de que alguien tenga la tarde libre.
+            depende de la disponibilidad de una persona.
           </p>
         </div>
       </div>
@@ -204,7 +204,7 @@ const normas = [
       <div class="max-w-[62ch]" data-reveal>
         <p class="eyebrow text-oro-luz">Qué te llevas</p>
         <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
-          El diagnóstico es gratis. Lo que se paga es dejarlo cerrado.
+          El diagnóstico es gratuito. El servicio de pago es la corrección de las vulnerabilidades.
         </h2>
       </div>
 
@@ -227,7 +227,7 @@ const normas = [
     <div class="wrap py-24 md:py-32">
       <div class="grid gap-10 md:grid-cols-12">
         <div class="md:col-span-5" data-reveal>
-          <p class="eyebrow">Por qué te va a tocar igualmente</p>
+          <p class="eyebrow">Por qué la normativa te afecta</p>
           <h2
             class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]"
           >
@@ -254,7 +254,7 @@ const normas = [
       <div class="md:col-span-6" data-reveal>
         <p class="eyebrow">Los límites, por escrito</p>
         <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
-          Esto es un diagnóstico, no una amenaza.
+          Se trata de un diagnóstico, no de un ataque.
         </h2>
       </div>
       <div class="space-y-5 text-[17px] text-pizarra md:col-span-6 md:pt-12" data-reveal>
@@ -274,7 +274,7 @@ const normas = [
   <GuiasRelacionadas ruta={'/servicios/seguridad-ia/'} idioma="es" />
 
   <Cta
-    titulo="Escaneamos tu asistente gratis. Después decides."
+    titulo="Analizamos tu asistente sin coste. Después decides."
     texto="Nos dices tu dominio y te devolvemos el informe básico con la severidad y las categorías de fuga que hayamos encontrado. Sin compromiso y sin coste."
     boton="Pedir el escaneo"
   />

@@ -57,7 +57,7 @@ Aquest article explica com funciona, quins errors evita, què no fa i com saber 
 
 ## El problema: transcripció manual
 
-Una factura d'un proveïdor nou arriba amb un format diferent de les altres. Un albarà arriba escanejat, tort o amb una foto del mòbil. Qui els processa copia dades d'un document a un altre i comprova a ull que quadren.
+Una factura d'un proveïdor nou arriba amb un format diferent de les altres. Un albarà arriba escanejat, tort o amb una foto del mòbil. Qui els processa copia dades d'un document a un altre i comprova manualment que quadren.
 
 Això consumeix hores, i les hores se'n van en feina sense valor afegit. A més, una dada mal copiada pot acabar en un pagament equivocat que després cal corregir.
 
@@ -79,11 +79,11 @@ Sempre que es defineixin les comprovacions, el sistema pot evitar:
 - **Factures duplicades.** La mateixa factura rebuda dues vegades, per correu electrònic i per correu postal.
 - **Diferències entre albarà i factura.** Es factura una quantitat diferent de la rebuda.
 - **Dades fiscals mal copiades.** Un NIF o una raó social amb una errada.
-- **Retards.** Una factura que espera en una safata d'entrada perquè ningú no ha tingut temps.
+- **Retards.** Una factura que espera en una safata d'entrada perquè no s'ha pogut atendre.
 
-> **Compte:** *sempre que es defineixin*. La IA no sap per si sola quina diferència és acceptable.
+> **Important:** *sempre que es defineixin*. La IA no sap per si sola quina diferència és acceptable.
 
-Fixa't en la condició: *sempre que es defineixin*. La IA no sap per si sola quina diferència és acceptable. Cal dir-li quan ha d'avisar i quan no.
+Convé tenir present la condició: *sempre que es defineixin*. La IA no sap per si sola quina diferència és acceptable. Cal dir-li quan ha d'avisar i quan no.
 
 ## Què no fa
 
@@ -125,4 +125,4 @@ Si no tens la línia base, no sabràs si ha millorat o si només ho sembla.
 
 ## Per on continuar
 
-Si vols valorar amb 77 Delta si l'entrada de factures i albarans de la teva empresa és una bona primera tasca, reserva amb el botó de sota una reunió de 20 minuts.
+Si vols valorar amb 77 Delta si l'entrada de factures i albarans de la teva empresa és una bona primera tasca, reserva una reunió de 20 minuts amb el botó inferior.

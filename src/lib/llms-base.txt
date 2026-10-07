@@ -13,7 +13,7 @@
 ## Productos
 
 - [LeakAI](https://77delta.com/productos/leakai/): auditoría de seguridad para los chatbots con IA de tu web. Producto propio.
-- [Licita](https://77delta.com/licita/): motor de licitaciones que filtra por lo que tu empresa puede firmar y resume cada pliego.
+- [Licita](https://77delta.com/licita/): motor de licitaciones que filtra las licitaciones a las que tu empresa puede presentarse y resume cada pliego.
 - [Todos los productos](https://77delta.com/productos/): portfolio del grupo tecnológico (compliance europeo, atención al cliente, educación y más).
 
 ## Sectores

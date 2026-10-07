@@ -57,7 +57,7 @@ Este artículo explica cómo funciona, qué errores evita, qué no hace y cómo 
 
 ## El problema: transcripción manual
 
-Una factura de un proveedor nuevo llega con un formato distinto de las demás. Un albarán llega escaneado, torcido o con una foto del móvil. Quien los procesa copia datos de un documento a otro y comprueba a ojo que cuadran.
+Una factura de un proveedor nuevo llega con un formato distinto de las demás. Un albarán llega escaneado, torcido o con una foto del móvil. Quien los procesa copia datos de un documento a otro y comprueba manualmente que cuadran.
 
 Eso consume horas, y las horas se van en trabajo sin valor añadido. Además, un dato mal copiado puede acabar en un pago equivocado que luego hay que corregir.
 
@@ -79,11 +79,11 @@ Siempre que se definan las comprobaciones, el sistema puede evitar:
 - **Facturas duplicadas.** La misma factura recibida dos veces, por email y por correo postal.
 - **Diferencias entre albarán y factura.** Se factura una cantidad distinta de la recibida.
 - **Datos fiscales mal copiados.** Un NIF o una razón social con una errata.
-- **Retrasos.** Una factura que espera en una bandeja de entrada porque nadie ha tenido tiempo.
+- **Retrasos.** Una factura que espera en una bandeja de entrada porque no se ha podido atender.
 
-> **Ojo:** *siempre que se definan*. La IA no sabe por sí sola qué diferencia es aceptable.
+> **Importante:** *siempre que se definan*. La IA no sabe por sí sola qué diferencia es aceptable.
 
-Fíjate en la condición: *siempre que se definan*. La IA no sabe por sí sola qué diferencia es aceptable. Hay que decirle cuándo avisar y cuándo no.
+Conviene tener presente la condición: *siempre que se definan*. La IA no sabe por sí sola qué diferencia es aceptable. Hay que decirle cuándo avisar y cuándo no.
 
 ## Qué no hace
 
@@ -125,4 +125,4 @@ Si no tienes la línea base, no sabrás si ha mejorado o si solo lo parece.
 
 ## Por dónde seguir
 
-Si quieres valorar con 77 Delta si la entrada de facturas y albaranes de tu empresa es una buena primera tarea, reserva con el botón de abajo una reunión de 20 minutos.
+Si quieres valorar con 77 Delta si la entrada de facturas y albaranes de tu empresa es una buena primera tarea, reserva una reunión de 20 minutos con el botón inferior.

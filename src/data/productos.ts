@@ -74,7 +74,7 @@ export const productos: Producto[] = [
     nombre: 'ScoreFlow',
     estado: 'Pre-MVP',
     categoria: 'B2B SaaS',
-    descripcion: 'Craftsmanship Score para AI coding.',
+    descripcion: 'Puntuación de calidad del trabajo para programación con IA.',
     propio: false,
     logo: 'scoreflow.svg',
     queHace:
@@ -90,15 +90,15 @@ export const productos: Producto[] = [
     propio: false,
     logo: 'contablia.png',
     queHace:
-      'Cinco agentes que se reparten la administración de un autónomo: presupuestos y seguimiento comercial, captura de ingresos y gastos, modelos fiscales, documentación y avisos de negocio. Se maneja conversando.',
+      'Cinco agentes que se reparten la administración de un autónomo: presupuestos y seguimiento comercial, captura de ingresos y gastos, modelos fiscales, documentación y avisos de negocio. Se gestiona mediante conversación.',
     stack: 'Next.js, Postgres con pgvector, Drizzle, banca abierta',
   },
   {
     slug: 'swarmix',
     nombre: 'Swarmix',
     estado: 'Beta',
-    categoria: 'Outreach',
-    descripcion: 'Outreach IA multi-plataforma.',
+    categoria: 'Prospección',
+    descripcion: 'Prospección con IA multiplataforma.',
     propio: false,
     url: 'https://swarmix.co',
     logo: 'swarmix.png',

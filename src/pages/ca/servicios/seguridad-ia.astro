@@ -14,7 +14,7 @@ const fugas = [
   {
     titulo: 'Preus, descomptes i marges',
     texto:
-      'Rangs d’honoraris, condicions especials i llindars de negociació que són al context del bot perquè algú els va enganxar allà perquè respongués millor.',
+      'Rangs d’honoraris, condicions especials i llindars de negociació que són al context del bot perquè s’hi van incloure per millorar les seves respostes.',
   },
   {
     titulo: 'Dades de clients',
@@ -24,7 +24,7 @@ const fugas = [
   {
     titulo: 'Comportament fora de guió',
     texto:
-      'Amb una injecció d’instruccions, el bot de la teva web pot acabar dient el que decideixi un tercer. Surt amb el teu logotip al costat.',
+      'Amb una injecció d’instruccions, el bot de la teva web pot acabar dient el que decideixi un tercer. Ho fa sota la imatge de la teva marca.',
   },
   {
     titulo: 'Promeses que no pots complir',
@@ -42,7 +42,7 @@ const pasos = [
   {
     titulo: 'Detecció',
     texto:
-      'Recorrem la teva web com ho faria un visitant i localitzem els assistents amb IA que hi ha publicats, inclosos els que l’equip de màrqueting va posar sense avisar sistemes.',
+      'Recorrem la teva web com ho faria un visitant i localitzem els assistents amb IA que hi ha publicats, inclosos els que l’equip de màrqueting va publicar sense informar el departament de sistemes.',
   },
   {
     titulo: 'Proves',
@@ -72,7 +72,7 @@ const entregables = [
     etiqueta: 'Amb la remediació',
     titulo: 'Informe complet',
     texto:
-      'El detall reproduïble de cada troballa, amb la conversa exacta i la recomanació tècnica. Es lliura en contractar l’arranjament, no es ven solt.',
+      'El detall reproduïble de cada troballa, amb la conversa exacta i la recomanació tècnica. Es lliura en contractar la correcció, no s’ofereix per separat.',
   },
   {
     etiqueta: 'Opcional',
@@ -112,11 +112,11 @@ const normas = [
       class="mt-7 max-w-[18ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
       data-reveal
     >
-      El teu chatbot <span class="font-semibold text-oro-oscuro">explica més del que et penses</span>.
+      El teu chatbot <span class="font-semibold text-oro-oscuro">revela més informació de la que et penses</span>.
     </h1>
     <p class="mt-8 max-w-[54ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Posar un assistent amb IA a la web porta una tarda. Auditar-lo no ho fa gairebé ningú. Nosaltres el provem
-      com ho faria algú amb males intencions i et mostrem què se li escapa.
+      Publicar un assistent amb IA a la web és ràpid. Auditar-lo és poc habitual. Nosaltres el provem
+      com ho faria un atacant i et mostrem quina informació se li escapa.
     </p>
     <div class="mt-12 flex flex-wrap gap-4" data-reveal>
       <Boton href={href('/contacto/')}>Demanar l’escaneig gratuït →</Boton>
@@ -130,10 +130,10 @@ const normas = [
       <div class="max-w-[62ch]" data-reveal>
         <p class="eyebrow">El que se li pot treure</p>
         <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
-          No cal ser un atacant sofisticat. N’hi ha prou d’insistir bé.
+          No cal ser un atacant sofisticat. N’hi ha prou de formular les preguntes adequades.
         </h2>
         <p class="mt-6 text-[17px] text-pizarra">
-          Al setembre de 2026 vam rastrejar 391 webs espanyoles. Un grapat dels assistents amb IA que vam trobar
+          Al setembre de 2026 vam rastrejar 391 webs espanyoles. Alguns dels assistents amb IA que vam trobar
           van deixar escapar alguna cosa en provar-los a fons, amb una segona revisió adversa sobre cada
           troballa. Ningú no va vulnerar res: només va caldre escriure al xat. El rastreig continua en marxa.
         </p>
@@ -170,14 +170,14 @@ const normas = [
           <h2
             class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]"
           >
-            Quatre passos, amb LeakAI fent la feina pesada.
+            Quatre passos, amb LeakAI fent la feina d’anàlisi.
           </h2>
         </div>
         <div class="text-[17px] text-pizarra md:col-span-6 md:pt-12" data-reveal>
           <p>
             LeakAI és la nostra eina d’auditoria. Detecta els assistents publicats, els prova i puntua cada
-            troballa. La construïm nosaltres i la fem servir a cada projecte, així el diagnòstic no depèn que
-            algú tingui la tarda lliure.
+            troballa. La construïm nosaltres i la fem servir a cada projecte, així el diagnòstic no depèn de
+            la disponibilitat d’una persona.
           </p>
         </div>
       </div>
@@ -204,7 +204,7 @@ const normas = [
       <div class="max-w-[62ch]" data-reveal>
         <p class="eyebrow text-oro-luz">Què t’enduus</p>
         <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
-          El diagnòstic és gratis. El que es paga és deixar-ho tancat.
+          El diagnòstic és gratuït. El servei de pagament és la correcció de les vulnerabilitats.
         </h2>
       </div>
 
@@ -227,7 +227,7 @@ const normas = [
     <div class="wrap py-24 md:py-32">
       <div class="grid gap-10 md:grid-cols-12">
         <div class="md:col-span-5" data-reveal>
-          <p class="eyebrow">Per què et tocarà igualment</p>
+          <p class="eyebrow">Per què la normativa t’afecta</p>
           <h2
             class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]"
           >
@@ -254,7 +254,7 @@ const normas = [
       <div class="md:col-span-6" data-reveal>
         <p class="eyebrow">Els límits, per escrit</p>
         <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
-          Això és un diagnòstic, no una amenaça.
+          Es tracta d’un diagnòstic, no d’un atac.
         </h2>
       </div>
       <div class="space-y-5 text-[17px] text-pizarra md:col-span-6 md:pt-12" data-reveal>
@@ -273,7 +273,7 @@ const normas = [
   <GuiasRelacionadas ruta={'/servicios/seguridad-ia/'} idioma="ca" />
 
   <Cta
-    titulo="Escanegem el teu assistent gratis. Després decideixes."
+    titulo="Analitzem el teu assistent sense cost. Després decideixes."
     texto="Ens dius el teu domini i et retornem l’informe bàsic amb la severitat i les categories de fuga que hàgim trobat. Sense compromís i sense cost."
     boton="Demanar l’escaneig"
   />

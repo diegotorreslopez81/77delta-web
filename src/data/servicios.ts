@@ -44,7 +44,7 @@ export const queObtienes = [
   },
   {
     titulo: 'Presupuesto orientativo',
-    texto: 'Estimación honesta de la inversión necesaria por fase, sin tarifas inflacionadas ni letra pequeña.',
+    texto: 'Estimación transparente de la inversión necesaria por fase, con tarifas ajustadas y condiciones claras.',
   },
   {
     titulo: 'Recomendación de tecnologías',
@@ -63,15 +63,15 @@ export const queIncluye = [
   },
   {
     titulo: 'Automatización de procesos',
-    texto: 'Diseñamos el flujo end-to-end, no solo el modelo. Human-in-the-loop por defecto.',
+    texto: 'Diseñamos el flujo end-to-end, no solo el modelo. Supervisión humana por defecto.',
   },
   {
     titulo: 'Capacitación de tu equipo',
-    texto: 'Formación a comerciales, administrativos y operaciones. Con casos prácticos de tu día a día.',
+    texto: 'Formación a comerciales, administrativos y operaciones. Con casos prácticos de tu actividad diaria.',
   },
   {
     titulo: 'Documentación y traspaso',
-    texto: 'Al final del proyecto te quedas con código, claves, datos y manuales. Independencia real.',
+    texto: 'Al final del proyecto te quedas con código, claves, datos y manuales. Plena independencia.',
   },
   {
     titulo: 'SLA y soporte mensual',
@@ -98,7 +98,7 @@ export const fases = [
   {
     n: '04',
     titulo: 'Cierre',
-    texto: 'Entrega de código, claves, datos y documentación. Independencia real.',
+    texto: 'Entrega de código, claves, datos y documentación. Plena independencia.',
   },
 ];
 
@@ -128,14 +128,14 @@ export const recorrido = [
 
 export const faq = [
   {
-    pregunta: '¿El diagnóstico realmente es gratuito? ¿Cuál es el truco?',
+    pregunta: '¿El diagnóstico realmente es gratuito? ¿Hay alguna condición?',
     respuesta:
-      'No hay truco. Es nuestro punto de entrada. Si tras el diagnóstico no decides contratar nada, te quedas con la propuesta y plan de trabajo. Es información valiosa para ti y un coste razonable para nosotros si lo comparamos con un proyecto fallido por no haber entendido el caso.',
+      'No hay condiciones ocultas. Es nuestro punto de entrada. Si tras el diagnóstico no decides contratar nada, te quedas con la propuesta y plan de trabajo. Es información valiosa para ti y una inversión razonable para nosotros si lo comparamos con un proyecto fallido por no haber entendido el caso.',
   },
   {
     pregunta: '¿Por qué no publicáis precios fijos del servicio de transformación?',
     respuesta:
-      'Porque cada caso es distinto. Un proyecto de automatización conversacional en una clínica no se parece a uno de búsqueda inteligente en un despacho. Las tarifas cerradas obligan a inflar precio para los casos complejos o a aceptar pérdidas en los casos pequeños. Preferimos cotizar cada proyecto tras entenderlo.',
+      'Porque cada caso es distinto. Un proyecto de automatización conversacional en una clínica no se parece a uno de búsqueda inteligente en un despacho. Las tarifas cerradas obligan a elevar el precio para los casos complejos o a aceptar pérdidas en los casos pequeños. Preferimos cotizar cada proyecto tras entenderlo.',
   },
   {
     pregunta: '¿En cuánto tiempo veo resultados medibles?',
@@ -150,6 +150,6 @@ export const faq = [
   {
     pregunta: '¿Qué pasa si quiero dejar de trabajar con vosotros?',
     respuesta:
-      'Al finalizar cualquier proyecto te entregamos código, claves de acceso, datos y documentación. Tu empresa conserva todo el activo construido. El Partner tecnológico se revisa trimestralmente y puedes ajustarlo o pausarlo según evolucione tu empresa.',
+      'Al finalizar cualquier proyecto te entregamos código, claves de acceso, datos y documentación. Tu empresa conserva todo lo desarrollado. El Partner tecnológico se revisa trimestralmente y puedes ajustarlo o pausarlo según evolucione tu empresa.',
   },
 ];

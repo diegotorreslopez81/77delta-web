@@ -32,7 +32,7 @@ export const sectores: Sector[] = [
     nombre: 'Clínicas y centros de salud',
     resumen: 'Repensamos la recepción, la agenda, el seguimiento del paciente y la trazabilidad clínica.',
     h1: 'Recepción, agenda y seguimiento clínico repensados con IA',
-    lead: 'Recepcionista virtual por WhatsApp, agenda inteligente y notas clínicas automáticas. Tu equipo deja de saturarse con confirmaciones y vuelve a centrarse en pacientes.',
+    lead: 'Recepcionista virtual por WhatsApp, agenda inteligente y notas clínicas automáticas. Tu equipo deja de dedicar tiempo a las confirmaciones y se centra en los pacientes.',
     problema:
       'Las clínicas pierden ingresos por ausencias no avisadas. La recepción se satura con llamadas de confirmación. El profesional pierde tiempo en notas y seguimiento.',
     soluciones: [
@@ -79,7 +79,7 @@ export const sectores: Sector[] = [
     nombre: 'Distribución y logística',
     resumen: 'Repensamos cómo se reciben los pedidos, cómo se valida el stock y cómo trabajan los comerciales.',
     h1: 'Pedidos, stock y atención comercial automatizados 24/7',
-    lead: 'Procesamiento de pedidos por WhatsApp y email, sincronización de stock multicanal y atención comercial sin guardias humanas. Tu cliente no espera.',
+    lead: 'Procesamiento de pedidos por WhatsApp y email, sincronización de stock multicanal y atención comercial fuera del horario laboral, sin turnos de guardia. Tus clientes reciben respuesta a cualquier hora.',
     problema:
       'Los comerciales transcriben pedidos manualmente al ERP. Los clientes piden por WhatsApp, correo y llamada. Las validaciones de stock son lentas.',
     soluciones: [
@@ -129,7 +129,7 @@ export const sectores: Sector[] = [
     h1: 'Atención ciudadana, gestión documental y análisis de expedientes con IA',
     lead: 'Consultoría tecnológica para administraciones: diagnóstico de procesos, sede electrónica conversacional, clasificación documental masiva y análisis de expedientes. Cumplimiento ENS y datos procesados en territorio europeo.',
     problema:
-      'La atención ciudadana satura el call center. Los expedientes históricos son difíciles de consultar. Los plenos generan actas extensas.',
+      'La atención ciudadana satura el centro de llamadas. Los expedientes históricos son difíciles de consultar. Los plenos generan actas extensas.',
     soluciones: [
       'Consultoría de transformación digital: diagnóstico y hoja de ruta antes de construir nada',
       'Chatbot de atención ciudadana 24/7 con escalado a funcionario',
@@ -154,7 +154,7 @@ export const sectores: Sector[] = [
     h1: 'Evaluación adaptativa, tutorías 24/7 y análisis de progreso',
     lead: 'Exámenes generados con IA en 30 segundos, tutorías automáticas y dashboard de progreso por alumno. Para academias, bootcamps y áreas de formación corporativa.',
     problema:
-      'Los tutores no dan abasto con dudas individuales. Las evaluaciones consumen tiempo del profesorado. El onboarding de nuevos empleados es genérico.',
+      'Los tutores no pueden atender todas las dudas individuales. Las evaluaciones consumen tiempo del profesorado. El onboarding de nuevos empleados es genérico.',
     soluciones: [
       'Asistente formativo entrenado con material del centro',
       'Evaluación adaptativa al nivel del alumno',

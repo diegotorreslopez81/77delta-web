@@ -14,10 +14,10 @@ const capacidades = [
   {
     titulo: 'Filtra',
     texto:
-      'Descarta lo que no encaja con lo que tu empresa sabe hacer y con lo que puede firmar de verdad: solvencia, capacidad, sector.',
+      'Descarta lo que no encaja con lo que tu empresa sabe hacer y con lo que puede firmar con garantías: solvencia, capacidad, sector.',
   },
   {
-    titulo: 'Mastica el pliego',
+    titulo: 'Resume el pliego',
     texto:
       'Convierte cada pliego en una ficha corta: fecha de cierre, importe, solvencia exigida y el motivo concreto para ir o no ir.',
   },
@@ -34,7 +34,7 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
 
 <Base
   title="Licita · el motor de licitaciones"
-  description="Licita rastrea licitaciones en las 17 comunidades autónomas y en Europa, filtra por lo que tu empresa puede firmar y mastica cada pliego en una ficha con cierre, importe, solvencia y motivo de ir o no ir."
+  description="Licita rastrea licitaciones en las 17 comunidades autónomas y en Europa, filtra por lo que tu empresa puede firmar y resume cada pliego en una ficha con cierre, importe, solvencia y motivo de ir o no ir."
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
@@ -43,11 +43,11 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
       class="mt-7 max-w-[20ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
       data-reveal
     >
-      Deja de perder la tarde <span class="font-semibold text-oro-oscuro">leyendo pliegos que no eran para ti</span>.
+      Evita perder horas <span class="font-semibold text-oro-oscuro">leyendo pliegos que no son para tu empresa</span>.
     </h1>
     <p class="mt-8 max-w-[58ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
       Si tu empresa licita, ya conoces el problema: cientos de publicaciones nuevas cada semana, y la mayoría no te
-      sirven. Licita las lee todas, se queda con las que puedes firmar de verdad y te dice, de cada una, si merece la
+      sirven. Licita las lee todas, se queda con las que puedes firmar con garantías y te dice, de cada una, si merece la
       pena o no antes de que te pongas a redactar.
     </p>
     <div class="mt-12 flex flex-wrap gap-4" data-reveal>
@@ -137,8 +137,8 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
       <div class="max-w-[68ch]" data-reveal>
         <p class="eyebrow text-pizarra">Cómo funciona</p>
         <h2 class="mt-5 max-w-[24ch] font-display text-[clamp(26px,3.4vw,42px)] font-extralight leading-[1.15] tracking-[-0.03em]">
-          El motor te dice si puedes firmarlo <span class="font-semibold text-oro">antes</span> de que pierdas la tarde
-          redactándolo.
+          El motor te dice si puedes firmarlo <span class="font-semibold text-oro">antes</span> de dedicar horas a
+          redactarlo.
         </h2>
         <p class="mt-8 text-[17px] leading-[1.7] text-pizarra">
           Una licitación pública de auditoría y protección de datos puede encajar a primera vista por precio y
@@ -391,7 +391,7 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
         const respuesta = (await r.json().catch(() => ({}))) as { ok?: boolean; error?: string };
         if (r.ok && respuesta.ok) {
           form.reset();
-          mostrar('Recibido. Te escribimos para cuadrar la demo.');
+          mostrar('Recibido. Nos pondremos en contacto para acordar la fecha de la demo.');
           return;
         }
         if (r.status === 400 || r.status === 429) {

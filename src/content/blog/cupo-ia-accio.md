@@ -41,19 +41,19 @@ fuentes:
 
 Si diriges una pyme en Catalunya y buscas "Cupó IA", probablemente quieres saber si puede ayudarte a poner en marcha un proyecto de inteligencia artificial. La respuesta fiable está en un solo sitio: la web de ACCIÓ, [accio.gencat.cat](https://www.accio.gencat.cat). Las condiciones, los plazos y quién puede prestar el servicio los fija y los publica ACCIÓ. Por eso este artículo no los repite: se quedarían desactualizados.
 
-Lo que sí podemos hacer es ayudarte a llegar preparado. Un proyecto bien planteado se evalúa mejor, se ejecuta antes y compensa tenga ayuda o no. Y una cosa que sí podemos decir: 77 Delta es proveedor acreditado por ACCIÓ.
+Lo que sí podemos hacer es ayudarte a llegar preparado. Un proyecto bien planteado se evalúa mejor, se ejecuta antes y compensa tenga ayuda o no. Podemos afirmar lo siguiente: 77 Delta es proveedor acreditado por ACCIÓ.
 
 ## Qué ofrece ACCIÓ en inteligencia artificial
 
 > **Dato:** ACCIÓ, la agencia para la competitividad de la empresa de la Generalitat, tiene un servicio de inteligencia artificial para empresas industriales. Su página lo describe así: el servicio "combina formación práctica y asesoramiento personalizado" para que puedas aplicar la IA. Con el apoyo de un experto tecnológico, la empresa analiza sus necesidades y retos específicos, y acaba "con un plan de acción personalizado y realista" para desarrollar el proyecto.
 
-Fíjate en la idea de fondo: el resultado no es una herramienta, es un plan. Para sacarle partido conviene llegar con las ideas claras sobre qué problema quieres resolver.
+Conviene fijarse en la idea de fondo: el resultado no es una herramienta, es un plan. Para sacarle partido conviene llegar con las ideas claras sobre qué problema quieres resolver.
 
 ## La ficha de una página
 
 Antes de hablar con ACCIÓ o con cualquier proveedor, escribe una ficha de una página. Si no cabe en una página, el proyecto es demasiado grande para empezar.
 
-**1. Problema.** Una frase. "Pasamos a mano los pedidos recibidos por correo al ERP y se cuelan errores."
+**1. Problema.** Una frase. "Pasamos a mano los pedidos recibidos por correo al ERP y aparecen errores."
 
 **2. Proceso actual.** Quién lo hace, con qué herramientas y con qué frecuencia. Incluye las excepciones: son donde fallan los proyectos.
 
@@ -65,7 +65,7 @@ Antes de hablar con ACCIÓ o con cualquier proveedor, escribe una ficha de una p
 
 **6. Indicadores de éxito.** Los mismos de la línea base, con el objetivo que esperas. Por ejemplo, reducir las horas semanales dedicadas a la tarea o bajar los errores.
 
-**7. Quién en la empresa lo lidera.** Un proyecto sin una persona responsable dentro de la empresa se para en cuanto aparece el primer imprevisto.
+**7. Quién en la empresa lo lidera.** Un proyecto sin una persona responsable dentro de la empresa se detiene al surgir el primer imprevisto.
 
 ## Ejemplo ilustrativo (hipotético)
 
@@ -73,7 +73,7 @@ Antes de hablar con ACCIÓ o con cualquier proveedor, escribe una ficha de una p
 
 Su ficha podría decir: problema, transcripción manual de pedidos con errores ocasionales; línea base, el tiempo semanal dedicado y los errores del último mes; alcance, solo pedidos de los clientes que envían PDF; indicadores, tiempo de transcripción y errores; responsable, el jefe de administración.
 
-> **Ojo:** Este ejemplo es inventado y sirve solo para mostrar el formato. No son datos de un cliente. Con una ficha así, cualquier experto puede opinar en veinte minutos si el proyecto es viable.
+> **Nota:** Este ejemplo es ilustrativo y sirve solo para mostrar el formato. No son datos de un cliente. Con una ficha así, cualquier experto puede opinar en veinte minutos si el proyecto es viable.
 
 ## Preguntas que conviene hacer
 
@@ -94,7 +94,7 @@ Su ficha podría decir: problema, transcripción manual de pedidos con errores o
 ## Errores habituales
 
 - Presentar "queremos usar IA" sin problema concreto.
-- Proyectos demasiado grandes: acotar siempre gana.
+- Proyectos demasiado grandes: acotar el alcance da mejores resultados.
 - No medir antes de empezar.
 - Dar por buena una información sobre ayudas sin comprobarla en la web oficial.
 - No decidir quién lidera el proyecto dentro de la empresa.

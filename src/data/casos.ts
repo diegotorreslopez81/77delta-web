@@ -72,7 +72,7 @@ export const casos: Caso[] = [
     meta: 'Formación profesional · Valencia',
     titulo: 'Un centro de FP tenía cola de un mes para tutorías personalizadas.',
     situacion:
-      'Los formadores no daban abasto con las dudas individuales. Los alumnos esperaban hasta un mes para una tutoría, lo que afectaba a la tasa de aprobado.',
+      'Los formadores no podían atender todas las dudas individuales. Los alumnos esperaban hasta un mes para una tutoría, lo que afectaba a la tasa de aprobado.',
     solucion:
       'Construimos un asistente formativo entrenado con su material. Resuelve dudas 24/7 y escala a tutor humano solo en casos complejos. La cola se eliminó.',
     sector: 'formacion',

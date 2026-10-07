@@ -19,17 +19,17 @@ const categorias = [
   {
     nombre: 'Obedecer instrucciones de un desconocido',
     texto:
-      'Un mensaje bien construido consigue que el bot ignore su guion y haga lo que pide quien escribe. Sale con el logotipo de la empresa al lado. Es, de momento, el tipo de fuga más frecuente.',
+      'Un mensaje bien construido consigue que el asistente ignore sus instrucciones y haga lo que pide quien escribe, mostrando el logotipo de la empresa. Es, de momento, el tipo de fuga más frecuente.',
   },
   {
     nombre: 'Recitar sus instrucciones internas',
     texto:
-      'El asistente reproduce parte de su propio system prompt, con restricciones que le han puesto y herramientas a las que llega. Es el mapa para todo lo demás.',
+      'El asistente reproduce parte de su propio system prompt, con restricciones que le han puesto y herramientas a las que llega. Esa información facilita cualquier otro ataque.',
   },
   {
     nombre: 'Revelar datos de clientes o información comercial interna',
     texto:
-      'De momento, ningún asistente probado ha soltado datos personales ni precios o márgenes internos ante nuestras pruebas.',
+      'De momento, ningún asistente probado ha revelado datos personales ni precios o márgenes internos ante nuestras pruebas.',
   },
 ];
 ---
@@ -111,7 +111,7 @@ const categorias = [
       <div class="max-w-[62ch]" data-reveal>
         <p class="eyebrow text-oro-luz">Segundo hallazgo</p>
         <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
-          La mayoría aguanta. Un puñado no.
+          La mayoría supera las pruebas. Una minoría no.
         </h2>
         <p class="mt-6 text-[17px] text-marfil/72">
           A cada asistente le lanzamos la misma batería de pruebas, siempre desde su web pública y siempre
@@ -184,8 +184,8 @@ const categorias = [
           </p>
           <p>
             Las pruebas son de primer nivel, las que haría alguien con curiosidad y paciencia, no un atacante
-            dedicado. Un asistente que aguanta estas seis no es un asistente seguro: es uno que no se cae a la
-            primera.
+            dedicado. Un asistente que aguanta estas seis no es un asistente seguro: es uno que supera las pruebas más
+            básicas.
           </p>
           <p>
             Nada de esto se hizo entrando en sistemas ajenos. Solo se habló con chats publicados en webs
@@ -208,15 +208,15 @@ const categorias = [
       <div class="space-y-5 text-[17px] text-pizarra md:col-span-7 md:pt-12" data-reveal>
         <p>
           Los asistentes que aguantan las pruebas suelen estar en empresas grandes, con un clasificador delante
-          que bloquea cualquier mensaje raro. Los que fallan son, de momento, de empresas medianas que montaron
-          el asistente rápido, lo conectaron a su documentación y no volvieron a mirarlo.
+          que bloquea cualquier mensaje raro. Los que fallan son, de momento, de empresas medianas que implantaron
+          el asistente con rapidez, lo conectaron a su documentación y no lo han revisado después.
         </p>
         <p>
           Cerrar esto no es un proyecto largo: es reescribir las instrucciones, poner filtros a la entrada y a la
           salida, acotar lo que el asistente puede consultar y dejar pruebas que avisen si se vuelve a abrir.
         </p>
         <div class="flex flex-wrap gap-4 pt-4">
-          <Boton href={href('/contacto/')}>Escanear el mío gratis →</Boton>
+          <Boton href={href('/contacto/')}>Solicitar el análisis gratuito →</Boton>
           <Boton href={href('/servicios/seguridad-ia/')} variante="linea">Cómo lo auditamos</Boton>
         </div>
       </div>

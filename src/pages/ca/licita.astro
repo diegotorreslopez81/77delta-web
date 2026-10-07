@@ -14,10 +14,10 @@ const capacitats = [
   {
     titol: 'Filtra',
     text:
-      'Descarta el que no encaixa amb el que la teva empresa sap fer i amb el que pot signar de debò: solvència, capacitat, sector.',
+      'Descarta el que no encaixa amb el que la teva empresa sap fer i amb el que pot signar amb garanties: solvència, capacitat, sector.',
   },
   {
-    titol: 'Mastega el plec',
+    titol: 'Resumeix el plec',
     text:
       'Converteix cada plec en una fitxa curta: data de tancament, import, solvència exigida i el motiu concret per anar-hi o no.',
   },
@@ -34,7 +34,7 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
 
 <Base
   title="Licita · el motor de licitacions"
-  description="Licita rastreja licitacions a les 17 comunitats autònomes i a Europa, filtra pel que la teva empresa pot signar i mastega cada plec en una fitxa amb tancament, import, solvència i motiu per anar-hi o no."
+  description="Licita rastreja licitacions a les 17 comunitats autònomes i a Europa, filtra pel que la teva empresa pot signar i resumeix cada plec en una fitxa amb tancament, import, solvència i motiu per anar-hi o no."
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
@@ -43,11 +43,11 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
       class="mt-7 max-w-[20ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
       data-reveal
     >
-      Deixa de perdre la tarda <span class="font-semibold text-oro-oscuro">llegint plecs que no eren per a tu</span>.
+      Evita perdre hores <span class="font-semibold text-oro-oscuro">llegint plecs que no són per a la teva empresa</span>.
     </h1>
     <p class="mt-8 max-w-[58ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
       Si la teva empresa licita, ja coneixes el problema: centenars de publicacions noves cada setmana, i la
-      majoria no et serveixen. Licita les llegeix totes, es queda amb les que pots signar de debò i et diu, de
+      majoria no et serveixen. Licita les llegeix totes, es queda amb les que pots signar amb garanties i et diu, de
       cadascuna, si val la pena o no abans que et posis a redactar.
     </p>
     <div class="mt-12 flex flex-wrap gap-4" data-reveal>
@@ -137,8 +137,8 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
       <div class="max-w-[68ch]" data-reveal>
         <p class="eyebrow text-pizarra">El cas real</p>
         <h2 class="mt-5 max-w-[24ch] font-display text-[clamp(26px,3.4vw,42px)] font-extralight leading-[1.15] tracking-[-0.03em]">
-          El motor et diu si el pots signar <span class="font-semibold text-oro">abans</span> que perdis la tarda
-          redactant-lo.
+          El motor et diu si el pots signar <span class="font-semibold text-oro">abans</span> de dedicar hores a
+          redactar-lo.
         </h2>
         <p class="mt-8 text-[17px] leading-[1.7] text-pizarra">
           Una licitació pública d'auditoria i protecció de dades, uns 24.000 €, encaixava a primera vista. Licita
@@ -401,7 +401,7 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
         const respuesta = (await r.json().catch(() => ({}))) as { ok?: boolean; error?: string };
         if (r.ok && respuesta.ok) {
           form.reset();
-          mostrar('Rebut. Et contactarem per quadrar la demo.');
+          mostrar('Rebut. Ens posarem en contacte per acordar la data de la demo.');
           return;
         }
         if (r.status === 400 || r.status === 429) {

@@ -41,19 +41,19 @@ fuentes:
 
 Si dirigeixes una pime a Catalunya i busques "Cupó IA", probablement vols saber si pot ajudar-te a posar en marxa un projecte d'intel·ligència artificial. La resposta fiable és en un sol lloc: la web d'ACCIÓ, [accio.gencat.cat](https://www.accio.gencat.cat). Les condicions, els terminis i qui pot prestar el servei els fixa i els publica ACCIÓ. Per això aquest article no els repeteix: quedarien desactualitzats.
 
-El que sí podem fer és ajudar-te a arribar preparat. Un projecte ben plantejat s'avalua millor, s'executa abans i compensa tingui ajut o no. I una cosa que sí podem dir: 77 Delta és proveïdor acreditat per ACCIÓ.
+El que sí podem fer és ajudar-te a arribar preparat. Un projecte ben plantejat s'avalua millor, s'executa abans i compensa tingui ajut o no. Podem afirmar el següent: 77 Delta és proveïdor acreditat per ACCIÓ.
 
 ## Què ofereix ACCIÓ en intel·ligència artificial
 
 > **Dada:** ACCIÓ, l'agència per a la competitivitat de l'empresa de la Generalitat, té un servei d'intel·ligència artificial per a empreses industrials. La seva pàgina el descriu així: el servei "combina formació pràctica i assessorament personalitzat" perquè puguis aplicar la IA. Amb el suport d'un expert tecnològic, l'empresa analitza les seves necessitats i reptes específics, i acaba "amb un pla d'acció personalitzat i realista" per desenvolupar el projecte.
 
-Fixa't en la idea de fons: el resultat no és una eina, és un pla. Per treure-li partit convé arribar amb les idees clares sobre quin problema vols resoldre.
+Convé fixar-se en la idea de fons: el resultat no és una eina, és un pla. Per treure-li partit convé arribar amb les idees clares sobre quin problema vols resoldre.
 
 ## La fitxa d'una pàgina
 
 Abans de parlar amb ACCIÓ o amb qualsevol proveïdor, escriu una fitxa d'una pàgina. Si no hi cap, el projecte és massa gran per començar.
 
-**1. Problema.** Una frase. "Passem a mà les comandes rebudes per correu a l'ERP i es cola algun error."
+**1. Problema.** Una frase. "Passem a mà les comandes rebudes per correu a l'ERP i apareix algun error."
 
 **2. Procés actual.** Qui ho fa, amb quines eines i amb quina freqüència. Inclou les excepcions: són on fallen els projectes.
 
@@ -65,7 +65,7 @@ Abans de parlar amb ACCIÓ o amb qualsevol proveïdor, escriu una fitxa d'una p�
 
 **6. Indicadors d'èxit.** Els mateixos de la línia base, amb l'objectiu que esperes. Per exemple, reduir les hores setmanals dedicades a la tasca o abaixar els errors.
 
-**7. Qui a l'empresa ho lidera.** Un projecte sense una persona responsable dins l'empresa s'atura en quan apareix el primer imprevist.
+**7. Qui a l'empresa ho lidera.** Un projecte sense una persona responsable dins l'empresa s'atura quan apareix el primer imprevist.
 
 ## Exemple il·lustratiu (hipotètic)
 
@@ -73,7 +73,7 @@ Abans de parlar amb ACCIÓ o amb qualsevol proveïdor, escriu una fitxa d'una p�
 
 La seva fitxa podria dir: problema, transcripció manual de comandes amb errors ocasionals; línia base, el temps setmanal dedicat i els errors de l'últim mes; abast, només comandes dels clients que envien PDF; indicadors, temps de transcripció i errors; responsable, el cap d'administració.
 
-> **Compte:** Aquest exemple és inventat i serveix només per mostrar el format. No són dades d'un client. Amb una fitxa així, qualsevol expert pot opinar en vint minuts si el projecte és viable.
+> **Nota:** Aquest exemple és il·lustratiu i serveix només per mostrar el format. No són dades d'un client. Amb una fitxa així, qualsevol expert pot opinar en vint minuts si el projecte és viable.
 
 ## Preguntes que convé fer
 
@@ -94,7 +94,7 @@ La seva fitxa podria dir: problema, transcripció manual de comandes amb errors 
 ## Errors habituals
 
 - Presentar "volem usar IA" sense problema concret.
-- Projectes massa grans: acotar guanya sempre.
+- Projectes massa grans: acotar l'abast dona millors resultats.
 - No mesurar abans de començar.
 - Donar per bona una informació sobre ajuts sense comprovar-la a la web oficial.
 - No decidir qui lidera el projecte dins l'empresa.

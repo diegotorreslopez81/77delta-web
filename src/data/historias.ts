@@ -37,9 +37,9 @@ export const historias: Historia[] = [
       { valor: 'Menos de 1 mes', etiqueta: 'ROI total' },
     ],
     situacion:
-      'Un grupo de tres clínicas dentales en Barcelona compartía el mismo problema: el 18% de los pacientes no acudía a sus citas sin previo aviso. La recepción contaba con tres personas dedicadas a las confirmaciones telefónicas, pero el ratio de localización era bajo y los huecos quedaban sin cubrir.',
+      'Un grupo de tres clínicas dentales en Barcelona compartía el mismo problema: el 18% de los pacientes no acudía a sus citas sin previo aviso. La recepción contaba con tres personas dedicadas a las confirmaciones telefónicas, pero el porcentaje de pacientes localizados era bajo y las citas quedaban sin cubrir.',
     solucion:
-      'Implantamos Contestia, nuestra recepcionista virtual por WhatsApp. El bot envía confirmación 24h antes con detalle de la visita, gestiona cambios proponiendo alternativas según agenda real, libera el hueco si el paciente cancela y avisa a lista de espera, y escala al equipo humano solo en casos clínicos sensibles. Integrado con Google Calendar y la ficha de paciente.',
+      'Implantamos Contestia, nuestra recepcionista virtual por WhatsApp. El asistente envía una confirmación 24 horas antes con detalle de la visita, gestiona cambios proponiendo alternativas según agenda real, libera el hueco si el paciente cancela y avisa a lista de espera, y escala al equipo humano solo en casos clínicos sensibles. Integrado con Google Calendar y la ficha de paciente.',
     como: 'Cuatro semanas. Semana 1: auditoría de llamadas perdidas y mapeo de los 12 escenarios habituales. Semana 2: piloto en la clínica principal con volumen controlado. Semana 3: integración con calendar y ficha de paciente. Semana 4: despliegue en las dos clínicas restantes.',
     resultados:
       'Tres meses después del despliegue: tasa de ausencias del 18% al 11%. La recepción recuperó 22 horas semanales (equivalente a media jornada de una persona) que se redirigieron a atención presencial, gestión de presupuestos y captación. Satisfacción del paciente subió 0,8 puntos sobre 10. La inversión se amortizó en menos de un mes.',
@@ -64,7 +64,7 @@ export const historias: Historia[] = [
       'Conectamos un asistente automatizado al número principal de WhatsApp. El sistema identifica al cliente por número y CIF, reconoce las referencias del catálogo, verifica stock y precio en tiempo real, genera el pedido en el ERP y notifica al comercial responsable. El comercial interviene únicamente en casos de excepción: cliente nuevo, producto fuera de catálogo o validación de descuento especial.',
     como: 'Seis semanas. Análisis de los patrones de pedido habitual, conexión con el ERP, entrenamiento del asistente con catálogo completo y nomenclatura cliente, validación de stock y precio en tiempo real, despliegue progresivo cliente a cliente con supervisión.',
     resultados:
-      'Cada comercial recuperó entre 90 minutos y 2 horas diarias. La capacidad de gestión de pedidos aumentó un 25% sin incrementar plantilla. Los errores de transcripción manual desaparecieron. Los comerciales dedican esas horas a venta proactiva y atención de clientes premium.',
+      'Cada comercial recuperó entre 90 minutos y 2 horas diarias. La capacidad de gestión de pedidos aumentó un 25% sin incrementar plantilla. Los errores de transcripción manual desaparecieron. Los comerciales dedican esas horas a venta activa y atención a clientes estratégicos.',
   },
   {
     slug: 'despacho-mercantil',
@@ -81,7 +81,7 @@ export const historias: Historia[] = [
       { valor: '5 plantillas', etiqueta: 'sistematizadas' },
     ],
     situacion:
-      'Un despacho de derecho mercantil con 18 profesionales redactaba reiteradamente contratos similares. Cada socio sénior dedicaba entre 4 y 6 horas semanales a revisar y redactar contratos que, en esencia, eran variaciones de cinco plantillas. Tiempo que no facturaba a tarifa premium y que retrasaba la entrega a clientes urgentes.',
+      'Un despacho de derecho mercantil con 18 profesionales redactaba reiteradamente contratos similares. Cada socio sénior dedicaba entre 4 y 6 horas semanales a revisar y redactar contratos que, en esencia, eran variaciones de cinco plantillas. Tiempo que no facturaba a tarifa de alto valor y que retrasaba la entrega a clientes urgentes.',
     solucion:
       'Desarrollamos un generador de contratos basado en las plantillas del despacho. El abogado responde a un cuestionario estructurado y el sistema entrega el contrato preparado para revisión. La búsqueda inteligente sobre el archivo histórico permite recuperar precedentes en segundos. El control siempre queda en el socio que firma.',
     como: 'Ocho semanas. Análisis de los cinco tipos de contrato más frecuentes, sistematización de las variables clave, entrenamiento con archivo histórico anonimizado, validación con casos reales del último semestre, despliegue progresivo con sesiones de calibración.',

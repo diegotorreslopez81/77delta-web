@@ -45,7 +45,7 @@ export const queObtienes = [
   },
   {
     titulo: 'Pressupost orientatiu',
-    texto: 'Estimació honesta de la inversió necessària per fase, sense tarifes inflades ni lletra petita.',
+    texto: 'Estimació transparent de la inversió necessària per fase, amb tarifes ajustades i condicions clares.',
   },
   {
     titulo: 'Recomanació de tecnologies',
@@ -64,15 +64,15 @@ export const queIncluye = [
   },
   {
     titulo: 'Automatització de processos',
-    texto: 'Dissenyem el flux end-to-end, no només el model. Human-in-the-loop per defecte.',
+    texto: 'Dissenyem el flux end-to-end, no només el model. Supervisió humana per defecte.',
   },
   {
     titulo: 'Capacitació del teu equip',
-    texto: 'Formació a comercials, administratius i operacions. Amb casos pràctics del teu dia a dia.',
+    texto: 'Formació a comercials, administratius i operacions. Amb casos pràctics de la teva activitat diària.',
   },
   {
     titulo: 'Documentació i traspàs',
-    texto: 'En acabar el projecte et quedes amb codi, claus, dades i manuals. Independència real.',
+    texto: 'En acabar el projecte et quedes amb codi, claus, dades i manuals. Plena independència.',
   },
   {
     titulo: 'SLA i suport mensual',
@@ -99,7 +99,7 @@ export const fases = [
   {
     n: '04',
     titulo: 'Tancament',
-    texto: 'Lliurament de codi, claus, dades i documentació. Independència real.',
+    texto: 'Lliurament de codi, claus, dades i documentació. Plena independència.',
   },
 ];
 
@@ -129,14 +129,14 @@ export const recorrido = [
 
 export const faq = [
   {
-    pregunta: 'El diagnòstic és realment gratuït? Quin és el truc?',
+    pregunta: 'El diagnòstic és realment gratuït? Hi ha alguna condició?',
     respuesta:
-      'No hi ha truc. És el nostre punt d’entrada. Si després del diagnòstic no decideixes contractar res, et quedes amb la proposta i el pla de treball. És informació valuosa per a tu i un cost raonable per a nosaltres si el comparem amb un projecte fallit per no haver entès el cas.',
+      'No hi ha condicions ocultes. És el nostre punt d’entrada. Si després del diagnòstic no decideixes contractar res, et quedes amb la proposta i el pla de treball. És informació valuosa per a tu i una inversió raonable per a nosaltres si el comparem amb un projecte fallit per no haver entès el cas.',
   },
   {
     pregunta: 'Per què no publiqueu preus fixos del servei de transformació?',
     respuesta:
-      'Perquè cada cas és diferent. Un projecte d’automatització conversacional en una clínica no s’assembla a un de cerca intel·ligent en un despatx. Les tarifes tancades obliguen a inflar el preu en els casos complexos o a acceptar pèrdues en els casos petits. Preferim cotitzar cada projecte després d’entendre’l.',
+      'Perquè cada cas és diferent. Un projecte d’automatització conversacional en una clínica no s’assembla a un de cerca intel·ligent en un despatx. Les tarifes tancades obliguen a elevar el preu en els casos complexos o a acceptar pèrdues en els casos petits. Preferim cotitzar cada projecte després d’entendre’l.',
   },
   {
     pregunta: 'En quant de temps veig resultats mesurables?',
@@ -151,6 +151,6 @@ export const faq = [
   {
     pregunta: 'Què passa si vull deixar de treballar amb vosaltres?',
     respuesta:
-      'En finalitzar qualsevol projecte et lliurem codi, claus d’accés, dades i documentació. La teva empresa conserva tot l’actiu construït. El soci tecnològic es revisa trimestralment i el pots ajustar o pausar segons evolucioni la teva empresa.',
+      'En finalitzar qualsevol projecte et lliurem codi, claus d’accés, dades i documentació. La teva empresa conserva tot el que s’ha desenvolupat. El soci tecnològic es revisa trimestralment i el pots ajustar o pausar segons evolucioni la teva empresa.',
   },
 ];

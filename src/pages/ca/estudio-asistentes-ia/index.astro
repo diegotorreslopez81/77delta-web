@@ -19,12 +19,12 @@ const categorias = [
   {
     nombre: 'Obeir instruccions d’un desconegut',
     texto:
-      'Un missatge ben construït aconsegueix que el bot ignori el seu guió i faci el que demana qui escriu. Surt amb el logotip de l’empresa al costat. És, de moment, el tipus de fuga més freqüent.',
+      'Un missatge ben construït aconsegueix que l’assistent ignori les seves instruccions i faci el que demana qui escriu, mostrant el logotip de l’empresa. És, de moment, el tipus de fuga més freqüent.',
   },
   {
     nombre: 'Recitar les seves instruccions internes',
     texto:
-      'L’assistent reprodueix part del seu propi system prompt, amb restriccions que li han posat i eines a què arriba. És el mapa per a tota la resta.',
+      'L’assistent reprodueix part del seu propi system prompt, amb restriccions que li han posat i eines a què arriba. Aquesta informació facilita qualsevol altre atac.',
   },
   {
     nombre: 'Revelar dades de clients o informació comercial interna',
@@ -111,7 +111,7 @@ const categorias = [
       <div class="max-w-[62ch]" data-reveal>
         <p class="eyebrow text-oro-luz">Segona troballa</p>
         <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
-          La majoria aguanta. Un grapat no.
+          La majoria supera les proves. Una minoria no.
         </h2>
         <p class="mt-6 text-[17px] text-marfil/72">
           A cada assistent li llancem la mateixa bateria de proves, sempre des de la seva web pública i sempre
@@ -184,7 +184,7 @@ const categorias = [
           </p>
           <p>
             Les proves són de primer nivell, les que faria algú amb curiositat i paciència, no un atacant dedicat.
-            Un assistent que aguanta aquestes sis no és un assistent segur: és un que no cau a la primera.
+            Un assistent que aguanta aquestes sis no és un assistent segur: és un que supera les proves més bàsiques.
           </p>
           <p>
             Res d’això es va fer entrant en sistemes aliens. Només es va parlar amb chats publicats en webs
@@ -207,15 +207,15 @@ const categorias = [
       <div class="space-y-5 text-[17px] text-pizarra md:col-span-7 md:pt-12" data-reveal>
         <p>
           Els assistents que aguanten les proves solen ser d’empreses grans, amb un classificador al davant que
-          bloqueja qualsevol missatge estrany. Els que fallen són, de moment, d’empreses mitjanes que van muntar
-          l’assistent ràpid, el van connectar a la seva documentació i no hi han tornat a mirar.
+          bloqueja qualsevol missatge estrany. Els que fallen són, de moment, d’empreses mitjanes que van implantar
+          l’assistent amb rapidesa, el van connectar a la seva documentació i no l’han revisat després.
         </p>
         <p>
           Tancar això no és un projecte llarg: és reescriure les instruccions, posar filtres a l’entrada i a la
           sortida, acotar el que l’assistent pot consultar i deixar proves que avisin si es torna a obrir.
         </p>
         <div class="flex flex-wrap gap-4 pt-4">
-          <Boton href={href('/contacto/')}>Escanejar el meu gratis →</Boton>
+          <Boton href={href('/contacto/')}>Sol·licitar l’anàlisi gratuïta →</Boton>
           <Boton href={href('/servicios/seguridad-ia/')} variante="linea">Com ho auditem</Boton>
         </div>
       </div>

@@ -81,7 +81,7 @@ const es: Contenido = {
   }
 ],
   acred: {"sello": "Acreditación ACCIÓ", "texto": "Proveedores acreditados por ACCIÓ en proyectos de IA.", "enlace": "ACCIÓ, Generalitat de Catalunya"},
-  historias: {"texto": "Mira las historias de éxito publicadas.", "enlace": "Ver historias de éxito"},
+  historias: {"texto": "Consulta las historias de éxito publicadas.", "enlace": "Ver historias de éxito"},
   cta: {"titulo": "¿Hablamos de tu ayuntamiento?", "texto": "Una conversación, sin compromiso.", "boton": "Escríbenos"},
 };
 
@@ -122,7 +122,7 @@ const ca: Contenido = {
   }
 ],
   acred: {"sello": "Acreditació ACCIÓ", "texto": "Proveïdors acreditats per ACCIÓ en projectes d'IA.", "enlace": "ACCIÓ, Generalitat de Catalunya"},
-  historias: {"texto": "Mira les històries d’èxit publicades.", "enlace": "Veure històries d’èxit"},
+  historias: {"texto": "Consulta les històries d’èxit publicades.", "enlace": "Veure històries d’èxit"},
   cta: {"titulo": "Parlem del teu ajuntament?", "texto": "Una conversa, sense compromís.", "boton": "Escriu-nos"},
 };
 

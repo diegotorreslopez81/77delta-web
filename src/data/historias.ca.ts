@@ -37,9 +37,9 @@ export const historias: Historia[] = [
       { valor: 'Menys d’1 mes', etiqueta: 'ROI total' },
     ],
     situacion:
-      'Un grup de tres clíniques dentals a Barcelona compartia el mateix problema: el 18% dels pacients no acudia a les cites sense avís previ. La recepció comptava amb tres persones dedicades a les confirmacions telefòniques, però el ràtio de localització era baix i els forats quedaven sense cobrir.',
+      'Un grup de tres clíniques dentals a Barcelona compartia el mateix problema: el 18% dels pacients no acudia a les cites sense avís previ. La recepció comptava amb tres persones dedicades a les confirmacions telefòniques, però el percentatge de pacients localitzats era baix i les cites quedaven sense cobrir.',
     solucion:
-      'Vam implantar Contestia, la nostra recepcionista virtual per WhatsApp. El bot envia confirmació 24h abans amb detall de la visita, gestiona canvis proposant alternatives segons agenda real, allibera el forat si el pacient cancel·la i avisa la llista d’espera, i escala a l’equip humà només en casos clínics sensibles. Integrat amb Google Calendar i la fitxa de pacient.',
+      'Vam implantar Contestia, la nostra recepcionista virtual per WhatsApp. L’assistent envia una confirmació 24 hores abans amb detall de la visita, gestiona canvis proposant alternatives segons agenda real, allibera el forat si el pacient cancel·la i avisa la llista d’espera, i escala a l’equip humà només en casos clínics sensibles. Integrat amb Google Calendar i la fitxa de pacient.',
     como: 'Quatre setmanes. Setmana 1: auditoria de trucades perdudes i mapatge dels 12 escenaris habituals. Setmana 2: pilot a la clínica principal amb volum controlat. Setmana 3: integració amb calendari i fitxa de pacient. Setmana 4: desplegament a les dues clíniques restants.',
     resultados:
       'Tres mesos després del desplegament: taxa d’absències del 18% a l’11%. La recepció va recuperar 22 hores setmanals (equivalent a mitja jornada d’una persona) que es van redirigir a atenció presencial, gestió de pressupostos i captació. La satisfacció del pacient va pujar 0,8 punts sobre 10. La inversió es va amortitzar en menys d’un mes.',
@@ -64,7 +64,7 @@ export const historias: Historia[] = [
       'Vam connectar un assistent automatitzat al número principal de WhatsApp. El sistema identifica el client per número i CIF, reconeix les referències del catàleg, verifica estoc i preu en temps real, genera la comanda a l’ERP i notifica el comercial responsable. El comercial intervé únicament en casos d’excepció: client nou, producte fora de catàleg o validació de descompte especial.',
     como: 'Sis setmanes. Anàlisi dels patrons de comanda habitual, connexió amb l’ERP, entrenament de l’assistent amb catàleg complet i nomenclatura de client, validació d’estoc i preu en temps real, desplegament progressiu client a client amb supervisió.',
     resultados:
-      'Cada comercial va recuperar entre 90 minuts i 2 hores diàries. La capacitat de gestió de comandes va augmentar un 25% sense augmentar plantilla. Els errors de transcripció manual van desaparèixer. Els comercials dediquen aquestes hores a venda proactiva i atenció de clients premium.',
+      'Cada comercial va recuperar entre 90 minuts i 2 hores diàries. La capacitat de gestió de comandes va augmentar un 25% sense augmentar plantilla. Els errors de transcripció manual van desaparèixer. Els comercials dediquen aquestes hores a venda activa i atenció a clients estratègics.',
   },
   {
     slug: 'despacho-mercantil',
@@ -81,7 +81,7 @@ export const historias: Historia[] = [
       { valor: '5 plantilles', etiqueta: 'sistematitzades' },
     ],
     situacion:
-      'Un despatx de dret mercantil amb 18 professionals redactava reiteradament contractes similars. Cada soci sènior dedicava entre 4 i 6 hores setmanals a revisar i redactar contractes que, en essència, eren variacions de cinc plantilles. Temps que no facturava a tarifa premium i que retardava el lliurament a clients urgents.',
+      'Un despatx de dret mercantil amb 18 professionals redactava reiteradament contractes similars. Cada soci sènior dedicava entre 4 i 6 hores setmanals a revisar i redactar contractes que, en essència, eren variacions de cinc plantilles. Temps que no facturava a tarifa d’alt valor i que retardava el lliurament a clients urgents.',
     solucion:
       'Vam desenvolupar un generador de contractes basat en les plantilles del despatx. L’advocat respon a un qüestionari estructurat i el sistema lliura el contracte preparat per a revisió. La cerca intel·ligent sobre l’arxiu històric permet recuperar precedents en segons. El control sempre queda en el soci que signa.',
     como: 'Vuit setmanes. Anàlisi dels cinc tipus de contracte més freqüents, sistematització de les variables clau, entrenament amb arxiu històric anonimitzat, validació amb casos reals de l’últim semestre, desplegament progressiu amb sessions de calibratge.',

@@ -30,13 +30,13 @@ export const ambitos: readonly Ambito[] = [
     n: '02',
     titulo: 'Integración de sistemas y datos',
     texto:
-      'Que el ERP, el CRM, la web, la tienda y las máquinas se hablen entre sí sin picar datos dos veces.',
+      'Que el ERP, el CRM, la web, la tienda y las máquinas estén conectados entre sí sin introducir los datos manualmente dos veces.',
     tecnologias: ['APIs', 'EDI', 'ETL', 'SQL Server', 'Oracle', 'PostgreSQL', 'MySQL', 'Webhooks', 'Make y n8n'],
   },
   {
     n: '03',
     titulo: 'CRM',
-    texto: 'Elegir, implantar, integrar y formar. Que el equipo comercial lo use de verdad.',
+    texto: 'Elegir, implantar, integrar y formar. Con el objetivo de que el equipo comercial lo utilice de forma habitual.',
     tecnologias: ['Dynamics 365', 'HubSpot', 'Salesforce', 'Zoho', 'Odoo CRM', 'Pipedrive'],
   },
   {
@@ -49,7 +49,7 @@ export const ambitos: readonly Ambito[] = [
   {
     n: '05',
     titulo: 'Entorno Microsoft',
-    texto: 'Orden en el entorno que ya pagas: licencias, identidades, dispositivos y automatización.',
+    texto: 'Orden en el entorno que ya tienes contratado: licencias, identidades, dispositivos y automatización.',
     tecnologias: [
       'Microsoft 365',
       'Teams',
@@ -66,7 +66,7 @@ export const ambitos: readonly Ambito[] = [
     n: '06',
     titulo: 'Nube e infraestructura',
     texto:
-      'Servidores, nube, copias de seguridad, redes y continuidad. Migramos lo que conviene y dejamos en casa lo que no.',
+      'Servidores, nube, copias de seguridad, redes y continuidad. Migramos lo que conviene y mantenemos en tus instalaciones lo que no.',
     tecnologias: [
       'Azure',
       'AWS',
@@ -82,7 +82,7 @@ export const ambitos: readonly Ambito[] = [
   {
     n: '07',
     titulo: 'Ciberseguridad',
-    texto: 'Accesos, copias, parches y continuidad. Lo básico bien hecho antes que cualquier herramienta cara.',
+    texto: 'Accesos, copias, parches y continuidad. Lo esencial bien resuelto antes que cualquier herramienta costosa.',
     tecnologias: [
       'Doble factor',
       'Gestión de identidades',
@@ -97,7 +97,7 @@ export const ambitos: readonly Ambito[] = [
     n: '08',
     titulo: 'Hardware, planta e IoT',
     texto:
-      'Lo físico también es tecnología: puestos de trabajo, servidores, redes de planta, sensores y captura de datos de máquina.',
+      'El equipamiento físico también es tecnología: puestos de trabajo, servidores, redes de planta, sensores y captura de datos de máquina.',
     tecnologias: [
       'Puestos y servidores',
       'Wifi industrial',
@@ -145,7 +145,7 @@ export const modalidades: readonly Modalidad[] = [
     n: '01',
     titulo: 'Un solo interlocutor',
     texto:
-      'Hablamos con tus proveedores de tú a tú, revisamos sus ofertas y contratos y te traducimos lo técnico a decisiones de negocio.',
+      'Gestionamos la relación con tus proveedores de forma directa, revisamos sus ofertas y contratos y te traducimos lo técnico a decisiones de negocio.',
   },
   {
     n: '02',
@@ -155,14 +155,14 @@ export const modalidades: readonly Modalidad[] = [
   },
   {
     n: '03',
-    titulo: 'Sin casarnos con nadie',
+    titulo: 'Independencia de fabricantes',
     texto:
       'Elegimos por criterio técnico y coste total. Fabricante, nube o software libre: lo que encaje con tu empresa.',
   },
   {
     n: '04',
     titulo: 'Presupuesto a medida',
-    texto: 'Tras el diagnóstico gratuito, propuesta con alcance, orden y presupuesto cerrado. Sin sorpresas.',
+    texto: 'Tras el diagnóstico gratuito, propuesta con alcance, orden y presupuesto cerrado. Sin costes inesperados.',
   },
 ];
 
@@ -178,13 +178,13 @@ export const ambitosCa: readonly Ambito[] = [
     n: '02',
     titulo: 'Integració de sistemes i dades',
     texto:
-      'Que l’ERP, el CRM, el web, la botiga i les màquines es parlin entre si sense picar dades dues vegades.',
+      'Que l’ERP, el CRM, el web, la botiga i les màquines estiguin connectats entre si sense introduir les dades manualment dues vegades.',
     tecnologias: ['APIs', 'EDI', 'ETL', 'SQL Server', 'Oracle', 'PostgreSQL', 'MySQL', 'Webhooks', 'Make i n8n'],
   },
   {
     n: '03',
     titulo: 'CRM',
-    texto: 'Triar, implantar, integrar i formar. Que l’equip comercial el faci servir de debò.',
+    texto: 'Triar, implantar, integrar i formar. Amb l’objectiu que l’equip comercial el faci servir de manera habitual.',
     tecnologias: ['Dynamics 365', 'HubSpot', 'Salesforce', 'Zoho', 'Odoo CRM', 'Pipedrive'],
   },
   {
@@ -197,7 +197,7 @@ export const ambitosCa: readonly Ambito[] = [
   {
     n: '05',
     titulo: 'Entorn Microsoft',
-    texto: 'Ordre a l’entorn que ja pagues: llicències, identitats, dispositius i automatització.',
+    texto: 'Ordre a l’entorn que ja tens contractat: llicències, identitats, dispositius i automatització.',
     tecnologias: [
       'Microsoft 365',
       'Teams',
@@ -214,7 +214,7 @@ export const ambitosCa: readonly Ambito[] = [
     n: '06',
     titulo: 'Núvol i infraestructura',
     texto:
-      'Servidors, núvol, còpies de seguretat, xarxes i continuïtat. Migrem el que convé i deixem a casa el que no.',
+      'Servidors, núvol, còpies de seguretat, xarxes i continuïtat. Migrem el que convé i mantenim a les teves instal·lacions el que no.',
     tecnologias: [
       'Azure',
       'AWS',
@@ -230,7 +230,7 @@ export const ambitosCa: readonly Ambito[] = [
   {
     n: '07',
     titulo: 'Ciberseguretat',
-    texto: 'Accessos, còpies, pedaços i continuïtat. El bàsic ben fet abans que cap eina cara.',
+    texto: 'Accessos, còpies, pedaços i continuïtat. L’essencial ben resolt abans que cap eina costosa.',
     tecnologias: [
       'Doble factor',
       'Gestió d’identitats',
@@ -245,7 +245,7 @@ export const ambitosCa: readonly Ambito[] = [
     n: '08',
     titulo: 'Maquinari, planta i IoT',
     texto:
-      'El que és físic també és tecnologia: llocs de treball, servidors, xarxes de planta, sensors i captura de dades de màquina.',
+      'L’equipament físic també és tecnologia: llocs de treball, servidors, xarxes de planta, sensors i captura de dades de màquina.',
     tecnologias: [
       'Llocs i servidors',
       'Wifi industrial',
@@ -293,7 +293,7 @@ export const modalidadesCa: readonly Modalidad[] = [
     n: '01',
     titulo: 'Un sol interlocutor',
     texto:
-      'Parlem amb els teus proveïdors de tu a tu, revisem les seves ofertes i contractes i et traduïm el que és tècnic a decisions de negoci.',
+      'Gestionem la relació amb els teus proveïdors de manera directa, revisem les seves ofertes i contractes i et traduïm el que és tècnic a decisions de negoci.',
   },
   {
     n: '02',
@@ -303,13 +303,13 @@ export const modalidadesCa: readonly Modalidad[] = [
   },
   {
     n: '03',
-    titulo: 'Sense casar-nos amb ningú',
+    titulo: 'Independència de fabricants',
     texto:
       'Triem per criteri tècnic i cost total. Fabricant, núvol o programari lliure: el que encaixi amb la teva empresa.',
   },
   {
     n: '04',
     titulo: 'Pressupost a mida',
-    texto: 'Després del diagnòstic gratuït, proposta amb abast, ordre i pressupost tancat. Sense sorpreses.',
+    texto: 'Després del diagnòstic gratuït, proposta amb abast, ordre i pressupost tancat. Sense costos inesperats.',
   },
 ];

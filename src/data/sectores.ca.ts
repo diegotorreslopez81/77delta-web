@@ -32,7 +32,7 @@ export const sectores: Sector[] = [
     nombre: 'Clíniques i centres de salut',
     resumen: 'Repensem la recepció, l’agenda, el seguiment del pacient i la traçabilitat clínica.',
     h1: 'Recepció, agenda i seguiment clínic repensats amb IA',
-    lead: 'Recepcionista virtual per WhatsApp, agenda intel·ligent i notes clíniques automàtiques. El teu equip deixa de saturar-se amb confirmacions i torna a centrar-se en pacients.',
+    lead: 'Recepcionista virtual per WhatsApp, agenda intel·ligent i notes clíniques automàtiques. El teu equip deixa de dedicar temps a les confirmacions i se centra en els pacients.',
     problema:
       'Les clíniques perden ingressos per absències no avisades. La recepció se satura amb trucades de confirmació. El professional perd temps en notes i seguiment.',
     soluciones: [
@@ -79,7 +79,7 @@ export const sectores: Sector[] = [
     nombre: 'Distribució i logística',
     resumen: 'Repensem com es reben les comandes, com es valida l’estoc i com treballen els comercials.',
     h1: 'Comandes, estoc i atenció comercial automatitzats 24/7',
-    lead: 'Processament de comandes per WhatsApp i correu, sincronització d’estoc multicanal i atenció comercial sense guàrdies humanes. El teu client no espera.',
+    lead: 'Processament de comandes per WhatsApp i correu, sincronització d’estoc multicanal i atenció comercial fora de l’horari laboral, sense torns de guàrdia. Els teus clients reben resposta a qualsevol hora.',
     problema:
       'Els comercials transcriuen comandes manualment a l’ERP. Els clients demanen per WhatsApp, correu i trucada. Les validacions d’estoc són lentes.',
     soluciones: [
@@ -129,7 +129,7 @@ export const sectores: Sector[] = [
     h1: 'Atenció ciutadana, gestió documental i anàlisi d’expedients amb IA',
     lead: 'Consultoria tecnològica per a administracions: diagnòstic de processos, seu electrònica conversacional, classificació documental massiva i anàlisi d’expedients. Compliment ENS i dades processades en territori europeu.',
     problema:
-      'L’atenció ciutadana satura el call center. Els expedients històrics són difícils de consultar. Els plens generen actes extenses.',
+      'L’atenció ciutadana satura el centre de trucades. Els expedients històrics són difícils de consultar. Els plens generen actes extenses.',
     soluciones: [
       'Consultoria de transformació digital: diagnòstic i full de ruta abans de construir res',
       'Chatbot d’atenció ciutadana 24/7 amb escalat a funcionari',
@@ -154,7 +154,7 @@ export const sectores: Sector[] = [
     h1: 'Avaluació adaptativa, tutories 24/7 i anàlisi de progrés',
     lead: 'Exàmens generats amb IA en 30 segons, tutories automàtiques i tauler de progrés per alumne. Per a acadèmies, bootcamps i àrees de formació corporativa.',
     problema:
-      'Els tutors no donen l’abast amb dubtes individuals. Les avaluacions consumeixen temps del professorat. L’acollida de nous empleats és genèrica.',
+      'Els tutors no poden atendre tots els dubtes individuals. Les avaluacions consumeixen temps del professorat. L’acollida de nous empleats és genèrica.',
     soluciones: [
       'Assistent formatiu entrenat amb material del centre',
       'Avaluació adaptativa al nivell de l’alumne',

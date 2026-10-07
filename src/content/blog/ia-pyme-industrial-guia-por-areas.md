@@ -55,7 +55,7 @@ Una tarea sirve para empezar si cumple tres condiciones:
 - Trabaja con datos que la empresa ya tiene: emails, pedidos, albaranes, informes, documentación.
 - Su coste se mide en horas, errores o plazos.
 
-Si no se puede medir, no se puede decidir si funciona. Empieza por la que más horas consume a gente cara. Una persona de ventas o de administración que copia datos de un documento a otro es el caso típico.
+Si no se puede medir, no se puede decidir si funciona. Empieza por la que más horas consume a las personas con mayor coste salarial. Una persona de ventas o de administración que copia datos de un documento a otro es el caso típico.
 
 > **Dato:** Según Eurostat, el uso más habitual de la IA en las empresas europeas es analizar lenguaje escrito (11,8%). Es decir, leer textos y extraer lo que importa. En una pyme industrial, esos textos son pedidos por email, facturas, albaranes, ofertas y correos de clientes.
 
@@ -81,7 +81,7 @@ Qué puede asumir la IA:
 - Convertir pedidos que llegan por email en pedidos del sistema.
 - Detectar diferencias entre un albarán y una factura.
 
-> **Ojo:** Aquí el control humano es una regla de diseño: la IA propone y una persona confirma lo que no está claro.
+> **Importante:** Aquí el control humano es una regla de diseño: la IA propone y una persona confirma lo que no está claro.
 
 ## Calidad: informes, no conformidades y trazabilidad
 
@@ -97,7 +97,7 @@ Un agente de calidad que trabaja sobre la documentación propia ahorra la búsqu
 
 ## Operaciones: informes de producción y conocimiento interno
 
-En planta, la información está repartida entre el ERP, hojas de cálculo y la cabeza de las personas con más años en la empresa.
+En planta, la información está repartida entre el ERP, hojas de cálculo y la experiencia de las personas con más antigüedad en la empresa.
 
 Qué puede asumir la IA:
 
@@ -111,7 +111,7 @@ El catálogo de [casos de uso](/casos-de-uso/) de 77 Delta recoge ejemplos publi
 
 > **Ejemplo:** Una distribuidora industrial con 12 comerciales conectó un asistente de WhatsApp a su ERP. Los resultados publicados: 2 horas al día recuperadas, un 25% más de capacidad comercial y cero errores de transcripción, en 6 semanas.
 
-El proyecto no cambió el ERP. Cambió quién teclea. Tienes el detalle en la [historia de éxito de la distribuidora](/historias-de-exito/distribuidora-industrial/).
+El proyecto no cambió el ERP. Cambió quién introduce los datos. Tienes el detalle en la [historia de éxito de la distribuidora](/historias-de-exito/distribuidora-industrial/).
 
 ## Errores que conviene evitar
 
@@ -128,6 +128,6 @@ El proyecto no cambió el ERP. Cambió quién teclea. Tienes el detalle en la [h
 4. Define un indicador antes de empezar: horas, errores o plazo.
 5. Prueba en pequeño, con una persona y un periodo corto. Si el indicador mejora, amplía.
 
-Evita empezar por varias áreas a la vez. Cada área tiene su gente y sus datos. Una tarea bien resuelta convence más que cinco a medias.
+Evita empezar por varias áreas a la vez. Cada área tiene su equipo y sus datos. Una tarea bien resuelta convence más que cinco a medias.
 
 Si quieres ver en qué área de tu empresa empezarías, el botón de abajo reserva una reunión de 20 minutos con 77 Delta.

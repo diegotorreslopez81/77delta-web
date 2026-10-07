@@ -21,11 +21,11 @@ export interface Caso {
 
 export const familias: Familia[] = [
   { slug: 'conversacional', num: '01', titulo: 'Assistents conversacionals', texto: 'Chatbots i assistents de veu per a web, WhatsApp i telèfon, amb cerca sobre la teva informació, escalat a persona i analítica de converses. Atenció al client, salut, formació i suport intern.' },
-  { slug: 'agentes', num: '02', titulo: 'Agents autònoms', texto: 'Agents que executen processos de debò: consulten sistemes interns, responen preguntes de negoci sobre les teves dades, vigilen, proven i fan prospecció. Amb traça completa de cada pas per poder-ho auditar.' },
+  { slug: 'agentes', num: '02', titulo: 'Agents autònoms', texto: 'Agents que executen processos reals de l’empresa: consulten sistemes interns, responen preguntes de negoci sobre les teves dades, vigilen, proven i fan prospecció. Amb traça completa de cada pas per poder-ho auditar.' },
   { slug: 'rag', num: '03', titulo: 'Cerca i coneixement', texto: 'Cerca semàntica sobre la teva intranet, la teva normativa o les teves gravacions. Control d’accés per rol, citació obligatòria de la font a cada resposta i indexació incremental.' },
-  { slug: 'workflow', num: '04', titulo: "Automatització de processos", texto: 'Integració entre sistemes que no es parlen, gestió d’incidències, comunicació multicanal, informes automàtics i memòries tècniques per a licitacions.' },
-  { slug: 'governance', num: '05', titulo: 'Governança i compliment', texto: 'Governança de sistemes d’IA segons el Reglament Europeu d’IA, auditoria ALTAI i compliment multi-marc amb RGPD, NIS2 i la norma d’accessibilitat. La documentació obligatòria es genera sola.' },
-  { slug: 'seguridad', num: '06', titulo: 'Seguretat d’IA', texto: 'Auditoria i blindatge dels assistents que ja tens publicats: què se’ls pot treure, com se’ls treu i com es tanca. Inclou proves adversàries, barreres de protecció i vigilància contínua.' },
+  { slug: 'workflow', num: '04', titulo: "Automatització de processos", texto: 'Integració entre sistemes que no estan connectats, gestió d’incidències, comunicació multicanal, informes automàtics i memòries tècniques per a licitacions.' },
+  { slug: 'governance', num: '05', titulo: 'Governança i compliment', texto: 'Governança de sistemes d’IA segons el Reglament Europeu d’IA, auditoria ALTAI i compliment multi-marc amb RGPD, NIS2 i la norma d’accessibilitat. La documentació obligatòria es genera de manera automàtica.' },
+  { slug: 'seguridad', num: '06', titulo: 'Seguretat d’IA', texto: 'Auditoria i blindatge dels assistents que ja tens publicats: quina informació poden revelar, com es provoca i com es corregeix. Inclou proves adversàries, barreres de protecció i vigilància contínua.' },
   { slug: 'verticales', num: '07', titulo: 'Plataformes verticals i dades sintètiques', texto: 'Plataformes d’IA per a un sector concret (assegurances, legal, sanitat, acceleració empresarial), simulació digital i generació de dades sintètiques que preserven la privacitat.' },
   { slug: 'modelos', num: '08', titulo: 'Models propis i predicció', texto: 'Ajust fi de models oberts per a un vertical, previsió i detecció d’anomalies, classificació supervisada, reconeixement de documents a mida i avaluació de models.' },
 ];
@@ -92,7 +92,7 @@ export const casos: Caso[] = [
     familia: 'conversacional',
     titulo: 'Recepcionista IA per WhatsApp per a clíniques',
     texto:
-      'Bot que gestiona cites contra Google Calendar, transcriu notes de veu i escala a humà quan detecta urgència. Facturació per ús.',
+      'Assistent que gestiona cites a Google Calendar, transcriu notes de veu i escala a una persona quan detecta una urgència. Facturació per ús.',
     sectores: ['salud'],
     tecnologias: ['chat', 'agentes'],
   },
@@ -164,7 +164,7 @@ export const casos: Caso[] = [
     familia: 'agentes',
     titulo: 'Agent de generació d’avaluacions',
     texto:
-      'Qüestionaris a partir de text, PDF, URL o YouTube. Tipus test, obertes, relació, ordre. Anti-còpia i autocorrecció.',
+      'Qüestionaris a partir de text, PDF, URL o YouTube. Tipus test, obertes, relació, ordre. Control antifrau i autocorrecció.',
     sectores: ['edu', 'b2b'],
     tecnologias: ['agentes', 'modelos'],
   },
@@ -290,7 +290,7 @@ export const casos: Caso[] = [
     familia: 'seguridad',
     titulo: 'Proves adversàries sobre LLM i agents',
     texto:
-      'Bateria de proves contra l’assistent i les eines que té connectades: injecció d’instruccions, jailbreak i sortida de guió, puntuades per un model jutge amb rúbrica.',
+      'Bateria de proves contra l’assistent i les eines que té connectades: injecció d’instruccions, jailbreak i desviació del comportament previst, puntuades per un model jutge amb rúbrica.',
     sectores: ['b2b', 'publico'],
     tecnologias: ['seguridad', 'agentes'],
   },
@@ -416,7 +416,7 @@ export const casos: Caso[] = [
     familia: 'modelos',
     titulo: 'Avaluació i benchmarking de models',
     texto:
-      'Marc reproduïble per comparar LLM i models clàssics sobre la teva tasca concreta amb mètriques pròpies, no genèriques.',
+      'Marc reproduïble per comparar LLM i models clàssics sobre la teva tasca concreta amb mètriques pròpies del teu cas, no genèriques.',
     sectores: ['b2b'],
     tecnologias: ['modelos', 'compliance'],
   },
