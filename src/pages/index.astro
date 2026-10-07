@@ -104,6 +104,31 @@ import { casos, familias } from '../data/casos-de-uso';
   </div>
 </section>
 
+<!-- DIRECTOR DE IA · SERVICIO PRINCIPAL -->
+<section class="director" id="director-ia">
+  <div class="cont">
+    <div class="director-panel">
+      <div class="director-head">
+        <span class="section-tag">Servicio principal · Cuota fija mensual</span>
+        <h2>Tu director de IA <em>desde 1.200 € al mes</em>.</h2>
+        <p class="lead">Una mañana al mes en tu empresa con tu técnico y el resto del trabajo a distancia. Cada mes, un proceso menos que se hace a mano y un informe con las horas ahorradas.</p>
+      </div>
+      <ul class="director-paquetes" role="list">
+        <li><span class="nombre">Base</span><span class="precio">1.200 €/mes</span><span class="detalle">Una mañana en tu empresa y 4 horas a distancia.</span></li>
+        <li><span class="nombre">Avance</span><span class="precio">2.400 €/mes</span><span class="detalle">Dos mañanas en tu empresa y 10 horas a distancia.</span></li>
+        <li><span class="nombre">Intensivo</span><span class="precio">3.600 €/mes</span><span class="detalle">Una mañana cada semana y 14 horas a distancia.</span></li>
+      </ul>
+      <div class="director-pie">
+        <div>
+          <p class="garantia"><strong>Garantía:</strong> si al tercer mes el ahorro no dobla la cuota, lo paras sin coste.</p>
+          <p class="nota">Precios sin IVA. Contrato anual con cuota fija mensual.</p>
+        </div>
+        <a href="/servicios/director-ia/" class="btn-primary">Ver el servicio <span>→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- SEGURIDAD DE IA -->
 <section class="aisec" id="seguridad">
   <div class="cont">
@@ -588,6 +613,29 @@ import { casos, familias } from '../data/casos-de-uso';
   .svc-card .price{font-size:14px;color:var(--ink-2);font-weight:600;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
   .svc-card .price .arrow{color:var(--accent);font-size:18px}
 
+
+  /* DIRECTOR DE IA (servicio principal) */
+  .director{padding:0 0 140px}
+  .director-panel{background:var(--dark);color:#EDEAE3;border-radius:24px;padding:64px;position:relative;overflow:hidden;box-shadow:0 24px 60px rgba(10,22,40,.18)}
+  .director-panel::before{content:"";position:absolute;top:-40%;right:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(167,120,27,.18),transparent 60%);filter:blur(70px);pointer-events:none}
+  .director-panel>*{position:relative;z-index:1}
+  .director-head{max-width:760px}
+  .director .section-tag{color:var(--accent-luz)}
+  .director h2{font-size:clamp(32px,3.8vw,50px);color:#EDEAE3;margin-bottom:20px}
+  .director h2 em{font-style:normal;color:var(--accent-luz);font-weight:700}
+  .director .lead{font-size:18px;line-height:1.55;color:rgba(237,234,227,.78);margin:0}
+  .director-paquetes{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:44px 0 0;padding:0}
+  .director-paquetes li{border:1px solid rgba(237,234,227,.14);background:rgba(237,234,227,.05);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:8px}
+  .director-paquetes .nombre{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-luz)}
+  .director-paquetes .precio{font-family:'Sora',system-ui,sans-serif;font-size:26px;font-weight:600;letter-spacing:-.02em;color:#EDEAE3}
+  .director-paquetes .detalle{font-size:14px;line-height:1.5;color:rgba(237,234,227,.7)}
+  .director-pie{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:36px;padding-top:28px;border-top:1px solid rgba(237,234,227,.12)}
+  .director-pie .garantia{font-size:16px;line-height:1.5;color:rgba(237,234,227,.82);max-width:60ch;margin:0}
+  .director-pie .garantia strong{color:var(--accent-luz);font-weight:600}
+  .director-pie .nota{font-size:13px;line-height:1.5;color:rgba(237,234,227,.5);margin:6px 0 0}
+  .director .btn-primary{flex-shrink:0}
+  .director .btn-primary:hover{background:#EDEAE3;color:var(--ink);box-shadow:0 12px 32px rgba(0,0,0,.35)}
+
   /* SECTORES (fotos verticales con overlay) */
   .sectors{padding:140px 0;background:var(--white)}
   .sec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
@@ -685,6 +733,8 @@ import { casos, familias } from '../data/casos-de-uso';
     .caps-grid{grid-template-columns:repeat(2,1fr)}
     .sec-grid{grid-template-columns:repeat(2,1fr)}
     .svc-grid{grid-template-columns:1fr}
+    .director-paquetes{grid-template-columns:1fr}
+    .director-panel{padding:48px 40px}
     .trust .logos{grid-template-columns:repeat(3,1fr);gap:24px 16px}
     .why-grid{grid-template-columns:repeat(2,1fr)}
     .case .nav-btn{width:44px;height:44px}
@@ -721,6 +771,13 @@ import { casos, familias } from '../data/casos-de-uso';
     .svc-featured p{font-size:15px}
     .svc-card{padding:28px}
     .svc-card h3{font-size:20px}
+    .director{padding:0 0 80px}
+    .director-panel{padding:32px 24px;border-radius:18px}
+    .director h2{font-size:28px;line-height:1.15}
+    .director .lead{font-size:16px}
+    .director-paquetes .precio{font-size:22px}
+    .director-pie{flex-direction:column;align-items:stretch}
+    .director .btn-primary{justify-content:center}
     .sectors{padding:80px 0}
     .sec-grid{grid-template-columns:1fr;gap:16px}
     .sec-card{aspect-ratio:4/3}

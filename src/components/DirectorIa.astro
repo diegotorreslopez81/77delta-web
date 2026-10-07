@@ -1,0 +1,248 @@
+---
+/**
+ * Página del servicio Director de IA externo. El contenido vive en src/data/director-ia.ts;
+ * una página fina por idioma (es, ca, en). El inglés no es locale del sitio: se sirve como
+ * página suelta con lang, hreflang y píldoras de idioma propias, igual que gl y eu en ayuntamientos.
+ */
+import GuiasRelacionadas from './blog/GuiasRelacionadas.astro';
+import Base from '../layouts/Base.astro';
+import Boton from './Boton.astro';
+import Cta from './Cta.astro';
+import { href, hrefCa, site } from '../lib/site';
+import { contenidos, hreflangs, rutas, type Idioma } from '../data/director-ia';
+import { resumen as resumenEs } from '../data/servicios';
+import { resumen as resumenCa } from '../data/servicios.ca';
+
+interface Props {
+  idioma: Idioma;
+}
+const { idioma } = Astro.props;
+const c = contenidos[idioma];
+const orden: Idioma[] = ['es', 'ca', 'en'];
+
+const abs = (r: string) => new URL(href(r), Astro.site).href;
+const alternates = [
+  ...orden.map((i) => ({ hreflang: hreflangs[i], href: abs(rutas[i]) })),
+  { hreflang: 'x-default', href: abs(rutas.es) },
+];
+const opciones = orden.map((i) => ({
+  codigo: i,
+  etiqueta: contenidos[i].etiquetaIdioma,
+  ruta: href(rutas[i]),
+  hreflang: hreflangs[i],
+  activo: i === idioma,
+}));
+
+const enlace = idioma === 'ca' ? hrefCa : href;
+const rutaServicios = idioma === 'ca' ? hrefCa('/servicios/') : href('/servicios/');
+const otros = idioma === 'en' ? [] : (idioma === 'ca' ? resumenCa : resumenEs);
+const whatsapp = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(c.whatsappTexto)}`;
+const faqJson = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: c.faq.lista.map((f) => ({
+    '@type': 'Question',
+    name: f.pregunta,
+    acceptedAnswer: { '@type': 'Answer', text: f.respuesta },
+  })),
+});
+---
+
+<Base
+  title={c.meta.title}
+  description={c.meta.description}
+  selectorIdioma={false}
+  lang={idioma === 'en' ? 'en' : undefined}
+  alternates={alternates}
+  idiomas={opciones}
+>
+  <!-- Hero -->
+  <section class="wrap py-24 md:py-32">
+    <p class="eyebrow" data-reveal>
+      <a href={rutaServicios} class="transition-colors hover:text-tinta">{c.miga}</a> · {c.eyebrow}
+    </p>
+    <h1
+      class="mt-7 max-w-[19ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+      data-reveal
+    >
+      {c.h1[0]}<span class="font-semibold text-oro-oscuro">{c.h1[1]}</span>{c.h1[2]}
+    </h1>
+    <p class="mt-8 max-w-[54ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>{c.lead}</p>
+
+    <div class="mt-14 flex flex-wrap items-center gap-8" data-reveal>
+      <div class="rounded-[4px] border border-linea bg-panel px-8 py-6">
+        <p class="font-display text-[30px] font-extralight leading-none tracking-[-0.03em] text-oro-oscuro">{c.precio}</p>
+        <p class="mt-3 max-w-[34ch] font-mono text-[12px] leading-[1.6] text-pizarra">{c.precioPie}</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-4">
+        <Boton href={whatsapp} externo>{c.botonWhatsapp} →</Boton>
+        <Boton href={enlace('/contacto/')} variante="linea">{c.botonSesion}</Boton>
+      </div>
+    </div>
+  </section>
+
+  <!-- Para quién -->
+  <section class="hairline bg-panel">
+    <div class="wrap grid gap-12 py-24 md:grid-cols-12 md:py-32">
+      <div class="md:col-span-5" data-reveal>
+        <p class="eyebrow">{c.paraQuien.eyebrow}</p>
+        <h2 class="mt-5 font-display text-[clamp(26px,3.2vw,38px)] font-extralight leading-[1.15] tracking-[-0.03em]">
+          {c.paraQuien.titulo}
+        </h2>
+      </div>
+      <div class="md:col-span-7 md:pl-6" data-reveal>
+        <p class="text-[17px] text-pizarra">{c.paraQuien.texto}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cómo funciona -->
+  <section class="hairline bg-marino text-marfil">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow text-oro-luz">{c.comoFunciona.eyebrow}</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          {c.comoFunciona.titulo}
+        </h2>
+      </div>
+      <ol class="mt-14 grid gap-8 md:grid-cols-4" role="list">
+        {
+          c.comoFunciona.pasos.map((p, i) => (
+            <li class="border-t border-marfil/15 pt-6" data-reveal>
+              <span class="font-mono text-[11px] tracking-[0.14em] text-oro-luz">0{i + 1}</span>
+              <h3 class="mt-3 font-display text-[18px] font-semibold leading-[1.3]">{p.titulo}</h3>
+              <p class="mt-2 text-[14px] text-marfil/65">{p.texto}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Paquetes -->
+  <section class="hairline" id="paquetes">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">{c.paquetes.eyebrow}</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          {c.paquetes.titulo}
+        </h2>
+      </div>
+      <ul class="mt-14 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea md:grid-cols-3" role="list">
+        {
+          c.paquetes.lista.map((p) => (
+            <li class="flex flex-col bg-panel p-8 md:p-10" data-reveal>
+              <p class="eyebrow text-pizarra">{p.nombre}</p>
+              <p class="mt-5 font-display text-[30px] font-extralight tracking-[-0.03em] text-oro-oscuro">
+                {p.precio} <span class="font-mono text-[12px] tracking-normal text-pizarra">{p.iva}</span>
+              </p>
+              <p class="mt-5 text-[15px] text-tinta/85">{p.presencia}</p>
+              <p class="mt-1 text-[15px] text-tinta/85">{p.remoto}</p>
+              <p class="mt-5 font-mono text-[12px] text-pizarra">{p.para}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-8 max-w-[70ch] font-mono text-[12px] leading-[1.7] text-pizarra" data-reveal>{c.paquetes.nota}</p>
+      <div class="mt-10 flex flex-wrap items-center gap-5 rounded-[4px] border border-oro/30 bg-oro/[0.06] px-6 py-5" data-reveal>
+        <img src={href('/img/logos/accio.png')} alt="ACCIÓ" width="96" height="32" loading="lazy" decoding="async" class="h-7 w-auto" />
+        <p class="text-[15px] text-tinta/85">{c.paquetes.accio}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Garantía -->
+  <section class="hairline bg-panel">
+    <div class="wrap grid gap-12 py-24 md:grid-cols-12 md:py-32">
+      <div class="md:col-span-5" data-reveal>
+        <p class="eyebrow">{c.garantia.eyebrow}</p>
+        <h2 class="mt-5 font-display text-[clamp(26px,3.2vw,38px)] font-extralight leading-[1.15] tracking-[-0.03em]">
+          {c.garantia.titulo}
+        </h2>
+      </div>
+      <div class="md:col-span-7 md:pl-6" data-reveal>
+        <p class="text-[17px] text-pizarra">{c.garantia.texto}</p>
+        <p class="mt-5 font-mono text-[12px] leading-[1.7] text-pizarra">{c.garantia.medida}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ejemplos reales -->
+  <section class="hairline">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">{c.ejemplos.eyebrow}</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          {c.ejemplos.titulo}
+        </h2>
+      </div>
+      <ul class="mt-14 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea md:grid-cols-2" role="list">
+        {
+          c.ejemplos.lista.map((e) => (
+            <li class="bg-panel p-8 md:p-10" data-reveal>
+              <p class="eyebrow text-pizarra">{e.area}</p>
+              <p class="mt-5 text-[16px] text-tinta/85">{e.texto}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-8 font-mono text-[12px] text-pizarra" data-reveal>{c.ejemplos.cierre}</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="hairline bg-panel">
+    <div class="wrap grid gap-12 py-24 md:grid-cols-12 md:py-32">
+      <div class="md:col-span-4" data-reveal>
+        <p class="eyebrow">{c.faq.eyebrow}</p>
+        <h2 class="mt-5 font-display text-[clamp(26px,3.2vw,38px)] font-extralight leading-[1.15] tracking-[-0.03em]">
+          {c.faq.titulo}
+        </h2>
+      </div>
+      <div class="md:col-span-8" data-reveal>
+        {
+          c.faq.lista.map((f) => (
+            <details class="group border-t border-linea py-5 last:border-b">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-6 font-display text-[18px] font-semibold">
+                {f.pregunta}
+                <span class="shrink-0 font-mono text-[14px] text-oro-oscuro transition-transform group-open:rotate-45">+</span>
+              </summary>
+              <p class="mt-4 max-w-[64ch] text-[15px] text-pizarra">{f.respuesta}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Otros servicios (solo es y ca) -->
+  {
+    otros.length > 0 && (
+      <section class="hairline">
+        <div class="wrap py-20 md:py-24">
+          <p class="eyebrow" data-reveal>
+            {c.otros.eyebrow}
+          </p>
+          <ul class="mt-10 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-2 lg:grid-cols-4" role="list">
+            {otros.map((o) => (
+              <li class="bg-panel" data-reveal>
+                <a href={enlace(o.ruta)} class="group flex h-full flex-col p-8 transition-colors hover:bg-oro/5">
+                  <span class="eyebrow text-pizarra">{o.etiqueta}</span>
+                  <h3 class="mt-3 font-display text-[20px] font-semibold">{o.titulo}</h3>
+                  <p class="mt-2 flex-1 text-[15px] text-pizarra">{o.pie}</p>
+                  <span class="mt-6 font-mono text-[12px] text-tinta/80 group-hover:text-oro-oscuro">{c.otros.enlace}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  {idioma !== 'en' && <GuiasRelacionadas ruta={'/servicios/director-ia/'} idioma={idioma} />}
+
+  <Cta titulo={c.cta.titulo} texto={c.cta.texto} boton={c.cta.boton} />
+
+  <script type="application/ld+json" set:html={faqJson} />
+</Base>

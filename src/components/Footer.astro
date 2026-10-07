@@ -1,5 +1,5 @@
 ---
-/** Pie de página: franja de tinta, como en la web anterior. */
+/** Pie de página: franja de tinta, como en la web anterior. Mismo orden que el menú: Servicios, Resultados, Productos, Empresa, Legal. */
 import Monograma from './Monograma.astro';
 import { site, href, hrefCa } from '../lib/site';
 
@@ -10,14 +10,22 @@ const columnasEs = [
   {
     titulo: 'Servicios',
     enlaces: [
+      { texto: 'Director de IA externo', ruta: '/servicios/director-ia/' },
       { texto: 'Diagnóstico', ruta: '/servicios/diagnostico/' },
       { texto: 'Transformación operativa', ruta: '/servicios/transformacion/' },
-      { texto: 'Partner tecnológico', ruta: '/servicios/partner/' },
       { texto: 'Seguridad de IA', ruta: '/servicios/seguridad-ia/' },
+      { texto: 'Partner tecnológico', ruta: '/servicios/partner/' },
       { texto: 'Acreditación ACCIÓ', ruta: '/servicios/#cupo' },
-      { texto: 'Sectores', ruta: '/sectores/' },
-      { texto: 'Casos de uso', ruta: '/casos-de-uso/' },
+    ],
+  },
+  {
+    titulo: 'Resultados',
+    enlaces: [
       { texto: 'Historias de éxito', ruta: '/historias-de-exito/' },
+      { texto: 'Casos de uso', ruta: '/casos-de-uso/' },
+      { texto: 'Sectores', ruta: '/sectores/' },
+      { texto: 'Estudio: asistentes de IA', ruta: '/estudio-asistentes-ia/' },
+      { texto: 'Proyectos en curso', ruta: '/proyectos-en-curso/' },
     ],
   },
   {
@@ -38,6 +46,7 @@ const columnasEs = [
     titulo: 'Empresa',
     enlaces: [
       { texto: 'Sobre nosotros', ruta: '/sobre-nosotros/' },
+      { texto: 'Blog', ruta: '/blog/' },
       { texto: 'Contacto', ruta: '/contacto/' },
     ],
   },
@@ -55,14 +64,22 @@ const columnasCa = [
   {
     titulo: 'Serveis',
     enlaces: [
+      { texto: 'Director d’IA extern', ruta: '/servicios/director-ia/' },
       { texto: 'Diagnòstic', ruta: '/servicios/diagnostico/' },
       { texto: 'Transformació operativa', ruta: '/servicios/transformacion/' },
-      { texto: 'Soci tecnològic', ruta: '/servicios/partner/' },
       { texto: 'Seguretat d’IA', ruta: '/servicios/seguridad-ia/' },
+      { texto: 'Soci tecnològic', ruta: '/servicios/partner/' },
       { texto: 'Acreditació ACCIÓ', ruta: '/servicios/#cupo' },
+    ],
+  },
+  {
+    titulo: 'Resultats',
+    enlaces: [
+      { texto: 'Històries d’èxit', ruta: '/historias-de-exito/' },
+      { texto: 'Casos d’ús', ruta: '/casos-de-uso/' },
       { texto: 'Sectors', ruta: '/sectores/' },
-      { texto: "Casos d'ús", ruta: '/casos-de-uso/' },
-      { texto: "Històries d'èxit", ruta: '/historias-de-exito/' },
+      { texto: 'Estudi: assistents d’IA', ruta: '/estudio-asistentes-ia/' },
+      { texto: 'Projectes en curs', ruta: '/proyectos-en-curso/' },
     ],
   },
   {
@@ -83,6 +100,7 @@ const columnasCa = [
     titulo: 'Empresa',
     enlaces: [
       { texto: 'Sobre nosaltres', ruta: '/sobre-nosotros/' },
+      { texto: 'Blog', ruta: '/blog/' },
       { texto: 'Contacte', ruta: '/contacto/' },
     ],
   },
@@ -100,9 +118,9 @@ const columnas = idioma === 'ca' ? columnasCa : columnasEs;
 ---
 
 <footer class="bg-marino text-marfil/70">
-  <div class="wrap grid gap-10 py-20 md:grid-cols-[1.6fr_repeat(4,1fr)]">
-    <div>
-      <a href={enlace('/')} class="text-marfil" aria-label="77 Delta, inici"><Monograma size={30} /></a>
+  <div class="wrap grid gap-10 py-20 sm:grid-cols-2 lg:grid-cols-5 xl:grid-cols-[1.4fr_repeat(5,1fr)]">
+    <div class="sm:col-span-2 lg:col-span-5 xl:col-span-1">
+      <a href={enlace('/')} class="text-marfil" aria-label={idioma === 'ca' ? '77 Delta, inici' : '77 Delta, inicio'}><Monograma size={30} /></a>
       {
         idioma === 'ca' ? (
           <p class="mt-5 max-w-[28ch] text-[14px] leading-[1.55] text-marfil/60">

@@ -1,8 +1,8 @@
 ---
-/** Cabecera en tinta con el monograma en marfil; botón de acción en ocre. */
+/** Cabecera en tinta con el monograma en marfil; botón de acción en ocre. Las entradas con `hijos` despliegan un submenú. */
 import Monograma from './Monograma.astro';
 import SelectorIdiomas, { type IdiomaOpcion } from './SelectorIdiomas.astro';
-import { nav, navCa, cta, ctaCa, href, hrefCa, equivalenteCa, equivalenteEs } from '../lib/site';
+import { nav, navCa, cta, ctaCa, href, hrefCa, equivalenteCa, equivalenteEs, type ItemNav } from '../lib/site';
 
 interface Props {
   /** Oculta el selector de idioma en páginas sin versión en catalán (p. ej. /propuestas/). */
@@ -16,7 +16,9 @@ const enlace = idioma === 'ca' ? hrefCa : href;
 const items = idioma === 'ca' ? navCa : nav;
 const boton = idioma === 'ca' ? ctaCa : cta;
 const actual = Astro.url.pathname;
-const activo = (ruta: string) => actual.startsWith(enlace(ruta));
+const activoRuta = (ruta: string) => actual.startsWith(enlace(ruta));
+/** Una entrada está activa si lo está su ruta o la de cualquiera de sus hijos. */
+const activo = (n: ItemNav) => activoRuta(n.ruta) || (n.hijos ?? []).some((h) => activoRuta(h.ruta));
 const otroIdioma = idioma === 'ca' ? 'es' : 'ca';
 const enlaceOtroIdioma = idioma === 'ca' ? equivalenteEs(actual) : equivalenteCa(actual);
 ---
@@ -27,19 +29,62 @@ const enlaceOtroIdioma = idioma === 'ca' ? equivalenteEs(actual) : equivalenteCa
       <Monograma size={26} />
     </a>
 
-    <nav aria-label="Principal" class="hidden items-center gap-6 lg:flex">
+    <nav aria-label="Principal" class="hidden items-center gap-7 lg:flex">
       {
         items.map((n) => (
-          <a
-            href={enlace(n.ruta)}
-            class:list={[
-              'text-[14px] font-medium transition-colors duration-200 hover:text-marfil',
-              activo(n.ruta) ? 'text-oro-luz' : 'text-marfil/70',
-            ]}
-            aria-current={activo(n.ruta) ? 'page' : undefined}
-          >
-            {n.texto}
-          </a>
+          <div class="group relative">
+            <a
+              href={enlace(n.ruta)}
+              class:list={[
+                'inline-flex items-center gap-1.5 py-2 text-[14px] font-medium transition-colors duration-200 hover:text-marfil',
+                activo(n) ? 'text-oro-luz' : 'text-marfil/70',
+              ]}
+              aria-current={activoRuta(n.ruta) ? 'page' : undefined}
+              aria-haspopup={n.hijos ? 'true' : undefined}
+            >
+              {n.texto}
+              {n.hijos && (
+                <svg
+                  class="h-3 w-3 opacity-60 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M2.5 4.5 6 8l3.5-3.5" />
+                </svg>
+              )}
+            </a>
+            {n.hijos && (
+              <div class="invisible absolute -left-4 top-full z-50 pt-3 opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                <ul
+                  class="min-w-[272px] rounded-[10px] border border-marfil/12 bg-marino p-2 shadow-[0_18px_48px_rgba(0,0,0,.45)]"
+                  role="list"
+                >
+                  {n.hijos.map((h) => (
+                    <li>
+                      <a
+                        href={enlace(h.ruta)}
+                        class:list={[
+                          'flex flex-col gap-0.5 rounded-[6px] px-3 py-2.5 transition-colors duration-150 hover:bg-marfil/[0.08]',
+                          activoRuta(h.ruta) ? 'text-oro-luz' : 'text-marfil/85 hover:text-marfil',
+                        ]}
+                        aria-current={activoRuta(h.ruta) ? 'page' : undefined}
+                      >
+                        <span class="text-[14px] font-medium">{h.texto}</span>
+                        {h.nota && (
+                          <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-oro-luz">{h.nota}</span>
+                        )}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         ))
       }
     </nav>
@@ -82,15 +127,35 @@ const enlaceOtroIdioma = idioma === 'ca' ? equivalenteEs(actual) : equivalenteCa
       {idiomas && <SelectorIdiomas idiomas={idiomas} class="px-3 pb-3 pt-1 sm:hidden" />}
       {
         items.map((n) => (
-          <a
-            href={enlace(n.ruta)}
-            class:list={[
-              'rounded-[8px] px-3 py-3 text-[15px] font-medium hover:bg-marfil/10',
-              activo(n.ruta) ? 'text-oro-luz' : 'text-marfil',
-            ]}
-          >
-            {n.texto}
-          </a>
+          <>
+            <a
+              href={enlace(n.ruta)}
+              class:list={[
+                'rounded-[8px] px-3 py-3 text-[15px] font-medium hover:bg-marfil/10',
+                activo(n) ? 'text-oro-luz' : 'text-marfil',
+              ]}
+            >
+              {n.texto}
+            </a>
+            {n.hijos && (
+              <ul class="mb-2 ml-4 border-l border-marfil/15 pl-2" role="list">
+                {n.hijos.map((h) => (
+                  <li>
+                    <a
+                      href={enlace(h.ruta)}
+                      class:list={[
+                        'flex items-baseline justify-between gap-3 rounded-[8px] px-3 py-2 text-[14px] hover:bg-marfil/10',
+                        activoRuta(h.ruta) ? 'text-oro-luz' : 'text-marfil/80',
+                      ]}
+                    >
+                      <span>{h.texto}</span>
+                      {h.nota && <span class="shrink-0 font-mono text-[11px] uppercase tracking-[0.06em] text-oro-luz">{h.nota}</span>}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
         ))
       }
       {!idiomas && selectorIdioma && (

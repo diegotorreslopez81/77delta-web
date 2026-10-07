@@ -64,17 +64,46 @@ export function equivalenteEs(pathnameCa: string): string {
   return href(sinCa === '' ? '/' : sinCa);
 }
 
-export const nav = [
+/** Entrada del menú. `hijos` pinta un desplegable al pasar el ratón (y el bloque anidado en el menú móvil). */
+export interface ItemNav {
+  texto: string;
+  ruta: string;
+  /** Texto corto en mono bajo el nombre, dentro del desplegable (p. ej. el precio desde). */
+  nota?: string;
+  hijos?: readonly ItemNav[];
+}
+
+/**
+ * Menú principal: qué hacemos (Servicios), para quién (Sectores), pruebas (Resultados), Productos,
+ * Blog y Sobre nosotros. Contacto va en el botón "Reservar diagnóstico" y en el pie.
+ */
+export const nav: readonly ItemNav[] = [
+  {
+    texto: 'Servicios',
+    ruta: '/servicios/',
+    hijos: [
+      { texto: 'Director de IA externo', ruta: '/servicios/director-ia/', nota: 'Desde 1.200 €/mes' },
+      { texto: 'Diagnóstico', ruta: '/servicios/diagnostico/', nota: 'Gratuito' },
+      { texto: 'Transformación operativa', ruta: '/servicios/transformacion/' },
+      { texto: 'Seguridad de IA', ruta: '/servicios/seguridad-ia/' },
+      { texto: 'Partner tecnológico', ruta: '/servicios/partner/' },
+    ],
+  },
   { texto: 'Sectores', ruta: '/sectores/' },
-  { texto: 'Servicios', ruta: '/servicios/' },
-  { texto: 'Seguridad IA', ruta: '/servicios/seguridad-ia/' },
-  { texto: 'Casos de uso', ruta: '/casos-de-uso/' },
-  { texto: 'Historias de éxito', ruta: '/historias-de-exito/' },
+  {
+    texto: 'Resultados',
+    ruta: '/historias-de-exito/',
+    hijos: [
+      { texto: 'Historias de éxito', ruta: '/historias-de-exito/' },
+      { texto: 'Casos de uso', ruta: '/casos-de-uso/' },
+      { texto: 'Estudio: asistentes de IA', ruta: '/estudio-asistentes-ia/' },
+      { texto: 'Proyectos en curso', ruta: '/proyectos-en-curso/' },
+    ],
+  },
   { texto: 'Productos', ruta: '/productos/' },
   { texto: 'Blog', ruta: '/blog/' },
   { texto: 'Sobre nosotros', ruta: '/sobre-nosotros/' },
-  { texto: 'Contacto', ruta: '/contacto/' },
-] as const;
+];
 
 /** Analítica sin cookies (Umami). Vacío = sin script. */
 export const umami = {
@@ -88,16 +117,32 @@ export const searchConsole = '';
 export const cta = { texto: 'Reservar diagnóstico', ruta: '/contacto/' } as const;
 
 /** Mismas rutas que `nav`, en catalán, para las páginas de /ca/. */
-export const navCa = [
+export const navCa: readonly ItemNav[] = [
+  {
+    texto: 'Serveis',
+    ruta: '/servicios/',
+    hijos: [
+      { texto: 'Director d’IA extern', ruta: '/servicios/director-ia/', nota: 'Des de 1.200 €/mes' },
+      { texto: 'Diagnòstic', ruta: '/servicios/diagnostico/', nota: 'Gratuït' },
+      { texto: 'Transformació operativa', ruta: '/servicios/transformacion/' },
+      { texto: 'Seguretat d’IA', ruta: '/servicios/seguridad-ia/' },
+      { texto: 'Soci tecnològic', ruta: '/servicios/partner/' },
+    ],
+  },
   { texto: 'Sectors', ruta: '/sectores/' },
-  { texto: 'Serveis', ruta: '/servicios/' },
-  { texto: 'Seguretat IA', ruta: '/servicios/seguridad-ia/' },
-  { texto: "Casos d'ús", ruta: '/casos-de-uso/' },
-  { texto: "Històries d'èxit", ruta: '/historias-de-exito/' },
+  {
+    texto: 'Resultats',
+    ruta: '/historias-de-exito/',
+    hijos: [
+      { texto: 'Històries d’èxit', ruta: '/historias-de-exito/' },
+      { texto: 'Casos d’ús', ruta: '/casos-de-uso/' },
+      { texto: 'Estudi: assistents d’IA', ruta: '/estudio-asistentes-ia/' },
+      { texto: 'Projectes en curs', ruta: '/proyectos-en-curso/' },
+    ],
+  },
   { texto: 'Productes', ruta: '/productos/' },
   { texto: 'Blog', ruta: '/blog/' },
   { texto: 'Sobre nosaltres', ruta: '/sobre-nosotros/' },
-  { texto: 'Contacte', ruta: '/contacto/' },
-] as const;
+];
 
 export const ctaCa = { texto: 'Reservar diagnòstic', ruta: '/contacto/' } as const;

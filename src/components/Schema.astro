@@ -75,11 +75,13 @@ const nodoProducto = {
 // Migas: inicio > sección (etiqueta del menú) > página. Solo ruta real, sin inventar niveles.
 const items = idioma === 'ca' ? navCa : nav;
 const prefijo = idioma === 'ca' ? '/ca' : '';
+// Entradas del menú aplanadas; los hijos van antes para que una ruta anidada tome su propia etiqueta.
+const planos = items.flatMap((n) => [...(n.hijos ?? []), n]);
 const partes = new URL(canonical).pathname.replace(/\/$/, '').split('/').filter(Boolean).filter((x, i) => !(i === 0 && x === 'ca'));
 const derivadas = partes.map((seg, i) => {
   const r = '/' + partes.slice(0, i + 1).join('/') + '/';
   const esUltima = i === partes.length - 1;
-  const etiqueta = items.find((n) => n.ruta === r)?.texto;
+  const etiqueta = planos.find((n) => n.ruta === r)?.texto;
   return { nombre: esUltima ? title : etiqueta, ruta: prefijo + r };
 }).filter((m) => m.nombre);
 const lista = [{ nombre: site.nombre, ruta: prefijo + '/' }, ...(migas ?? derivadas)];

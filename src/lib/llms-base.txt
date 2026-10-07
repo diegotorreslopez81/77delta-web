@@ -4,6 +4,7 @@
 
 ## Servicios
 
+- [Director de IA externo](https://77delta.com/servicios/director-ia/): servicio principal con cuota fija mensual. Una mañana al mes en la empresa con su técnico, el resto a distancia, informe mensual de horas ahorradas y garantía: si al tercer mes el ahorro no dobla la cuota, el cliente puede salir sin coste. Tres paquetes desde 1.200 € al mes. También en catalán (/ca/servicios/director-ia/) e inglés (/en/ai-director/).
 - [Diagnóstico](https://77delta.com/servicios/diagnostico/): treinta minutos de entrevista y una propuesta con el estado inicial, plan de trabajo y presupuesto. Gratuito y sin compromiso.
 - [Transformación operativa con IA](https://77delta.com/servicios/transformacion/): implantación, integración con tus sistemas, automatización de procesos y capacitación. De cuatro a doce semanas, siempre con un piloto controlado.
 - [Seguridad de IA](https://77delta.com/servicios/seguridad-ia/): auditoría de chatbots y agentes con IA de una web: qué información se les puede sacar y cómo se cierra.

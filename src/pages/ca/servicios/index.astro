@@ -16,17 +16,34 @@ import { resumen, recorrido, faq } from '../../../data/servicios.ca';
       class="mt-7 max-w-[20ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
       data-reveal
     >
-      Quatre formes de treballar amb tu. Un mateix objectiu: <span class="font-semibold text-oro-oscuro"
-        >reduir costos</span
+      Un director d'IA extern i quatre formes més de treballar amb tu. Un mateix objectiu: <span
+        class="font-semibold text-oro-oscuro">reduir costos</span
       > i augmentar la teva producció amb IA aplicada, sense obrir riscos pel camí.
     </h1>
     <p class="mt-8 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
       Cada empresa és diferent. Per això comencem sempre pel diagnòstic. A partir d’aquí, tu decideixes el
-      recorregut: projecte puntual, acompanyament continu o tots dos. Sense tarifes tancades. Sense compromís
-      inicial.
+      recorregut: director d'IA amb quota fixa, projecte puntual, acompanyament continu o una combinació.
     </p>
 
-    <div class="mt-16 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-2 lg:grid-cols-4">
+    <a
+      href={href('/servicios/director-ia/')}
+      class="group mt-16 flex flex-col gap-6 rounded-[4px] border border-oro/40 bg-marino p-8 text-marfil transition-colors hover:bg-tinta md:flex-row md:items-center md:justify-between md:p-10"
+      data-reveal
+    >
+      <div>
+        <span class="eyebrow text-oro-luz">Servei principal · Quota fixa mensual</span>
+        <h2 class="mt-4 font-display text-[clamp(24px,3vw,34px)] font-extralight leading-[1.15] tracking-[-0.03em]">
+          El teu director d'IA <span class="font-semibold text-oro-luz">des de 1.200 € al mes</span>.
+        </h2>
+        <p class="mt-3 max-w-[60ch] text-[15px] text-marfil/70">
+          Un matí al mes a la teva empresa amb el teu tècnic, la resta a distància i una garantia clara: si al tercer
+          mes l'estalvi no dobla la quota, ho atures.
+        </p>
+      </div>
+      <span class="shrink-0 font-mono text-[12px] text-marfil/80 group-hover:text-oro-luz">Veure el servei →</span>
+    </a>
+
+    <div class="mt-4 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-2 lg:grid-cols-4">
       {
         resumen.map((r) => (
           <a
