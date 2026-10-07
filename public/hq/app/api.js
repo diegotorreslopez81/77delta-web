@@ -54,6 +54,8 @@ export const licAdminGuardar = (tabla, clave, cambios, motivo) => rpc('lic_admin
 export const licAdminAlta = (tabla, fila, motivo) => rpc('lic_admin_alta', { p_tabla: tabla, p_fila: fila, p_motivo: motivo || null });
 export const licAdminHistorial = (tabla, clave) => rpc('lic_admin_historial', { p_tabla: tabla, p_clave: clave });
 // #2191: historia completa (tareas + envíos + cambios) de una licitación, omc_licitacion_historia (schema-v109).
+// #2178: bloqueos de tareas abiertas por fase y quien espera (lic_tareas.espera_de).
+export const licitacionBloqueos = () => rpc('omc_lic_bloqueos', {});
 export const licitacionHistoria = id => rpc('omc_licitacion_historia', { p_id: id });
 // Listado unico de la vista de Licitaciones (omc_licitaciones_tabla extendida en schema-v20): filtro server-side
 // por estado, etiqueta(s), importe (Menor = importe_max 20000) y cierre.

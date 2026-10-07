@@ -10,6 +10,7 @@ import { el, fecha, urlSegura, toast } from '../ui.js';
 import { embudo, porElegible, porDecidir, vencida, esperandoResolucion, sinPresentarUrgente, ordenCierre, estadoDe, estadoBase, estadoPartido, solvenciaTexto, pipelinePorMes, tipologiaOrgano, tipologia, TIPOLOGIAS, filtrar, enlacesLic, ESTADOS_H1, ETAPAS_LIC, etapaDe, CLAVE_RESUMEN } from '../licitaciones.js';
 import { botonesTransicion, botonClaveSobre, checklistA5, ejecutarTransicion } from '../decision-lic.js';
 import { recargar, render as repintar } from '../main.js';
+import { nombreBloqueo, textoHoras, tableroFases } from './licitaciones-bloqueo.js';
 import { hojaFiltros, pillsActivos } from '../filtros.js';
 import { donut, barras } from '../graficos.js';
 import { eurCorto, anchoLog, panel, cifra, grafico, leyenda, ejeX, filaBarra } from '../cuadro.js';
@@ -265,7 +266,10 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
       };
       lista('Envíos', envios.map(x => el('li', { text: (x.confirmada_en ? fecha(x.confirmada_en) + ' · ' : '') + x.tipo + (x.requerimiento ? ' ' + x.requerimiento : '')
         + (x.n_registro ? ' · reg ' + x.n_registro : '') + (x.plataforma ? ' · ' + x.plataforma : '') + (x.justificante_drive ? '' : ' · sin justificante en Drive') })), 'sin envíos registrados');
-      lista('Tareas', tareas.map(x => el('li', { text: (x.creada_en ? fecha(x.creada_en) + ' · ' : '') + x.fase + ' · ' + x.estado + (x.resultado?.notificacion ? ' · notif ' + x.resultado.notificacion : '') })), 'sin tareas');
+      lista('Tareas', tareas.map(x => el('li', {}, [
+        (x.creada_en ? fecha(x.creada_en) + ' · ' : '') + x.fase + ' · ' + x.estado + (x.resultado?.notificacion ? ' · notif ' + x.resultado.notificacion : '') + ' ',
+        x.estado !== 'hecha' ? el('span', { class: 'chip bloqueo ' + (x.espera_de === 'proveedor' ? 'proveedor' : ''), text: nombreBloqueo(x.espera_de) + (x.horas_parada != null ? ' · ' + textoHoras(x.horas_parada) : '') }) : '',
+      ])), 'sin tareas');
       lista('Cambios', cambios.map(c => el('li', {
         text: (c.fecha ? fecha(c.fecha) + ' · ' : '') + c.campo + ': ' + (c.antes ?? '-') + ' → ' + (c.despues ?? '-') + (c.actor ? ' · ' + c.actor : '') + (c.motivo ? ' (' + c.motivo + ')' : ''),
       })), 'sin cambios registrados');
@@ -531,7 +535,20 @@ export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
     onAplicar: v => { location.hash = construirRuta(v); },
   });
   pintarPills();
-  raiz.append(chips, zonaPills, resumenTxt, lista, hoja.fab, hoja.hoja);
+  // #2178: tablero por fase con chip de bloqueo (quien espera) y horas paradas; D101 'Esperando proveedor'.
+  const tablero = el('div', { class: 'lic-tablero-fases' });
+  import('../api.js').then(m => m.licitacionBloqueos()).then(filas => {
+    const fases = tableroFases(filas);
+    const prov = (Array.isArray(filas) ? filas : []).filter(x => x.espera_de === 'proveedor');
+    tablero.append(...fases.map(f => el('div', { class: 'col-fase' }, [
+      el('h4', { text: f.nombre + ' ' + f.total }),
+      f.chips.length ? el('div', { class: 'chips-fases' }, f.chips.map(c => el('span', { class: 'chip bloqueo ' + c.espera_de, text: c.nombre + ' ' + c.n + ' · ' + textoHoras(c.horas) }))) : el('p', { class: 'mudo', text: 'sin tareas abiertas' }),
+    ])), el('div', { class: 'col-fase' }, [
+      el('h4', { text: 'Esperando proveedor ' + prov.reduce((a, x) => a + Number(x.n), 0) }),
+      prov.length ? el('div', { class: 'chips-fases' }, prov.map(c => el('span', { class: 'chip bloqueo proveedor', text: c.fase + ' ' + c.n + ' · ' + textoHoras(c.horas_max) }))) : el('p', { class: 'mudo', text: 'ninguna' }),
+    ]));
+  }).catch(() => {});
+  raiz.append(chips, tablero, zonaPills, resumenTxt, lista, hoja.fab, hoja.hoja);
 
   const mio = ++turno;
   const filtro = filtroServidor(valores, ahora);
