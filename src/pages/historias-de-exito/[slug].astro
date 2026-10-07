@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import HeroFoto from '../../components/HeroFoto.astro';
 import Cta from '../../components/Cta.astro';
 import { href } from '../../lib/site';
 import { historias, type Historia } from '../../data/historias';
@@ -21,6 +22,14 @@ const bloques = [
 ];
 
 const cifra = `${historia.cifra.valor}${historia.cifra.sufijo}`;
+
+// Fotografía del hero por historia y su texto alternativo.
+const fotoHistoria: Record<string, { foto: string; alt: string }> = {
+  'clinicas-dentales-barcelona': { foto: 'clinicas', alt: 'Consulta de una clínica dental' },
+  'distribuidora-industrial': { foto: 'distribucion', alt: 'Pasillo de un almacén logístico' },
+  'despacho-mercantil': { foto: 'despachos', alt: 'Persona firmando un documento' },
+};
+const foto = fotoHistoria[historia.slug] ?? { foto: 'equipo', alt: 'Equipo profesional en una reunión de trabajo' };
 ---
 
 <Base
@@ -29,16 +38,21 @@ const cifra = `${historia.cifra.valor}${historia.cifra.sufijo}`;
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
-    <p class="eyebrow" data-reveal>{historia.sector} · Caso real</p>
-    <h1
-      class="mt-7 max-w-[16ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
-      data-reveal
-    >
-      <span class="font-semibold text-oro-oscuro" data-contador={historia.cifra.valor} data-sufijo={historia.cifra.sufijo}
-        >{cifra}</span
-      > {historia.titular}
-    </h1>
-    <p class="mt-8 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>{historia.cliente}</p>
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>{historia.sector} · Caso real</p>
+        <h1
+          class="mt-7 max-w-[16ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          <span class="font-semibold text-oro-oscuro" data-contador={historia.cifra.valor} data-sufijo={historia.cifra.sufijo}
+            >{cifra}</span
+          > {historia.titular}
+        </h1>
+        <p class="mt-8 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>{historia.cliente}</p>
+      </div>
+      <HeroFoto foto={foto.foto} alt={foto.alt} class="lg:col-span-5" />
+    </div>
   </section>
 
   <!-- Métricas -->

@@ -1,0 +1,36 @@
+---
+/**
+ * Fotografía del hero de las páginas interiores. Misma proporción, radio y sombra que la
+ * fotografía de la portada: ocupa la columna derecha del hero y se apila bajo el texto en
+ * pantallas estrechas. Las imágenes viven en /img/fotos/<nombre>-<ancho>.webp.
+ */
+interface Props {
+  /** Nombre base del fichero en /img/fotos/, sin ancho ni extensión. */
+  foto: string;
+  alt: string;
+  /** Anchos disponibles del fichero. Por defecto 900 y 1600. */
+  tamanos?: number[];
+  class?: string;
+}
+const { foto, alt, tamanos = [900, 1600], class: clase } = Astro.props;
+const src = `/img/fotos/${foto}-${tamanos[tamanos.length - 1]}.webp`;
+const srcset = tamanos.map((t) => `/img/fotos/${foto}-${t}.webp ${t}w`).join(', ');
+---
+
+<div
+  class:list={[
+    'aspect-[5/4] overflow-hidden rounded-[20px] bg-[#E0D9CB] shadow-[0_30px_80px_rgba(10,22,40,.18)]',
+    clase,
+  ]}
+  data-reveal
+>
+  <img
+    src={src}
+    srcset={srcset}
+    sizes="(min-width: 1024px) 40vw, 100vw"
+    alt={alt}
+    class="h-full w-full object-cover"
+    fetchpriority="high"
+    decoding="async"
+  />
+</div>

@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import HeroFoto from '../../components/HeroFoto.astro';
 import Boton from '../../components/Boton.astro';
 import Cta from '../../components/Cta.astro';
 import { href } from '../../lib/site';
@@ -40,24 +41,29 @@ const categorias = [
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
-    <p class="eyebrow" data-reveal>Estudio propio · En curso · Septiembre de 2026</p>
-    <h1
-      class="mt-7 max-w-[20ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
-      data-reveal
-    >
-      Auditamos los asistentes de IA de las webs españolas. <span class="font-semibold text-oro-oscuro"
-        >Esto es lo que hemos encontrado, de momento</span
-      >.
-    </h1>
-    <p class="mt-8 max-w-[56ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Rastreamos 391 webs de empresas españolas buscando asistentes con IA abiertos al público. Encontramos 29
-      respondiendo sin pedir nada a cambio. Los estamos probando a fondo, uno por uno, con una batería de
-      pruebas y una segunda revisión adversa de cada hallazgo antes de darlo por bueno.
-    </p>
-    <p class="mt-6 max-w-[56ch] text-[15px] text-pizarra" data-reveal>
-      No nombramos a nadie. Cada hallazgo se comparte solo con la empresa afectada. Este estudio se actualiza
-      conforme avanza el rastreo; las cifras de abajo son las de la última revisión.
-    </p>
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Estudio propio · En curso · Septiembre de 2026</p>
+        <h1
+          class="mt-7 max-w-[20ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          Auditamos los asistentes de IA de las webs españolas. <span class="font-semibold text-oro-oscuro"
+            >Esto es lo que hemos encontrado, de momento</span
+          >.
+        </h1>
+        <p class="mt-8 max-w-[56ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Rastreamos 391 webs de empresas españolas buscando asistentes con IA abiertos al público. Encontramos 29
+          respondiendo sin pedir nada a cambio. Los estamos probando a fondo, uno por uno, con una batería de
+          pruebas y una segunda revisión adversa de cada hallazgo antes de darlo por bueno.
+        </p>
+        <p class="mt-6 max-w-[56ch] text-[15px] text-pizarra" data-reveal>
+          No nombramos a nadie. Cada hallazgo se comparte solo con la empresa afectada. Este estudio se actualiza
+          conforme avanza el rastreo; las cifras de abajo son las de la última revisión.
+        </p>
+      </div>
+      <HeroFoto foto="diagnostico" alt="Oficina diáfana con varios profesionales trabajando" class="lg:col-span-5" />
+    </div>
 
     <ul class="mt-14 grid gap-4 sm:grid-cols-2" role="list" data-reveal>
       {

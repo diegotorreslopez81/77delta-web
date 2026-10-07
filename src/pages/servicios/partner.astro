@@ -1,6 +1,7 @@
 ---
 import GuiasRelacionadas from '../../components/blog/GuiasRelacionadas.astro';
 import Base from '../../layouts/Base.astro';
+import HeroFoto from '../../components/HeroFoto.astro';
 import Boton from '../../components/Boton.astro';
 import Cta from '../../components/Cta.astro';
 import { href } from '../../lib/site';
@@ -16,25 +17,30 @@ const otros = resumen.filter((r) => r.titulo !== 'Partner tecnológico');
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
-    <p class="eyebrow" data-reveal>
-      <a href={href('/servicios/')} class="transition-colors hover:text-tinta">Servicios</a> · 03 · Acompañamiento continuo
-    </p>
-    <h1
-      class="mt-7 max-w-[19ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
-      data-reveal
-    >
-      Toda la tecnología de tu empresa, <span class="font-semibold text-oro-oscuro">con un solo interlocutor</span>.
-    </h1>
-    <p class="mt-8 max-w-[56ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Software a medida, integración, CRM y ERP, Microsoft, nube, ciberseguridad, hardware y planta, web, datos, IA e
-      I+D. Un socio técnico que entiende todo lo que te rodea y te lo explica con claridad.
-    </p>
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>
+          <a href={href('/servicios/')} class="transition-colors hover:text-tinta">Servicios</a> · 03 · Acompañamiento continuo
+        </p>
+        <h1
+          class="mt-7 max-w-[19ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          Toda la tecnología de tu empresa, <span class="font-semibold text-oro-oscuro">con un solo interlocutor</span>.
+        </h1>
+        <p class="mt-8 max-w-[56ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Software a medida, integración, CRM y ERP, Microsoft, nube, ciberseguridad, hardware y planta, web, datos, IA e
+          I+D. Un socio técnico que entiende todo lo que te rodea y te lo explica con claridad.
+        </p>
 
-    <div class="mt-14 flex flex-wrap items-center gap-8" data-reveal>
-      <p class="font-mono text-[12px] leading-[1.6] tracking-[0.04em] text-pizarra">
-        Doce ámbitos · Un interlocutor · Sin fabricantes impuestos
-      </p>
-      <Boton href={href('/contacto/')}>Cuéntanos tu caso →</Boton>
+        <div class="mt-14 flex flex-wrap items-center gap-8" data-reveal>
+          <p class="font-mono text-[12px] leading-[1.6] tracking-[0.04em] text-pizarra">
+            Doce ámbitos · Un interlocutor · Sin fabricantes impuestos
+          </p>
+          <Boton href={href('/contacto/')}>Cuéntanos tu caso →</Boton>
+        </div>
+      </div>
+      <HeroFoto foto="oficina" alt="Pasillo de una oficina moderna" class="lg:col-span-5" />
     </div>
   </section>
 

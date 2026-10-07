@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../../../layouts/Base.astro';
+import HeroFoto from '../../../components/HeroFoto.astro';
 import Cta from '../../../components/Cta.astro';
 import { site, hrefCa as href } from '../../../lib/site';
 import diego from '../../../assets/diego.png';
@@ -79,18 +80,23 @@ const descripcio =
 <Base title="Sobre nosaltres" description={descripcio}>
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
-    <p class="eyebrow" data-reveal>Sobre nosaltres</p>
-    <h1
-      class="mt-7 max-w-[16ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
-      data-reveal
-    >
-      Una consultora amb història, nascuda des de dins del problema.
-    </h1>
-    <p class="mt-8 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Més de 20 anys aplicant tecnologia a empreses reals. Acreditats per la Generalitat de Catalunya. Amb clients
-      des de Barcelona fins a Dubai. I amb una convicció: la intel·ligència artificial només aporta valor quan
-      s’aplica amb criteri.
-    </p>
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Sobre nosaltres</p>
+        <h1
+          class="mt-7 max-w-[16ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          Una consultora amb història, nascuda des de dins del problema.
+        </h1>
+        <p class="mt-8 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Més de 20 anys aplicant tecnologia a empreses reals. Acreditats per la Generalitat de Catalunya. Amb clients
+          des de Barcelona fins a Dubai. I amb una convicció: la intel·ligència artificial només aporta valor quan
+          s’aplica amb criteri.
+        </p>
+      </div>
+      <HeroFoto foto="equipo" alt="Equip professional en una reunió de treball" class="lg:col-span-5" />
+    </div>
   </section>
 
   <!-- 01 · Nuestra historia -->

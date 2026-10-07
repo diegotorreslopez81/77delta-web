@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import HeroFoto from '../../../components/HeroFoto.astro';
 import { hrefCa as href } from '../../../lib/site';
 import { proyectosEnCurso } from '../../../data/proyectos-en-curso.ca';
 ---
@@ -10,19 +11,24 @@ import { proyectosEnCurso } from '../../../data/proyectos-en-curso.ca';
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
-    <p class="eyebrow" data-reveal>Projectes en curs</p>
-    <h1
-      class="mt-7 max-w-[20ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
-      data-reveal
-    >
-      El que estem <span class="font-semibold text-oro-oscuro">executant ara mateix</span>, amb el nom de cada client.
-    </h1>
-    <p class="mt-8 max-w-[58ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Aquests projectes estan en marxa, no tancats. Per això no publiquem xifres de resultat encara: només quina
-      empresa, en quin sector, i què estem fent ara. Quan acabin, passen a
-      <a href={href('/historias-de-exito/')} class="text-oro-oscuro hover:underline">històries d’èxit</a>, amb
-      resultats verificats.
-    </p>
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Projectes en curs</p>
+        <h1
+          class="mt-7 max-w-[20ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          El que estem <span class="font-semibold text-oro-oscuro">executant ara mateix</span>, amb el nom de cada client.
+        </h1>
+        <p class="mt-8 max-w-[58ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Aquests projectes estan en marxa, no tancats. Per això no publiquem xifres de resultat encara: només quina
+          empresa, en quin sector, i què estem fent ara. Quan acabin, passen a
+          <a href={href('/historias-de-exito/')} class="text-oro-oscuro hover:underline">històries d’èxit</a>, amb
+          resultats verificats.
+        </p>
+      </div>
+      <HeroFoto foto="campus" alt="Persones caminant entre edificis d’oficines" tamanos={[1600]} class="lg:col-span-5" />
+    </div>
   </section>
 
   <!-- Lista de proyectos -->

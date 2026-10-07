@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import HeroFoto from '../../../components/HeroFoto.astro';
 import Cta from '../../../components/Cta.astro';
 import { hrefCa as href } from '../../../lib/site';
 import { historias } from '../../../data/historias.ca';
@@ -11,18 +12,23 @@ import { historias } from '../../../data/historias.ca';
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
-    <p class="eyebrow" data-reveal>Casos reals</p>
-    <h1
-      class="mt-7 max-w-[16ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
-      data-reveal
-    >
-      Tres projectes. <span class="font-semibold text-oro-oscuro">Tres xifres verificables.</span>
-    </h1>
-    <p class="mt-8 max-w-[58ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Mesurem els resultats en lloc de prometre’ls. Cada projecte comença amb una estimació quantificada del retorn i es continua amb
-      mètriques verificables mes a mes. Aquests són tres casos reals d'empreses que poden explicar què ha canviat
-      després de treballar amb nosaltres.
-    </p>
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Casos reals</p>
+        <h1
+          class="mt-7 max-w-[16ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          Tres projectes. <span class="font-semibold text-oro-oscuro">Tres xifres verificables.</span>
+        </h1>
+        <p class="mt-8 max-w-[58ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Mesurem els resultats en lloc de prometre’ls. Cada projecte comença amb una estimació quantificada del retorn i es continua amb
+          mètriques verificables mes a mes. Aquests són tres casos reals d'empreses que poden explicar què ha canviat
+          després de treballar amb nosaltres.
+        </p>
+      </div>
+      <HeroFoto foto="clinicas" alt="Consulta d’una clínica dental" class="lg:col-span-5" />
+    </div>
   </section>
 
   <!-- Las tres historias -->

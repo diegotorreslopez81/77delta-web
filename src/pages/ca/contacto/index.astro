@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import HeroFoto from '../../../components/HeroFoto.astro';
 import { site, hrefCa as href } from '../../../lib/site';
 
 const sectors = [
@@ -48,17 +49,22 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
-    <p class="eyebrow" data-reveal>Contacte</p>
-    <h1
-      class="mt-7 max-w-[16ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
-      data-reveal
-    >
-      Explica’ns la teva situació.
-    </h1>
-    <p class="mt-8 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Responem en 24 hores hàbils. Si ho prefereixes, reserva directament la conversa inicial de 30 minuts al
-      calendari.
-    </p>
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Contacte</p>
+        <h1
+          class="mt-7 max-w-[16ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          Explica’ns la teva situació.
+        </h1>
+        <p class="mt-8 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Responem en 24 hores hàbils. Si ho prefereixes, reserva directament la conversa inicial de 30 minuts al
+          calendari.
+        </p>
+      </div>
+      <HeroFoto foto="gerente" alt="Dos professionals conversant en una oficina" class="lg:col-span-5" />
+    </div>
   </section>
 
   <!-- Calendario -->

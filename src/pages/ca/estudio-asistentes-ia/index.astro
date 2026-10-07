@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import HeroFoto from '../../../components/HeroFoto.astro';
 import Boton from '../../../components/Boton.astro';
 import Cta from '../../../components/Cta.astro';
 import { hrefCa as href } from '../../../lib/site';
@@ -40,24 +41,29 @@ const categorias = [
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
-    <p class="eyebrow" data-reveal>Estudi propi · En curs · Setembre de 2026</p>
-    <h1
-      class="mt-7 max-w-[20ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
-      data-reveal
-    >
-      Auditem els assistents d’IA de les webs espanyoles. <span class="font-semibold text-oro-oscuro"
-        >Això és el que hem trobat, de moment</span
-      >.
-    </h1>
-    <p class="mt-8 max-w-[56ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Vam rastrejar 391 webs d’empreses espanyoles buscant assistents amb IA oberts al públic. Vam trobar 29
-      responent sense demanar res a canvi. Els estem provant a fons, un per un, amb una bateria de proves i una
-      segona revisió adversa de cada troballa abans de donar-la per bona.
-    </p>
-    <p class="mt-6 max-w-[56ch] text-[15px] text-pizarra" data-reveal>
-      No nomenem ningú. Cada troballa es comparteix només amb l’empresa afectada. Aquest estudi s’actualitza a
-      mesura que avança el rastreig; les xifres de sota són les de l’última revisió.
-    </p>
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Estudi propi · En curs · Setembre de 2026</p>
+        <h1
+          class="mt-7 max-w-[20ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          Auditem els assistents d’IA de les webs espanyoles. <span class="font-semibold text-oro-oscuro"
+            >Això és el que hem trobat, de moment</span
+          >.
+        </h1>
+        <p class="mt-8 max-w-[56ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Vam rastrejar 391 webs d’empreses espanyoles buscant assistents amb IA oberts al públic. Vam trobar 29
+          responent sense demanar res a canvi. Els estem provant a fons, un per un, amb una bateria de proves i una
+          segona revisió adversa de cada troballa abans de donar-la per bona.
+        </p>
+        <p class="mt-6 max-w-[56ch] text-[15px] text-pizarra" data-reveal>
+          No nomenem ningú. Cada troballa es comparteix només amb l’empresa afectada. Aquest estudi s’actualitza a
+          mesura que avança el rastreig; les xifres de sota són les de l’última revisió.
+        </p>
+      </div>
+      <HeroFoto foto="diagnostico" alt="Oficina diàfana amb diversos professionals treballant" class="lg:col-span-5" />
+    </div>
 
     <ul class="mt-14 grid gap-4 sm:grid-cols-2" role="list" data-reveal>
       {

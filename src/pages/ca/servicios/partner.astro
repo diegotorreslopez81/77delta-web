@@ -1,6 +1,7 @@
 ---
 import GuiasRelacionadas from '../../../components/blog/GuiasRelacionadas.astro';
 import Base from '../../../layouts/Base.astro';
+import HeroFoto from '../../../components/HeroFoto.astro';
 import Boton from '../../../components/Boton.astro';
 import Cta from '../../../components/Cta.astro';
 import { hrefCa as href } from '../../../lib/site';
@@ -16,25 +17,30 @@ const otros = resumen.filter((r) => r.titulo !== 'Soci tecnològic');
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
-    <p class="eyebrow" data-reveal>
-      <a href={href('/servicios/')} class="transition-colors hover:text-tinta">Serveis</a> · 03 · Acompanyament continu
-    </p>
-    <h1
-      class="mt-7 max-w-[19ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
-      data-reveal
-    >
-      Tota la tecnologia de la teva empresa, <span class="font-semibold text-oro-oscuro">amb un sol interlocutor</span>.
-    </h1>
-    <p class="mt-8 max-w-[56ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Programari a mida, integració, CRM i ERP, Microsoft, núvol, ciberseguretat, maquinari i planta, web, dades, IA
-      i R+D. Un soci tècnic que entén tot el que t’envolta i t’ho explica amb claredat.
-    </p>
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>
+          <a href={href('/servicios/')} class="transition-colors hover:text-tinta">Serveis</a> · 03 · Acompanyament continu
+        </p>
+        <h1
+          class="mt-7 max-w-[19ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          Tota la tecnologia de la teva empresa, <span class="font-semibold text-oro-oscuro">amb un sol interlocutor</span>.
+        </h1>
+        <p class="mt-8 max-w-[56ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Programari a mida, integració, CRM i ERP, Microsoft, núvol, ciberseguretat, maquinari i planta, web, dades, IA
+          i R+D. Un soci tècnic que entén tot el que t’envolta i t’ho explica amb claredat.
+        </p>
 
-    <div class="mt-14 flex flex-wrap items-center gap-8" data-reveal>
-      <p class="font-mono text-[12px] leading-[1.6] tracking-[0.04em] text-pizarra">
-        Dotze àmbits · Un interlocutor · Sense fabricants imposats
-      </p>
-      <Boton href={href('/contacto/')}>Explica’ns el teu cas →</Boton>
+        <div class="mt-14 flex flex-wrap items-center gap-8" data-reveal>
+          <p class="font-mono text-[12px] leading-[1.6] tracking-[0.04em] text-pizarra">
+            Dotze àmbits · Un interlocutor · Sense fabricants imposats
+          </p>
+          <Boton href={href('/contacto/')}>Explica’ns el teu cas →</Boton>
+        </div>
+      </div>
+      <HeroFoto foto="oficina" alt="Passadís d’una oficina moderna" class="lg:col-span-5" />
     </div>
   </section>
 

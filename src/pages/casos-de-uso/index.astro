@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import HeroFoto from '../../components/HeroFoto.astro';
 import Cta from '../../components/Cta.astro';
 import { href } from '../../lib/site';
 import { casos, familias, sectores, tecnologias } from '../../data/casos-de-uso';
@@ -19,19 +20,24 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
-    <p class="eyebrow" data-reveal>Casos de uso</p>
-    <h1
-      class="mt-7 max-w-[20ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
-      data-reveal
-    >
-      <span class="font-semibold text-oro-oscuro">{casos.length} capacidades</span> de IA aplicada. Diseñadas, construidas
-      y en producción.
-    </h1>
-    <p class="mt-8 max-w-[56ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Esto es lo que sabemos hacer, agrupado por familia técnica para que encuentres la solución adecuada sin necesidad de
-      conocer la tecnología que hay detrás. Los ejemplos son representativos y están anonimizados por
-      confidencialidad con los clientes.
-    </p>
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Casos de uso</p>
+        <h1
+          class="mt-7 max-w-[20ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          <span class="font-semibold text-oro-oscuro">{casos.length} capacidades</span> de IA aplicada. Diseñadas, construidas
+          y en producción.
+        </h1>
+        <p class="mt-8 max-w-[56ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Esto es lo que sabemos hacer, agrupado por familia técnica para que encuentres la solución adecuada sin necesidad de
+          conocer la tecnología que hay detrás. Los ejemplos son representativos y están anonimizados por
+          confidencialidad con los clientes.
+        </p>
+      </div>
+      <HeroFoto foto="industria" alt="Técnico revisando planos en un taller" class="lg:col-span-5" />
+    </div>
 
     <ul class="mt-14 grid gap-4 sm:grid-cols-3" role="list" data-reveal>
       {

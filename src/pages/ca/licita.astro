@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
+import HeroFoto from '../../components/HeroFoto.astro';
 import { href, hrefCa, site } from '../../lib/site';
 import panelGeneral from '../../assets/licita/panel-vista-general.png';
 import panelFiltro from '../../assets/licita/panel-filtro-cierran-semana.png';
@@ -38,28 +39,33 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
-    <p class="eyebrow" data-reveal>Licita · per a empreses que licitin</p>
-    <h1
-      class="mt-7 max-w-[20ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
-      data-reveal
-    >
-      Evita perdre hores <span class="font-semibold text-oro-oscuro">llegint plecs que no són per a la teva empresa</span>.
-    </h1>
-    <p class="mt-8 max-w-[58ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Si la teva empresa licita, ja coneixes el problema: centenars de publicacions noves cada setmana, i la
-      majoria no et serveixen. Licita les llegeix totes, es queda amb les que pots signar amb garanties i et diu, de
-      cadascuna, si val la pena o no abans que et posis a redactar.
-    </p>
-    <div class="mt-12 flex flex-wrap gap-4" data-reveal>
-      <a
-        href="#sollicitar-demo"
-        class="inline-flex items-center gap-2 rounded-[10px] bg-oro px-6 py-3.5 font-sans text-[15px] font-semibold text-marfil shadow-[0_6px_24px_rgba(167,120,27,.30)] transition-[background-color,transform] duration-200 hover:-translate-y-px hover:bg-tinta"
-      >
-        Demanar una demo →
-      </a>
-      <a href={href('/licita/')} class="inline-flex items-center gap-2 font-mono text-[12px] text-pizarra hover:text-tinta">
-        En castellano →
-      </a>
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Licita · per a empreses que licitin</p>
+        <h1
+          class="mt-7 max-w-[20ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          Evita perdre hores <span class="font-semibold text-oro-oscuro">llegint plecs que no són per a la teva empresa</span>.
+        </h1>
+        <p class="mt-8 max-w-[58ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Si la teva empresa licita, ja coneixes el problema: centenars de publicacions noves cada setmana, i la
+          majoria no et serveixen. Licita les llegeix totes, es queda amb les que pots signar amb garanties i et diu, de
+          cadascuna, si val la pena o no abans que et posis a redactar.
+        </p>
+        <div class="mt-12 flex flex-wrap gap-4" data-reveal>
+          <a
+            href="#sollicitar-demo"
+            class="inline-flex items-center gap-2 rounded-[10px] bg-oro px-6 py-3.5 font-sans text-[15px] font-semibold text-marfil shadow-[0_6px_24px_rgba(167,120,27,.30)] transition-[background-color,transform] duration-200 hover:-translate-y-px hover:bg-tinta"
+          >
+            Demanar una demo →
+          </a>
+          <a href={href('/licita/')} class="inline-flex items-center gap-2 font-mono text-[12px] text-pizarra hover:text-tinta">
+            En castellano →
+          </a>
+        </div>
+      </div>
+      <HeroFoto foto="administracion" alt="Panoràmica d’edificis d’oficines al capvespre" class="lg:col-span-5" />
     </div>
   </section>
 

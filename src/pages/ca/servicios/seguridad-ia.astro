@@ -1,6 +1,7 @@
 ---
 import GuiasRelacionadas from '../../../components/blog/GuiasRelacionadas.astro';
 import Base from '../../../layouts/Base.astro';
+import HeroFoto from '../../../components/HeroFoto.astro';
 import Boton from '../../../components/Boton.astro';
 import Cta from '../../../components/Cta.astro';
 import { hrefCa as href } from '../../../lib/site';
@@ -107,20 +108,25 @@ const normas = [
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
-    <p class="eyebrow" data-reveal>Seguretat d’IA</p>
-    <h1
-      class="mt-7 max-w-[18ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
-      data-reveal
-    >
-      El teu chatbot <span class="font-semibold text-oro-oscuro">revela més informació de la que et penses</span>.
-    </h1>
-    <p class="mt-8 max-w-[54ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Publicar un assistent amb IA a la web és ràpid. Auditar-lo és poc habitual. Nosaltres el provem
-      com ho faria un atacant i et mostrem quina informació se li escapa.
-    </p>
-    <div class="mt-12 flex flex-wrap gap-4" data-reveal>
-      <Boton href={href('/contacto/')}>Demanar l’escaneig gratuït →</Boton>
-      <Boton href={href('/estudio-asistentes-ia/')} variante="linea">Veure el nostre estudi</Boton>
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Seguretat d’IA</p>
+        <h1
+          class="mt-7 max-w-[18ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          El teu chatbot <span class="font-semibold text-oro-oscuro">revela més informació de la que et penses</span>.
+        </h1>
+        <p class="mt-8 max-w-[54ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Publicar un assistent amb IA a la web és ràpid. Auditar-lo és poc habitual. Nosaltres el provem
+          com ho faria un atacant i et mostrem quina informació se li escapa.
+        </p>
+        <div class="mt-12 flex flex-wrap gap-4" data-reveal>
+          <Boton href={href('/contacto/')}>Demanar l’escaneig gratuït →</Boton>
+          <Boton href={href('/estudio-asistentes-ia/')} variante="linea">Veure el nostre estudi</Boton>
+        </div>
+      </div>
+      <HeroFoto foto="despachos" alt="Persona signant un document" class="lg:col-span-5" />
     </div>
   </section>
 

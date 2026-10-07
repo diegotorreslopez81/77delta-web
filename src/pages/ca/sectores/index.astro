@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import HeroFoto from '../../../components/HeroFoto.astro';
 import Cta from '../../../components/Cta.astro';
 import { hrefCa as href } from '../../../lib/site';
 import { sectores } from '../../../data/sectores.ca';
@@ -11,18 +12,23 @@ const descripcion =
 <Base title="Sectors" description={descripcion}>
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
-    <p class="eyebrow" data-reveal>Sectors</p>
-    <h1
-      class="mt-7 max-w-[16ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
-      data-reveal
-    >
-      Sis sectors. Una metodologia contrastada.
-    </h1>
-    <p class="mt-8 max-w-[56ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Treballem amb empreses de sis verticals. En cadascun apliquem una metodologia adaptada al llenguatge, els
-      processos i les prioritats del sector. La tecnologia és la part visible: el que canvia és com treballa el
-      teu equip.
-    </p>
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Sectors</p>
+        <h1
+          class="mt-7 max-w-[16ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          Sis sectors. Una metodologia contrastada.
+        </h1>
+        <p class="mt-8 max-w-[56ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Treballem amb empreses de sis verticals. En cadascun apliquem una metodologia adaptada al llenguatge, els
+          processos i les prioritats del sector. La tecnologia és la part visible: el que canvia és com treballa el
+          teu equip.
+        </p>
+      </div>
+      <HeroFoto foto="distribucion" alt="Passadís d’un magatzem logístic" class="lg:col-span-5" />
+    </div>
   </section>
 
   <!-- Los seis sectores -->

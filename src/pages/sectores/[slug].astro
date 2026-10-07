@@ -1,6 +1,7 @@
 ---
 import GuiasRelacionadas from '../../components/blog/GuiasRelacionadas.astro';
 import Base from '../../layouts/Base.astro';
+import HeroFoto from '../../components/HeroFoto.astro';
 import Cta from '../../components/Cta.astro';
 import { href } from '../../lib/site';
 import { sectores, type Sector } from '../../data/sectores';
@@ -24,19 +25,34 @@ const numero = String(indice + 1).padStart(2, '0');
 const partes = /^([\d.,]+)(.*)$/.exec(sector.caso.cifra);
 const valor = partes ? Number(partes[1].replace(',', '.')) : null;
 const sufijo = partes ? partes[2] : '';
+
+// Fotografía del hero por sector y su texto alternativo.
+const fotoAlt: Record<string, string> = {
+  industria: 'Técnico revisando planos en un taller',
+  despachos: 'Persona firmando un documento',
+  clinicas: 'Consulta de una clínica dental',
+  distribucion: 'Pasillo de un almacén logístico',
+  administracion: 'Panorámica de edificios de oficinas al anochecer',
+  formacion: 'Grupo de estudiantes trabajando con portátiles',
+};
 ---
 
 <Base title={sector.nombre} description={sector.lead}>
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
-    <p class="eyebrow" data-reveal>Sector {numero} · {sector.nombre}</p>
-    <h1
-      class="mt-7 max-w-[18ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
-      data-reveal
-    >
-      {sector.h1}
-    </h1>
-    <p class="mt-8 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>{sector.lead}</p>
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Sector {numero} · {sector.nombre}</p>
+        <h1
+          class="mt-7 max-w-[18ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          {sector.h1}
+        </h1>
+        <p class="mt-8 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>{sector.lead}</p>
+      </div>
+      <HeroFoto foto={sector.slug} alt={fotoAlt[sector.slug] ?? sector.nombre} class="lg:col-span-5" />
+    </div>
   </section>
 
   <!-- El problema típico del sector -->

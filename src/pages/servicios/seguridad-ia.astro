@@ -1,6 +1,7 @@
 ---
 import GuiasRelacionadas from '../../components/blog/GuiasRelacionadas.astro';
 import Base from '../../layouts/Base.astro';
+import HeroFoto from '../../components/HeroFoto.astro';
 import Boton from '../../components/Boton.astro';
 import Cta from '../../components/Cta.astro';
 import { href } from '../../lib/site';
@@ -107,20 +108,25 @@ const normas = [
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
-    <p class="eyebrow" data-reveal>Seguridad de IA</p>
-    <h1
-      class="mt-7 max-w-[18ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
-      data-reveal
-    >
-      Tu chatbot <span class="font-semibold text-oro-oscuro">revela más información de la que crees</span>.
-    </h1>
-    <p class="mt-8 max-w-[54ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-      Publicar un asistente con IA en la web es rápido. Auditarlo es poco habitual. Nosotros lo
-      probamos como lo haría un atacante y te mostramos qué información se le escapa.
-    </p>
-    <div class="mt-12 flex flex-wrap gap-4" data-reveal>
-      <Boton href={href('/contacto/')}>Pedir el escaneo gratuito →</Boton>
-      <Boton href={href('/estudio-asistentes-ia/')} variante="linea">Ver nuestro estudio</Boton>
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Seguridad de IA</p>
+        <h1
+          class="mt-7 max-w-[18ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          Tu chatbot <span class="font-semibold text-oro-oscuro">revela más información de la que crees</span>.
+        </h1>
+        <p class="mt-8 max-w-[54ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Publicar un asistente con IA en la web es rápido. Auditarlo es poco habitual. Nosotros lo
+          probamos como lo haría un atacante y te mostramos qué información se le escapa.
+        </p>
+        <div class="mt-12 flex flex-wrap gap-4" data-reveal>
+          <Boton href={href('/contacto/')}>Pedir el escaneo gratuito →</Boton>
+          <Boton href={href('/estudio-asistentes-ia/')} variante="linea">Ver nuestro estudio</Boton>
+        </div>
+      </div>
+      <HeroFoto foto="despachos" alt="Persona firmando un documento" class="lg:col-span-5" />
     </div>
   </section>
 
