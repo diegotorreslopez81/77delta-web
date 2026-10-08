@@ -2,6 +2,8 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
+import { copyFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { lastmod } from './scripts/lastmod.mjs';
 
 // Dominio propio (public/CNAME). Para una previsualización bajo otra ruta, exportar SITE_URL y SITE_BASE.
@@ -34,6 +36,18 @@ export default defineConfig({
         locales: { es: 'es-ES', ca: 'ca-ES' },
       },
     }),
+    // GitHub Pages no admite redirecciones: /sitemap.xml sirve una copia del índice.
+    {
+      name: 'sitemap-xml',
+      hooks: {
+        'astro:build:done': ({ dir }) => {
+          copyFileSync(
+            fileURLToPath(new URL('sitemap-index.xml', dir)),
+            fileURLToPath(new URL('sitemap.xml', dir)),
+          );
+        },
+      },
+    },
   ],
   vite: { plugins: [tailwindcss()] },
 });
