@@ -31,9 +31,9 @@ test('tarea vencida se detecta por fecha, sin umbrales', () => {
   assert.equal(V.vencida({ vence: '2026-10-02' }, AHORA), true);
   assert.equal(V.vencida({ vence: '2026-10-03' }, AHORA), false);
 });
-test('Pipeline: embudo 9 Lista, 6 Contactada y sin "false" suelto', async () => {
+test('Pipeline: embudo acumulado 15 Lista, 6 Contactada y sin "false" suelto', async () => {
   const raiz = crearNodo('main'); V.usarCargador(async () => DATOS); await V.render(raiz, AHORA, 'pipeline'); const t = raiz.textContent;
-  assert.match(t, /9\|?Lista/); assert.match(t, /6\|?Contactada/); assert.doesNotMatch(t, /false|NaN|undefined/);
+  assert.match(t, /15\|?Lista/); assert.match(t, /6\|?Contactada/); assert.doesNotMatch(t, /false|NaN|undefined/);
 });
 const OP = { ...ops[10], id: 99, empresa: 'Alcalá', etapa: 'reunion_agendada', campana: 'privado', carpeta_url: 'https://drive.google.com/drive/folders/abc', buzon: 'x@77delta.com',
   envios: [{ de: 'cuenta@77delta.com', toque: 1, estado: 'enviado', enviado_en: '2026-10-02T09:00:00Z', respondido_en: '2026-10-03T08:00:00Z', asunto: 'Hola Marta' }],
@@ -41,7 +41,7 @@ const OP = { ...ops[10], id: 99, empresa: 'Alcalá', etapa: 'reunion_agendada', 
 const D2 = { ...DATOS, oportunidades: [OP, ...ops], campanas: [{ clave: 'privado', nombre: 'Privado', activa: true, franja: [8, 19], tope_dia: 20, toques: 2, dias_toque: [0, 7], firmante: 'Aina', plantillas_aprobadas: {}, envios: { enviado: 1 }, etapas: { reunion_agendada: 1 } }] };
 test('Hoy: tarea vencida de Diego, contadores y raíl; sin correos ni cuentas', async () => {
   const raiz = crearNodo('main'); V.usarCargador(async () => D2); await V.render(raiz, AHORA); const t = raiz.textContent;
-  assert.match(t, /Necesita a una persona/); assert.match(t, /Vencida/); assert.match(t, /Alcalá/); assert.match(t, /Sale solo hoy/); assert.match(t, /En espera|Enviando|Hecho/);
+  assert.match(t, /Necesita a una persona/); assert.match(t, /Vencida/); assert.match(t, /Alcalá/); assert.match(t, /Sale solo hoy/); assert.match(t, /Hoy no se envía|Empieza a las|Enviando|Hecho|Nada aprobado/);
   assert.doesNotMatch(t, /@|Hola Marta/);
 });
 test('Campañas: texto 2 pendiente de OK y sin cuenta de envío', async () => {
@@ -49,10 +49,27 @@ test('Campañas: texto 2 pendiente de OK y sin cuenta de envío', async () => {
   assert.match(t, /Texto 2 pendiente de OK/); assert.match(t, /Aina/); assert.doesNotMatch(t, /@/);
 });
 test('contadores: respuesta sin contestar y reunión agendada', () => { const k = V.contadores(D2.oportunidades); assert.equal(k.respuestas, 1); assert.equal(k.reuniones, 1); });
-test('estadoRail: antes de la franja En espera, pasada con aprobados sin enviar Parado', () => {
-  const c = { clave: 'privado', franja: [8, 19], tope_dia: 20, enviados_hoy: 0 }, ap = [{ ...OP, envios: [{ estado: 'aprobado', programado: '2026-10-03T08:00:00Z' }] }];
-  assert.equal(V.estadoRail(c, ap, new Date('2026-10-03T04:00:00Z')).estado, 'En espera');
-  assert.equal(V.estadoRail(c, ap, new Date('2026-10-03T18:00:00Z')).estado, 'Parado');
+test('estadoRail: texto descriptivo por caso (decisión #462)', () => {
+  const c = { clave: 'privado', franja: [8, 19], tope_dia: 10, enviados_hoy: 0 }, ap = [{ ...OP, envios: [{ estado: 'aprobado', programado: '2026-10-13T08:00:00Z' }, { estado: 'aprobado', programado: '2026-10-13T08:00:00Z' }] }];
+  const E = (cc, ops, iso, fest) => V.estadoRail(cc, ops, new Date(iso), fest);
+  assert.equal(E(c, ap, '2026-10-13T04:00:00Z').estado, 'Empieza a las 08:00');
+  assert.equal(E(c, ap, '2026-10-13T10:00:00Z').estado, 'Enviando (0 de 2)');
+  assert.equal(E(c, ap, '2026-10-13T10:00:00Z').tono, 'ambar');
+  assert.equal(E(c, ap, '2026-10-13T18:00:00Z').estado, 'Faltaron envíos (0 de 2)');
+  assert.equal(E(c, ap, '2026-10-13T18:00:00Z').tono, 'rojo');
+  assert.equal(E({ ...c, enviados_hoy: 14 }, ap, '2026-10-13T18:00:00Z').estado, 'Tope del día enviado (14 de 2)');
+  assert.equal(E({ ...c, enviados_hoy: 14 }, [], '2026-10-13T18:00:00Z').estado, 'Tope del día enviado (14 de 10)');
+  assert.equal(E(c, [], '2026-10-13T10:00:00Z').estado, 'Nada aprobado para hoy');
+  assert.equal(E({ ...c, enviados_hoy: 3 }, [], '2026-10-13T18:00:00Z').estado, 'Hecho (3 enviados)');
+  assert.equal(E(c, ap, '2026-10-12T10:00:00Z', ['2026-10-12']).estado, 'Hoy no se envía (festivo)');
+  assert.equal(E(c, ap, '2026-10-17T10:00:00Z').estado, 'Hoy no se envía (fin de semana)');
+  const er = [{ ...OP, envios: [{ estado: 'error', programado: '2026-10-13T08:00:00Z', enviado_en: '2026-10-13T08:05:00Z' }] }];
+  assert.equal(E(c, er, '2026-10-13T10:00:00Z').estado, 'Errores (1)');
+});
+test('embudo acumulado: tira por etapa_max y campaña por alcanzadas', () => {
+  const m = V.modeloCampana({ clave: 'x', etapas: { lista: 1, contactada: 0 }, alcanzadas: { lista: 69, contactada: 69, respondio: 3 } });
+  assert.deepEqual(m.etapas.slice(0, 3).map(e => e.n), [69, 69, 3]);
+  assert.deepEqual(V.modeloCampana({ clave: 'y', etapas: { lista: 5 } }).etapas[0].n, 5);
 });
 test('indicadores: importe en juego, tasa y mediana', () => {
   const l = [{ etapa: 'negociacion', importe: 100, f_contactada: '2026-10-01T00:00:00Z', f_respondio: '2026-10-03T00:00:00Z' }, { etapa: 'contactada', f_contactada: '2026-10-01T00:00:00Z' }];

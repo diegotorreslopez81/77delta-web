@@ -107,9 +107,9 @@ function ficha(o, cerrar, ahora, ir) {
 
 // Embudo por campaña (v143, HQ #358): etapas {etapa: n} y ritmo de envíos. Solo conteos, fechas y claves.
 export function modeloCampana(c = {}) {
-  const pe = c.etapas || {}, n = e => Number(pe[e]) || 0;
+  const pe = c.etapas || {}, n = e => Number(pe[e]) || 0, ac = c.alcanzadas || c.etapas || {}, na = e => Number(ac[e]) || 0;
   return { clave: c.clave || '', nombre: c.nombre || c.clave || '', activa: c.activa !== false,
-    etapas: ETAPAS.slice(0, 9).map(e => ({ etapa: e, nombre: nombre(e), n: n(e) })), perdidas: n('perdida'), bajas: n('baja'),
+    etapas: ETAPAS.slice(0, 9).map(e => ({ etapa: e, nombre: nombre(e), n: na(e) })), perdidas: n('perdida'), bajas: n('baja'),
     abiertas: Number(c.abiertas) || 0, ganadas: Number(c.ganadas) || 0, importe: Number(c.importe_ganado) || 0, aprobados: Number(c.aprobados) || 0,
     proximo: c.proximo_envio || '', ultimo: c.ultimo_envio || '', vencidas: Number(c.tareas_vencidas) || 0 };
 }
@@ -122,15 +122,27 @@ function cabecera(d, tab, ahora) {
   ]);
 }
 
-export function estadoRail(c, ops, ahora) {
+// Estado del raíl 'Sale solo hoy' (decisión #462): texto descriptivo y tono; 'festivos' llega de ven_hq (v148).
+export function estadoRail(c, ops, ahora, festivos = []) {
   const hoy = hoyMadrid(ahora), h = Number(hhmm(ahora.toISOString()).slice(0, 2)), f = c.franja || [8, 19];
   const mios = envios(ops.filter(o => o.campana === c.clave));
   const pend = mios.filter(e => e.estado === 'aprobado' && diaMadrid(e.programado) && diaMadrid(e.programado) <= hoy).length;
-  const previstos = Math.min(mios.filter(e => e.estado === 'aprobado' && diaMadrid(e.programado) === hoy).length, Number(c.tope_dia) || 1e9);
+  const tope = Number(c.tope_dia) || 0;
+  const previstos = Math.min(pend, tope || 1e9);
   const errores = mios.filter(e => e.estado === 'error' && diaMadrid(e.enviado_en || e.programado) === hoy).length;
   const enviados = Number(c.enviados_hoy) || 0;
-  const estado = errores ? 'Parado' : h < f[0] ? 'En espera' : h >= f[1] ? (pend ? 'Parado' : 'Hecho') : pend ? 'Enviando' : (enviados || previstos ? 'Hecho' : 'En espera');
-  return { estado, previstos, enviados, errores, franja: `${String(f[0]).padStart(2, '0')}:00-${String(f[1]).padStart(2, '0')}:00` };
+  const finde = ['Sat', 'Sun'].includes(new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Madrid', weekday: 'short' }).format(ahora));
+  let estado, tono = '';
+  if (errores) { estado = `Errores (${errores})`; tono = 'rojo'; }
+  else if ((festivos || []).includes(hoy)) estado = 'Hoy no se envía (festivo)';
+  else if (finde) estado = 'Hoy no se envía (fin de semana)';
+  else if (h < f[0]) estado = `Empieza a las ${String(f[0]).padStart(2, '0')}:00`;
+  else if ((tope > 0 && enviados >= tope) || (previstos > 0 && enviados >= previstos)) { estado = `Tope del día enviado (${enviados} de ${previstos || tope})`; tono = 'verde'; }
+  else if (!pend && !enviados) estado = 'Nada aprobado para hoy';
+  else if (h < f[1] && pend) { estado = `Enviando (${enviados} de ${previstos})`; tono = 'ambar'; }
+  else if (pend) { estado = `Faltaron envíos (${enviados} de ${previstos})`; tono = 'rojo'; }
+  else { estado = `Hecho (${enviados} enviados)`; tono = 'verde'; }
+  return { estado, tono, previstos, enviados, errores, franja: `${String(f[0]).padStart(2, '0')}:00-${String(f[1]).padStart(2, '0')}:00` };
 }
 
 export function personas(ops, ahora) {
@@ -168,9 +180,9 @@ function pintarHoy(raiz, d, ahora, abrir) {
     el('section', { class: 'vt-bloque' }, [el('h2', { text: 'Necesita a una persona' }), ...filas,
       el('div', { class: 'vt-contadores' }, cont.map(([l, n]) => el('div', { class: 'vt-cont' }, [el('span', { class: 'vt-n', text: String(n) }), el('span', { class: 'vt-l', text: l })])))]),
     el('section', { class: 'vt-bloque' }, [el('h2', { text: 'Sale solo hoy' }),
-      ...((d.campanas || []).filter(c => c.activa !== false).map(c => { const r = estadoRail(c, ops, ahora);
+      ...((d.campanas || []).filter(c => c.activa !== false).map(c => { const r = estadoRail(c, ops, ahora, d.festivos);
         return el('div', { class: 'vt-rail' }, [el('b', { text: c.nombre || c.clave }), el('span', { class: 'vt-camp', text: r.franja }),
-          el('span', { text: `previstos ${r.previstos} · enviados ${r.enviados} · errores ${r.errores}` }), pildora(r.estado, r.estado === 'Parado' ? 'rojo' : r.estado === 'Hecho' ? 'verde' : '')]); }))]),
+          el('span', { text: `previstos ${r.previstos} · enviados ${r.enviados} · errores ${r.errores}` }), pildora(r.estado, r.tono)]); }))]),
     el('section', { class: 'vt-bloque' }, [el('h2', { text: 'Lo último que ha pasado' }),
       ...(ultimos(ops).map(e => el('div', { class: 'vt-ult' }, [el('span', { class: 'vt-h', text: fhora(e.cuando) }), el('span', {}, [el('b', { text: e.empresa + ' ' }), e.texto])])))]));
 }
@@ -186,7 +198,8 @@ export function indicadores(ops, meta) {
 
 function pintarPipeline(raiz, d, ahora, estado, abrir, redibujar) {
   const camps = (d.campanas || []).filter(c => c.activa !== false);
-  const ops = d.oportunidades.filter(o => !estado.camp || o.campana === estado.camp), n = e => ops.filter(o => o.etapa === e).length;
+  const ops = d.oportunidades.filter(o => !estado.camp || o.campana === estado.camp), rango = e => ETAPAS.indexOf(e),
+    n = e => ops.filter(o => { const r = rango(o.etapa_max || o.etapa); return r >= rango(e) && r < 9; }).length;
   const ind = indicadores(ops, d.meta);
   const tarjetaP = o => el('button', { type: 'button', class: 'vt-card compacta', onclick: () => abrir(o) }, [
     el('div', { class: 'vt-cab' }, [el('b', { text: o.empresa }), el('span', { class: 'vt-dias', text: o.importe != null ? euros(o.importe) : '' })]),
