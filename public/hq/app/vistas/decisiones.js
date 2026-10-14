@@ -26,7 +26,7 @@
 import { rpc } from '../api.js';
 import { el, modal, toast, fecha, eur, enlazar, urlSegura, campoTexto } from '../ui.js';
 import { recargar, render as repintar } from '../main.js';
-import { S } from '../estado.js';
+import { S, listaDecisiones } from '../estado.js';
 import { conSalida, resolucionLocal } from '../salida.js';
 import { tieneFila } from '../semaforo.js';
 import { porDecidir, enCriba, solvenciaTexto, tipologia, tipologiaOrgano, nivelEncaje } from '../licitaciones.js';
@@ -165,7 +165,7 @@ function licitacion(l, rol) {
 // y licitaciones van plegadas. arg: id de la tarjeta a abrir (push, buscador) o 'bandeja' para bajar aquí.
 export function bandeja(S, arg, ahora = new Date()) {
   const d = S.datos, hilos = d.hilos || {};
-  const g = agrupar([...(d.pendientes || []), ...(d.pospuestas || [])], ahora);
+  const g = agrupar(listaDecisiones(d), ahora);
   const abierta = Number(arg) || null;
   const tarjetas = xs => xs.map(p => tarjeta(p, p.id === abierta, hilos[p.id] || []));
   // #1281: cada cifra se pinta solo si tiene fila en omc_datos (home.tarjetas.*, home.licitaciones.*); sin fila, el título va sin número.

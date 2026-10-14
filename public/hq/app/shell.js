@@ -24,9 +24,37 @@ const $ = id => document.getElementById(id);
 const ICONO_CAMPANA = '<svg class="ico" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>';
 const ICONO_RECARGAR = '<svg class="ico" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg>';
 
+// Menu de 5 pestanas (Diego 14-10) detras de un interruptor, APAGADO por defecto hasta OK de Diego: no borra ninguna ruta,
+// solo reparte el menu entre principales y un desplegable 'Más'. Se activa con localStorage hq.menu5=1 o con ?menu5=1
+// (queda guardado) y se apaga con ?menu5=0. Dinero y Sistema agrupan vistas que ya existen (no hay vistas nuevas):
+// Dinero = KPIs (ingresos, cobros, costes) + Recursos (tokens y cuentas); Sistema = Salud + Organigrama + Plan estratégico + Colaboradores.
+export const MENU5 = ['hoy', 'licitaciones', 'ventas', 'dinero', 'sistema'];
+const GRUPOS5 = { dinero: ['kpis', 'recursos'], sistema: ['salud', 'organigrama', 'direccion', 'colaboradores'] };
+const NOMBRES5 = { dinero: 'Dinero', sistema: 'Sistema' };
+export function menu5Activo(win = globalThis) {
+  try {
+    const q = new URLSearchParams(win.location?.search || '').get('menu5');
+    if (q === '1' || q === '0') win.localStorage.setItem('hq.menu5', q);
+    return win.localStorage.getItem('hq.menu5') === '1';
+  } catch { return false; }
+}
+// Areas del menu: con el interruptor encendido, Dinero y Sistema salen de juntar las vistas de las areas de GRUPOS5.
+export function areasMenu(cinco, areas = AREAS) {
+  if (!cinco) return areas;
+  const enGrupo = new Set(Object.values(GRUPOS5).flat());
+  const nuevas = Object.entries(GRUPOS5).map(([id, ids]) => {
+    const src = ids.map(i => areas.find(a => a.id === i)).filter(Boolean);
+    return { id, nombre: NOMBRES5[id], icono: src[0]?.icono, vistas: src.flatMap(a => a.vistas.map(v => ({ ...v, icono: v.icono || a.icono }))) };
+  });
+  const resto = areas.filter(a => !enGrupo.has(a.id));
+  const orden = id => MENU5.indexOf(id);
+  return [...resto.filter(a => MENU5.includes(a.id)), ...nuevas].sort((a, b) => orden(a.id) - orden(b.id)).concat(resto.filter(a => !MENU5.includes(a.id)));
+}
 export function montarMenu(nav) {
   nav.innerHTML = ''; ref.enlaces.clear(); ref.areas.clear();
-  for (const a of AREAS) {
+  const cinco = menu5Activo();
+  const mas = cinco ? el('details', { class: 'menu-mas' }, [el('summary', { text: 'Más' })]) : null;
+  for (const a of areasMenu(cinco)) {
     // Menú (#1057 tarea 29; brief B 19-sep quitó el grupo Equipo): un área con una sola vista sale como
     // un único enlace icono+texto, sin 'area-titulo' encima (sería repetir la misma línea dos veces).
     // Hoy ninguna área tiene más de una vista, pero el camino de 'varias vistas' (título + '.sub') se
@@ -42,8 +70,9 @@ export function montarMenu(nav) {
           [el('span', { class: 'ico', html: v.icono || a.icono }), el('span', { class: 'txt', text: v.nombre })]);
         ref.enlaces.set(v.clave, e); return e;
       }) : [el('p', { class: 'mudo pronto', text: 'pronto' })])]);
-    ref.areas.set(a.id, div); nav.append(div);
+    ref.areas.set(a.id, div); (mas && !MENU5.includes(a.id) ? mas : nav).append(div);
   }
+  if (mas) nav.append(mas);
   return ref;
 }
 // Cabecera del cajón móvil (logo + marca "HQ" + botón cerrar). Se monta una sola vez, la primera vez
@@ -83,8 +112,11 @@ export function marcarActiva(clave) {
   const area = AREAS.find(a => a.vistas.some(v => v.clave === clave))?.id
     || (clave.split('/')[0] === 'equipo' ? 'organigrama' : clave.split('/')[0]);
   for (const [k, e] of ref.enlaces) e.classList.toggle('activa', k === clave);
-  for (const [id, d] of ref.areas) d.classList.toggle('abierta', id === area);
+  for (const [id, d] of ref.areas) d.classList.toggle('abierta', id === area || (ref.areas.has(id) && id === id5(area)));
+  const mas = document.querySelector?.('.menu-mas');
+  if (mas && area && !MENU5.includes(area) && !id5(area)) mas.open = true;
 }
+const id5 = area => Object.keys(GRUPOS5).find(k => GRUPOS5[k].includes(area));
 // Badging API (petición del owner, 17-sep): refleja el contador en el icono de la app instalada
 // (PWA). Ni Safari ni algunos navegadores la implementan, y en los tests no existe `navigator`:
 // por eso todo entra en un try/catch y solo se toca si `navigator` existe.

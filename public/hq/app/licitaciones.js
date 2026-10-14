@@ -38,7 +38,9 @@ export function cierrePasado(l, ahora = new Date()) {
   return /^\d{4}-\d{2}-\d{2}$/.test(c) && c < hoyDe(ahora);
 }
 // Vencida sin resolver: no final (Presentada incluida) y con el cierre ya pasado. Ni viva ni cerrada: alguien tiene que cerrarla.
-export function vencida(l, ahora = new Date()) { return !esFinal(l) && cierrePasado(l, ahora); }
+// Subsanación y Propuesta de adjudicación ya se presentaron: no están vencidas por tener el cierre pasado.
+const POST_PRESENTACION = new Set(['Subsanación', 'Propuesta de adjudicación']);
+export function vencida(l, ahora = new Date()) { return !esFinal(l) && !POST_PRESENTACION.has(estadoBase(l)) && cierrePasado(l, ahora); }
 // Presentada con el cierre pasado: correcta, espera la resolucion del organo; no es una viva que cerro.
 export function esperandoResolucion(l, ahora = new Date()) { return estadoBase(l) === 'Presentada' && cierrePasado(l, ahora); }
 

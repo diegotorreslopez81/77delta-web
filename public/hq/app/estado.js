@@ -125,8 +125,13 @@ export function cierres(encargos, ahora = new Date(), dias = 7) {
 }
 // contador de la barra superior. El token de agente no sabe quién es (omc_hq_v2 no expone la identidad,
 // ver T4-c), así que cuenta lo que hay en curso en vez de "sus" tarjetas.
+// Una sola lista para el badge de la cabecera y para la pestaña Avisos (vistas/decisiones.js): pendientes y pospuestas.
+export function listaDecisiones(datos) { return [...(datos?.pendientes || []), ...(datos?.pospuestas || [])]; }
+export function recuentoDecisiones(datos) {
+  return { pendientes: (datos?.pendientes || []).length, pospuestas: (datos?.pospuestas || []).length, total: listaDecisiones(datos).length };
+}
 export function contador(datos) {
-  if (datos?.rol === 'owner') return { texto: 'Depende de ti', n: (datos.pendientes || []).length, href: '#hoy' };
+  if (datos?.rol === 'owner') return { texto: 'Depende de ti', n: recuentoDecisiones(datos).total, href: '#hoy' };
   return { texto: 'En curso', n: enCurso(datos?.encargos).length, href: '#operacion/tablero' };
 }
 // Latido compartido (2.0.20): el punto verde del organigrama, el "activo ahora" de decidirSesion en
