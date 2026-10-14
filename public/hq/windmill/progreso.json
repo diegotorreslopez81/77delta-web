@@ -248,7 +248,7 @@
           "estado": "en_curso",
           "dueno": "Ariadna",
           "peso": 5,
-          "nota": "Comparación diaria en PR #18 (corregido, con Roger). Semana de comparación empieza cuando Bernat confirme el cron: fecha pendiente."
+          "nota": "Comparación diaria fusionada (PR #18). Semana de comparación empieza el 15-10 (cron verificado por Bernat 01:35 Madrid). Activación del schedule en PR aparte, pendiente de aprobación del chief."
         },
         {
           "id": "f1-corte",
