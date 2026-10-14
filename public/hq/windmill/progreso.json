@@ -285,9 +285,10 @@
         {
           "id": "f2-swarmix",
           "texto": "Flows Swarmix y Twenty por API y webhooks (segmentos de salida, eventos de vuelta)",
-          "estado": "pendiente",
+          "estado": "en_curso",
           "dueno": "Ariadna-Ventas",
-          "peso": 3
+          "peso": 3,
+          "nota": "Flow de segmentos en sombra y diseño de webhooks en PR (apagado, solo lee Twenty). Sin llamadas a Swarmix."
         },
         {
           "id": "f2-toques",
@@ -295,7 +296,7 @@
           "estado": "en_curso",
           "dueno": "Ariadna-Ventas",
           "peso": 3,
-          "nota": "Borrador de diseño en 77delta-flows/docs/f2-toques.md; con el chief para decidir. Sin código hasta su OK.",
+          "nota": "En main (#23), horario apagado hasta PR de activación. Falta rol y tabla sombra_toques en Supabase.",
           "fecha": "2026-10-14"
         },
         {
@@ -304,7 +305,7 @@
           "estado": "en_curso",
           "dueno": "Ariadna-Ventas",
           "peso": 2,
-          "nota": "Borrador de diseño en 77delta-flows PR #9; falta rol de Postgres (Bernat) y estructura de ven_cambios.",
+          "nota": "Script y tests en main (#25, #27: quien sale del contexto de Windmill). Sin ejecución real: falta rol de Postgres acotado y la app de pantalla.",
           "fecha": "2026-10-14"
         },
         {
