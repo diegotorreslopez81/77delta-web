@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-14T15:47:00Z",
+  "actualizado": "2026-10-14T15:50:05Z",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
   "fases": [
     {
@@ -139,19 +139,19 @@
         {
           "id": "f0-google-env",
           "texto": "Configurar en Twenty el cliente OAuth de Google (AUTH_GOOGLE_*, MESSAGING_PROVIDER_GMAIL_ENABLED, CALENDAR_PROVIDER_GOOGLE_ENABLED) y verificar la sincronización de diego@ en solo lectura",
-          "estado": "diego",
+          "estado": "hecho",
           "dueno": "Bernat",
           "peso": 1,
-          "nota": "Espera ID y secreto de Diego por correo a team@. Callbacks en https://crm.77delta.com. crm.77delta.com 200 con TLS ya.",
+          "nota": "14-10: variables Google puestas en twenty246 con URLs .com y redesplegado. /client-config: Gmail y Calendar activos. /auth/google-apis responde 302, sin 500.",
           "fecha": "2026-10-14"
         },
         {
           "id": "f0-conectar",
           "texto": "Conectar el buzón diego@77delta.com en Twenty (solo lectura por API de Google)",
-          "estado": "pendiente",
+          "estado": "diego",
           "dueno": "Diego",
           "peso": 1,
-          "nota": "Cuando Bernat marque hecha la tarea anterior: entrar en https://crm.77delta.com, Settings, Accounts, Connect with Google, elegir diego@77delta.com y aceptar solo los permisos que pide (lectura, envío, calendario; no hay permiso de modificar). Después, en la cuenta conectada: visibilidad Asunto para el equipo y excluir correos no profesionales. Bernat comprueba después que ningún correo pasa a leído."
+          "nota": "Listo para ti: entra en https://crm.77delta.com, Ajustes > Cuentas > Conectar con Google, con diego@77delta.com."
         }
       ]
     },
