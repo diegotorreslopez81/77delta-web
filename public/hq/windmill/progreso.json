@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-14T12:31:00Z",
+  "actualizado": "2026-10-14T12:35:31Z",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
   "fases": [
     {
@@ -21,11 +21,11 @@
         {
           "id": "f0-dns",
           "texto": "DNS de windmill y crm: creados por error en 77delta.net; se pasan a 77delta.com el 14-10",
-          "estado": "en_curso",
+          "estado": "hecho",
           "dueno": "Diego",
           "fecha": "2026-10-14",
           "peso": 1,
-          "nota": "Diego crea los registros A en 77delta.com; Bernat cambia dominios y URLs en cuanto resuelvan y deja .net redirigiendo a .com"
+          "nota": "14-10: windmill y crm en 77delta.com, TLS ok, 200. .net redirige 301 a .com."
         },
         {
           "id": "f0-dns-com",
@@ -38,10 +38,11 @@
         {
           "id": "f0-tls",
           "texto": "Dominios y certificados TLS en Coolify para Windmill y Twenty (en .com tras el cambio del 14-10)",
-          "estado": "en_curso",
+          "estado": "hecho",
           "dueno": "Bernat",
           "fecha": "2026-10-14",
-          "peso": 1
+          "peso": 1,
+          "nota": "14-10: windmill y crm en 77delta.com, TLS ok, 200. .net redirige 301 a .com."
         },
         {
           "id": "f0-acceso",
@@ -141,7 +142,7 @@
           "estado": "diego",
           "dueno": "Bernat",
           "peso": 1,
-          "nota": "Espera el correo de Diego a team@ con ID y secreto de la app OAuth (aún no ha llegado). Nunca en logs, tarjetas ni chat. Verificar tras conectar: ningún correo de diego@ cambia de no leído a leído",
+          "nota": "Espera ID y secreto de Diego por correo a team@. Callbacks en https://crm.77delta.com. crm.77delta.com 200 con TLS ya.",
           "fecha": "2026-10-14"
         }
       ]
