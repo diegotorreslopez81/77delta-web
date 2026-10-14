@@ -189,7 +189,7 @@
      "texto": "Triaje de los leads del Twenty antiguo contra ven_* (CSV con prioridad A, B, C)",
      "estado": "hecho",
      "dueno": "Biel",
-     "nota": "Biel: triaje hecho. 199 empresas: A 50 (45 fuera del embudo), B 19, C 130. CSV en bizdev/docs/triaje-twenty-20261014.csv",
+     "nota": "Biel: 199 empresas triadas (A 50, B 19, C 130). A fuera del embudo: 31 oportunidades y 44 contactos subidos a ven_* (lote twenty-2026-05). 4 sin dominio pendientes de búsqueda web. Nadie contactado.",
      "fecha": "2026-10-14"
     },
     {
