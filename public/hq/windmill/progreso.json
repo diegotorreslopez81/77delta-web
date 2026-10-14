@@ -175,10 +175,10 @@
         {
           "id": "f1-tablas",
           "texto": "Tablas sombra_* en Supabase, solo lectura de lic_*",
-          "estado": "en_curso",
+          "estado": "hecho",
           "dueno": "Ariadna",
           "fecha": "2026-10-14",
-          "nota": "Rol sombra_rw listo y 6 tablas sombra_* creadas (T2 verificado: insert/update/delete denegado en lic_*/omc_*, DDL denegado). Resource Windmill f/sombra/supabase_sombra",
+          "nota": "Rol sombra_rw y 6 tablas sombra_* en Supabase, verificadas contra el SPEC 14-oct (sombra_rw solo select en lic_*/omc_*). Resource f/sombra/supabase_sombra.",
           "peso": 2
         },
         {
@@ -202,18 +202,18 @@
         {
           "id": "f1-puertas",
           "texto": "Flow de puertas GO y presentar (presentar_autorizadas)",
-          "estado": "en_curso",
+          "estado": "hecho",
           "dueno": "Ariadna",
           "peso": 3,
-          "nota": "F4 y F5 en rama sombra/f4-f5-puertas, PR en curso."
+          "nota": "F4 y F5 fusionadas (PR #7), 26 tests verdes. Entrada Windmill y schedules apagados en PR #16. Sin verificar en producción."
         },
         {
           "id": "f1-parametros",
           "texto": "Pantalla de parámetros de licitaciones en Windmill (presupuesto mínimo y máximo, CPV, umbrales de criba) sobre lic_parametros y lic_criterios; los flows los leen en cada ejecución",
-          "estado": "en_curso",
+          "estado": "hecho",
           "dueno": "Ariadna",
           "peso": 2,
-          "nota": "Claves sombra.* y esquema extraccion.v5 en rama sombra/f1-parametros."
+          "nota": "16 claves sombra.* en lic_parametros y esquema extraccion.v5 (PR #3 fusionado). Verificadas en la base."
         },
         {
           "id": "f1-avisos",
@@ -227,11 +227,11 @@
         {
           "id": "f1-tests",
           "texto": "Tests en CI por cada flow",
-          "estado": "en_curso",
+          "estado": "hecho",
           "dueno": "Ariadna",
           "peso": 3,
           "fecha": "2026-10-14",
-          "nota": "Base de tests, F1 y F3 en rama sombra/f1-tests."
+          "nota": "Base de tests, F1 y F3 fusionados (PR #6). deploy-windmill en verde 14-oct 22:23Z."
         },
         {
           "id": "f1-ci",
@@ -245,9 +245,10 @@
         {
           "id": "f1-sombra",
           "texto": "Semana de comparación sombra contra proceso real",
-          "estado": "pendiente",
+          "estado": "en_curso",
           "dueno": "Ariadna",
-          "peso": 5
+          "peso": 5,
+          "nota": "Comparación diaria sombra_* contra lic_* en rama sombra/f1-comparacion."
         },
         {
           "id": "f1-corte",
