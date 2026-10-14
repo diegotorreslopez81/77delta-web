@@ -2,9 +2,12 @@
 // Contrato: hq-ventas-diseno.md. Todo lo pintado sale de columnas ven_* (RPC ven_hq, schema-v138) que escriben
 // los agentes; la vista solo resta fechas y cuenta. Sin umbrales, sin tasas, sin datos de correo. Solo lectura.
 import { el } from '../ui.js';
+import { ventasTwentyActivo, renderTwenty } from './ventas-twenty.js';
 
 let carga = async () => (await import('../api.js')).rpc('ven_hq');
 export function usarCargador(fn) { if (fn) carga = fn; }
+let cargaTwenty = async () => (await import('../api.js')).rpc('ven_twenty_hq');
+export function usarCargadorTwenty(fn) { if (fn) cargaTwenty = fn; }
 
 // Mismo orden y mismos nombres que el enum ven_etapa.
 export const ETAPAS = ['lista', 'contactada', 'respondio', 'reunion_agendada', 'reunion_hecha', 'propuesta_redaccion', 'propuesta_enviada', 'negociacion', 'ganada', 'perdida', 'baja'];
@@ -248,6 +251,10 @@ export async function render(raiz, reloj, arg) {
   const caja = el('div', { class: 'ventas' });
   raiz.append(caja);
   caja.append(el('p', { class: 'cargando', text: 'Cargando el embudo de ventas...' }));
+  if (ventasTwentyActivo()) {
+    try { await renderTwenty(caja, cargaTwenty, ahora); } catch (e) { caja.innerHTML = ''; caja.append(el('p', { class: 'aviso rojo', role: 'alert', text: 'No se pudo leer el resumen de Twenty (' + (e?.message || 'error') + ').' })); }
+    return;
+  }
   try {
     const d = await carga();
     if (!d || typeof d !== 'object' || !Array.isArray(d.oportunidades)) throw new Error('respuesta vacía');

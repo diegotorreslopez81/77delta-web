@@ -284,7 +284,7 @@
           "estado": "en_curso",
           "dueno": "Pol",
           "peso": 2,
-          "nota": "Especificación hecha (docs/empresa/hq-ventas-twenty.md); pestaña el 16-10 tras interruptor hq.ventasTwenty",
+          "nota": "Schema v150 aplicado, RPC ven_twenty_hq(p_token) lista y probada. Pestaña Ventas con hq.ventasTwenty (OFF) subida; falta job Windmill.",
           "fecha": "2026-10-14"
         },
         {
