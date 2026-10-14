@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-14T17:44:00Z",
+  "actualizado": "2026-10-14T18:40:00Z",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
   "fases": [
     {
@@ -201,6 +201,14 @@
           "peso": 3
         },
         {
+          "id": "f1-parametros",
+          "texto": "Pantalla de parámetros de licitaciones en Windmill (presupuesto mínimo y máximo, CPV, umbrales de criba) sobre lic_parametros y lic_criterios; los flows los leen en cada ejecución",
+          "estado": "pendiente",
+          "dueno": "Ariadna",
+          "peso": 2,
+          "nota": "Pedido por Diego el 14-10: tocar los parámetros desde la herramienta y que los agentes funcionen igual sin memorizar nada. Fuente de la verdad: las tablas de Supabase; Windmill solo las edita y las lee."
+        },
+        {
           "id": "f1-avisos",
           "texto": "Flow de avisos de portal (lic_correo_procesados) en cada ronda",
           "estado": "pendiente",
@@ -277,6 +285,14 @@
           "estado": "pendiente",
           "dueno": "Ariadna",
           "peso": 3
+        },
+        {
+          "id": "f2-parametros",
+          "texto": "Pantalla de parámetros del embudo de ventas en Windmill (ventana de envío, cadencia de toques, máximos por día, segmentos) sobre ven_parametros; los flows los leen en cada ejecución",
+          "estado": "pendiente",
+          "dueno": "Ariadna",
+          "peso": 2,
+          "nota": "Pedido por Diego el 14-10. Misma regla: tablas de Supabase como fuente, Windmill edita y lee, el agente recibe los valores como entrada del flow."
         },
         {
           "id": "f2-hq",
