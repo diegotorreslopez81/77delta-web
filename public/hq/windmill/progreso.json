@@ -248,7 +248,7 @@
      "estado": "en_curso",
      "dueno": "Ariadna",
      "peso": 5,
-     "nota": "Comparación diaria sombra_* contra lic_* en rama sombra/f1-comparacion."
+     "nota": "Comparación diaria en PR #18 (corregido, con Roger). Semana de comparación empieza cuando Bernat confirme el cron: fecha pendiente."
     },
     {
      "id": "f1-corte",
@@ -335,9 +335,10 @@
     {
      "id": "f3-partes",
      "texto": "Partes cada 2 horas generados por flow",
-     "estado": "pendiente",
+     "estado": "en_curso",
      "dueno": "Ariadna",
-     "peso": 3
+     "peso": 3,
+     "nota": "Flow parte_2h en sombra, rama sombra/f3-partes, PR con Roger. Schedule apagado."
     },
     {
      "id": "f3-backups",
@@ -394,9 +395,10 @@
     {
      "id": "f4-plan",
      "texto": "Plan semanal: flow del lunes 08:00 que propone y Diego acepta",
-     "estado": "pendiente",
+     "estado": "en_curso",
      "dueno": "Ariadna",
-     "peso": 3
+     "peso": 3,
+     "nota": "Solo documento docs/f4-plan.md en rama sombra/f4-plan. Sin código hasta OK."
     },
     {
      "id": "f4-hq5",
