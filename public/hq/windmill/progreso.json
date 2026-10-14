@@ -1,296 +1,297 @@
 {
-  "proyecto": "Windmill y Twenty",
-  "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-14T10:47:00Z",
-  "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego).",
-  "fases": [
+ "proyecto": "Windmill y Twenty",
+ "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
+ "actualizado": "2026-10-14T10:47:00Z",
+ "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego).",
+ "fases": [
+  {
+   "id": "F0",
+   "nombre": "Montaje",
+   "plazo": "14 a 16 de octubre",
+   "dueno": "Bernat",
+   "tareas": [
     {
-      "id": "F0",
-      "nombre": "Montaje",
-      "plazo": "14 a 16 de octubre",
-      "dueno": "Bernat",
-      "tareas": [
-        {
-          "id": "f0-windmill",
-          "texto": "Windmill CE v1.833 desplegado en VPS6 con su Postgres (healthcheck 200)",
-          "estado": "hecho",
-          "dueno": "Bernat",
-          "fecha": "2026-10-14"
-        },
-        {
-          "id": "f0-dns",
-          "texto": "DNS de windmill.77delta.net y crm.77delta.net",
-          "estado": "hecho",
-          "dueno": "Diego",
-          "fecha": "2026-10-14"
-        },
-        {
-          "id": "f0-tls",
-          "texto": "Dominios y certificados TLS en Coolify para Windmill y Twenty",
-          "estado": "hecho",
-          "dueno": "Bernat",
-          "fecha": "2026-10-14"
-        },
-        {
-          "id": "f0-acceso",
-          "texto": "Primer acceso de Diego a Windmill y Twenty (usuarios e invitaciones por correo desde team@)",
-          "estado": "en_curso",
-          "dueno": "Bernat",
-          "fecha": "2026-10-14"
-        },
-        {
-          "id": "f0-repo",
-          "texto": "Repo privado 77delta-flows creado en GitHub",
-          "estado": "hecho",
-          "dueno": "Marc",
-          "fecha": "2026-10-14"
-        },
-        {
-          "id": "f0-gitsync",
-          "texto": "Git sync de Windmill con 77delta-flows (deploy key)",
-          "estado": "en_curso",
-          "dueno": "Bernat",
-          "fecha": "2026-10-14",
-          "nota": "Deploy key ya subida a GitHub"
-        },
-        {
-          "id": "f0-backup",
-          "texto": "Backup diario de Windmill a pCloud",
-          "estado": "pendiente",
-          "dueno": "Sergi"
-        },
-        {
-          "id": "f0-twenty",
-          "texto": "Twenty v2.46 desplegado en VPS6 (compose oficial, vacío)",
-          "estado": "hecho",
-          "dueno": "Bernat",
-          "fecha": "2026-10-14"
-        },
-        {
-          "id": "f0-export",
-          "texto": "Exportar por API los datos del Twenty antiguo: 207 empresas, 204 personas, 47 oportunidades",
-          "estado": "hecho",
-          "dueno": "Bernat",
-          "fecha": "2026-10-14"
-        },
-        {
-          "id": "f0-carga",
-          "texto": "Cargar el export en Twenty v2.46, workspace 77 Delta, con origen twenty-2026-05",
-          "estado": "hecho",
-          "dueno": "Bernat",
-          "fecha": "2026-10-14",
-          "nota": "207 empresas, 204 personas y 47 oportunidades cargadas; 2 campos sin equivalente (ARR, ICP) quedan en el JSON exportado"
-        },
-        {
-          "id": "f0-oauth",
-          "texto": "Gmail de team@ en Twenty por OAuth: pantalla de consentimiento en Google Workspace",
-          "estado": "diego",
-          "dueno": "Diego",
-          "nota": "Bernat prepara la app; Diego aprueba como admin del Workspace"
-        },
-        {
-          "id": "f0-progreso",
-          "texto": "Página de progreso en HQ y artefacto para Diego",
-          "estado": "hecho",
-          "dueno": "Marc",
-          "fecha": "2026-10-14"
-        }
-      ]
+     "id": "f0-windmill",
+     "texto": "Windmill CE v1.833 desplegado en VPS6 con su Postgres (healthcheck 200)",
+     "estado": "hecho",
+     "dueno": "Bernat",
+     "fecha": "2026-10-14"
     },
     {
-      "id": "F1",
-      "nombre": "Licitaciones en sombra",
-      "plazo": "15 a 28 de octubre",
-      "dueno": "Ariadna",
-      "tareas": [
-        {
-          "id": "f1-spec",
-          "texto": "Spec y casos de prueba de los flows en sombra",
-          "estado": "hecho",
-          "dueno": "Ariadna",
-          "fecha": "2026-10-14",
-          "nota": "SPEC.md (6 flows, DDL, corte) y CASOS.md (40 casos) en 77delta/docs/licita/flows-sombra, commit de8629e"
-        },
-        {
-          "id": "f1-tablas",
-          "texto": "Tablas sombra_* en Supabase, solo lectura de lic_*",
-          "estado": "en_curso",
-          "dueno": "Ariadna",
-          "fecha": "2026-10-14",
-          "nota": "DDL escrito en SPEC; falta rol sombra_rw de Bernat para aplicarlo"
-        },
-        {
-          "id": "f1-pliego",
-          "texto": "Flow de descarga de pliego con reintentos y cola de fallos",
-          "estado": "pendiente",
-          "dueno": "Ariadna"
-        },
-        {
-          "id": "f1-plazos",
-          "texto": "Flow de vigilancia de plazos y alarmas de cierre",
-          "estado": "pendiente",
-          "dueno": "Ariadna"
-        },
-        {
-          "id": "f1-puertas",
-          "texto": "Flow de puertas GO y presentar (presentar_autorizadas)",
-          "estado": "pendiente",
-          "dueno": "Ariadna"
-        },
-        {
-          "id": "f1-avisos",
-          "texto": "Flow de avisos de portal (lic_correo_procesados) en cada ronda",
-          "estado": "pendiente",
-          "dueno": "Ariadna"
-        },
-        {
-          "id": "f1-tests",
-          "texto": "Tests en CI por cada flow",
-          "estado": "pendiente",
-          "dueno": "Ariadna"
-        },
-        {
-          "id": "f1-ci",
-          "texto": "Quién revisa y aprueba flows en CI (propuesta: Ariadna escribe, Roger revisa, chief aprueba)",
-          "estado": "diego",
-          "dueno": "Diego"
-        },
-        {
-          "id": "f1-sombra",
-          "texto": "Semana de comparación sombra contra proceso real",
-          "estado": "pendiente",
-          "dueno": "Ariadna"
-        },
-        {
-          "id": "f1-corte",
-          "texto": "Corte a real de licitaciones con OK de Diego",
-          "estado": "pendiente",
-          "dueno": "Marc"
-        }
-      ]
+     "id": "f0-dns",
+     "texto": "DNS de windmill.77delta.net y crm.77delta.net",
+     "estado": "hecho",
+     "dueno": "Diego",
+     "fecha": "2026-10-14"
     },
     {
-      "id": "F2",
-      "nombre": "Ventas y CRM",
-      "plazo": "29 de octubre a 11 de noviembre",
-      "dueno": "Carla, Biel y Bernat",
-      "tareas": [
-        {
-          "id": "f2-leads",
-          "texto": "Triaje de los leads del Twenty antiguo contra ven_* (CSV con prioridad A, B, C)",
-          "estado": "pendiente",
-          "dueno": "Biel",
-          "nota": "Arranca cuando Bernat entregue el export"
-        },
-        {
-          "id": "f2-piloto",
-          "texto": "Piloto de una semana de Twenty con Carla y Biel",
-          "estado": "pendiente",
-          "dueno": "Carla"
-        },
-        {
-          "id": "f2-swarmix",
-          "texto": "Flows Swarmix y Twenty por API y webhooks (segmentos de salida, eventos de vuelta)",
-          "estado": "pendiente",
-          "dueno": "Ariadna"
-        },
-        {
-          "id": "f2-toques",
-          "texto": "Flow de toques en ventana 08:00 a 20:00 UTC y recordatorios",
-          "estado": "pendiente",
-          "dueno": "Ariadna"
-        },
-        {
-          "id": "f2-hq",
-          "texto": "HQ Ventas lee la API de Twenty",
-          "estado": "pendiente",
-          "dueno": "Pol"
-        },
-        {
-          "id": "f2-ven",
-          "texto": "Congelar ven_* tras el corte, con OK de Diego",
-          "estado": "pendiente",
-          "dueno": "Marc"
-        }
-      ]
+     "id": "f0-tls",
+     "texto": "Dominios y certificados TLS en Coolify para Windmill y Twenty",
+     "estado": "hecho",
+     "dueno": "Bernat",
+     "fecha": "2026-10-14"
     },
     {
-      "id": "F3",
-      "nombre": "Operaciones internas",
-      "plazo": "12 a 18 de noviembre",
-      "dueno": "Bernat, Pol y Marc",
-      "tareas": [
-        {
-          "id": "f3-partes",
-          "texto": "Partes cada 2 horas generados por flow",
-          "estado": "pendiente",
-          "dueno": "Ariadna"
-        },
-        {
-          "id": "f3-backups",
-          "texto": "Backups a pCloud por flow, con comprobación de restauración",
-          "estado": "pendiente",
-          "dueno": "Sergi"
-        },
-        {
-          "id": "f3-salud",
-          "texto": "Salud de ventanas y consumo de cuentas por flow",
-          "estado": "pendiente",
-          "dueno": "Bernat"
-        },
-        {
-          "id": "f3-archivo",
-          "texto": "Archivo en bloque de tarjetas de más de 7 días y encargos con hito de más de 14 días (con bak_)",
-          "estado": "diego",
-          "dueno": "Diego"
-        },
-        {
-          "id": "f3-rag",
-          "texto": "Base de conocimiento para los agentes: RAG sobre Supabase pgvector, ingestión por flow desde repos, vault y Drive",
-          "estado": "diego",
-          "dueno": "Diego",
-          "nota": "Propuesta del 14-10; sin gestor documental aparte"
-        }
-      ]
+     "id": "f0-acceso",
+     "texto": "Primer acceso de Diego a Windmill y Twenty (usuarios e invitaciones por correo desde team@)",
+     "estado": "en_curso",
+     "dueno": "Bernat",
+     "fecha": "2026-10-14"
     },
     {
-      "id": "F4",
-      "nombre": "Sistema general",
-      "plazo": "19 a 25 de noviembre",
-      "dueno": "Marc y Pol",
-      "tareas": [
-        {
-          "id": "f4-plan",
-          "texto": "Plan semanal: flow del lunes 08:00 que propone y Diego acepta",
-          "estado": "pendiente",
-          "dueno": "Ariadna"
-        },
-        {
-          "id": "f4-hq5",
-          "texto": "HQ con 5 pestañas (Hoy, Licitaciones, Ventas, Dinero, Sistema): código listo y apagado, falta OK",
-          "estado": "diego",
-          "dueno": "Diego"
-        },
-        {
-          "id": "f4-langfuse",
-          "texto": "Langfuse para observar los jobs de criterio, sí o no",
-          "estado": "diego",
-          "dueno": "Diego"
-        },
-        {
-          "id": "f4-nuria",
-          "texto": "Nuria-HQ con ventana propia o Pol sigue con HQ",
-          "estado": "pendiente",
-          "dueno": "Marc"
-        },
-        {
-          "id": "f4-docs",
-          "texto": "Arquitectura global y guía de cómo pedir cosas nuevas, al día",
-          "estado": "hecho",
-          "dueno": "Marc",
-          "fecha": "2026-10-14"
-        }
-      ]
+     "id": "f0-repo",
+     "texto": "Repo privado 77delta-flows creado en GitHub",
+     "estado": "hecho",
+     "dueno": "Marc",
+     "fecha": "2026-10-14"
+    },
+    {
+     "id": "f0-gitsync",
+     "texto": "Git sync de Windmill con 77delta-flows (deploy key)",
+     "estado": "en_curso",
+     "dueno": "Bernat",
+     "fecha": "2026-10-14",
+     "nota": "Deploy key ya subida a GitHub"
+    },
+    {
+     "id": "f0-backup",
+     "texto": "Backup diario de Windmill a pCloud",
+     "estado": "pendiente",
+     "dueno": "Sergi"
+    },
+    {
+     "id": "f0-twenty",
+     "texto": "Twenty v2.46 desplegado en VPS6 (compose oficial, vacío)",
+     "estado": "hecho",
+     "dueno": "Bernat",
+     "fecha": "2026-10-14"
+    },
+    {
+     "id": "f0-export",
+     "texto": "Exportar por API los datos del Twenty antiguo: 207 empresas, 204 personas, 47 oportunidades",
+     "estado": "hecho",
+     "dueno": "Bernat",
+     "fecha": "2026-10-14"
+    },
+    {
+     "id": "f0-carga",
+     "texto": "Cargar el export en Twenty v2.46, workspace 77 Delta, con origen twenty-2026-05",
+     "estado": "hecho",
+     "dueno": "Bernat",
+     "fecha": "2026-10-14",
+     "nota": "207 empresas, 204 personas y 47 oportunidades cargadas; 2 campos sin equivalente (ARR, ICP) quedan en el JSON exportado"
+    },
+    {
+     "id": "f0-oauth",
+     "texto": "Gmail de team@ en Twenty por OAuth: pantalla de consentimiento en Google Workspace",
+     "estado": "diego",
+     "dueno": "Diego",
+     "nota": "Bernat prepara la app; Diego aprueba como admin del Workspace"
+    },
+    {
+     "id": "f0-progreso",
+     "texto": "Página de progreso en HQ y artefacto para Diego",
+     "estado": "hecho",
+     "dueno": "Marc",
+     "fecha": "2026-10-14"
     }
-  ]
+   ]
+  },
+  {
+   "id": "F1",
+   "nombre": "Licitaciones en sombra",
+   "plazo": "15 a 28 de octubre",
+   "dueno": "Ariadna",
+   "tareas": [
+    {
+     "id": "f1-spec",
+     "texto": "Spec y casos de prueba de los flows en sombra",
+     "estado": "hecho",
+     "dueno": "Ariadna",
+     "fecha": "2026-10-14",
+     "nota": "SPEC.md (6 flows, DDL, corte) y CASOS.md (40 casos) en 77delta/docs/licita/flows-sombra, commit de8629e"
+    },
+    {
+     "id": "f1-tablas",
+     "texto": "Tablas sombra_* en Supabase, solo lectura de lic_*",
+     "estado": "en_curso",
+     "dueno": "Ariadna",
+     "fecha": "2026-10-14",
+     "nota": "DDL escrito en SPEC; falta rol sombra_rw de Bernat para aplicarlo"
+    },
+    {
+     "id": "f1-pliego",
+     "texto": "Flow de descarga de pliego con reintentos y cola de fallos",
+     "estado": "pendiente",
+     "dueno": "Ariadna"
+    },
+    {
+     "id": "f1-plazos",
+     "texto": "Flow de vigilancia de plazos y alarmas de cierre",
+     "estado": "pendiente",
+     "dueno": "Ariadna"
+    },
+    {
+     "id": "f1-puertas",
+     "texto": "Flow de puertas GO y presentar (presentar_autorizadas)",
+     "estado": "pendiente",
+     "dueno": "Ariadna"
+    },
+    {
+     "id": "f1-avisos",
+     "texto": "Flow de avisos de portal (lic_correo_procesados) en cada ronda",
+     "estado": "pendiente",
+     "dueno": "Ariadna"
+    },
+    {
+     "id": "f1-tests",
+     "texto": "Tests en CI por cada flow",
+     "estado": "pendiente",
+     "dueno": "Ariadna"
+    },
+    {
+     "id": "f1-ci",
+     "texto": "Quién revisa y aprueba flows en CI (propuesta: Ariadna escribe, Roger revisa, chief aprueba)",
+     "estado": "diego",
+     "dueno": "Diego"
+    },
+    {
+     "id": "f1-sombra",
+     "texto": "Semana de comparación sombra contra proceso real",
+     "estado": "pendiente",
+     "dueno": "Ariadna"
+    },
+    {
+     "id": "f1-corte",
+     "texto": "Corte a real de licitaciones con OK de Diego",
+     "estado": "pendiente",
+     "dueno": "Marc"
+    }
+   ]
+  },
+  {
+   "id": "F2",
+   "nombre": "Ventas y CRM",
+   "plazo": "29 de octubre a 11 de noviembre",
+   "dueno": "Carla, Biel y Bernat",
+   "tareas": [
+    {
+     "id": "f2-leads",
+     "texto": "Triaje de los leads del Twenty antiguo contra ven_* (CSV con prioridad A, B, C)",
+     "estado": "en_curso",
+     "dueno": "Biel",
+     "nota": "Biel: triaje Twenty viejo contra ven_* arrancado",
+     "fecha": "2026-10-14"
+    },
+    {
+     "id": "f2-piloto",
+     "texto": "Piloto de una semana de Twenty con Carla y Biel",
+     "estado": "pendiente",
+     "dueno": "Carla"
+    },
+    {
+     "id": "f2-swarmix",
+     "texto": "Flows Swarmix y Twenty por API y webhooks (segmentos de salida, eventos de vuelta)",
+     "estado": "pendiente",
+     "dueno": "Ariadna"
+    },
+    {
+     "id": "f2-toques",
+     "texto": "Flow de toques en ventana 08:00 a 20:00 UTC y recordatorios",
+     "estado": "pendiente",
+     "dueno": "Ariadna"
+    },
+    {
+     "id": "f2-hq",
+     "texto": "HQ Ventas lee la API de Twenty",
+     "estado": "pendiente",
+     "dueno": "Pol"
+    },
+    {
+     "id": "f2-ven",
+     "texto": "Congelar ven_* tras el corte, con OK de Diego",
+     "estado": "pendiente",
+     "dueno": "Marc"
+    }
+   ]
+  },
+  {
+   "id": "F3",
+   "nombre": "Operaciones internas",
+   "plazo": "12 a 18 de noviembre",
+   "dueno": "Bernat, Pol y Marc",
+   "tareas": [
+    {
+     "id": "f3-partes",
+     "texto": "Partes cada 2 horas generados por flow",
+     "estado": "pendiente",
+     "dueno": "Ariadna"
+    },
+    {
+     "id": "f3-backups",
+     "texto": "Backups a pCloud por flow, con comprobación de restauración",
+     "estado": "pendiente",
+     "dueno": "Sergi"
+    },
+    {
+     "id": "f3-salud",
+     "texto": "Salud de ventanas y consumo de cuentas por flow",
+     "estado": "pendiente",
+     "dueno": "Bernat"
+    },
+    {
+     "id": "f3-archivo",
+     "texto": "Archivo en bloque de tarjetas de más de 7 días y encargos con hito de más de 14 días (con bak_)",
+     "estado": "diego",
+     "dueno": "Diego"
+    },
+    {
+     "id": "f3-rag",
+     "texto": "Base de conocimiento para los agentes: RAG sobre Supabase pgvector, ingestión por flow desde repos, vault y Drive",
+     "estado": "diego",
+     "dueno": "Diego",
+     "nota": "Propuesta del 14-10; sin gestor documental aparte"
+    }
+   ]
+  },
+  {
+   "id": "F4",
+   "nombre": "Sistema general",
+   "plazo": "19 a 25 de noviembre",
+   "dueno": "Marc y Pol",
+   "tareas": [
+    {
+     "id": "f4-plan",
+     "texto": "Plan semanal: flow del lunes 08:00 que propone y Diego acepta",
+     "estado": "pendiente",
+     "dueno": "Ariadna"
+    },
+    {
+     "id": "f4-hq5",
+     "texto": "HQ con 5 pestañas (Hoy, Licitaciones, Ventas, Dinero, Sistema): código listo y apagado, falta OK",
+     "estado": "diego",
+     "dueno": "Diego"
+    },
+    {
+     "id": "f4-langfuse",
+     "texto": "Langfuse para observar los jobs de criterio, sí o no",
+     "estado": "diego",
+     "dueno": "Diego"
+    },
+    {
+     "id": "f4-nuria",
+     "texto": "Nuria-HQ con ventana propia o Pol sigue con HQ",
+     "estado": "pendiente",
+     "dueno": "Marc"
+    },
+    {
+     "id": "f4-docs",
+     "texto": "Arquitectura global y guía de cómo pedir cosas nuevas, al día",
+     "estado": "hecho",
+     "dueno": "Marc",
+     "fecha": "2026-10-14"
+    }
+   ]
+  }
+ ]
 }
