@@ -281,10 +281,11 @@
         {
           "id": "f2-hq",
           "texto": "HQ Ventas lee la API de Twenty",
-          "estado": "pendiente",
+          "estado": "en_curso",
           "dueno": "Pol",
           "peso": 2,
-          "nota": "Sin claves en el repo ni en el navegador: resumen en Supabase rellenado por un job de Windmill cada 15 min; especificación 14-10, pestaña 16-10."
+          "nota": "Especificación hecha (docs/empresa/hq-ventas-twenty.md); pestaña el 16-10 tras interruptor hq.ventasTwenty",
+          "fecha": "2026-10-14"
         },
         {
           "id": "f2-ven",
