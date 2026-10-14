@@ -337,10 +337,10 @@
         {
           "id": "f3-backups",
           "texto": "Backups a pCloud por flow, con comprobación de restauración",
-          "estado": "en_curso",
+          "estado": "hecho",
           "dueno": "Sergi",
           "peso": 3,
-          "nota": "14-10: BD Windmill y Twenty en backup diario restic a pCloud (02:00); restauración probada: 179 y 117 tablas. Falta backup por flow.",
+          "nota": "14-10: BD Windmill y Twenty en backup diario restic a pCloud (02:00); restauración probada: 179 y 117 tablas. Export por elemento (workspace, script, schedule, resource) a las 01:50, dentro del backup de las 02:00; restaurado desde restic a BD limpia: 2/2, 5/5, 1/1, 3/3 igual que origen.",
           "fecha": "2026-10-14"
         },
         {
