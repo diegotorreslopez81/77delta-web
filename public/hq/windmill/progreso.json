@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-14T15:50:05Z",
+  "actualizado": "2026-10-14T16:02:06Z",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
   "fases": [
     {
@@ -148,10 +148,10 @@
         {
           "id": "f0-conectar",
           "texto": "Conectar el buzón diego@77delta.com en Twenty (solo lectura por API de Google)",
-          "estado": "diego",
+          "estado": "hecho",
           "dueno": "Diego",
           "peso": 1,
-          "nota": "Listo para ti: entra en https://crm.77delta.com, Ajustes > Cuentas > Conectar con Google, con diego@77delta.com."
+          "nota": "14-10 verificado en BD: diego@ google, scopes sin gmail.modify, visibility SUBJECT, excluir no profesionales y grupos true, syncStatus ONGOING. Revisión de nuevo mañana 09:00."
         }
       ]
     },
