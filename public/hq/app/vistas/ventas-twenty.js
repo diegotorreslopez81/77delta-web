@@ -26,19 +26,31 @@ export function modeloTwenty(d = {}) {
   };
 }
 
+const fdia = iso => iso ? iso.slice(8, 10) + '-' + iso.slice(5, 7) : '';
+const unir = (...x) => x.filter(Boolean).join(' · ');
+export const lineaActividad = a => unir(fdia(a.cuando), a.tipo, a.titulo, a.empresa, a.persona);
+export const lineaToque = t => unir(fdia(t.vence), t.accion, t.empresa, t.persona, t.responsable);
+export const lineaLead = l => unir(l.prioridad, l.empresa, l.etapa, l.ultimo_toque && 'último ' + fdia(l.ultimo_toque));
+
+export function hayDatos(m) {
+  return !!(m.etapas.length || m.actividades.length || m.toques.length || Object.keys(m.leads.por_prioridad || {}).length || (m.leads.top || []).length);
+}
+
 export async function renderTwenty(caja, carga, ahora = new Date()) {
   const m = modeloTwenty(await carga());
   caja.innerHTML = '';
+  if (!hayDatos(m)) { caja.append(el('p', { class: 'vt-nota', text: 'Sin datos aún del job de Twenty. Se rellena solo cuando el job escriba la primera fila (cada 15 min).' })); return; }
   const min = haceMinutos(m.actualizado, ahora);
-  caja.append(el('p', { class: 'vt-nota', text: min === null ? 'Twenty: sin datos todavía.' : 'Twenty: datos de hace ' + min + ' min.' }));
-  if (m.etapas.length) {
-    const ul = el('ul', { class: 'vt-lista' });
-    for (const x of m.etapas) ul.append(el('li', { text: x.etapa + ': ' + x.n + ' · ' + euros(x.importe) }));
-    caja.append(el('h2', { text: 'Oportunidades por etapa' }), ul);
-  }
-  const lista = (titulo, items, f) => { if (!items.length) return; const ul = el('ul', { class: 'vt-lista' }); items.forEach(i => ul.append(el('li', { text: f(i) }))); caja.append(el('h2', { text: titulo }), ul); };
-  lista('Últimas actividades', m.actividades, a => [a.fecha, a.tipo, a.titulo].filter(Boolean).join(' · '));
-  lista('Próximos toques', m.toques, t => [t.fecha, t.persona, t.titulo].filter(Boolean).join(' · '));
-  const pp = m.leads.por_prioridad || {};
-  if (Object.keys(pp).length) caja.append(el('h2', { text: 'Leads por prioridad' }), el('p', { text: Object.entries(pp).map(([k, v]) => k + ': ' + v).join(' · ') }));
+  caja.append(el('p', { class: 'vt-nota', text: min === null ? 'Twenty: sin hora de actualización.' : 'Twenty: datos de hace ' + min + ' min.' }));
+  const bloque = (titulo, items, f) => {
+    caja.append(el('h2', { text: titulo }));
+    if (!items.length) { caja.append(el('p', { class: 'vt-nota', text: 'Sin datos.' })); return; }
+    const ul = el('ul', { class: 'vt-lista' }); items.forEach(i => ul.append(el('li', { text: f(i) }))); caja.append(ul);
+  };
+  bloque('Oportunidades por etapa', m.etapas, x => x.etapa + ': ' + x.n + ' · ' + euros(x.importe));
+  bloque('Últimas actividades', m.actividades, lineaActividad);
+  bloque('Próximos toques', m.toques, lineaToque);
+  const pp = Object.entries(m.leads.por_prioridad || {}).map(([k, v]) => ({ k, v }));
+  bloque('Leads por prioridad', pp, x => x.k + ': ' + x.v);
+  if ((m.leads.top || []).length) bloque('Leads destacados', m.leads.top, lineaLead);
 }
