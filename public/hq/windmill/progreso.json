@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-14T17:41:00Z",
+  "actualizado": "2026-10-14T17:44:00Z",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
   "fases": [
     {
@@ -257,20 +257,12 @@
           "peso": 1
         },
         {
-          "id": "f2-volcado",
-          "texto": "Volcar a Twenty la foto completa de ven_* con histórico, fases y estados por campaña; upsert diario hasta el corte",
-          "estado": "en_curso",
-          "dueno": "Biel",
-          "peso": 3,
-          "nota": "HQ #507. Mapa de campos, prueba en seco con recuentos, copia de seguridad de Twenty por Bernat, carga real, repetición diaria 06:30Z. ven_* no se toca."
-        },
-        {
           "id": "f2-piloto",
-          "texto": "Twenty como fuente de la verdad del embudo: Carla y Biel trabajan todo el embudo en Twenty desde el 15-10 (una semana de piloto)",
+          "texto": "Piloto de una semana de Twenty con Carla y Biel",
           "estado": "pendiente",
           "dueno": "Carla",
           "peso": 5,
-          "nota": "Ampliado por Diego el 14-10 (HQ #507): todo el embudo, con histórico y fases por campaña, no solo el lote antiguo. Envío automático sigue por los crons de ven_* hasta que existan los flows de Fase 2."
+          "nota": "Arranca el 15-10 09:00 Madrid por orden de Diego (14-10). Carla y Biel trabajan en crm.77delta.com el lote cargado (31 oportunidades y 44 contactos) y todo el trabajo nuevo del embudo; las campañas automáticas siguen en ven_* hasta los flows de esta fase. Parte diario por buzón."
         },
         {
           "id": "f2-swarmix",
