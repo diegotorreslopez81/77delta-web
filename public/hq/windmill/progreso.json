@@ -184,18 +184,20 @@
         {
           "id": "f1-pliego",
           "texto": "Flow de descarga de pliego con reintentos y cola de fallos",
-          "estado": "en_curso",
+          "estado": "hecho",
+          "fecha": "2026-10-14",
           "dueno": "Ariadna-Sombra",
           "peso": 3,
-          "nota": "PR #2 abierto, 11 tests D1-D7 verdes. Pendiente revisado-roger y aprobado-chief. Sin desplegar."
+          "nota": "F2 descarga_pliego en main (PR #2), tests D1-D7 verdes, conectar() PR #11. Schedule 5 min desactivado. Sin verificar en producción."
         },
         {
           "id": "f1-plazos",
           "texto": "Flow de vigilancia de plazos y alarmas de cierre",
-          "estado": "en_curso",
+          "estado": "hecho",
+          "fecha": "2026-10-14",
           "dueno": "Ariadna-Sombra",
           "peso": 3,
-          "nota": "PR #5 abierto, 12 tests V1-V7 verdes. Params sombra.alerta_* ya en lic_parametros. Pendiente revisión. Sin desplegar."
+          "nota": "F6 vigilancia_plazos en main (PR #5), tests V1-V7 verdes. Schedule 10 min en PR #15 desactivado, activación la aprueba el chief. Sin verificar en producción."
         },
         {
           "id": "f1-puertas",
@@ -216,10 +218,11 @@
         {
           "id": "f1-avisos",
           "texto": "Flow de avisos de portal (lic_correo_procesados) en cada ronda",
-          "estado": "en_curso",
+          "estado": "hecho",
+          "fecha": "2026-10-14",
           "dueno": "Ariadna-Sombra",
           "peso": 3,
-          "nota": "PR #8 abierto, 6 tests verdes. Faltan 4 params sombra.aviso_* (pedidos a Motor) y relevo local al buzón. Sin desplegar."
+          "nota": "avisos_plazos en main (PR #8), 6 tests verdes, relevo local al buzón de Bernat. Schedule 10 min desactivado. Sin verificar de extremo a extremo."
         },
         {
           "id": "f1-tests",
