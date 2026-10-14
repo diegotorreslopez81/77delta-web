@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-14T19:02:00Z",
+  "actualizado": "2026-10-14T19:10:41Z",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
   "fases": [
     {
@@ -208,7 +208,7 @@
           "estado": "pendiente",
           "dueno": "Ariadna",
           "peso": 2,
-          "nota": "Pedido por Diego el 14-10: tocar los parámetros desde la herramienta y que los agentes funcionen igual sin memorizar nada. Fuente de la verdad: las tablas de Supabase; Windmill solo las edita y las lee."
+          "nota": "Pedido por Diego el 14-10: tocar los parámetros desde la herramienta y que los agentes funcionen igual sin memorizar nada. Fuente de la verdad: las tablas de Supabase; Windmill solo las edita y las lee. Acceso Windmill listo (14-10): resource f/param/supabase_param, rol windmill_param con SELECT/INSERT/UPDATE solo en lic_parametros, lic_criterios, ven_parametros, sin DELETE; conexión 178.104.70.38:15432 con SSL, abierta solo a la IP de VPS6. Probado con SELECT 1."
         },
         {
           "id": "f1-avisos",
@@ -294,7 +294,7 @@
           "estado": "pendiente",
           "dueno": "Ariadna-Ventas",
           "peso": 2,
-          "nota": "Pedido por Diego el 14-10. Misma regla: tablas de Supabase como fuente, Windmill edita y lee, el agente recibe los valores como entrada del flow."
+          "nota": "Pedido por Diego el 14-10. Misma regla: tablas de Supabase como fuente, Windmill edita y lee, el agente recibe los valores como entrada del flow. Acceso Windmill listo (14-10): resource f/param/supabase_param, rol windmill_param con SELECT/INSERT/UPDATE solo en lic_parametros, lic_criterios, ven_parametros, sin DELETE; conexión 178.104.70.38:15432 con SSL, abierta solo a la IP de VPS6. Probado con SELECT 1."
         },
         {
           "id": "f2-hq",
