@@ -159,8 +159,8 @@ button.recarga:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   }
   function pct(tareas){
     if(!tareas.length)return 0;
-    var s=0; tareas.forEach(function(t){s+=PESO[t.estado]||0});
-    return Math.round(100*s/tareas.length);
+    var s=0,tot=0; tareas.forEach(function(t){var w=Number(t.peso)||1; tot+=w; s+=w*(PESO[t.estado]||0)});
+    return tot?Math.round(100*s/tot):0;
   }
   function render(d){
     var todas=[]; d.fases.forEach(function(f){f.tareas.forEach(function(t){t._fase=f;todas.push(t)})});
@@ -170,7 +170,7 @@ button.recarga:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
     $('sub').textContent=(d.descripcion?d.descripcion+' ':'')+'Actualizado '+fecha(d.actualizado)+' (hora de Madrid).';
     var total=pct(todas);
     $('pct-total').textContent=total; $('barra-total').style.width=total+'%';
-    $('pct-nota').textContent=todas.length+' tareas en '+d.fases.length+' fases. Una tarea en curso cuenta la mitad.';
+    $('pct-nota').textContent=todas.length+' tareas en '+d.fases.length+' fases, ponderadas por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5). Una tarea en curso cuenta la mitad.';
     $('n-hecho').textContent=n.hecho; $('n-curso').textContent=n.en_curso; $('n-diego').textContent=n.diego; $('n-pend').textContent=n.pendiente+n.bloqueado;
     $('resumen').hidden=false;
     var ld=todas.filter(function(t){return t.estado==='diego'});
@@ -185,7 +185,7 @@ button.recarga:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
         '<div class="fase-cab">'+
           '<div class="fase-fila"><h2>'+esc(f.id)+' · '+esc(f.nombre)+'</h2><span class="pct num">'+p+'%</span></div>'+
           '<div class="barra"><i class="'+(p<100?'run':'')+'" style="width:'+p+'%"></i></div>'+
-          '<div class="meta"><span>Plazo: '+esc(f.plazo)+'</span><span>Dueño: '+esc(f.dueno)+'</span><span class="num">'+f.tareas.filter(function(t){return t.estado==='hecho'}).length+' de '+f.tareas.length+' hechas</span></div>'+
+          '<div class="meta"><span>Plazo: '+esc(f.plazo)+'</span><span>Dueño: '+esc(f.dueno)+'</span><span class="num">'+f.tareas.filter(function(t){return t.estado==='hecho'}).length+' de '+f.tareas.length+' hechas</span><span class="num">esfuerzo '+f.tareas.reduce(function(a,t){return a+(Number(t.peso)||1)},0)+'</span></div>'+
         '</div>'+
         '<ul class="tareas">'+f.tareas.map(function(t){
           return '<li class="tarea '+esc(t.estado)+'">'+
