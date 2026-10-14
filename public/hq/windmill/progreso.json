@@ -184,38 +184,42 @@
         {
           "id": "f1-pliego",
           "texto": "Flow de descarga de pliego con reintentos y cola de fallos",
-          "estado": "pendiente",
+          "estado": "en_curso",
           "dueno": "Ariadna",
-          "peso": 3
+          "peso": 3,
+          "nota": "Pasa a Ariadna-Sombra (clon). Rama sombra/f2-descarga-pliego."
         },
         {
           "id": "f1-plazos",
           "texto": "Flow de vigilancia de plazos y alarmas de cierre",
-          "estado": "pendiente",
+          "estado": "en_curso",
           "dueno": "Ariadna",
-          "peso": 3
+          "peso": 3,
+          "nota": "Pasa a Ariadna-Sombra (clon). Rama sombra/f6-vigilancia-plazos."
         },
         {
           "id": "f1-puertas",
           "texto": "Flow de puertas GO y presentar (presentar_autorizadas)",
-          "estado": "pendiente",
+          "estado": "en_curso",
           "dueno": "Ariadna",
-          "peso": 3
+          "peso": 3,
+          "nota": "F4 y F5 en rama sombra/f4-f5-puertas, PR en curso."
         },
         {
           "id": "f1-parametros",
           "texto": "Pantalla de parámetros de licitaciones en Windmill (presupuesto mínimo y máximo, CPV, umbrales de criba) sobre lic_parametros y lic_criterios; los flows los leen en cada ejecución",
-          "estado": "pendiente",
+          "estado": "en_curso",
           "dueno": "Ariadna",
           "peso": 2,
-          "nota": "Pedido por Diego el 14-10: tocar los parámetros desde la herramienta y que los agentes funcionen igual sin memorizar nada. Fuente de la verdad: las tablas de Supabase; Windmill solo las edita y las lee. Acceso Windmill listo (14-10): resource f/param/supabase_param, rol windmill_param con SELECT/INSERT/UPDATE solo en lic_parametros, lic_criterios, ven_parametros, sin DELETE; conexión 178.104.70.38:15432 con SSL, abierta solo a la IP de VPS6. Probado con SELECT 1."
+          "nota": "Claves sombra.* y esquema extraccion.v5 en rama sombra/f1-parametros."
         },
         {
           "id": "f1-avisos",
           "texto": "Flow de avisos de portal (lic_correo_procesados) en cada ronda",
           "estado": "pendiente",
           "dueno": "Ariadna",
-          "peso": 3
+          "peso": 3,
+          "nota": "Pasa a Ariadna-Sombra (clon)."
         },
         {
           "id": "f1-tests",
@@ -224,7 +228,7 @@
           "dueno": "Ariadna",
           "peso": 3,
           "fecha": "2026-10-14",
-          "nota": "CI listo y probado con PR de prueba; faltan los tests de cada flow (CASOS.md)"
+          "nota": "Base de tests, F1 y F3 en rama sombra/f1-tests."
         },
         {
           "id": "f1-ci",
