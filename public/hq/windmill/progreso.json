@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-14T19:17:20Z",
+  "actualizado": "2026-10-14T21:41:46Z",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
   "fases": [
     {
@@ -178,7 +178,7 @@
           "estado": "en_curso",
           "dueno": "Ariadna",
           "fecha": "2026-10-14",
-          "nota": "DDL escrito en SPEC; falta rol sombra_rw de Bernat para aplicarlo",
+          "nota": "Rol sombra_rw listo y 6 tablas sombra_* creadas (T2 verificado: insert/update/delete denegado en lic_*/omc_*, DDL denegado). Resource Windmill f/sombra/supabase_sombra",
           "peso": 2
         },
         {
@@ -360,8 +360,9 @@
           "texto": "Base de conocimiento para los agentes: RAG sobre Supabase pgvector, ingestión por flow desde repos, vault y Drive, consulta por RPC y MCP",
           "estado": "pendiente",
           "dueno": "Ariadna",
-          "nota": "Decidido por Diego el 14-10 (HQ #498). Bernat activa pgvector; Ariadna hace el flow de ingestión y la consulta",
-          "peso": 5
+          "nota": "pgvector 0.8.0 activo en Supabase (schema extensions). Falta que Ariadna diga que esquema y tablas quiere",
+          "peso": 5,
+          "fecha": "2026-10-14"
         }
       ]
     },
