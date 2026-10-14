@@ -187,7 +187,7 @@
           "estado": "en_curso",
           "dueno": "Ariadna-Sombra",
           "peso": 3,
-          "nota": "Pasa a Ariadna-Sombra (clon). Rama sombra/f2-descarga-pliego. Clon Ariadna-Sombra desde el 14-10 (noche) para paralelizar la Fase 1."
+          "nota": "PR #2 abierto, 11 tests D1-D7 verdes. Pendiente revisado-roger y aprobado-chief. Sin desplegar."
         },
         {
           "id": "f1-plazos",
@@ -195,7 +195,7 @@
           "estado": "en_curso",
           "dueno": "Ariadna-Sombra",
           "peso": 3,
-          "nota": "Pasa a Ariadna-Sombra (clon). Rama sombra/f6-vigilancia-plazos. Clon Ariadna-Sombra desde el 14-10 (noche) para paralelizar la Fase 1."
+          "nota": "PR #5 abierto, 12 tests V1-V7 verdes. Params sombra.alerta_* ya en lic_parametros. Pendiente revisión. Sin desplegar."
         },
         {
           "id": "f1-puertas",
@@ -216,10 +216,10 @@
         {
           "id": "f1-avisos",
           "texto": "Flow de avisos de portal (lic_correo_procesados) en cada ronda",
-          "estado": "pendiente",
+          "estado": "en_curso",
           "dueno": "Ariadna-Sombra",
           "peso": 3,
-          "nota": "Pasa a Ariadna-Sombra (clon). Clon Ariadna-Sombra desde el 14-10 (noche) para paralelizar la Fase 1."
+          "nota": "PR #8 abierto, 6 tests verdes. Faltan 4 params sombra.aviso_* (pedidos a Motor) y relevo local al buzón. Sin desplegar."
         },
         {
           "id": "f1-tests",
