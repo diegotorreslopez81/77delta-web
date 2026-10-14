@@ -297,10 +297,11 @@
         {
           "id": "f2-parametros",
           "texto": "Pantalla de parámetros del embudo de ventas en Windmill (ventana de envío, cadencia de toques, máximos por día, segmentos) sobre ven_parametros; los flows los leen en cada ejecución",
-          "estado": "pendiente",
+          "estado": "en_curso",
           "dueno": "Ariadna-Ventas",
           "peso": 2,
-          "nota": "Pedido por Diego el 14-10. Misma regla: tablas de Supabase como fuente, Windmill edita y lee, el agente recibe los valores como entrada del flow. Acceso Windmill listo (14-10): resource f/param/supabase_param, rol windmill_param con SELECT/INSERT/UPDATE solo en lic_parametros, lic_criterios, ven_parametros, sin DELETE; conexión 178.104.70.38:15432 con SSL, abierta solo a la IP de VPS6. Probado con SELECT 1."
+          "nota": "Borrador de diseño en 77delta-flows PR #9; falta rol de Postgres (Bernat) y estructura de ven_cambios.",
+          "fecha": "2026-10-14"
         },
         {
           "id": "f2-hq",
