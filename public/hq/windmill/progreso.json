@@ -369,9 +369,9 @@
         {
           "id": "f3-rag",
           "texto": "Base de conocimiento para los agentes: RAG sobre Supabase pgvector, ingestión por flow desde repos, vault y Drive, consulta por RPC y MCP",
-          "estado": "pendiente",
-          "dueno": "Ariadna",
-          "nota": "pgvector 0.8.0 activo en Supabase (schema extensions). Falta que Ariadna diga que esquema y tablas quiere",
+          "estado": "en_curso",
+          "dueno": "Ariadna-Sombra",
+          "nota": "PR #17: diseño docs/f3-rag.md, tablas rag.*, ingestión con 11 tests, consulta stub. Sin proveedor de embeddings (decide Diego). SQL sin probar en pgvector real.",
           "peso": 5,
           "fecha": "2026-10-14"
         }
