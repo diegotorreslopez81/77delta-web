@@ -29,7 +29,7 @@ const ICONO_RECARGAR = '<svg class="ico" viewBox="0 0 24 24" stroke="currentColo
 // (queda guardado) y se apaga con ?menu5=0. Dinero y Sistema agrupan vistas que ya existen (no hay vistas nuevas):
 // Dinero = KPIs (ingresos, cobros, costes) + Recursos (tokens y cuentas); Sistema = Salud + Organigrama + Plan estratégico + Colaboradores.
 export const MENU5 = ['hoy', 'licitaciones', 'ventas', 'dinero', 'sistema'];
-const GRUPOS5 = { dinero: ['kpis', 'recursos'], sistema: ['salud', 'organigrama', 'direccion', 'colaboradores'] };
+const GRUPOS5 = { dinero: ['kpis', 'recursos'], sistema: ['salud', 'progreso', 'organigrama', 'direccion', 'colaboradores'] };
 const NOMBRES5 = { dinero: 'Dinero', sistema: 'Sistema' };
 export function menu5Activo(win = globalThis) {
   try {

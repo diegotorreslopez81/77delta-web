@@ -54,6 +54,8 @@ a{color:inherit}
   .menu-pie{margin-top:auto}
 }
 @media (min-width:900px){
+  /* Menú fijo (Diego 14-10): se queda a la vista al hacer scroll y, si no cabe, scrollea por dentro. En móvil ya es un cajón fixed. */
+  .menu{position:-webkit-sticky;position:sticky;top:52px;align-self:flex-start;height:calc(100vh - 52px);overflow-y:auto}
   #hamburguesa{display:none}.menu-pie [data-salir]{display:none}
   .menu-cab{display:none}
   body.menu-plegado .menu{width:56px;padding:10px 4px}
@@ -403,3 +405,5 @@ a{color:inherit}
 .chip.bloqueo{font-size:11px;padding:2px 8px}
 .chip.bloqueo.diego{border-color:var(--error);color:var(--error)}
 .chip.bloqueo.proveedor{border-color:var(--oro,#b8860b);color:var(--oro,#b8860b)}
+
+.marco-progreso{width:100%;height:calc(100vh - 160px);min-height:480px;border:1px solid var(--linea);border-radius:var(--radio);background:var(--panel)}

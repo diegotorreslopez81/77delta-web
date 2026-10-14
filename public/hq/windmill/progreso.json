@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-14T10:51:00Z",
+  "actualizado": "2026-10-14",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego).",
   "fases": [
     {
@@ -95,6 +95,14 @@
           "estado": "hecho",
           "dueno": "Marc",
           "fecha": "2026-10-14"
+        },
+        {
+          "id": "f0-hqtab",
+          "texto": "Pestaña Progreso en HQ y menú lateral fijo",
+          "estado": "en_curso",
+          "dueno": "Pol",
+          "fecha": "2026-10-14",
+          "nota": "Desplegando; falta verificar en vivo"
         }
       ]
     },
