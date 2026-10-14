@@ -188,7 +188,7 @@
      "fecha": "2026-10-14",
      "dueno": "Ariadna-Sombra",
      "peso": 3,
-     "nota": "F2 descarga_pliego en main (PR #2), tests D1-D7 verdes, conectar() PR #11. Schedule 5 min desactivado. Sin verificar en producción."
+     "nota": "F2 descarga_pliego en main (PR #2), tests D1-D7 verdes, conectar() PR #11. Schedule 5 min desactivado. 14-oct 22:56 UTC tras #26: sigue FALLANDO (psycopg None, lock vacío en .script.lock). Causa y fix en PR #28 (locks regenerados). NO verificado, sin filas en sombra_*."
     },
     {
      "id": "f1-plazos",
@@ -222,7 +222,7 @@
      "fecha": "2026-10-14",
      "dueno": "Ariadna-Sombra",
      "peso": 3,
-     "nota": "avisos_plazos en main (PR #8), 6 tests verdes, relevo local al buzón de Bernat. Schedule 10 min desactivado. Sin verificar de extremo a extremo."
+     "nota": "avisos_plazos en main (PR #8), 6 tests verdes, relevo local al buzón de Bernat. Schedule 10 min desactivado. 14-oct 22:56 UTC tras #26: sigue FALLANDO igual (lock vacío). Fix en PR #28. NO verificado, sin filas en sombra_*."
     },
     {
      "id": "f1-tests",
