@@ -316,11 +316,11 @@
         {
           "id": "f4-hq5",
           "texto": "HQ con 5 pestañas (Hoy, Licitaciones, Ventas, Dinero, Sistema): código listo y apagado, falta OK",
-          "estado": "en_curso",
+          "estado": "hecho",
           "dueno": "Pol",
           "peso": 1,
           "fecha": "2026-10-14",
-          "nota": "Diego delega el 14-10 (HQ #500): se activa por defecto; vuelta atrás con hq.menu5=0"
+          "nota": "Menú 5 activo por defecto (hq.menu5=0 lo apaga); título de Progreso arreglado; sw hq-v34"
         },
         {
           "id": "f4-langfuse",

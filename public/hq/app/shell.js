@@ -24,9 +24,9 @@ const $ = id => document.getElementById(id);
 const ICONO_CAMPANA = '<svg class="ico" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>';
 const ICONO_RECARGAR = '<svg class="ico" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg>';
 
-// Menu de 5 pestanas (Diego 14-10) detras de un interruptor, APAGADO por defecto hasta OK de Diego: no borra ninguna ruta,
-// solo reparte el menu entre principales y un desplegable 'Más'. Se activa con localStorage hq.menu5=1 o con ?menu5=1
-// (queda guardado) y se apaga con ?menu5=0. Dinero y Sistema agrupan vistas que ya existen (no hay vistas nuevas):
+// Menu de 5 pestanas (Diego 14-10) detras de un interruptor, ENCENDIDO por defecto (OK de Diego 14-10): no borra ninguna ruta,
+// solo reparte el menu entre principales y un desplegable 'Más'. Se apaga con localStorage hq.menu5=0 o con ?menu5=0
+// (queda guardado) y se vuelve a encender con ?menu5=1. Dinero y Sistema agrupan vistas que ya existen (no hay vistas nuevas):
 // Dinero = KPIs (ingresos, cobros, costes) + Recursos (tokens y cuentas); Sistema = Salud + Organigrama + Plan estratégico + Colaboradores.
 export const MENU5 = ['hoy', 'licitaciones', 'ventas', 'dinero', 'sistema'];
 const GRUPOS5 = { dinero: ['kpis', 'recursos'], sistema: ['salud', 'progreso', 'organigrama', 'direccion', 'colaboradores'] };
@@ -35,8 +35,8 @@ export function menu5Activo(win = globalThis) {
   try {
     const q = new URLSearchParams(win.location?.search || '').get('menu5');
     if (q === '1' || q === '0') win.localStorage.setItem('hq.menu5', q);
-    return win.localStorage.getItem('hq.menu5') === '1';
-  } catch { return false; }
+    return win.localStorage.getItem('hq.menu5') !== '0';
+  } catch { return true; }
 }
 // Areas del menu: con el interruptor encendido, Dinero y Sistema salen de juntar las vistas de las areas de GRUPOS5.
 export function areasMenu(cinco, areas = AREAS) {

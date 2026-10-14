@@ -406,4 +406,5 @@ a{color:inherit}
 .chip.bloqueo.diego{border-color:var(--error);color:var(--error)}
 .chip.bloqueo.proveedor{border-color:var(--oro,#b8860b);color:var(--oro,#b8860b)}
 
-.marco-progreso{width:100%;height:calc(100vh - 160px);min-height:480px;border:1px solid var(--linea);border-radius:var(--radio);background:var(--panel)}
+.titulo-progreso{position:relative;z-index:1;margin:0 0 12px;padding-top:4px}
+.marco-progreso{display:block;position:relative;z-index:0;width:100%;height:calc(100vh - 160px);min-height:480px;margin-top:0;border:1px solid var(--linea);border-radius:var(--radio);background:var(--panel)}

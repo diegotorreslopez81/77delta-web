@@ -2,6 +2,6 @@
 import { el } from '../ui.js';
 
 export function render(raiz) {
-  raiz.append(el('h2', { text: 'Progreso' }),
+  raiz.append(el('h2', { class: 'titulo-progreso', text: 'Progreso' }),
     el('iframe', { src: '/hq/windmill/', title: 'Progreso de Windmill y Twenty', class: 'marco-progreso', loading: 'lazy' }));
 }

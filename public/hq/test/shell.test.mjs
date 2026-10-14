@@ -29,6 +29,7 @@ document.body = document.createElement('body');
 globalThis.location = { hash: '', search: '', pathname: '/hq/', href: 'https://77delta.com/hq/#hoy' }; globalThis.history = { replaceState() {} }; globalThis.window = { addEventListener() {} }; globalThis.HQ_VERSION = { v: 'test' };
 if (typeof globalThis.localStorage === 'undefined') { const mem = new Map(); globalThis.localStorage = { getItem: k => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => mem.set(k, String(v)), removeItem: k => mem.delete(k) }; }
 globalThis.matchMedia = () => ({ matches: false });
+globalThis.localStorage.setItem('hq.menu5', '0'); // los tests de montarMenu miden el menú completo; el de 5 pestañas se prueba con areasMenu
 
 const { montarMenu, marcarActiva, pintarBarra, cablearShell } = await import('../app/shell.js');
 const { AREAS } = await import('../app/rutas.js');
@@ -257,5 +258,6 @@ test('areasMenu: apagado no toca nada; encendido da Hoy, Licitaciones, Ventas, D
   assert.ok(a.find(x => x.id === 'sistema').vistas.some(v => v.clave === 'operacion/salud'));
   const claves = a.flatMap(x => x.vistas.map(v => v.clave)).sort();
   assert.deepEqual(claves, AREAS.flatMap(x => x.vistas.map(v => v.clave)).sort());
-  assert.equal(menu5Activo({ location: { search: '' }, localStorage: { getItem: () => null, setItem() {} } }), false);
+  assert.equal(menu5Activo({ location: { search: '' }, localStorage: { getItem: () => null, setItem() {} } }), true);
+  assert.equal(menu5Activo({ location: { search: '' }, localStorage: { getItem: () => '0', setItem() {} } }), false);
 });
