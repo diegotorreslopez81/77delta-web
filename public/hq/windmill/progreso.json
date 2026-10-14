@@ -174,9 +174,11 @@
         {
           "id": "f1-tests",
           "texto": "Tests en CI por cada flow",
-          "estado": "pendiente",
+          "estado": "en_curso",
           "dueno": "Ariadna",
-          "peso": 3
+          "peso": 3,
+          "fecha": "2026-10-14",
+          "nota": "CI listo y probado con PR de prueba; faltan los tests de cada flow (CASOS.md)"
         },
         {
           "id": "f1-ci",
@@ -185,7 +187,7 @@
           "dueno": "Diego",
           "peso": 1,
           "fecha": "2026-10-14",
-          "nota": "Decidido 14-10 (HQ #500): Ariadna escribe, Roger revisa, chief aprueba"
+          "nota": "Decidido por Diego: Ariadna escribe, Roger revisa, chief aprueba. Montado en 77delta-flows: PR obligatoria, checks tests y revision-roger-y-aprobacion-chief, etiquetas revisado-roger y aprobado-chief"
         },
         {
           "id": "f1-sombra",
