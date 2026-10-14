@@ -108,13 +108,16 @@
           "texto": "Spec y casos de prueba de los flows en sombra",
           "estado": "hecho",
           "dueno": "Ariadna",
-          "fecha": "2026-10-14"
+          "fecha": "2026-10-14",
+          "nota": "SPEC.md (6 flows, DDL, corte) y CASOS.md (40 casos) en 77delta/docs/licita/flows-sombra, commit de8629e"
         },
         {
           "id": "f1-tablas",
           "texto": "Tablas sombra_* en Supabase, solo lectura de lic_*",
-          "estado": "pendiente",
-          "dueno": "Ariadna"
+          "estado": "en_curso",
+          "dueno": "Ariadna",
+          "fecha": "2026-10-14",
+          "nota": "DDL escrito en SPEC; falta rol sombra_rw de Bernat para aplicarlo"
         },
         {
           "id": "f1-pliego",
