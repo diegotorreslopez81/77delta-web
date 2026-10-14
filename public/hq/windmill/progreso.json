@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-14T12:09:00Z",
+  "actualizado": "2026-10-14T12:16:00Z",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
   "fases": [
     {
@@ -119,12 +119,20 @@
           "peso": 1
         },
         {
-          "id": "f0-filtro",
-          "texto": "Filtro en tu Gmail que reenvíe a team@ los hilos de clientes (5 minutos; nadie toca tu buzón)",
+          "id": "f0-google",
+          "texto": "Tu correo en Twenty por la API de Google, solo lectura: crear la app OAuth en la consola de Google (15 minutos)",
           "estado": "diego",
           "dueno": "Diego",
           "peso": 1,
-          "nota": "Pasos: 1) Gmail, rueda, Ver toda la configuración, pestaña Reenvío y correo POP/IMAP, Añadir una dirección de reenvío: team@77delta.com (el código de confirmación llega a team@ y lo confirma el equipo; avísame). 2) Pestaña Filtros y direcciones bloqueadas, Crear un filtro: en De pon los dominios de clientes separados por OR (por ejemplo aresa.es OR asicre.org OR viladecans.cat) o la etiqueta Clientes si la usas. 3) Acción: Reenviar a team@77delta.com. Guardar. Desde entonces Twenty ve esos hilos sin leer tu buzón. Añade dominios cuando entre un cliente nuevo."
+          "nota": "Pasos, con diego@77delta.com: 1) console.cloud.google.com, Nuevo proyecto, nombre 77 Delta CRM. 2) APIs y servicios, Biblioteca: habilita Gmail API y Google Calendar API. 3) Pantalla de consentimiento OAuth: tipo Interno, nombre 77 Delta CRM, correo de asistencia team@77delta.com, guardar. 4) Credenciales, Crear credenciales, ID de cliente de OAuth, tipo Aplicación web, nombre Twenty; Orígenes autorizados: https://crm.77delta.net; URIs de redirección: https://crm.77delta.net/auth/google-apis/get-access-token y https://crm.77delta.net/auth/google/redirect. Crear. 5) Manda el ID de cliente y el secreto por correo a team@77delta.com (nunca por chat); Bernat los configura en Twenty y te avisa. 6) Después, en Twenty: Configuración, Cuentas, Añadir cuenta Google, acepta con tu cuenta; en la cuenta pon visibilidad Asunto para el equipo y activa Excluir correos no profesionales. Permisos que pide Twenty: lectura de correo, envío y calendario; ninguno puede marcar correos como leídos."
+        },
+        {
+          "id": "f0-google-env",
+          "texto": "Configurar en Twenty el cliente OAuth de Google (AUTH_GOOGLE_*, MESSAGING_PROVIDER_GMAIL_ENABLED, CALENDAR_PROVIDER_GOOGLE_ENABLED) y verificar la sincronización de diego@ en solo lectura",
+          "estado": "pendiente",
+          "dueno": "Bernat",
+          "peso": 1,
+          "nota": "Espera el correo de Diego a team@ con ID y secreto. Nunca en logs, tarjetas ni chat. Verificar tras conectar: ningún correo de diego@ cambia de no leído a leído"
         }
       ]
     },
