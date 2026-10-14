@@ -284,9 +284,11 @@
         {
           "id": "f2-toques",
           "texto": "Flow de toques en ventana 08:00 a 20:00 UTC y recordatorios",
-          "estado": "pendiente",
+          "estado": "en_curso",
           "dueno": "Ariadna-Ventas",
-          "peso": 3
+          "peso": 3,
+          "nota": "Borrador de diseño en 77delta-flows/docs/f2-toques.md; con el chief para decidir. Sin código hasta su OK.",
+          "fecha": "2026-10-14"
         },
         {
           "id": "f2-parametros",
