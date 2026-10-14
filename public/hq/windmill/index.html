@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Progreso Windmill y Twenty</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#F3EEE4;--surface:#FAF7F0;--surface-2:#F0EADF;
+  --ink:#0A1628;--ink-2:#26354D;--muted:#5C6879;--muted-2:#9AA3B0;
+  --line:#E0D9CB;--line-strong:#CFC6B5;
+  --accent:#A7781B;--accent-ink:#8A6216;--accent-soft:rgba(167,120,27,.12);
+  --ok:#3F6B4A;--ok-soft:rgba(63,107,74,.14);
+  --run:#1F5FA8;--run-soft:rgba(31,95,168,.12);
+  --wait:#B4650E;--wait-soft:rgba(180,101,14,.14);
+  --bad:#A8392C;--bad-soft:rgba(168,57,44,.12);
+  --display:'Sora',system-ui,sans-serif;--body:'IBM Plex Sans',system-ui,sans-serif;
+  --radio:12px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#06101F;--surface:#0C1A30;--surface-2:#122238;
+    --ink:#EDEAE3;--ink-2:#D5D9DF;--muted:#AEB8C6;--muted-2:#8794A6;
+    --line:#1E2B3B;--line-strong:#2C3B52;
+    --accent:#D4A03A;--accent-ink:#E2B65A;--accent-soft:rgba(212,160,58,.14);
+    --ok:#8CB897;--ok-soft:rgba(127,191,140,.16);
+    --run:#6FA8E0;--run-soft:rgba(111,168,224,.16);
+    --wait:#E2A34D;--wait-soft:rgba(226,163,77,.16);
+    --bad:#E08678;--bad-soft:rgba(224,134,120,.16);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#06101F;--surface:#0C1A30;--surface-2:#122238;
+  --ink:#EDEAE3;--ink-2:#D5D9DF;--muted:#AEB8C6;--muted-2:#8794A6;
+  --line:#1E2B3B;--line-strong:#2C3B52;
+  --accent:#D4A03A;--accent-ink:#E2B65A;--accent-soft:rgba(212,160,58,.14);
+  --ok:#8CB897;--ok-soft:rgba(127,191,140,.16);
+  --run:#6FA8E0;--run-soft:rgba(111,168,224,.16);
+  --wait:#E2A34D;--wait-soft:rgba(226,163,77,.16);
+  --bad:#E08678;--bad-soft:rgba(224,134,120,.16);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:960px;margin:0 auto;padding-inline:16px;padding-block:28px 48px;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(26px,4vw,36px);font-weight:700;line-height:1.15}
+h2{font-size:18px;font-weight:600}
+h3{font-size:16px;font-weight:600}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent-ink);font-weight:600}
+.meta{color:var(--muted);font-size:13px}
+.num{font-variant-numeric:tabular-nums}
+header{display:flex;flex-direction:column;gap:10px}
+.resumen{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px;align-items:stretch}
+@media (max-width:640px){.resumen{grid-template-columns:1fr}}
+.total{background:var(--surface);border:1px solid var(--line);border-radius:var(--radio);padding:20px;display:flex;flex-direction:column;gap:12px}
+.total .pct{font-family:var(--display);font-size:56px;font-weight:700;line-height:1;color:var(--ink)}
+.total .pct small{font-size:22px;color:var(--muted);font-weight:600;margin-left:2px}
+.barra{height:10px;border-radius:999px;background:var(--surface-2);overflow:hidden;border:1px solid var(--line)}
+.barra i{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .5s ease}
+.barra i.run{background:var(--run)}
+.cuentas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cuenta{background:var(--surface);border:1px solid var(--line);border-radius:var(--radio);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.cuenta b{font-family:var(--display);font-size:24px;font-weight:600;line-height:1.1}
+.cuenta span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.cuenta.ok b{color:var(--ok)}.cuenta.run b{color:var(--run)}.cuenta.diego b{color:var(--wait)}.cuenta.pend b{color:var(--muted)}
+.tuyo{border:1px solid var(--wait);background:var(--wait-soft);border-radius:var(--radio);padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.tuyo ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.tuyo li b{font-weight:600}
+.fases{display:flex;flex-direction:column;gap:16px}
+.fase{background:var(--surface);border:1px solid var(--line);border-radius:var(--radio);overflow:hidden}
+.fase.activa{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.fase-cab{padding:16px 18px 14px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--line)}
+.fase-fila{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between}
+.fase-fila .pct{font-family:var(--display);font-size:22px;font-weight:600}
+.fase-cab .meta{display:flex;flex-wrap:wrap;gap:4px 14px}
+.tareas{list-style:none;margin:0;padding:0}
+.tarea{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px 12px;padding:10px 18px;border-bottom:1px solid var(--line);align-items:start}
+.tarea:last-child{border-bottom:0}
+.tarea .txt{color:var(--ink)}
+.tarea .nota{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.tarea .quien{color:var(--muted);font-size:13px;white-space:nowrap;text-align:right}
+.tarea .quien small{display:block;color:var(--muted-2)}
+.tarea.hecho .txt{color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;letter-spacing:.02em;padding:3px 9px;border-radius:999px;white-space:nowrap;margin-top:1px}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.chip.hecho{color:var(--ok);background:var(--ok-soft)}
+.chip.en_curso{color:var(--run);background:var(--run-soft)}
+.chip.pendiente{color:var(--muted);background:var(--surface-2)}
+.chip.bloqueado{color:var(--bad);background:var(--bad-soft)}
+.chip.diego{color:var(--wait);background:var(--wait-soft)}
+@media (max-width:560px){.tarea{grid-template-columns:auto minmax(0,1fr)}.tarea .quien{grid-column:2;text-align:left;white-space:normal}.tarea .quien small{display:inline;margin-left:6px}}
+footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:16px;display:flex;flex-direction:column;gap:6px}
+footer code{font-family:ui-monospace,monospace;font-size:12px;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+.aviso{background:var(--surface);border:1px solid var(--line);border-radius:var(--radio);padding:16px 18px;color:var(--muted)}
+a{color:var(--accent-ink)}
+button.recarga{font:inherit;font-size:13px;color:var(--accent-ink);background:transparent;border:1px solid var(--line-strong);border-radius:8px;padding:5px 10px;cursor:pointer}
+button.recarga:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){.barra i{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">77 Delta · implementación</div>
+    <h1 id="titulo">Windmill y Twenty</h1>
+    <div class="meta" id="sub">Cargando el estado desde HQ…</div>
+  </header>
+
+  <section class="resumen" id="resumen" hidden>
+    <div class="total">
+      <div class="eyebrow">Avance global</div>
+      <div class="pct num"><span id="pct-total">0</span><small>%</small></div>
+      <div class="barra"><i id="barra-total" style="width:0%"></i></div>
+      <div class="meta" id="pct-nota"></div>
+    </div>
+    <div class="cuentas">
+      <div class="cuenta ok"><b class="num" id="n-hecho">0</b><span>Hechas</span></div>
+      <div class="cuenta run"><b class="num" id="n-curso">0</b><span>En curso</span></div>
+      <div class="cuenta diego"><b class="num" id="n-diego">0</b><span>Esperan a Diego</span></div>
+      <div class="cuenta pend"><b class="num" id="n-pend">0</b><span>Pendientes</span></div>
+    </div>
+  </section>
+
+  <section class="tuyo" id="tuyo" hidden>
+    <h2>Te toca a ti</h2>
+    <ul id="lista-diego"></ul>
+  </section>
+
+  <section class="fases" id="fases"></section>
+
+  <div class="aviso" id="error" hidden></div>
+
+  <footer>
+    <div id="como"></div>
+    <div>Fuente: <code>77delta.com/hq/windmill/progreso.json</code> · <button class="recarga" id="btn-recarga" type="button">Recargar</button></div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var URLS=['https://77delta.com/hq/windmill/progreso.json','progreso.json'];
+  var PESO={hecho:1,en_curso:0.5,pendiente:0,bloqueado:0,diego:0};
+  var ETIQ={hecho:'Hecho',en_curso:'En curso',pendiente:'Pendiente',bloqueado:'Bloqueado',diego:'Espera a Diego'};
+  var $=function(id){return document.getElementById(id)};
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function fecha(iso){
+    if(!iso)return'';
+    var d=new Date(iso); if(isNaN(d))return esc(iso);
+    return d.toLocaleString('es-ES',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Madrid'});
+  }
+  function fechaCorta(iso){
+    if(!iso)return'';
+    var p=String(iso).split('-'); if(p.length<3)return esc(iso);
+    return p[2]+'-'+p[1];
+  }
+  function pct(tareas){
+    if(!tareas.length)return 0;
+    var s=0; tareas.forEach(function(t){s+=PESO[t.estado]||0});
+    return Math.round(100*s/tareas.length);
+  }
+  function render(d){
+    var todas=[]; d.fases.forEach(function(f){f.tareas.forEach(function(t){t._fase=f;todas.push(t)})});
+    var n={hecho:0,en_curso:0,pendiente:0,bloqueado:0,diego:0};
+    todas.forEach(function(t){n[t.estado]=(n[t.estado]||0)+1});
+    $('titulo').textContent=d.proyecto||'Windmill y Twenty';
+    $('sub').textContent=(d.descripcion?d.descripcion+' ':'')+'Actualizado '+fecha(d.actualizado)+' (hora de Madrid).';
+    var total=pct(todas);
+    $('pct-total').textContent=total; $('barra-total').style.width=total+'%';
+    $('pct-nota').textContent=todas.length+' tareas en '+d.fases.length+' fases. Una tarea en curso cuenta la mitad.';
+    $('n-hecho').textContent=n.hecho; $('n-curso').textContent=n.en_curso; $('n-diego').textContent=n.diego; $('n-pend').textContent=n.pendiente+n.bloqueado;
+    $('resumen').hidden=false;
+    var ld=todas.filter(function(t){return t.estado==='diego'});
+    $('tuyo').hidden=!ld.length;
+    $('lista-diego').innerHTML=ld.map(function(t){return '<li><b>'+esc(t._fase.id)+' '+esc(t._fase.nombre)+':</b> '+esc(t.texto)+(t.nota?' <span class="meta">('+esc(t.nota)+')</span>':'')+'</li>'}).join('');
+    var activaMarcada=false;
+    $('fases').innerHTML=d.fases.map(function(f){
+      var p=pct(f.tareas);
+      var activa=!activaMarcada&&p<100&&f.tareas.some(function(t){return t.estado==='en_curso'||t.estado==='hecho'});
+      if(activa)activaMarcada=true;
+      return '<article class="fase'+(activa?' activa':'')+'">'+
+        '<div class="fase-cab">'+
+          '<div class="fase-fila"><h2>'+esc(f.id)+' · '+esc(f.nombre)+'</h2><span class="pct num">'+p+'%</span></div>'+
+          '<div class="barra"><i class="'+(p<100?'run':'')+'" style="width:'+p+'%"></i></div>'+
+          '<div class="meta"><span>Plazo: '+esc(f.plazo)+'</span><span>Dueño: '+esc(f.dueno)+'</span><span class="num">'+f.tareas.filter(function(t){return t.estado==='hecho'}).length+' de '+f.tareas.length+' hechas</span></div>'+
+        '</div>'+
+        '<ul class="tareas">'+f.tareas.map(function(t){
+          return '<li class="tarea '+esc(t.estado)+'">'+
+            '<span class="chip '+esc(t.estado)+'">'+(ETIQ[t.estado]||esc(t.estado))+'</span>'+
+            '<span class="txt">'+esc(t.texto)+(t.nota?'<span class="nota">'+esc(t.nota)+'</span>':'')+'</span>'+
+            '<span class="quien">'+esc(t.dueno||'')+(t.fecha?'<small class="num">'+fechaCorta(t.fecha)+'</small>':'')+'</span>'+
+          '</li>'}).join('')+'</ul>'+
+      '</article>';
+    }).join('');
+    $('como').textContent=d.como_actualizar||'';
+    $('error').hidden=true;
+  }
+  function cargar(i){
+    i=i||0;
+    if(i>=URLS.length){
+      $('sub').textContent='No se ha podido leer el estado.';
+      $('error').textContent='No se ha podido leer progreso.json. Puede que la publicación de HQ esté en curso; prueba a recargar en un minuto.';
+      $('error').hidden=false; return;
+    }
+    fetch(URLS[i]+'?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).then(render).catch(function(){cargar(i+1)});
+  }
+  $('btn-recarga').addEventListener('click',function(){cargar(0)});
+  cargar(0);
+  setInterval(function(){if(!document.hidden)cargar(0)},300000);
+})();
+</script>
+</body>
+</html>
