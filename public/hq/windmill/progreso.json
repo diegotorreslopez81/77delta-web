@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-14T21:41:46Z",
+  "actualizado": "2026-10-14T21:42:00Z",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
   "fases": [
     {
@@ -185,17 +185,17 @@
           "id": "f1-pliego",
           "texto": "Flow de descarga de pliego con reintentos y cola de fallos",
           "estado": "en_curso",
-          "dueno": "Ariadna",
+          "dueno": "Ariadna-Sombra",
           "peso": 3,
-          "nota": "Pasa a Ariadna-Sombra (clon). Rama sombra/f2-descarga-pliego."
+          "nota": "Pasa a Ariadna-Sombra (clon). Rama sombra/f2-descarga-pliego. Clon Ariadna-Sombra desde el 14-10 (noche) para paralelizar la Fase 1."
         },
         {
           "id": "f1-plazos",
           "texto": "Flow de vigilancia de plazos y alarmas de cierre",
           "estado": "en_curso",
-          "dueno": "Ariadna",
+          "dueno": "Ariadna-Sombra",
           "peso": 3,
-          "nota": "Pasa a Ariadna-Sombra (clon). Rama sombra/f6-vigilancia-plazos."
+          "nota": "Pasa a Ariadna-Sombra (clon). Rama sombra/f6-vigilancia-plazos. Clon Ariadna-Sombra desde el 14-10 (noche) para paralelizar la Fase 1."
         },
         {
           "id": "f1-puertas",
@@ -217,9 +217,9 @@
           "id": "f1-avisos",
           "texto": "Flow de avisos de portal (lic_correo_procesados) en cada ronda",
           "estado": "pendiente",
-          "dueno": "Ariadna",
+          "dueno": "Ariadna-Sombra",
           "peso": 3,
-          "nota": "Pasa a Ariadna-Sombra (clon)."
+          "nota": "Pasa a Ariadna-Sombra (clon). Clon Ariadna-Sombra desde el 14-10 (noche) para paralelizar la Fase 1."
         },
         {
           "id": "f1-tests",
