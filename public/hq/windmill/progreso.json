@@ -1,7 +1,7 @@
 {
  "proyecto": "Windmill y Twenty",
  "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
- "actualizado": "2026-10-14T10:47:00Z",
+ "actualizado": "2026-10-14T10:51:19Z",
  "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego).",
  "fases": [
   {
@@ -36,7 +36,8 @@
      "texto": "Primer acceso de Diego a Windmill y Twenty (usuarios e invitaciones por correo desde team@)",
      "estado": "en_curso",
      "dueno": "Bernat",
-     "fecha": "2026-10-14"
+     "fecha": "2026-10-14",
+     "nota": "Usuario Windmill diego@ (superadmin) e invitación Twenty creados. Falta enviar por correo: el envío exige tarjeta aprobada, pedida a Marc"
     },
     {
      "id": "f0-repo",
@@ -48,10 +49,10 @@
     {
      "id": "f0-gitsync",
      "texto": "Git sync de Windmill con 77delta-flows (deploy key)",
-     "estado": "en_curso",
+     "estado": "hecho",
      "dueno": "Bernat",
      "fecha": "2026-10-14",
-     "nota": "Deploy key ya subida a GitHub"
+     "nota": "Windmill CE sin git sync nativo: CLI sync pull cada hora (cron VPS6) a 77delta-flows. Workspace delta77 creado; push verificado"
     },
     {
      "id": "f0-backup",
@@ -86,7 +87,7 @@
      "texto": "Gmail de team@ en Twenty por OAuth: pantalla de consentimiento en Google Workspace",
      "estado": "diego",
      "dueno": "Diego",
-     "nota": "Bernat prepara la app; Diego aprueba como admin del Workspace"
+     "nota": "Bernat prepara la app; Diego aprueba como admin del Workspace. Datos para la app: redirect https://crm.77delta.net/auth/google-apis/get-access-token, scope gmail.readonly, solo team@"
     },
     {
      "id": "f0-progreso",
