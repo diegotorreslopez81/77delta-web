@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-14T16:02:06Z",
+  "actualizado": "2026-10-14T16:42:00Z",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
   "fases": [
     {
@@ -244,7 +244,7 @@
     {
       "id": "F2",
       "nombre": "Ventas y CRM",
-      "plazo": "29 de octubre a 11 de noviembre",
+      "plazo": "desde el 15 de octubre, en paralelo con la fase 1 (adelantada por Diego el 14-10)",
       "dueno": "Carla, Biel y Bernat",
       "tareas": [
         {
@@ -261,7 +261,8 @@
           "texto": "Piloto de una semana de Twenty con Carla y Biel",
           "estado": "pendiente",
           "dueno": "Carla",
-          "peso": 5
+          "peso": 5,
+          "nota": "Arranca el 15-10 09:00 Madrid por orden de Diego (14-10). Carla y Biel trabajan el embudo en crm.77delta.com; ven_* no recibe nada nuevo de ellos. Parte diario por buzón."
         },
         {
           "id": "f2-swarmix",
@@ -282,14 +283,16 @@
           "texto": "HQ Ventas lee la API de Twenty",
           "estado": "pendiente",
           "dueno": "Pol",
-          "peso": 2
+          "peso": 2,
+          "nota": "Sin claves en el repo ni en el navegador: resumen en Supabase rellenado por un job de Windmill cada 15 min; especificación 14-10, pestaña 16-10."
         },
         {
           "id": "f2-ven",
           "texto": "Congelar ven_* tras el corte, con OK de Diego",
           "estado": "pendiente",
           "dueno": "Marc",
-          "peso": 1
+          "peso": 1,
+          "nota": "Solo al final del piloto y con OK aparte de Diego (decisión HQ del 14-10)."
         }
       ]
     },
