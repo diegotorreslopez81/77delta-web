@@ -179,9 +179,9 @@
     {
      "id": "f2-leads",
      "texto": "Triaje de los leads del Twenty antiguo contra ven_* (CSV con prioridad A, B, C)",
-     "estado": "en_curso",
+     "estado": "hecho",
      "dueno": "Biel",
-     "nota": "Biel: triaje Twenty viejo contra ven_* arrancado",
+     "nota": "Biel: triaje hecho. 199 empresas: A 50 (45 fuera del embudo), B 19, C 130. CSV en bizdev/docs/triaje-twenty-20261014.csv",
      "fecha": "2026-10-14"
     },
     {
