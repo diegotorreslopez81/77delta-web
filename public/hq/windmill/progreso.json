@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-14T18:48:18Z",
+  "actualizado": "2026-10-14T19:02:00Z",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
   "fases": [
     {
@@ -278,21 +278,21 @@
           "id": "f2-swarmix",
           "texto": "Flows Swarmix y Twenty por API y webhooks (segmentos de salida, eventos de vuelta)",
           "estado": "pendiente",
-          "dueno": "Ariadna",
+          "dueno": "Ariadna-Ventas",
           "peso": 3
         },
         {
           "id": "f2-toques",
           "texto": "Flow de toques en ventana 08:00 a 20:00 UTC y recordatorios",
           "estado": "pendiente",
-          "dueno": "Ariadna",
+          "dueno": "Ariadna-Ventas",
           "peso": 3
         },
         {
           "id": "f2-parametros",
           "texto": "Pantalla de parámetros del embudo de ventas en Windmill (ventana de envío, cadencia de toques, máximos por día, segmentos) sobre ven_parametros; los flows los leen en cada ejecución",
           "estado": "pendiente",
-          "dueno": "Ariadna",
+          "dueno": "Ariadna-Ventas",
           "peso": 2,
           "nota": "Pedido por Diego el 14-10. Misma regla: tablas de Supabase como fuente, Windmill edita y lee, el agente recibe los valores como entrada del flow."
         },
@@ -302,7 +302,7 @@
           "estado": "en_curso",
           "dueno": "Pol",
           "peso": 2,
-          "nota": "Schema v150 aplicado, RPC ven_twenty_hq(p_token) lista y probada. Pestaña Ventas con hq.ventasTwenty (OFF) subida; falta job Windmill.",
+          "nota": "Schema v150 aplicado, RPC ven_twenty_hq(p_token) lista y probada. Pestaña Ventas con hq.ventasTwenty (OFF) subida; falta job Windmill. Job de Windmill: Ariadna-Ventas (clon creado el 14-10, decisión HQ #512).",
           "fecha": "2026-10-14"
         },
         {
