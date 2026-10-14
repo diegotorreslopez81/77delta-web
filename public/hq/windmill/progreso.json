@@ -97,7 +97,7 @@
           "texto": "Correo de team@ en Twenty por IMAP y SMTP con contraseña de aplicación (sin pantalla OAuth de Google)",
           "estado": "pendiente",
           "dueno": "Bernat",
-          "nota": "Diego delega el 14-10 (HQ #499): nada que aprobar en Google Workspace. Solo team@, nunca el buzón de Diego",
+          "nota": "Diego delega el 14-10 (HQ #500): nada que aprobar en Google Workspace. Solo team@, nunca el buzón de Diego",
           "peso": 1
         },
         {
@@ -185,7 +185,7 @@
           "dueno": "Diego",
           "peso": 1,
           "fecha": "2026-10-14",
-          "nota": "Decidido 14-10 (HQ #499): Ariadna escribe, Roger revisa, chief aprueba"
+          "nota": "Decidido 14-10 (HQ #500): Ariadna escribe, Roger revisa, chief aprueba"
         },
         {
           "id": "f1-sombra",
@@ -288,7 +288,7 @@
           "estado": "pendiente",
           "dueno": "Pol",
           "peso": 1,
-          "nota": "Diego delega el 14-10 (HQ #499): se hace en F3 con copia bak_ previa y aviso el día antes"
+          "nota": "Diego delega el 14-10 (HQ #500): se hace en F3 con copia bak_ previa y aviso el día antes"
         },
         {
           "id": "f3-rag",
@@ -320,7 +320,7 @@
           "dueno": "Pol",
           "peso": 1,
           "fecha": "2026-10-14",
-          "nota": "Diego delega el 14-10 (HQ #499): se activa por defecto; vuelta atrás con hq.menu5=0"
+          "nota": "Diego delega el 14-10 (HQ #500): se activa por defecto; vuelta atrás con hq.menu5=0"
         },
         {
           "id": "f4-langfuse",
@@ -329,7 +329,7 @@
           "dueno": "Diego",
           "peso": 1,
           "fecha": "2026-10-14",
-          "nota": "Decidido 14-10 (HQ #499): no por ahora; bastan los logs de jobs de Windmill. Se revisa tras F1"
+          "nota": "Decidido 14-10 (HQ #500): no por ahora; bastan los logs de jobs de Windmill. Se revisa tras F1"
         },
         {
           "id": "f4-nuria",
