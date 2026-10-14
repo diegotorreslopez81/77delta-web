@@ -1,7 +1,7 @@
 {
  "proyecto": "Windmill y Twenty",
  "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
- "actualizado": "2026-10-14T22:28:33Z",
+ "actualizado": "2026-10-14T22:28:46Z",
  "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
  "fases": [
   {
@@ -377,7 +377,10 @@
     },
     {
      "id": "f3-rag-embeddings",
+     "texto": "Decidir el proveedor de embeddings para la base de conocimiento (f3-rag): Voyage AI, OpenAI o posponer; si eliges proveedor, crea la clave y mándala a team@ (nunca por el chat)",
      "estado": "pendiente",
+     "dueno": "Diego",
+     "peso": 1,
      "nota": "15-10: no hay ninguna clave de embeddings en Windmill ni en el servidor y nada se contrata sin tu OK (D162). Opciones: Voyage AI o OpenAI (coste de céntimos al mes para nuestro volumen) o posponer la ingestión. Ariadna-Sombra deja diseño, tablas y troceado listos mientras tanto."
     }
    ]
