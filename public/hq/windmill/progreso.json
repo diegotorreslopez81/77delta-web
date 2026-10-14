@@ -349,10 +349,11 @@
         {
           "id": "f3-archivo",
           "texto": "Archivo en bloque de tarjetas de más de 7 días y encargos con hito de más de 14 días (con bak_)",
-          "estado": "pendiente",
+          "estado": "en_curso",
           "dueno": "Pol",
           "peso": 1,
-          "nota": "Diego delega el 14-10 (HQ #500): se hace en F3 con copia bak_ previa y aviso el día antes No se adelanta: necesita copia bak_ y aviso a Diego el día antes (decisión HQ #500)."
+          "nota": "Plan y SQL bak_ en docs/empresa/f3-archivo-plan.md. NO ejecutado: espera OK de Diego y aviso el día antes.",
+          "fecha": "2026-10-14"
         },
         {
           "id": "f3-rag",
