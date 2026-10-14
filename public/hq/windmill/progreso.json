@@ -73,9 +73,11 @@
         {
           "id": "f0-backup",
           "texto": "Backup diario de Windmill a pCloud",
-          "estado": "pendiente",
+          "estado": "hecho",
           "dueno": "Sergi",
-          "peso": 1
+          "peso": 1,
+          "nota": "14-10: restic diario 02:00 a pCloud en VPS6, restauración probada.",
+          "fecha": "2026-10-14"
         },
         {
           "id": "f0-twenty",
@@ -329,10 +331,11 @@
         {
           "id": "f3-backups",
           "texto": "Backups a pCloud por flow, con comprobación de restauración",
-          "estado": "pendiente",
+          "estado": "en_curso",
           "dueno": "Sergi",
           "peso": 3,
-          "nota": "Adelantada al 15-10 en paralelo con las fases 1 y 2 (Diego 14-10: agilizar lo que no dependa de otras fases)."
+          "nota": "14-10: BD Windmill y Twenty en backup diario restic a pCloud (02:00); restauración probada: 179 y 117 tablas. Falta backup por flow.",
+          "fecha": "2026-10-14"
         },
         {
           "id": "f3-salud",
