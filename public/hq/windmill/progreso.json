@@ -373,7 +373,7 @@
           "texto": "Base de conocimiento para los agentes: RAG sobre Supabase pgvector, ingestión por flow desde repos, vault y Drive, consulta por RPC y MCP",
           "estado": "en_curso",
           "dueno": "Ariadna-Sombra",
-          "nota": "PR #17: diseño docs/f3-rag.md, tablas rag.*, ingestión con 11 tests, consulta stub. PR #20: fallback por texto (tsvector), fixture con guarda y objetos de prueba propios. Sin proveedor de embeddings (decide Diego). SQL sin probar en pgvector real.",
+          "nota": "PR #17: diseño docs/f3-rag.md, tablas rag.*, ingestión con 11 tests, consulta stub. PR #20: fallback por texto (tsvector), fixture con guarda y objetos de prueba propios. Sin proveedor de embeddings (decide Diego). SQL sin probar en pgvector real. 15-10: ingestión solo de 77delta/docs (checkout /srv/rag listo); falta el vault (vive en el Mac de Diego, sin repo) por decisión de Diego, fuente sops_vault inactiva (activa=false, PR #31). Cron apagado hasta verificar.",
           "peso": 5,
           "fecha": "2026-10-14"
         },
