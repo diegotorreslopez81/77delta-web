@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-14T19:10:41Z",
+  "actualizado": "2026-10-14T19:17:20Z",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
   "fases": [
     {
@@ -340,10 +340,10 @@
         {
           "id": "f3-salud",
           "texto": "Salud de ventanas y consumo de cuentas por flow",
-          "estado": "en_curso",
+          "estado": "hecho",
           "dueno": "Bernat",
           "peso": 2,
-          "nota": "Flow f/salud/check cada 15 min (HTTP, contenedores, colas, workers, disco VPS6), prueba ok. Vigía en VPS0 cada 5 min avisa al chief si falla. Sin verificar aún: camino de fallo y disparo real del cron.",
+          "nota": "Flow f/salud/check cada 15 min (HTTP, contenedores, colas, workers, disco VPS6). Verificado: dos disparos seguidos (21:00, 21:15), camino de fallo y recuperación con aviso al chief con servicio, URL, HTTP y host. Vigía en VPS0 cada 5 min. Acceso a Supabase para parámetros: puerto 15432 en VPS1 con SSL, solo IP de VPS6; desde VPS0 cerrado.",
           "fecha": "2026-10-14"
         },
         {
