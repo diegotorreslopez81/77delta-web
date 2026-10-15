@@ -36,6 +36,15 @@
           "nota": "Hecho por Diego el 14-10 ~14:30 Madrid. Verificado: windmill.77delta.com y crm.77delta.com resuelven a 178.104.108.10, HTTPS 200; .net redirige 301 a .com."
         },
         {
+          "id": "verifix-dns",
+          "texto": "Registro DNS de verifix.77delta.com en Namecheap",
+          "estado": "diego",
+          "dueno": "Diego",
+          "peso": 1,
+          "fecha": "2026-10-15",
+          "nota": "Verifix (decisión #522): crear en Namecheap el registro A verifix.77delta.com -> 178.104.108.10, TTL 300. Sin él no se puede publicar la landing."
+        },
+        {
           "id": "f0-tls",
           "texto": "Dominios y certificados TLS en Coolify para Windmill y Twenty (en .com tras el cambio del 14-10)",
           "estado": "hecho",
