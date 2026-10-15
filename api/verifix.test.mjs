@@ -33,7 +33,7 @@ test('limpia saltos de línea y recorta (sin inyección de cabeceras)', () => {
 });
 
 test('fila solo lleva las columnas de la tabla', () => {
-  assert.deepEqual(Object.keys(fila(validar(ok, 'ip').lead)).sort(), ['email', 'empresa', 'idioma', 'ip_hash', 'origen', 'tipo']);
+  assert.deepEqual(Object.keys(fila(validar(ok, 'ip').lead)).sort(), ['email', 'empresa', 'idioma', 'ip_hash', 'origen', 'tipo', 'ya_me_ha_pasado']);
 });
 
 test('insertarSupabase: éxito, 500 y excepción son blandos', async () => {
@@ -53,4 +53,14 @@ test('correo: asunto y destinatario', () => {
   assert.equal(c.subject, ASUNTO);
   assert.equal(c.subject, 'Verifix: alta en la lista de espera');
   assert.equal(c.to, 'hola@77delta.com');
+});
+
+test('ya_me_ha_pasado: opcional, false por defecto, solo true o "true" lo activan, va a fila y correo', () => {
+  assert.equal(validar(ok, 'ip').lead.ya_me_ha_pasado, false);
+  assert.equal(validar({ ...ok, ya_me_ha_pasado: true }, 'ip').lead.ya_me_ha_pasado, true);
+  assert.equal(validar({ ...ok, ya_me_ha_pasado: 'true' }, 'ip').lead.ya_me_ha_pasado, true);
+  assert.equal(validar({ ...ok, ya_me_ha_pasado: 'no' }, 'ip').lead.ya_me_ha_pasado, false);
+  const lead = validar({ ...ok, ya_me_ha_pasado: true }, 'ip').lead;
+  assert.equal(fila(lead).ya_me_ha_pasado, true);
+  assert.match(correo(lead, 'de@77delta.com', 'hola@77delta.com').text, /Ya me ha pasado: sí/);
 });
