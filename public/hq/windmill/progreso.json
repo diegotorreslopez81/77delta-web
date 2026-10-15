@@ -453,10 +453,20 @@
         {
           "id": "f3-rag-embeddings",
           "texto": "Decidir el proveedor de embeddings para la base de conocimiento (f3-rag): Voyage AI, OpenAI o posponer; si eliges proveedor, crea la clave y mándala a team@ (nunca por el chat)",
-          "estado": "pendiente",
+          "estado": "hecho",
           "dueno": "Diego",
           "peso": 1,
-          "nota": "15-10: no hay ninguna clave de embeddings en Windmill ni en el servidor y nada se contrata sin tu OK (D162). Opciones: Voyage AI o OpenAI (coste de céntimos al mes para nuestro volumen) o posponer la ingestión. Ariadna-Sombra deja diseño, tablas y troceado listos mientras tanto."
+          "nota": "Diego 15-10: proveedor Voyage, modelo voyage-4.",
+          "fecha": "2026-10-15"
+        },
+        {
+          "id": "f3-rag-alta-voyage",
+          "texto": "Alta de Voyage AI y clave para embeddings (voyage-4) en el worker de f3-rag",
+          "estado": "en_curso",
+          "dueno": "Bernat",
+          "peso": 1,
+          "fecha": "2026-10-15",
+          "nota": "Hoy. Clave solo en ~/.config, nunca por chat ni tarjeta."
         }
       ]
     },
