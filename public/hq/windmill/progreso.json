@@ -55,12 +55,12 @@
         },
         {
           "id": "verifix-landing-v2",
-          "texto": "Landing v2 en revisión (PR 6), preview para Diego en preparación",
+          "texto": "Landing Verifix v3: más visual, catalán y Umami (decisión #538)",
           "estado": "en_curso",
-          "dueno": "Bernat",
+          "dueno": "Mireia",
           "peso": 1,
           "fecha": "2026-10-15",
-          "nota": "Landing v2 en revisión (PR 6). Preview para Diego en preparación."
+          "nota": "Hito 15-10 17:00 Madrid. Decisión #538."
         },
         {
           "id": "verifix-campana-correo",
