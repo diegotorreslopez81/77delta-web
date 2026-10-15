@@ -13,7 +13,7 @@ const esEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
 // Devuelve {honeypot:true}, {error} o {lead}. La IP no se guarda en claro: solo su hash.
 export function validar(cuerpo, ip, sal = '') {
   if (cuerpo && cuerpo.web) return { honeypot: true };
-  const email = limpiar(cuerpo?.email, 160);
+  const email = limpiar(cuerpo?.email, 160).toLowerCase();
   const empresa = limpiar(cuerpo?.empresa, 120);
   const tipo = limpiar(cuerpo?.tipo, 20).toLowerCase();
   const idioma = limpiar(cuerpo?.idioma, 5).toLowerCase() === 'en' ? 'en' : 'es';
@@ -32,13 +32,30 @@ export const fila = (lead) => ({
   email: lead.email, empresa: lead.empresa, tipo: lead.tipo, idioma: lead.idioma, ya_me_ha_pasado: lead.ya_me_ha_pasado, programa: lead.programa, origen: lead.origen, ip_hash: lead.ip_hash,
 });
 
-// Inserta en Supabase. Fallo blando: nunca lanza, devuelve true/false.
+// Alta en Supabase sin duplicar: si el email ya existe actualiza empresa, tipo, idioma, ya_me_ha_pasado y
+// programa de esa fila (created_at, origen e ip_hash se conservan); si no, inserta.
+// Fallo blando: nunca lanza, devuelve true/false.
 export async function insertarSupabase(lead, { url, service }, http = fetch) {
   if (!url || !service) return false;
+  const headers = { apikey: service, Authorization: `Bearer ${service}`, 'Content-Type': 'application/json' };
+  const base = `${url}/rest/v1/${TABLA}`;
   try {
-    const r = await http(`${url}/rest/v1/${TABLA}`, {
+    const { empresa, tipo, idioma, ya_me_ha_pasado, programa } = fila(lead);
+    const u = await http(`${base}?email=eq.${encodeURIComponent(lead.email)}&select=id`, {
+      method: 'PATCH',
+      headers: { ...headers, Prefer: 'return=representation' },
+      body: JSON.stringify({ empresa, tipo, idioma, ya_me_ha_pasado, programa }),
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (u.ok) {
+      const filas = await u.json().catch(() => []);
+      if (Array.isArray(filas) && filas.length > 0) return true;
+    } else {
+      console.error('verifix supabase patch', u.status);
+    }
+    const r = await http(base, {
       method: 'POST',
-      headers: { apikey: service, Authorization: `Bearer ${service}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      headers: { ...headers, Prefer: 'return=minimal' },
       body: JSON.stringify(fila(lead)),
       signal: AbortSignal.timeout(10_000),
     });
