@@ -1,14 +1,16 @@
 // api.77delta.com · formulario de contacto de 77delta.com y avisos push de HQ.
 // POST /contacto {nombre, empresa, email, sector, mensaje, web(honeypot)} -> email a MAIL_TO por SMTP.
 // Sin SMTP configurado, el lead se guarda en LEADS_FILE y en el log, y se responde 200 igualmente.
+// POST /verifix {email, empresa, tipo gestoria|empresa, idioma, web(honeypot)} -> LEADS_FILE, Supabase verifix_lista_espera y correo a MAIL_TO.
 // GET /hq/vapid -> clave pública VAPID. POST /hq/notificar {token, id} -> push a los móviles del owner de esa empresa.
 import http from 'node:http';
 import { appendFile } from 'node:fs/promises';
 import nodemailer from 'nodemailer';
 import webpush from 'web-push';
+import { validar as validarVerifix, insertarSupabase, correo as correoVerifix } from './verifix.mjs';
 
 const PORT = Number(process.env.PORT || 3000);
-const ORIGENES = (process.env.CORS_ORIGINS || 'https://77delta.com,https://www.77delta.com').split(',').map((s) => s.trim());
+const ORIGENES = (process.env.CORS_ORIGINS || 'https://77delta.com,https://www.77delta.com,https://verifix.77delta.com').split(',').map((s) => s.trim());
 const MAIL_TO = process.env.MAIL_TO || 'hola@77delta.com';
 const MAIL_FROM = process.env.MAIL_FROM || process.env.SMTP_USER || MAIL_TO;
 const LEADS_FILE = process.env.LEADS_FILE || '/data/leads.jsonl';
@@ -42,12 +44,13 @@ const transporte = SMTP_OK
 
 // Límite sencillo por IP: 5 envíos cada 10 minutos.
 const cubos = new Map();
-function permitido(ip) {
+function permitido(ip, ambito = '') {
+  const clave = ambito + ip;
   const ahora = Date.now();
-  const c = (cubos.get(ip) || []).filter((t) => ahora - t < 600_000);
+  const c = (cubos.get(clave) || []).filter((t) => ahora - t < 600_000);
   if (c.length >= 5) return false;
   c.push(ahora);
-  cubos.set(ip, c);
+  cubos.set(clave, c);
   return true;
 }
 
@@ -306,6 +309,25 @@ const servidor = http.createServer(async (req, res) => {
       console.error('hq notificar-lic', e.message);
       return responder(res, /token|encontrada/i.test(e.message) ? 403 : 502, { ok: false, error: e.message });
     }
+  }
+
+  if (ruta === '/verifix' && req.method === 'POST') {
+    const ipv = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+    if (!permitido(ipv, 'verifix:')) return responder(res, 429, { ok: false, error: 'Demasiados envíos. Prueba en unos minutos.' });
+    let cuerpoV;
+    try { cuerpoV = await leerJson(req); } catch { return responder(res, 400, { ok: false, error: 'Cuerpo no válido.' }); }
+    const v = validarVerifix(cuerpoV, ipv, process.env.VERIFIX_IP_SALT || '');
+    if (v.honeypot) return responder(res, 200, { ok: true });
+    if (v.error) return responder(res, 400, { ok: false, error: v.error });
+    await guardar({ tipo_lead: 'verifix', ...v.lead });
+    console.log('lead verifix', JSON.stringify({ tipo: v.lead.tipo, idioma: v.lead.idioma }));
+    const enBase = await insertarSupabase(v.lead, { url: HQ.url, service: HQ.service });
+    responder(res, 200, { ok: true, enviado: Boolean(transporte), registrado: enBase });
+    if (!transporte) return;
+    transporte.sendMail(correoVerifix(v.lead, MAIL_FROM, MAIL_TO))
+      .then((info) => console.log('smtp ok verifix', info.messageId))
+      .catch((e) => console.error('smtp error verifix', e.message, '· lead guardado en', LEADS_FILE));
+    return;
   }
 
   if (req.method !== 'POST' || ruta !== '/contacto') return responder(res, 404, { ok: false, error: 'no encontrado' });
