@@ -56,20 +56,29 @@
         {
           "id": "verifix-landing-v2",
           "texto": "Landing Verifix v3: más visual, catalán y Umami (decisión #538)",
+          "estado": "hecho",
+          "dueno": "Mireia",
+          "peso": 1,
+          "fecha": "2026-10-15",
+          "nota": "PR 6 mergeado 15-10 11:59Z; publicación en curso por Bernat."
+        },
+        {
+          "id": "verifix-landing-v4",
+          "texto": "Landing Verifix v4: feedback de Diego del 15-10",
           "estado": "en_curso",
           "dueno": "Mireia",
           "peso": 1,
           "fecha": "2026-10-15",
-          "nota": "Hito 15-10 17:00 Madrid. Decisión #538."
+          "nota": "Hito 16-10 12:00 Madrid. Feedback en ~/dev/producto/po-seguridad/docs/landing-verifix-feedback-diego-2026-10-15.md"
         },
         {
           "id": "verifix-campana-correo",
           "texto": "Aprobar el correo de la campaña Verifix (tarjeta #1955, vence 16-10 12:00)",
-          "estado": "diego",
-          "dueno": "Diego",
+          "estado": "en_curso",
+          "dueno": "Carla",
           "peso": 1,
           "fecha": "2026-10-15",
-          "nota": "OK de Diego a correos 2 y 3 reescritos, tarjeta #1959."
+          "nota": "OK de Diego a correos 2 y 3 reescritos (tarjeta #1959). Diego 11:57Z: lanzar ya."
         },
         {
           "id": "verifix-fuente-leads",
@@ -378,7 +387,7 @@
           "dueno": "Diego",
           "peso": 1,
           "fecha": "2026-10-15",
-          "nota": "Tarjeta #1392 cerrada 10:03Z; 4 sesiones vivas en firma-nga-3."
+          "nota": "Diego entró el 15-10. Tarjeta #1392 cerrada 10:03Z; 4 sesiones vivas en firma-nga-3."
         }
       ]
     },
