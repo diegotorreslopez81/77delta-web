@@ -3,10 +3,11 @@
 Endpoint del formulario de contacto de 77delta.com. Node 22 sin framework, `nodemailer` para el SMTP.
 
 - `POST /contacto` con JSON `{nombre, empresa, email, sector, mensaje, web}` (`web` es el honeypot, debe ir vacío).
+- `POST /verifix` con JSON `{email, empresa, tipo (gestoria|empresa), idioma (es|en), web}`: lista de espera de Verifix. Guarda en `LEADS_FILE`, inserta en Supabase `verifix_lista_espera` (fallo blando, usa `HQ_SUPABASE_URL` y `HQ_SUPABASE_SERVICE`) y avisa a `MAIL_TO`. Límite propio de 5 envíos por IP cada 10 min. La IP se guarda solo como hash (`VERIFIX_IP_SALT`, opcional). Migración: `api/sql/verifix_lista_espera.sql`. Tests: `node --test api/verifix.test.mjs`.
 - `GET /health` devuelve `{ok, smtp}`.
 - Cada lead se guarda en `LEADS_FILE` y, si hay SMTP, se envía a `MAIL_TO` con `Reply-To` del remitente.
 
-Variables: `SMTP_HOST`, `SMTP_PORT` (465), `SMTP_SECURE` (true), `SMTP_USER`, `SMTP_PASS`, `MAIL_TO`, `MAIL_FROM`, `CORS_ORIGINS`.
+Variables: `SMTP_HOST`, `SMTP_PORT` (465), `SMTP_SECURE` (true), `SMTP_USER`, `SMTP_PASS`, `MAIL_TO`, `MAIL_FROM`, `CORS_ORIGINS` (si se define en Coolify, debe incluir `https://verifix.77delta.com`).
 Desplegado con Coolify (VPS6) desde esta carpeta.
 
 ## Despliegue
