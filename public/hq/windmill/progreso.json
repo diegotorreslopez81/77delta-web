@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-14T22:28:46Z",
+  "actualizado": "2026-10-15T14:00:36Z",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
   "fases": [
     {
@@ -56,20 +56,29 @@
         {
           "id": "verifix-landing-v2",
           "texto": "Landing Verifix v3: más visual, catalán y Umami (decisión #538)",
+          "estado": "hecho",
+          "dueno": "Mireia",
+          "peso": 1,
+          "fecha": "2026-10-15",
+          "nota": "PR 6 mergeado 15-10 11:59Z; publicación en curso por Bernat."
+        },
+        {
+          "id": "verifix-landing-v4",
+          "texto": "Landing Verifix v4: feedback de Diego del 15-10",
           "estado": "en_curso",
           "dueno": "Mireia",
           "peso": 1,
           "fecha": "2026-10-15",
-          "nota": "Hito 15-10 17:00 Madrid. Decisión #538."
+          "nota": "Hito 16-10 12:00 Madrid. Feedback en ~/dev/producto/po-seguridad/docs/landing-verifix-feedback-diego-2026-10-15.md"
         },
         {
           "id": "verifix-campana-correo",
           "texto": "Aprobar el correo de la campaña Verifix (tarjeta #1955, vence 16-10 12:00)",
-          "estado": "diego",
-          "dueno": "Diego",
+          "estado": "hecho",
+          "dueno": "Carla",
           "peso": 1,
           "fecha": "2026-10-15",
-          "nota": "Tarjeta #1955: https://77delta.com/hq/#hoy/1955 (vence 16-10 12:00)."
+          "nota": "Campaña enviada 15-10 12:30Z, 10 correos al día (OK de Diego, tarjetas #1955 y #1959). Sigue Carla con las respuestas."
         },
         {
           "id": "verifix-fuente-leads",
@@ -293,7 +302,7 @@
           "estado": "en_curso",
           "dueno": "Ariadna",
           "peso": 5,
-          "nota": "Comparación diaria fusionada (PR #18). Comparación diaria activa desde el 15-10 (PR #37, 07:00 Madrid; cron verificado por Bernat 01:35). La semana de comparación empieza hoy, 15-10."
+          "nota": "Comparación diaria corriendo desde el 15-10 (07:00 Madrid, cron verificado por Bernat). Semana de comparación en curso."
         },
         {
           "id": "f1-corte",
@@ -325,7 +334,7 @@
           "estado": "en_curso",
           "dueno": "Carla",
           "peso": 5,
-          "nota": "Arranca el 15-10 09:00 Madrid por orden de Diego (14-10). Carla y Biel trabajan en crm.77delta.com el lote cargado (47 oportunidades y 44 contactos) y todo el trabajo nuevo del embudo; las campañas automáticas siguen en ven_* hasta los flows de esta fase. Parte diario por buzón.",
+          "nota": "En marcha desde el 15-10 09:00 Madrid (orden de Diego 14-10). Carla y Biel trabajan en crm.77delta.com el lote cargado (47 oportunidades y 44 contactos) y el trabajo nuevo del embudo; las campañas automáticas siguen en ven_* hasta los flows de esta fase. Parte diario por buzón.",
           "fecha": "2026-10-15"
         },
         {
@@ -374,11 +383,11 @@
         {
           "id": "f2-vps6-login",
           "texto": "Login humano en VPS6 para cerrar la checklist de la tanda F (tarjeta #1392, bloqueada)",
-          "estado": "diego",
+          "estado": "hecho",
           "dueno": "Diego",
           "peso": 1,
           "fecha": "2026-10-15",
-          "nota": "Detalle de la tarjeta #1392: la checklist de cierre pide sesión viva de portales y LinkedIn en VPS6; ninguno tiene sesión guardada, el login es siempre manual. Portales sin sesión: PLACSP, KPE/Idazki, Sobre Digital Gencat, Vortal. LinkedIn: la cuenta de Diego y la de Irene si algún agente la usa. Qué hacer: abrir el enlace noVNC (solo por Tailscale) y entrar una vez en cada portal y en LinkedIn, resolviendo el captcha si sale. La contraseña de noVNC está en VPS6, fichero config/novnc-pass.txt de agentes-77d (no se copia aquí). La tarjeta #1391 (autotest de correo) es aparte."
+          "nota": "Diego entró el 15-10. Tarjeta #1392 cerrada 10:03Z; 4 sesiones vivas en firma-nga-3."
         }
       ]
     },
@@ -444,10 +453,20 @@
         {
           "id": "f3-rag-embeddings",
           "texto": "Decidir el proveedor de embeddings para la base de conocimiento (f3-rag): Voyage AI, OpenAI o posponer; si eliges proveedor, crea la clave y mándala a team@ (nunca por el chat)",
-          "estado": "pendiente",
+          "estado": "hecho",
           "dueno": "Diego",
           "peso": 1,
-          "nota": "15-10: no hay ninguna clave de embeddings en Windmill ni en el servidor y nada se contrata sin tu OK (D162). Opciones: Voyage AI o OpenAI (coste de céntimos al mes para nuestro volumen) o posponer la ingestión. Ariadna-Sombra deja diseño, tablas y troceado listos mientras tanto."
+          "nota": "Diego 15-10: proveedor Voyage, modelo voyage-4.",
+          "fecha": "2026-10-15"
+        },
+        {
+          "id": "f3-rag-alta-voyage",
+          "texto": "Alta de Voyage AI y clave para embeddings (voyage-4) en el worker de f3-rag",
+          "estado": "hecho",
+          "dueno": "Bernat",
+          "peso": 1,
+          "fecha": "2026-10-15",
+          "nota": "Cuenta Voyage creada 15-10 con team@, clave probada (embeddings OK, 1024 dims) en ~/.config/77delta/voyage.env y recurso Windmill f/sombra/voyage. Nunca por chat ni tarjeta."
         }
       ]
     },
