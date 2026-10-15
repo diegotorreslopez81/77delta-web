@@ -69,7 +69,7 @@
           "dueno": "Diego",
           "peso": 1,
           "fecha": "2026-10-15",
-          "nota": "Tarjeta #1955: https://77delta.com/hq/#hoy/1955 (vence 16-10 12:00)."
+          "nota": "OK de Diego a correos 2 y 3 reescritos, tarjeta #1959."
         },
         {
           "id": "verifix-fuente-leads",
@@ -374,11 +374,11 @@
         {
           "id": "f2-vps6-login",
           "texto": "Login humano en VPS6 para cerrar la checklist de la tanda F (tarjeta #1392, bloqueada)",
-          "estado": "diego",
+          "estado": "hecho",
           "dueno": "Diego",
           "peso": 1,
           "fecha": "2026-10-15",
-          "nota": "Detalle de la tarjeta #1392: la checklist de cierre pide sesión viva de portales y LinkedIn en VPS6; ninguno tiene sesión guardada, el login es siempre manual. Portales sin sesión: PLACSP, KPE/Idazki, Sobre Digital Gencat, Vortal. LinkedIn: la cuenta de Diego y la de Irene si algún agente la usa. Qué hacer: abrir el enlace noVNC (solo por Tailscale) y entrar una vez en cada portal y en LinkedIn, resolviendo el captcha si sale. La contraseña de noVNC está en VPS6, fichero config/novnc-pass.txt de agentes-77d (no se copia aquí). La tarjeta #1391 (autotest de correo) es aparte."
+          "nota": "Tarjeta #1392 cerrada 10:03Z; 4 sesiones vivas en firma-nga-3."
         }
       ]
     },
