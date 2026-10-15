@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verifix · Ninguna orden de pago sin verificar</title>
+<meta name="description" content="Verifix confirma cada orden de pago y cada cambio de cuenta por un canal distinto, con quien puede autorizarla. Lista de espera.">
+<meta name="robots" content="index,follow">
+<link rel="stylesheet" href="verifix.css">
+</head>
+<body>
+<header><div class="w"><a class="marca" href="./">Verifix <span>· 77 Delta</span></a><a class="idioma" href="en/" hreflang="en">English</a></div></header>
+<main class="w">
+<h1>Ninguna orden de pago sin verificar.</h1>
+<hr class="regla">
+<p class="sub">Un correo del proveedor con "nueva cuenta bancaria". Un mensaje del director pidiendo una transferencia urgente. Una llamada con su voz. Hoy todo eso se falsifica. Verifix confirma cada orden de pago y cada cambio de cuenta por un canal distinto al que llegó, con quien de verdad puede autorizarla. Sin confirmación, no hay pago.</p>
+<p><a class="btn" href="#lista">Apuntarme a la lista de espera</a></p>
+<h2>El problema</h2>
+<ul><li>Te llega un correo del proveedor de siempre con un IBAN nuevo. Pagas la factura real a la cuenta del estafador. El banco ejecuta y no devuelve.</li><li>El director escribe "haz esta transferencia hoy, luego te explico". La persona que paga obedece y nadie lo comprueba.</li><li>Ahora también llaman con su voz clonada, o aparecen en una videollamada. Treinta segundos de audio público bastan.</li><li>El seguro no te devuelve la transferencia. Cubre forense y comunicación, no el dinero que salió.</li></ul>
+<p class="prueba">En 2025 las empresas denunciaron al FBI 3.046 millones de dólares perdidos por órdenes de pago falsas (BEC), 24.768 denuncias (FBI IC3, informe 2025, publicado en abril de 2026). El fraude de transferencia es el 27 % de los siniestros de ciberseguro, la pérdida media por incidente es de 141.000 dólares y el 52 % nace de un correo comprometido (Coalition, Cyber Claims Report, 5-03-2026). En España el Ministerio del Interior contó 429.677 estafas informáticas en 2025. El endoso de deepfake de Coalition (9-12-2025) paga servicios de respuesta, no la transferencia.</p>
+<h2>Qué hace Verifix</h2>
+<p>Cada orden de pago o cambio de cuenta que entra por correo, teléfono, WhatsApp o videollamada se registra y se confirma por otro canal con la persona autorizada: un código de un solo uso en su móvil, o una llamada a un número que ya tenías, nunca al que viene en el mensaje. Verifix no lee tu correo ni filtra nada: verifica la orden. Queda un registro de quién autorizó qué, para tu gestoría, tu auditor o tu seguro. Se pone en marcha en una tarde, sin cambiar de banco ni de programa de contabilidad.</p>
+<h2>Cómo funciona</h2>
+<ol><li>La orden de pago o el cambio de cuenta llega donde siempre: tu correo o tu programa contable.</li><li>Verifix está dentro de esas herramientas: complemento de Outlook o Gmail que detecta la factura o la orden y comprueba el IBAN contra los proveedores conocidos; módulo en el ERP o programa contable (Odoo primero; después Holded, A3, Sage) que bloquea el pago hasta que esté confirmado.</li><li>Quien autoriza recibe el aviso por el canal ya registrado (app o WhatsApp) y confirma o rechaza. Nunca por el número o el correo que vienen en el mensaje.</li><li>Sin confirmación, el pago no sale del circuito de aprobación del ERP. Con confirmación, queda registro de quién autorizó qué, listo para gestoría, auditor y seguro.</li></ol>
+<p><strong>Puesta en marcha.</strong> Instalar el complemento de correo (2 minutos) o el módulo del ERP (lo instala tu informático o nosotros en una videollamada de 20 minutos); dar de alta quién autoriza en cada cliente y su móvil. Sin cambiar de banco ni de programa. Panel web mínimo solo para el registro y para que la gestoría vea todos sus clientes.</p>
+<p><strong>Cómo sabes que funciona.</strong> El primer día Verifix te manda un fraude simulado (correo de "cambio de cuenta" de un proveedor real) y ves cómo lo frena y pide confirmación; cada mes, un simulacro y un informe con órdenes verificadas, cambios detectados y rechazos, válido para tu seguro.</p>
+<h2>Para quién</h2>
+<p>Gestorías y asesorías que ordenan pagos de clientes; empresas de 10 a 250 empleados donde quien paga no es quien autoriza.</p>
+<p class="precio">Desde 29 EUR al mes por empresa. Gratis mientras dure la lista de espera.</p>
+<h2 id="lista">Lista de espera</h2>
+<p>Apúntate y te avisamos antes del lanzamiento.</p>
+<form id="f" novalidate>
+<label>Correo de empresa<input type="email" name="email" autocomplete="email" required></label>
+<label>Nombre de la empresa<input type="text" name="empresa" autocomplete="organization" required></label>
+<label class="chk"><input type="checkbox" name="gestoria"><span>Soy gestoría o asesoría (si no marcas, eres empresa)</span></label>
+<div class="hp" aria-hidden="true"><label>Web<input type="text" name="web" tabindex="-1" autocomplete="off"></label></div>
+<button class="btn" type="submit">Apuntarme</button>
+<div id="estado" role="status" aria-live="polite"></div>
+<p class="nota">Responsable: Next Gen Academy SL. Finalidad: avisarte del lanzamiento de Verifix. Baja cuando quieras escribiendo a hola@77delta.com. Más información en la <a href="https://77delta.com/politica-privacidad/">política de privacidad</a>.</p>
+</form>
+</main>
+<footer><div class="w"><p>Verifix es un producto de 77 Delta, Barcelona. Next Gen Academy SL. Sin contrato ni tarjeta.</p><p><a href="https://77delta.com/aviso-legal/">Aviso legal</a> · <a href="https://77delta.com/politica-privacidad/">Privacidad</a></p></div></footer>
+<script>
+(function(){
+var f=document.getElementById('f'),s=document.getElementById('estado'),b=f.querySelector('button');
+var OK='Listo. Te avisamos antes del lanzamiento.',KO='No se pudo enviar. Inténtalo de nuevo en unos minutos.';
+f.addEventListener('submit',function(e){
+e.preventDefault();s.className='';s.textContent='';
+if(!f.email.value||!f.empresa.value||!f.email.checkValidity()){f.reportValidity();return;}
+b.disabled=true;
+fetch('https://api.77delta.com/verifix',{method:'POST',headers:{'Content-Type':'application/json'},
+body:JSON.stringify({email:f.email.value.trim(),empresa:f.empresa.value.trim(),tipo:f.gestoria.checked?'gestoria':'empresa',idioma:'es',web:f.web.value})})
+.then(function(r){if(!r.ok)throw 0;s.className='ok';s.textContent=OK;f.reset();})
+.catch(function(){s.className='ko';s.textContent=KO;})
+.then(function(){b.disabled=false;});
+});
+})();
+</script>
+</body>
+</html>
