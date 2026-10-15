@@ -1,7 +1,7 @@
 // api.77delta.com · formulario de contacto de 77delta.com y avisos push de HQ.
 // POST /contacto {nombre, empresa, email, sector, mensaje, web(honeypot)} -> email a MAIL_TO por SMTP.
 // Sin SMTP configurado, el lead se guarda en LEADS_FILE y en el log, y se responde 200 igualmente.
-// POST /verifix {email, empresa, tipo gestoria|empresa, idioma, ya_me_ha_pasado opcional, web(honeypot)} -> LEADS_FILE, Supabase verifix_lista_espera y correo a MAIL_TO.
+// POST /verifix {email, empresa, tipo gestoria|empresa, idioma, ya_me_ha_pasado y programa opcionales, web(honeypot)} -> LEADS_FILE, Supabase verifix_lista_espera y correo a MAIL_TO.
 // GET /hq/vapid -> clave pública VAPID. POST /hq/notificar {token, id} -> push a los móviles del owner de esa empresa.
 import http from 'node:http';
 import { appendFile } from 'node:fs/promises';

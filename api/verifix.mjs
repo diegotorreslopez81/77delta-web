@@ -21,14 +21,15 @@ export function validar(cuerpo, ip, sal = '') {
     return { error: 'Faltan datos o el email no es válido.' };
   }
   const ya_me_ha_pasado = cuerpo?.ya_me_ha_pasado === true || cuerpo?.ya_me_ha_pasado === 'true';
+  const programa = limpiar(cuerpo?.programa, 40);
   const origen = limpiar(cuerpo?.origen, 200) || 'verifix.77delta.com';
   const ip_hash = createHash('sha256').update(`${sal}|${ip}`).digest('hex');
-  return { lead: { fecha: new Date().toISOString(), email, empresa, tipo, idioma, ya_me_ha_pasado, origen, ip_hash } };
+  return { lead: { fecha: new Date().toISOString(), email, empresa, tipo, idioma, ya_me_ha_pasado, programa, origen, ip_hash } };
 }
 
 // Fila para Supabase: solo las columnas de la tabla (id y created_at los pone la base).
 export const fila = (lead) => ({
-  email: lead.email, empresa: lead.empresa, tipo: lead.tipo, idioma: lead.idioma, ya_me_ha_pasado: lead.ya_me_ha_pasado, origen: lead.origen, ip_hash: lead.ip_hash,
+  email: lead.email, empresa: lead.empresa, tipo: lead.tipo, idioma: lead.idioma, ya_me_ha_pasado: lead.ya_me_ha_pasado, programa: lead.programa, origen: lead.origen, ip_hash: lead.ip_hash,
 });
 
 // Inserta en Supabase. Fallo blando: nunca lanza, devuelve true/false.
@@ -55,6 +56,6 @@ export function correo(lead, de, para) {
     to: para,
     replyTo: lead.email,
     subject: ASUNTO,
-    text: [`Email: ${lead.email}`, `Empresa: ${lead.empresa}`, `Tipo: ${lead.tipo}`, `Idioma: ${lead.idioma}`, `Ya me ha pasado: ${lead.ya_me_ha_pasado ? 'sí' : 'no'}`, `Origen: ${lead.origen}`].join('\n'),
+    text: [`Email: ${lead.email}`, `Empresa: ${lead.empresa}`, `Tipo: ${lead.tipo}`, `Idioma: ${lead.idioma}`, `Ya me ha pasado: ${lead.ya_me_ha_pasado ? 'sí' : 'no'}`, `Programa: ${lead.programa || '-'}`, `Origen: ${lead.origen}`].join('\n'),
   };
 }

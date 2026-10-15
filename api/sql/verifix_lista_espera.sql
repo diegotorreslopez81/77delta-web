@@ -16,3 +16,6 @@ revoke all on public.verifix_lista_espera from anon, authenticated, public;
 
 -- Migración: columna ya_me_ha_pasado (el alta indica si ya sufrió un fraude de pago). Idempotente.
 alter table public.verifix_lista_espera add column if not exists ya_me_ha_pasado boolean not null default false;
+
+-- Migración: columna programa (programa contable o ERP que usa, texto libre, máx 40). Idempotente.
+alter table public.verifix_lista_espera add column if not exists programa text;
