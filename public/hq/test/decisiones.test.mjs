@@ -274,3 +274,12 @@ test('#hoy/<id>: tarjeta ya en snapshot no pide nada; id inexistente avisa y no 
   assert.equal(await tarjetaPorId(S, 5, b, async () => { throw new Error('solicitud no encontrada'); }), null);
   assert.equal(b.children.length, 0);
 });
+
+test('tarjeta tipo accion: cuerpo en desplegable "Texto completo" abierto; vacío no pinta nada', () => {
+  const raiz = crearNodo('main');
+  raiz.append(bandeja({ datos: { rol: 'owner', pendientes: [{ id: 1955, tipo: 'accion', titulo: 'Correo Verifix', cuerpo: 'Asunto: hola\nTexto del correo', vence: '2026-09-18T10:00:00Z' }, { id: 2, tipo: 'aprobacion', titulo: 'Sin cuerpo', cuerpo: '' }] } }, undefined, new Date('2026-09-16T12:00:00Z')));
+  const cs = buscarNodos(raiz, n => n.tag === 'details' && n.className.includes('cuerpo-completo'));
+  assert.equal(cs.length, 1);
+  assert.ok(cs[0].textContent.includes('Texto completo') && cs[0].textContent.includes('Texto del correo'));
+  assert.notEqual(cs[0].attrs.open, undefined);
+});

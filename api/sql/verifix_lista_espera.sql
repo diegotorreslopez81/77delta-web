@@ -19,3 +19,7 @@ alter table public.verifix_lista_espera add column if not exists ya_me_ha_pasado
 
 -- Migración: columna programa (programa contable o ERP que usa, texto libre, máx 40). Idempotente.
 alter table public.verifix_lista_espera add column if not exists programa text;
+
+-- Migración: idioma admite 'ca' (landing en catalán). Idempotente.
+alter table verifix_lista_espera drop constraint if exists verifix_lista_espera_idioma_check;
+alter table verifix_lista_espera add constraint verifix_lista_espera_idioma_check check (idioma in ('es', 'en', 'ca'));

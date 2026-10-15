@@ -93,6 +93,8 @@ function tarjeta(p, abierta, hilo, soloComentar) {
       el('p', { class: 'mudo', text: [p.agente, p.importe ? eur(p.importe) : null, p.vence ? 'tarjeta vence ' + fecha(p.vence) : null, p.riesgo].filter(Boolean).join(' · ') })]),
     // Regla 54 (#1120): tres bloques con titulo si el detalle los trae; las tarjetas viejas siguen como texto plano.
     pintarBloques(p.detalle) || el('div', { class: 'detalle' }, enlazar(p.detalle || '')),
+    // omc_solicitudes.cuerpo (texto completo del correo o la propuesta): desplegable, abierto en las de tipo accion.
+    p.cuerpo ? el('details', { class: 'cuerpo-completo', open: p.tipo === 'accion' }, [el('summary', { text: 'Texto completo' }), el('div', { class: 'detalle cuerpo-texto' }, enlazar(p.cuerpo))]) : null,
     enlaceSeguro ? el('a', { href: enlaceSeguro, target: '_blank', rel: 'noopener', class: 'btn-enlace', text: 'abrir enlace' }) : null,
     el('div', { class: 'hilo' }, (hilo || []).map(mm => el('div', { class: 'avance' }, [el('span', { class: 'mudo', text: fecha(mm.ts, { hora: true }) + ' · ' + mm.autor }), el('p', { text: mm.texto })]))),
     campo,

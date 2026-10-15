@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-14T22:28:46Z",
+  "actualizado": "2026-10-15T17:37:48Z",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
   "fases": [
     {
@@ -34,24 +34,6 @@
           "dueno": "Diego",
           "peso": 1,
           "nota": "Hecho por Diego el 14-10 ~14:30 Madrid. Verificado: windmill.77delta.com y crm.77delta.com resuelven a 178.104.108.10, HTTPS 200; .net redirige 301 a .com."
-        },
-        {
-          "id": "verifix-dns",
-          "texto": "Registro DNS de verifix.77delta.com en Namecheap",
-          "estado": "hecho",
-          "dueno": "Diego",
-          "peso": 1,
-          "fecha": "2026-10-15",
-          "nota": "Registro A verifix.77delta.com -> 178.104.108.10 creado por Diego en Namecheap (decisión #522)."
-        },
-        {
-          "id": "verifix-landing",
-          "texto": "Landing Verifix con precios en verifix.77delta.com",
-          "estado": "hecho",
-          "dueno": "Bernat",
-          "peso": 1,
-          "fecha": "2026-10-15",
-          "nota": "f23de85 en vivo, precios #529 verificados en https://verifix.77delta.com."
         },
         {
           "id": "f0-tls",
@@ -132,23 +114,6 @@
           "fecha": "2026-10-14"
         },
         {
-          "id": "f0-progreso",
-          "texto": "Página de progreso en HQ y artefacto para Diego",
-          "estado": "hecho",
-          "dueno": "Marc",
-          "fecha": "2026-10-14",
-          "peso": 1
-        },
-        {
-          "id": "f0-hqtab",
-          "texto": "Pestaña Progreso en HQ y menú lateral fijo",
-          "estado": "hecho",
-          "dueno": "Pol",
-          "fecha": "2026-10-14",
-          "nota": "Servido en 77delta.com (sw hq-v33); sin captura de pantalla",
-          "peso": 1
-        },
-        {
           "id": "f0-google",
           "texto": "Tu correo en Twenty por la API de Google, solo lectura: crear la app OAuth en la consola de Google (15 minutos)",
           "estado": "hecho",
@@ -178,7 +143,7 @@
     {
       "id": "F1",
       "nombre": "Licitaciones en sombra",
-      "plazo": "15 a 28 de octubre",
+      "plazo": "15 a 21 de octubre en sombra; corte a real el 22-10 con OK de Diego",
       "dueno": "Ariadna",
       "tareas": [
         {
@@ -266,7 +231,7 @@
           "estado": "en_curso",
           "dueno": "Ariadna",
           "peso": 5,
-          "nota": "Comparación diaria fusionada (PR #18). Comparación diaria activa desde el 15-10 (PR #37, 07:00 Madrid; cron verificado por Bernat 01:35). La semana de comparación empieza hoy, 15-10."
+          "nota": "Comparación diaria corriendo desde el 15-10 (07:00 Madrid, cron verificado por Bernat). Semana de comparación en curso."
         },
         {
           "id": "f1-corte",
@@ -280,7 +245,7 @@
     {
       "id": "F2",
       "nombre": "Ventas y CRM",
-      "plazo": "desde el 15 de octubre, en paralelo con la fase 1 (adelantada por Diego el 14-10)",
+      "plazo": "piloto hasta el 21-10, paso a Twenty el 23-10 (decisión #561)",
       "dueno": "Carla, Biel y Bernat",
       "tareas": [
         {
@@ -298,7 +263,7 @@
           "estado": "en_curso",
           "dueno": "Carla",
           "peso": 5,
-          "nota": "Arranca el 15-10 09:00 Madrid por orden de Diego (14-10). Carla y Biel trabajan en crm.77delta.com el lote cargado (47 oportunidades y 44 contactos) y todo el trabajo nuevo del embudo; las campañas automáticas siguen en ven_* hasta los flows de esta fase. Parte diario por buzón.",
+          "nota": "En marcha desde el 15-10 09:00 Madrid (orden de Diego 14-10). Carla y Biel trabajan en crm.77delta.com el lote cargado (47 oportunidades y 44 contactos) y el trabajo nuevo del embudo; las campañas automáticas siguen en ven_* hasta los flows de esta fase. Parte diario por buzón.",
           "fecha": "2026-10-15"
         },
         {
@@ -343,22 +308,13 @@
           "dueno": "Marc",
           "peso": 1,
           "nota": "Solo al final del piloto y con OK aparte de Diego (decisión HQ del 14-10)."
-        },
-        {
-          "id": "f2-vps6-login",
-          "texto": "Login humano en VPS6 para cerrar la checklist de la tanda F (tarjeta #1392, bloqueada)",
-          "estado": "diego",
-          "dueno": "Diego",
-          "peso": 1,
-          "fecha": "2026-10-15",
-          "nota": "Detalle de la tarjeta #1392: la checklist de cierre pide sesión viva de portales y LinkedIn en VPS6; ninguno tiene sesión guardada, el login es siempre manual. Portales sin sesión: PLACSP, KPE/Idazki, Sobre Digital Gencat, Vortal. LinkedIn: la cuenta de Diego y la de Irene si algún agente la usa. Qué hacer: abrir el enlace noVNC (solo por Tailscale) y entrar una vez en cada portal y en LinkedIn, resolviendo el captcha si sale. La contraseña de noVNC está en VPS6, fichero config/novnc-pass.txt de agentes-77d (no se copia aquí). La tarjeta #1391 (autotest de correo) es aparte."
         }
       ]
     },
     {
       "id": "F3",
       "nombre": "Operaciones internas",
-      "plazo": "12 a 18 de noviembre",
+      "plazo": "hasta el 24 de octubre",
       "dueno": "Bernat, Pol y Marc",
       "tareas": [
         {
@@ -417,17 +373,27 @@
         {
           "id": "f3-rag-embeddings",
           "texto": "Decidir el proveedor de embeddings para la base de conocimiento (f3-rag): Voyage AI, OpenAI o posponer; si eliges proveedor, crea la clave y mándala a team@ (nunca por el chat)",
-          "estado": "pendiente",
+          "estado": "hecho",
           "dueno": "Diego",
           "peso": 1,
-          "nota": "15-10: no hay ninguna clave de embeddings en Windmill ni en el servidor y nada se contrata sin tu OK (D162). Opciones: Voyage AI o OpenAI (coste de céntimos al mes para nuestro volumen) o posponer la ingestión. Ariadna-Sombra deja diseño, tablas y troceado listos mientras tanto."
+          "nota": "Diego 15-10: proveedor Voyage, modelo voyage-4.",
+          "fecha": "2026-10-15"
+        },
+        {
+          "id": "f3-rag-alta-voyage",
+          "texto": "Alta de Voyage AI y clave para embeddings (voyage-4) en el worker de f3-rag",
+          "estado": "hecho",
+          "dueno": "Bernat",
+          "peso": 1,
+          "fecha": "2026-10-15",
+          "nota": "Cuenta Voyage creada 15-10 con team@, clave probada (embeddings OK, 1024 dims) en ~/.config/77delta/voyage.env y recurso Windmill f/sombra/voyage. Nunca por chat ni tarjeta."
         }
       ]
     },
     {
       "id": "F4",
       "nombre": "Sistema general",
-      "plazo": "19 a 25 de noviembre",
+      "plazo": "plan semanal desde el 26-10, cierre el 30-10",
       "dueno": "Marc y Pol",
       "tareas": [
         {
@@ -439,15 +405,6 @@
           "nota": "Solo documento docs/f4-plan.md en rama sombra/f4-plan. Sin código hasta OK."
         },
         {
-          "id": "f4-hq5",
-          "texto": "HQ con 5 pestañas (Hoy, Licitaciones, Ventas, Dinero, Sistema): código listo y apagado, falta OK",
-          "estado": "hecho",
-          "dueno": "Pol",
-          "peso": 1,
-          "fecha": "2026-10-14",
-          "nota": "Menú 5 activo por defecto (hq.menu5=0 lo apaga); título de Progreso arreglado; sw hq-v34"
-        },
-        {
           "id": "f4-langfuse",
           "texto": "Langfuse para observar los jobs de criterio, sí o no",
           "estado": "hecho",
@@ -455,13 +412,6 @@
           "peso": 1,
           "fecha": "2026-10-14",
           "nota": "Decidido 14-10 (HQ #500): no por ahora; bastan los logs de jobs de Windmill. Se revisa tras F1"
-        },
-        {
-          "id": "f4-nuria",
-          "texto": "Nuria-HQ con ventana propia o Pol sigue con HQ",
-          "estado": "pendiente",
-          "dueno": "Marc",
-          "peso": 1
         },
         {
           "id": "f4-docs",

@@ -408,3 +408,4 @@ a{color:inherit}
 
 .titulo-progreso{position:relative;z-index:1;margin:0 0 12px;padding-top:4px}
 .marco-progreso{display:block;position:relative;z-index:0;width:100%;height:calc(100vh - 160px);min-height:480px;margin-top:0;border:1px solid var(--linea);border-radius:var(--radio);background:var(--panel)}
+.decision .cuerpo-completo summary{cursor:pointer;font-weight:600;margin-top:8px}.decision .cuerpo-texto{white-space:pre-wrap}
