@@ -33,7 +33,7 @@ test('limpia saltos de línea y recorta (sin inyección de cabeceras)', () => {
 });
 
 test('fila solo lleva las columnas de la tabla', () => {
-  assert.deepEqual(Object.keys(fila(validar(ok, 'ip').lead)).sort(), ['email', 'empresa', 'idioma', 'ip_hash', 'origen', 'tipo', 'ya_me_ha_pasado']);
+  assert.deepEqual(Object.keys(fila(validar(ok, 'ip').lead)).sort(), ['email', 'empresa', 'idioma', 'ip_hash', 'origen', 'programa', 'tipo', 'ya_me_ha_pasado']);
 });
 
 test('insertarSupabase: éxito, 500 y excepción son blandos', async () => {
@@ -63,4 +63,13 @@ test('ya_me_ha_pasado: opcional, false por defecto, solo true o "true" lo activa
   const lead = validar({ ...ok, ya_me_ha_pasado: true }, 'ip').lead;
   assert.equal(fila(lead).ya_me_ha_pasado, true);
   assert.match(correo(lead, 'de@77delta.com', 'hola@77delta.com').text, /Ya me ha pasado: sí/);
+});
+
+test('programa: opcional, limpiado y recortado a 40, va a fila y correo', () => {
+  assert.equal(validar(ok, 'ip').lead.programa, '');
+  const lead = validar({ ...ok, programa: 'Holded\r\nBcc: x@y.z ' + 'a'.repeat(60) }, 'ip').lead;
+  assert.ok(lead.programa.length <= 40);
+  assert.ok(!/[\r\n]/.test(lead.programa));
+  assert.equal(fila(lead).programa, lead.programa);
+  assert.match(correo(validar({ ...ok, programa: 'Odoo' }, 'ip').lead, 'de@77delta.com', 'hola@77delta.com').text, /Programa: Odoo/);
 });
