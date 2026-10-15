@@ -33,6 +33,7 @@
 <label>Work email<input type="email" name="email" autocomplete="email" required></label>
 <label>Company name<input type="text" name="empresa" autocomplete="organization" required></label>
 <label class="chk"><input type="checkbox" name="gestoria"><span>We are an accounting firm (if unchecked, we are a company)</span></label>
+<label class="chk"><input type="checkbox" name="ya"><span>It already happened to us (optional)</span></label>
 <div class="hp" aria-hidden="true"><label>Web<input type="text" name="web" tabindex="-1" autocomplete="off"></label></div>
 <button class="btn" type="submit">Join</button>
 <div id="estado" role="status" aria-live="polite"></div>
@@ -49,7 +50,7 @@ e.preventDefault();s.className='';s.textContent='';
 if(!f.email.value||!f.empresa.value||!f.email.checkValidity()){f.reportValidity();return;}
 b.disabled=true;
 fetch('https://api.77delta.com/verifix',{method:'POST',headers:{'Content-Type':'application/json'},
-body:JSON.stringify({email:f.email.value.trim(),empresa:f.empresa.value.trim(),tipo:f.gestoria.checked?'gestoria':'empresa',idioma:'en',web:f.web.value})})
+body:JSON.stringify({email:f.email.value.trim(),empresa:f.empresa.value.trim(),tipo:f.gestoria.checked?'gestoria':'empresa',ya_me_ha_pasado:f.ya.checked,idioma:'en',web:f.web.value})})
 .then(function(r){if(!r.ok)throw 0;s.className='ok';s.textContent=OK;f.reset();})
 .catch(function(){s.className='ko';s.textContent=KO;})
 .then(function(){b.disabled=false;});
