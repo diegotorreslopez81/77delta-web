@@ -54,6 +54,24 @@
           "nota": "f23de85 en vivo, precios #529 verificados en https://verifix.77delta.com."
         },
         {
+          "id": "verifix-landing-v2",
+          "texto": "Landing v2 en revisión (PR 6), preview para Diego en preparación",
+          "estado": "en_curso",
+          "dueno": "Bernat",
+          "peso": 1,
+          "fecha": "2026-10-15",
+          "nota": "Landing v2 en revisión (PR 6). Preview para Diego en preparación."
+        },
+        {
+          "id": "verifix-campana-correo",
+          "texto": "Aprobar el correo de la campaña Verifix (tarjeta #1955, vence 16-10 12:00)",
+          "estado": "diego",
+          "dueno": "Diego",
+          "peso": 1,
+          "fecha": "2026-10-15",
+          "nota": "Tarjeta #1955: https://77delta.com/hq/#hoy/1955 (vence 16-10 12:00)."
+        },
+        {
           "id": "f0-tls",
           "texto": "Dominios y certificados TLS en Coolify para Windmill y Twenty (en .com tras el cambio del 14-10)",
           "estado": "hecho",
