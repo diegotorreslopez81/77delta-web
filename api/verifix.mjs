@@ -3,7 +3,7 @@
 import { createHash } from 'node:crypto';
 
 export const TIPOS = ['gestoria', 'empresa'];
-export const IDIOMAS = ['es', 'en'];
+export const IDIOMAS = ['es', 'en', 'ca'];
 export const ASUNTO = 'Verifix: alta en la lista de espera';
 export const TABLA = 'verifix_lista_espera';
 
@@ -16,7 +16,8 @@ export function validar(cuerpo, ip, sal = '') {
   const email = limpiar(cuerpo?.email, 160).toLowerCase();
   const empresa = limpiar(cuerpo?.empresa, 120);
   const tipo = limpiar(cuerpo?.tipo, 20).toLowerCase();
-  const idioma = limpiar(cuerpo?.idioma, 5).toLowerCase() === 'en' ? 'en' : 'es';
+  const idiomaIn = limpiar(cuerpo?.idioma, 5).toLowerCase();
+  const idioma = IDIOMAS.includes(idiomaIn) ? idiomaIn : 'es';
   if (!esEmail(email) || !empresa || !TIPOS.includes(tipo)) {
     return { error: 'Faltan datos o el email no es válido.' };
   }
