@@ -314,7 +314,7 @@
           "estado": "en_curso",
           "dueno": "Pol",
           "peso": 2,
-          "nota": "RPC ven_twenty_hq devuelve filas del job (15-10 04:45Z: etapas 53 opp, leads; toques y actividades vacíos). Modelo y render comprobados con el JSON real por node; pantalla NO vista. Ojo: empresas parecen datos de ejemplo de Twenty (Anthropic, Stripe, Airbnb).",
+          "nota": "15-10: datos reales tras limpiar Twenty: 47 oportunidades (NEW 14, SCREENING 4, MEETING 10, PROPOSAL 19), 15 leads destacados, toques y actividades vacíos. Render con el JSON real comprobado en DOM simulado (hq-v36). Pantalla en navegador NO vista: el Chromium de esta máquina no arranca (falta libnspr4).",
           "fecha": "2026-10-15"
         },
         {
