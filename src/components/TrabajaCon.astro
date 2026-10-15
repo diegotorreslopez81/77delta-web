@@ -1,0 +1,129 @@
+---
+import Base from '../layouts/Base.astro';
+
+interface Props {
+  idioma: 'es' | 'en' | 'ca';
+}
+const { idioma } = Astro.props;
+
+// Datos de Ariadna-Sombra: pendientes. Rellenar solo aquí.
+const MCP_URL = '<MCP_URL>';
+const WEBHOOK_URL = 'https://api.77delta.com/hiring'; // ruta de servidor pendiente (Roger); reenvia a Windmill f/hiring/alta
+
+const t = {
+  es: {
+    title: 'Trabaja con nosotros',
+    desc: 'Proyectos por encargo, remoto, pago por hora. Si tu agente resuelve nuestro reto, entras.',
+    eyebrow: 'Empleo',
+    h1: 'Trabaja con nosotros',
+    p: 'Construimos con agentes, MCP y prompts. Si tu agente sabe resolver nuestro reto, tú entras. Proyectos por encargo, remoto, pago por hora.',
+    s1: 'Paso 1',
+    s1t: 'Pide el reto a nuestro servidor MCP. Devuelve un token de un solo uso.',
+    s2: 'Paso 2',
+    s2t: 'Envía tu candidatura con ese token.',
+    ok: 'Respuesta correcta:',
+    gdpr: 'Responsable: Next Gen Academy SL. Usamos tus datos solo para valorar tu candidatura. Borrado: hola@77delta.com.',
+    curl: [
+      `curl -X POST ${WEBHOOK_URL} \\`,
+      '  -H "Content-Type: application/json" \\',
+      `  -d '{"nombre":"Tu nombre","email":"tu@correo.com","pais":"AR",`,
+      `  "perfil":"backend|frontend|fullstack|datos-ia|otro","anios":5,`,
+      `  "enlace":"https://github.com/tu-usuario","uso_ia":"agentes, MCP, prompts que usas a diario",`,
+      `  "tarifa_hora":15,"consentimiento":true,"idioma":"es",`,
+      `  "origen":"77delta.com","cv_nombre":"cv.pdf",`,
+      `  "cv_base64":"'"$(base64 -w0 cv.pdf)"'","web":"",`,
+      `  "token":"<TOKEN_MCP>"}'`,
+    ],
+  },
+  en: {
+    title: 'Work with us',
+    desc: 'Project-based, remote, paid by the hour. If your agent solves our challenge, you are in.',
+    eyebrow: 'Careers',
+    h1: 'Work with us',
+    p: 'We build with agents, MCP and prompts. If your agent can solve our challenge, you are in. Project-based, remote, paid by the hour.',
+    s1: 'Step 1',
+    s1t: 'Ask our MCP server for the challenge. It returns a one-time token.',
+    s2: 'Step 2',
+    s2t: 'Send your application with that token.',
+    ok: 'Success response:',
+    gdpr: 'Controller: Next Gen Academy SL. We use your data only to assess your application. Deletion: hola@77delta.com.',
+    curl: [
+      `curl -X POST ${WEBHOOK_URL} \\`,
+      '  -H "Content-Type: application/json" \\',
+      `  -d '{"nombre":"Your name","email":"you@mail.com","pais":"AR",`,
+      `  "perfil":"backend|frontend|fullstack|data-ai|other","anios":5,`,
+      `  "enlace":"https://github.com/your-user","uso_ia":"agents, MCP, prompts you use daily",`,
+      `  "tarifa_hora":15,"consentimiento":true,"idioma":"en",`,
+      `  "origen":"77delta.com","cv_nombre":"cv.pdf",`,
+      `  "cv_base64":"'"$(base64 -w0 cv.pdf)"'","web":"",`,
+      `  "token":"<TOKEN_MCP>"}'`,
+    ],
+  },
+  ca: {
+    title: 'Treballa amb nosaltres',
+    desc: 'Projectes per encàrrec, en remot, pagament per hora. Si el teu agent resol el nostre repte, entres.',
+    eyebrow: 'Feina',
+    h1: 'Treballa amb nosaltres',
+    p: 'Construïm amb agents, MCP i prompts. Si el teu agent sap resoldre el nostre repte, tu entres. Projectes per encàrrec, en remot, pagament per hora.',
+    s1: 'Pas 1',
+    s1t: "Demana el repte al nostre servidor MCP. Retorna un token d'un sol ús.",
+    s2: 'Pas 2',
+    s2t: 'Envia la teva candidatura amb aquest token.',
+    ok: 'Resposta correcta:',
+    gdpr: 'Responsable: Next Gen Academy SL. Fem servir les teves dades només per valorar la teva candidatura. Esborrament: hola@77delta.com.',
+    curl: [
+      `curl -X POST ${WEBHOOK_URL} \\`,
+      '  -H "Content-Type: application/json" \\',
+      `  -d '{"nombre":"El teu nom","email":"tu@correu.com","pais":"AR",`,
+      `  "perfil":"backend|frontend|fullstack|dades-ia|altre","anios":5,`,
+      `  "enlace":"https://github.com/el-teu-usuari","uso_ia":"agents, MCP, prompts que fas servir cada dia",`,
+      `  "tarifa_hora":15,"consentimiento":true,"idioma":"ca",`,
+      `  "origen":"77delta.com","cv_nombre":"cv.pdf",`,
+      `  "cv_base64":"'"$(base64 -w0 cv.pdf)"'","web":"",`,
+      `  "token":"<TOKEN_MCP>"}'`,
+    ],
+  },
+}[idioma];
+
+const rutas = { es: '/trabaja-con-nosotros/', en: '/en/work-with-us/', ca: '/ca/treballa-amb-nosaltres/' };
+const lang = idioma === 'en' ? 'en' : undefined;
+const alternates =
+  idioma === 'en'
+    ? [
+        { hreflang: 'es', href: rutas.es },
+        { hreflang: 'ca', href: rutas.ca },
+        { hreflang: 'en', href: rutas.en },
+      ]
+    : undefined;
+---
+
+<Base title={t.title} description={t.desc} noindex={true} lang={lang} alternates={alternates} selectorIdioma={false}>
+  <section class="wrap py-24 md:py-32">
+    <div class="max-w-[72ch]">
+      <p class="eyebrow" data-reveal>{t.eyebrow}</p>
+      <h1
+        class="mt-7 font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+        data-reveal
+      >
+        {t.h1}
+      </h1>
+      <p class="mt-8 text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>{t.p}</p>
+
+      <ol class="mt-12 space-y-8" data-reveal>
+        <li>
+          <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-pizarra">{t.s1}</p>
+          <p class="mt-2 text-[17px]">{t.s1t}</p>
+          <pre class="mt-3 overflow-x-auto rounded-[8px] border border-linea bg-panel p-4 font-mono text-[14px] text-tinta"><code>{MCP_URL}</code></pre>
+        </li>
+        <li>
+          <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-pizarra">{t.s2}</p>
+          <p class="mt-2 text-[17px]">{t.s2t}</p>
+          <pre class="mt-3 overflow-x-auto rounded-[8px] border border-linea bg-panel p-4 font-mono text-[14px] leading-[1.6] text-tinta"><code>{t.curl.join('\n')}</code></pre>
+          <p class="mt-3 text-[15px] text-pizarra">{t.ok} <code class="font-mono">{'{"ok":true}'}</code></p>
+        </li>
+      </ol>
+
+      <p class="mt-12 text-[14px] text-pizarra">{t.gdpr}</p>
+    </div>
+  </section>
+</Base>

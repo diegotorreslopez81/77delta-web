@@ -1,0 +1,6 @@
+Trabaja con nosotros / Work with us / Treballa amb nosaltres
+
+MCP: <MCP_URL>
+Reto: pide el reto al servidor MCP y obtén un token de un solo uso.
+Envío: POST JSON a https://api.77delta.com/hiring con el token en el campo "token".
+Instrucciones: https://77delta.com/trabaja-con-nosotros/
