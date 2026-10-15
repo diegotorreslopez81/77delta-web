@@ -286,10 +286,11 @@
         {
           "id": "f2-piloto",
           "texto": "Piloto de una semana de Twenty con Carla y Biel",
-          "estado": "pendiente",
+          "estado": "en_curso",
           "dueno": "Carla",
           "peso": 5,
-          "nota": "Arranca el 15-10 09:00 Madrid por orden de Diego (14-10). Carla y Biel trabajan en crm.77delta.com el lote cargado (31 oportunidades y 44 contactos) y todo el trabajo nuevo del embudo; las campañas automáticas siguen en ven_* hasta los flows de esta fase. Parte diario por buzón."
+          "nota": "Arranca el 15-10 09:00 Madrid por orden de Diego (14-10). Carla y Biel trabajan en crm.77delta.com el lote cargado (47 oportunidades y 44 contactos) y todo el trabajo nuevo del embudo; las campañas automáticas siguen en ven_* hasta los flows de esta fase. Parte diario por buzón.",
+          "fecha": "2026-10-15"
         },
         {
           "id": "f2-swarmix",
