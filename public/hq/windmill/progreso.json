@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-14T22:28:46Z",
+  "actualizado": "2026-10-15T14:00:36Z",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
   "fases": [
     {
@@ -74,11 +74,11 @@
         {
           "id": "verifix-campana-correo",
           "texto": "Aprobar el correo de la campaña Verifix (tarjeta #1955, vence 16-10 12:00)",
-          "estado": "en_curso",
+          "estado": "hecho",
           "dueno": "Carla",
           "peso": 1,
           "fecha": "2026-10-15",
-          "nota": "OK de Diego a correos 2 y 3 reescritos (tarjeta #1959). Diego 11:57Z: lanzar ya."
+          "nota": "Campaña enviada 15-10 12:30Z, 10 correos al día (OK de Diego, tarjetas #1955 y #1959). Sigue Carla con las respuestas."
         },
         {
           "id": "verifix-fuente-leads",
@@ -302,7 +302,7 @@
           "estado": "en_curso",
           "dueno": "Ariadna",
           "peso": 5,
-          "nota": "Comparación diaria fusionada (PR #18). Comparación diaria activa desde el 15-10 (PR #37, 07:00 Madrid; cron verificado por Bernat 01:35). La semana de comparación empieza hoy, 15-10."
+          "nota": "Comparación diaria corriendo desde el 15-10 (07:00 Madrid, cron verificado por Bernat). Semana de comparación en curso."
         },
         {
           "id": "f1-corte",
@@ -334,7 +334,7 @@
           "estado": "en_curso",
           "dueno": "Carla",
           "peso": 5,
-          "nota": "Arranca el 15-10 09:00 Madrid por orden de Diego (14-10). Carla y Biel trabajan en crm.77delta.com el lote cargado (47 oportunidades y 44 contactos) y todo el trabajo nuevo del embudo; las campañas automáticas siguen en ven_* hasta los flows de esta fase. Parte diario por buzón.",
+          "nota": "En marcha desde el 15-10 09:00 Madrid (orden de Diego 14-10). Carla y Biel trabajan en crm.77delta.com el lote cargado (47 oportunidades y 44 contactos) y el trabajo nuevo del embudo; las campañas automáticas siguen en ven_* hasta los flows de esta fase. Parte diario por buzón.",
           "fecha": "2026-10-15"
         },
         {
@@ -462,11 +462,11 @@
         {
           "id": "f3-rag-alta-voyage",
           "texto": "Alta de Voyage AI y clave para embeddings (voyage-4) en el worker de f3-rag",
-          "estado": "en_curso",
+          "estado": "hecho",
           "dueno": "Bernat",
           "peso": 1,
           "fecha": "2026-10-15",
-          "nota": "Hoy. Clave solo en ~/.config, nunca por chat ni tarjeta."
+          "nota": "Cuenta Voyage creada 15-10 con team@, clave probada (embeddings OK, 1024 dims) en ~/.config/77delta/voyage.env y recurso Windmill f/sombra/voyage. Nunca por chat ni tarjeta."
         }
       ]
     },
