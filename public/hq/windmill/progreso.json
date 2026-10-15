@@ -72,6 +72,14 @@
           "nota": "Tarjeta #1955: https://77delta.com/hq/#hoy/1955 (vence 16-10 12:00)."
         },
         {
+          "id": "verifix-fuente-leads",
+          "texto": "Decidir fuente de leads para Verifix: OK a Apollo de pago (ya usado en mayo) o 48 h más con fuentes gratis; Biel bloqueado para llegar a 300 el 16-10 12:00",
+          "estado": "diego",
+          "dueno": "Diego",
+          "peso": 1,
+          "fecha": "2026-10-15"
+        },
+        {
           "id": "f0-tls",
           "texto": "Dominios y certificados TLS en Coolify para Windmill y Twenty (en .com tras el cambio del 14-10)",
           "estado": "hecho",
