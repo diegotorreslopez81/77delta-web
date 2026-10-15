@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Verifix · Stop payments to fake IBANs</title>
-<meta name="description" content="Verifix checks the IBAN on every invoice against the one you already had. If it does not match, it holds the payment in your accounting software, or…">
+<meta name="description" content="Verifix compares each invoice IBAN with the one you already had and holds the payment if it changes until the approver confirms. Free waitlist.">
 <link rel="canonical" href="https://verifix.77delta.com/en/">
 <link rel="alternate" hreflang="es" href="https://verifix.77delta.com/">
 <link rel="alternate" hreflang="ca" href="https://verifix.77delta.com/ca/">
@@ -12,7 +12,7 @@
 <link rel="alternate" hreflang="x-default" href="https://verifix.77delta.com/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Verifix · Stop payments to fake IBANs">
-<meta property="og:description" content="Verifix checks the IBAN on every invoice against the one you already had. If it does not match, it holds the payment in your accounting software, or…">
+<meta property="og:description" content="Verifix compares each invoice IBAN with the one you already had and holds the payment if it changes until the approver confirms. Free waitlist.">
 <meta property="og:url" content="https://verifix.77delta.com/en/">
 <meta property="og:locale" content="en_GB">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%231F4FD1' d='M16 2 4 7v8c0 7.5 5 12.7 12 15 7-2.3 12-7.5 12-15V7z'/%3E%3Cpath fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' d='m10.5 16.5 4 4 7-8'/%3E%3C/svg%3E">
@@ -32,9 +32,8 @@
 <p class="sub">Verifix checks the IBAN on every invoice against the one you already had. If it does not match, it holds the payment in your accounting software, or warns you before you pay by hand, and asks the approver to confirm through a channel the fraudster does not control. No new bank, no new software.</p>
 <div class="hero-f"><div class="fcard"><div class="fz" data-s="hero">
 <form class="f1" novalidate>
-<div class="row"><label class="sr" for="em-hero">Work email</label><input id="em-hero" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@company.com" required aria-describedby="er-hero"><button class="btn" type="submit">Join free</button></div>
+<div class="row"><label class="sr" for="em-hero">Work email</label><input id="em-hero" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@company.com" required aria-describedby="sv-hero"><button class="btn" type="submit">Join free</button></div>
 <div class="hp" aria-hidden="true"><input name="web" tabindex="-1" autocomplete="off"></div>
-<p class="err" id="er-hero" hidden></p>
 </form>
 <div class="ok" hidden>
 <p class="okh">You&#x27;re in. We&#x27;ll let you know before launch.</p>
@@ -45,12 +44,11 @@
 <label class="chk"><input type="checkbox" name="ya"><span>It has happened to us (or nearly)</span></label>
 <label class="fl">Accounting software<select name="programa"><option value="">Choose (optional)</option><option>Holded</option><option>Sage</option><option>A3</option><option>Odoo</option><option>Quipu</option><option>Contasol</option><option value="otro">Other</option></select></label>
 <div class="hp" aria-hidden="true"><input name="web" tabindex="-1" autocomplete="off"></div>
-<p class="err" hidden></p>
 <div class="acts"><button class="btn" type="submit">Save</button><button class="lnk" type="button" data-no>Not now</button></div>
 </form>
 <p class="fin" hidden>Thanks, that&#x27;s all we need.</p>
 </div>
-<div class="st" role="status" aria-live="polite"></div>
+<div class="sv err" id="sv-hero" role="status" aria-live="polite"></div>
 </div><p class="note">Free while the waitlist is open. No card. We only email you about the launch. <a href="https://77delta.com/politica-privacidad/">Privacy</a></p></div>
 <div class="hero-m"><div class="mk" aria-hidden="true"><div class="mk-h"><span>Verifix · now</span><b>Example</b></div>
 <p class="mk-i">Suministros Ejemplo SL · Invoice 2026-118 · 4,830.00 EUR</p>
@@ -59,7 +57,7 @@
 <p><span class="tag">IBAN differs from usual</span></p>
 <p class="mk-s"><i></i>Payment on hold · waiting for Marta (Admin)</p></div></div></div>
 </div></section>
-<section class="sec alt band"><div class="w"><h2 class="sr">A real risk, measured</h2><ul class="g3 bd"><li><p class="big">27 %</p><p class="bx">of cyber insurance claims are funds transfer fraud</p><p class="src"><a href="https://www.coalitioninc.com/announcements/2026-cyber-claims-report" target="_blank" rel="noopener">Coalition, Cyber Claims Report 2026</a></p></li><li><p class="big">141,000 USD</p><p class="bx">average loss per funds transfer fraud claim</p><p class="src"><a href="https://www.coalitioninc.com/announcements/2026-cyber-claims-report" target="_blank" rel="noopener">Coalition, Cyber Claims Report 2026</a></p></li><li><p class="big">3.05 bn USD</p><p class="bx">lost in 2025 to business email compromise reported to the FBI</p><p class="src"><a href="https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf" target="_blank" rel="noopener">FBI IC3, 2025 Report</a></p></li></ul><p class="vop">Since 9-10-2025 every bank offers the free name-to-IBAN check. It helps, but it does not know which account your supplier always used. <a href="https://clientebancario.bde.es/pcb/es/blog/nuevo-servicio-gratuito-de-verificacion-del-beneficiario-a-partir-del-9-de-octubre-de-2025-.html" target="_blank" rel="noopener">Banco de España</a>.</p></div></section>
+<section class="sec alt band"><div class="w"><h2>A real risk, a simple defence</h2><ul class="g3 bd"><li><p class="big">27 %</p><p class="bx">of cyber insurance claims are funds transfer fraud</p><p class="src"><a href="https://www.coalitioninc.com/announcements/2026-cyber-claims-report" target="_blank" rel="noopener">Coalition, Cyber Claims Report 2026</a></p></li><li><p class="big">141,000 USD</p><p class="bx">average loss per funds transfer fraud claim</p><p class="src"><a href="https://www.coalitioninc.com/announcements/2026-cyber-claims-report" target="_blank" rel="noopener">Coalition, Cyber Claims Report 2026</a></p></li><li><p class="big">3.05 bn USD</p><p class="bx">lost in 2025 to business email compromise reported to the FBI</p><p class="src"><a href="https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf" target="_blank" rel="noopener">FBI IC3, 2025 Report</a></p></li></ul><p class="vop">Since 9-10-2025 every bank offers the free name-to-IBAN check. It helps, but it does not know which account your supplier always used. <a href="https://clientebancario.bde.es/pcb/es/blog/nuevo-servicio-gratuito-de-verificacion-del-beneficiario-a-partir-del-9-de-octubre-de-2025-.html" target="_blank" rel="noopener">Banco de España</a>.</p></div></section>
 <section class="sec"><div class="w"><h2>How an invoice payment gets stolen</h2><ul class="g3"><li class="card"><span class="n" aria-hidden="true">1</span><p>The email looks like your usual supplier. Same logo, same signature, a real invoice. Only the IBAN is different.</p></li><li class="card"><span class="n" aria-hidden="true">2</span><p>You pay. The bank executes the transfer and rarely gets it back.</p></li><li class="card"><span class="n" aria-hidden="true">3</span><p>You find out weeks later, when the supplier chases an invoice they think is unpaid.</p></li></ul></div></section>
 <section class="sec alt"><div class="w"><h2>What Verifix does for you</h2><ul class="g4"><li class="ben"><svg class="ic" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3 5 8v8c0 7 4.6 11.6 11 13 6.4-1.4 11-6 11-13V8z"/><path d="M11 16h10"/></svg><h3>Holds the payment before the transfer</h3><p>If the IBAN does not match, the payment stays on hold in your software, or we warn you before you pay by hand.</p></li><li class="ben"><svg class="ic" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="14" height="26" rx="3"/><path d="m12.5 15 2.5 2.5 5-5.5"/></svg><h3>Confirmation outside email, from the phone</h3><p>The approver confirms through a channel registered in advance, never the phone or email in the message.</p></li><li class="ben"><svg class="ic" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h11l6 6v20H8z"/><path d="M19 3v6h6M12 16h9M12 21h9"/></svg><h3>A record for your insurer</h3><p>You keep a record of who approved what, ready for your accountant, your auditor or your insurer.</p></li><li class="ben"><svg class="ic" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h22M5 20h22"/><path d="m22 7 5 5-5 5M10 15l-5 5 5 5" transform="translate(0 -2)"/></svg><h3>No new bank, no new software</h3><p>Verifix sits before the payment, with your usual bank and software.</p></li></ul></div></section>
 <section class="sec"><div class="w"><h2>How it works</h2><ol class="steps"><li class="step"><div class="st-t"><span class="sn" aria-hidden="true">1</span><p>Receive invoices as usual. Verifix only reads invoices: those that reach your invoices inbox, those in your accounting software and, if you turn on the Outlook or Gmail add-in, those that land in your own inbox. Nothing else in your email.</p></div><div class="st-m"><div class="mk" aria-hidden="true"><div class="mk-h"><span>Invoice received</span><b>Example</b></div>
@@ -71,7 +69,7 @@
 <p class="mk-s"><i></i>Payment on hold · waiting for Marta (Admin)</p></div></div></li><li class="step"><div class="st-t"><span class="sn" aria-hidden="true">3</span><p>The approver confirms on their phone. Through a channel registered in advance, never the phone or email in the message. You keep a record of who approved what.</p></div><div class="st-m"><div class="mk mk-p" aria-hidden="true"><div class="mk-h"><span>Verifix · now</span></div>
 <p class="mk-i">Confirm the payment of 4,830.00 EUR?</p><p><small>Suministros Ejemplo SL · new IBAN</small></p>
 <div class="mk-b"><span class="b-r">Reject</span><span class="b-g">Confirm by phone</span></div></div></div></li></ol><p class="cn">Odoo and invoices inbox first; Holded, A3 and Sage next. If you pay by batch, run your payment file through Verifix before uploading it to the bank.</p></div></section>
-<section class="sec alt"><div class="w"><h2>Who it is for</h2><div class="g2">
+<section class="sec alt"><div class="w"><h2>For companies and accounting firms</h2><div class="g2">
 <div class="plan plan-a"><h3>Company</h3><p>You pay suppliers by transfer or batch from the invoice that lands in your inbox.</p><p class="pr">49 EUR/month per company, unlimited payments</p><p class="fr">Free while the waitlist is open</p><a class="btn" href="#hero" data-cta data-umami-event="verifix-cta" data-umami-event-tipo="empresa">Sign up my company</a></div>
 <div class="plan"><h3>Accounting firm</h3><p>You run payroll or pay invoices for clients and want the same control for all of them, in one dashboard.</p><p class="pr">29 EUR/month per client, from 5 clients</p><p class="fr">Free while the waitlist is open</p><a class="btn" href="#hero" data-cta data-umami-event="verifix-cta" data-umami-event-tipo="gestoria">Sign up my firm</a></div>
 </div></div></section>
@@ -79,9 +77,8 @@
 <section class="sec alt"><div class="w nw"><h2>Frequently asked questions</h2><details><summary>My bank already checks the payee. Why do I need this?</summary><p>Your bank checks that the name you type matches the IBAN holder. If the fraudster gives you an account in their own name and you copy that name, or the warning is ignored, the payment goes out. Verifix knows which account that supplier used and stops the change.</p></details><details><summary>Do you read my email?</summary><p>No. We only read invoices, to extract the IBAN and the amount: those in your invoices inbox, those in your accounting software and, only if you turn on the Outlook or Gmail add-in, those that land in your own inbox.</p></details><details><summary>Do I need to change bank or accounting software?</summary><p>No. Verifix sits before the payment, with your usual bank and software. Odoo first; Holded, A3 and Sage next.</p></details><details><summary>Is it available now?</summary><p>We are building it with the first companies and firms on the list. Sign up to get in first, free while the waitlist is open.</p></details><details><summary>What will it cost later?</summary><p>49 EUR per month per company, unlimited payments. Accounting firms: 29 EUR per month per client from 5 clients. No lock-in.</p></details><details><summary>What do you do with my data?</summary><p>We only use your email to tell you about the launch. Controller: Next Gen Academy SL. Unsubscribe any time by emailing hola@77delta.com.</p></details></div></section>
 <section class="fin-b"><div class="w"><h2>Don&#x27;t let the next IBAN change cost you an invoice.</h2><p>Join the waitlist. Free while it lasts.</p><div class="fcard fc-d"><div class="fz" data-s="final">
 <form class="f1" novalidate>
-<div class="row"><label class="sr" for="em-final">Work email</label><input id="em-final" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@company.com" required aria-describedby="er-final"><button class="btn" type="submit">Join free</button></div>
+<div class="row"><label class="sr" for="em-final">Work email</label><input id="em-final" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@company.com" required aria-describedby="sv-final"><button class="btn" type="submit">Join free</button></div>
 <div class="hp" aria-hidden="true"><input name="web" tabindex="-1" autocomplete="off"></div>
-<p class="err" id="er-final" hidden></p>
 </form>
 <div class="ok" hidden>
 <p class="okh">You&#x27;re in. We&#x27;ll let you know before launch.</p>
@@ -92,12 +89,11 @@
 <label class="chk"><input type="checkbox" name="ya"><span>It has happened to us (or nearly)</span></label>
 <label class="fl">Accounting software<select name="programa"><option value="">Choose (optional)</option><option>Holded</option><option>Sage</option><option>A3</option><option>Odoo</option><option>Quipu</option><option>Contasol</option><option value="otro">Other</option></select></label>
 <div class="hp" aria-hidden="true"><input name="web" tabindex="-1" autocomplete="off"></div>
-<p class="err" hidden></p>
 <div class="acts"><button class="btn" type="submit">Save</button><button class="lnk" type="button" data-no>Not now</button></div>
 </form>
 <p class="fin" hidden>Thanks, that&#x27;s all we need.</p>
 </div>
-<div class="st" role="status" aria-live="polite"></div>
+<div class="sv err" id="sv-final" role="status" aria-live="polite"></div>
 </div></div></div></section>
 </main>
 <footer class="ft"><div class="w"><p>Verifix is a product by 77 Delta, Barcelona, Spain. Next Gen Academy SL, VAT ID B44861649.</p><p><a href="https://77delta.com/aviso-legal/">Legal notice</a> · <a href="https://77delta.com/politica-privacidad/">Privacy</a> · <a href="mailto:hola@77delta.com">hola@77delta.com</a></p></div></footer>
@@ -106,7 +102,6 @@
 var D=document,L=D.documentElement.lang,V='A',T={"sending": "Sending...", "e_val": "Enter a valid email, for example name@company.com.", "e400": "Please check your email address.", "e429": "Too many attempts. Wait 10 minutes and try again.", "enet": "We couldn't send it. Try again or email hola@77delta.com."},tipo='empresa',emp='',em='';
 var G='gmail.com googlemail.com hotmail.com hotmail.es outlook.com outlook.es live.com msn.com yahoo.com yahoo.es icloud.com me.com proton.me protonmail.com gmx.com telefonica.net'.split(' ');
 var RX=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-function px(n,c){new Image().src='/e.gif?ev='+n+'&v='+V+'&l='+L+(c?'&c='+c:'')+'&r='+Date.now()}
 function ev(n,d){try{window.umami&&window.umami.track(n,d)}catch(e){}}
 function dom(e){var d=e.split('@')[1].toLowerCase();return G.indexOf(d)>-1?'':d}
 function post(b,done){var x;try{x=fetch('https://api.77delta.com/verifix',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)})}catch(e){return done('net')}
@@ -114,24 +109,24 @@ x.then(function(r){done(r.status===200?0:(r.status===400||r.status===429?r.statu
 function msg(c){return c===400?T.e400:c===429?T.e429:T.enet}
 function body(s,p,o){return Object.assign({email:em,idioma:L,ya_me_ha_pasado:false,programa:'',web:'',origen:'verifix.77delta.com|v='+V+'|s='+s+'|p='+p+'|l='+L},o)}
 function goForm(t){if(t)tipo=t;var f=D.getElementById('em-hero'),r=matchMedia('(prefers-reduced-motion: reduce)').matches;f.scrollIntoView({block:'center',behavior:r?'auto':'smooth'});f.focus({preventScroll:true})}
-D.querySelectorAll('[data-cta]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();px('cta_click');goForm(a.getAttribute('data-umami-event-tipo'))})});
+D.querySelectorAll('[data-cta]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();goForm(a.getAttribute('data-umami-event-tipo'))})});
 var Z=D.querySelectorAll('.fz');
 Z.forEach(function(z){
-var s=z.getAttribute('data-s'),f1=z.querySelector('.f1'),b1=f1.querySelector('button'),i=f1.email,er=f1.querySelector('.err'),
-ok=z.querySelector('.ok'),f2=z.querySelector('.f2'),e2=f2.querySelector('.err'),b2=f2.querySelector('button'),n1=b1.textContent;
-f1.addEventListener('submit',function(e){e.preventDefault();er.hidden=true;var v=i.value.trim();
-if(!RX.test(v)){er.textContent=T.e_val;er.hidden=false;i.setAttribute('aria-invalid','true');i.focus();return}
+var s=z.getAttribute('data-s'),f1=z.querySelector('.f1'),b1=f1.querySelector('button'),i=f1.email,er=z.querySelector('.sv'),
+ok=z.querySelector('.ok'),f2=z.querySelector('.f2'),e2=er,b2=f2.querySelector('button'),n1=b1.textContent;
+f1.addEventListener('submit',function(e){e.preventDefault();er.textContent='';var v=i.value.trim();
+if(!RX.test(v)){er.textContent=T.e_val;i.setAttribute('aria-invalid','true');i.focus();return}
 i.removeAttribute('aria-invalid');em=v;emp=dom(v);b1.disabled=true;b1.textContent=T.sending;
 post(body(s,1,{empresa:emp||'(sin indicar)',tipo:tipo,web:f1.web.value}),function(c){b1.disabled=false;b1.textContent=n1;
-if(c){px('submit_error',c);ev('verifix-submit-error',{codigo:String(c),idioma:L});er.textContent=msg(c);er.hidden=false;return}
-if(!f1.web.value)px('submit_ok');if(!f1.web.value)ev('verifix-submit-ok',{idioma:L,tipo:tipo});
+if(c){ev('verifix-submit-error',{codigo:String(c),idioma:L});er.textContent=msg(c);return}
+if(!f1.web.value)ev('verifix-submit-ok',{idioma:L,tipo:tipo});
 Z.forEach(function(o){o.querySelector('.f1').hidden=true;var k=o.querySelector('.ok');k.hidden=false;if(o!==z)k.querySelector('.f2').hidden=true});
 f2.empresa.value=emp;f2.querySelector('input[value='+tipo+']').checked=true})});
 f2.querySelector('[data-no]').addEventListener('click',function(){f2.hidden=true;z.querySelector('.fin').hidden=false});
-f2.addEventListener('submit',function(e){e.preventDefault();e2.hidden=true;b2.disabled=true;var n=b2.textContent;b2.textContent=T.sending;
+f2.addEventListener('submit',function(e){e.preventDefault();e2.textContent='';b2.disabled=true;var n=b2.textContent;b2.textContent=T.sending;
 post(body(s,2,{empresa:f2.empresa.value.trim()||emp||'(sin indicar)',tipo:f2.elements['tipo-'+s].value,ya_me_ha_pasado:f2.ya.checked,programa:f2.programa.value,web:f2.web.value}),function(c){
-b2.disabled=false;b2.textContent=n;if(c){px('submit_error',c);ev('verifix-submit-error',{codigo:String(c),idioma:L});e2.textContent=msg(c);e2.hidden=false;return}
-if(!f2.web.value)px('step2_ok');if(!f2.web.value)ev('verifix-step2-ok',{idioma:L});f2.hidden=true;z.querySelector('.fin').hidden=false})})});px('view')})();
+b2.disabled=false;b2.textContent=n;if(c){ev('verifix-submit-error',{codigo:String(c),idioma:L});e2.textContent=msg(c);return}
+if(!f2.web.value)ev('verifix-step2-ok',{idioma:L});f2.hidden=true;z.querySelector('.fin').hidden=false})})});})();
 </script>
 </body>
 </html>
