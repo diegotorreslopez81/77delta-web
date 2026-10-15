@@ -21,19 +21,21 @@
 <h2>Qué hace Verifix</h2>
 <p>Cada orden de pago o cambio de cuenta que entra por correo, teléfono, WhatsApp o videollamada se registra y se confirma por otro canal con la persona autorizada: un código de un solo uso en su móvil, o una llamada a un número que ya tenías, nunca al que viene en el mensaje. Verifix no lee tu correo ni filtra nada: verifica la orden. Queda un registro de quién autorizó qué, para tu gestoría, tu auditor o tu seguro. Se pone en marcha en una tarde, sin cambiar de banco ni de programa de contabilidad.</p>
 <h2>Cómo funciona</h2>
-<ol><li>La orden de pago o el cambio de cuenta llega donde siempre: tu correo o tu programa contable.</li><li>Verifix está dentro de esas herramientas: complemento de Outlook o Gmail que detecta la factura o la orden y comprueba el IBAN contra los proveedores conocidos; módulo en el ERP o programa contable (Odoo primero; después Holded, A3, Sage) que bloquea el pago hasta que esté confirmado; y, si pagas por remesa, la opción de pasar el fichero de pagos por Verifix antes de subirlo al banco.</li><li>Quien autoriza recibe el aviso por el canal ya registrado (app o WhatsApp) y confirma o rechaza. Nunca por el número o el correo que vienen en el mensaje.</li><li>Sin confirmación, el pago no sale del circuito de aprobación del ERP. Con confirmación, queda registro de quién autorizó qué, listo para gestoría, auditor y seguro.</li></ol>
+<ol><li>La factura o el cambio de cuenta llega donde siempre: al buzón de facturación de la empresa, al correo del contable o al programa contable.</li><li>Verifix está dentro de esas herramientas: copia o alias del buzón de facturación (facturas@tuempresa) y complemento de Outlook o Gmail para el correo del contable, que leen el IBAN de cada factura y lo comprueban contra los proveedores conocidos; módulo en el ERP o programa contable (Odoo primero; después Holded, A3, Sage) que bloquea el pago hasta que esté confirmado; y, si pagas por remesa, la opción de pasar el fichero de pagos por Verifix antes de subirlo al banco.</li><li>Quien autoriza recibe el aviso por el canal ya registrado (app o WhatsApp) y confirma o rechaza. Nunca por el número o el correo que vienen en el mensaje.</li><li>Sin confirmación, el pago no sale del circuito de aprobación del ERP. Con confirmación, queda registro de quién autorizó qué, listo para gestoría, auditor y seguro.</li></ol>
 <p><strong>Puesta en marcha.</strong> Instalar el complemento de correo (2 minutos) o el módulo del ERP (lo instala tu informático o nosotros en una videollamada de 20 minutos); dar de alta quién autoriza en cada cliente y su móvil. Sin cambiar de banco ni de programa. Panel web mínimo solo para el registro y para que la gestoría vea todos sus clientes.</p>
 <p><strong>Cómo sabes que funciona.</strong> El primer día Verifix te manda un fraude simulado (correo de "cambio de cuenta" de un proveedor real) y ves cómo lo frena y pide confirmación; cada mes, un simulacro y un informe con órdenes verificadas, cambios detectados y rechazos, válido para tu seguro.</p>
 <h2>Para quién</h2>
-<p>Gestorías y asesorías que ordenan pagos de clientes; empresas de 10 a 250 empleados donde quien paga no es quien autoriza.</p>
+<p>El contable o administrativo de una empresa de 10 a 250 empleados que paga a proveedores a mano desde la factura que le llega por correo. También gestorías y asesorías: para recomendarlo a sus clientes y para proteger las nóminas que pagan por ellos.</p>
 <p class="precio">Desde 29 EUR al mes por empresa. Gratis mientras dure la lista de espera.</p>
 <h2 id="lista">Lista de espera</h2>
 <p>Apúntate y te avisamos antes del lanzamiento.</p>
 <form id="f" novalidate>
 <label>Correo de empresa<input type="email" name="email" autocomplete="email" required></label>
 <label>Nombre de la empresa<input type="text" name="empresa" autocomplete="organization" required></label>
-<label class="chk"><input type="checkbox" name="gestoria"><span>Soy gestoría o asesoría (si no marcas, eres empresa)</span></label>
+<label class="chk"><input type="radio" name="tipo" value="empresa" checked><span>Soy empresa</span></label>
+<label class="chk"><input type="radio" name="tipo" value="gestoria"><span>Soy gestoría o asesoría</span></label>
 <label class="chk"><input type="checkbox" name="ya"><span>Ya me ha pasado (opcional)</span></label>
+<label>¿Qué programa usas? (opcional)<select name="programa"><option value="">Elige una opción</option><option>Holded</option><option>Sage</option><option>A3</option><option>Odoo</option><option>Quipu</option><option>Contasol</option><option value="otro">Otro</option></select></label>
 <div class="hp" aria-hidden="true"><label>Web<input type="text" name="web" tabindex="-1" autocomplete="off"></label></div>
 <button class="btn" type="submit">Apuntarme</button>
 <div id="estado" role="status" aria-live="polite"></div>
@@ -50,7 +52,7 @@ e.preventDefault();s.className='';s.textContent='';
 if(!f.email.value||!f.empresa.value||!f.email.checkValidity()){f.reportValidity();return;}
 b.disabled=true;
 fetch('https://api.77delta.com/verifix',{method:'POST',headers:{'Content-Type':'application/json'},
-body:JSON.stringify({email:f.email.value.trim(),empresa:f.empresa.value.trim(),tipo:f.gestoria.checked?'gestoria':'empresa',ya_me_ha_pasado:f.ya.checked,idioma:'es',web:f.web.value})})
+body:JSON.stringify({email:f.email.value.trim(),empresa:f.empresa.value.trim(),tipo:f.tipo.value,programa:f.programa.value,ya_me_ha_pasado:f.ya.checked,idioma:'es',web:f.web.value})})
 .then(function(r){if(!r.ok)throw 0;s.className='ok';s.textContent=OK;f.reset();})
 .catch(function(){s.className='ko';s.textContent=KO;})
 .then(function(){b.disabled=false;});

@@ -21,19 +21,21 @@
 <h2>What Verifix does</h2>
 <p>Every payment order or account change that arrives by email, phone, WhatsApp or video call is logged and confirmed through another channel with the authorised person: a one-time code on their phone, or a call to a number you already had, never the one in the message. Verifix does not read your email and does not filter anything: it verifies the order. You keep a record of who approved what, for your accountant, your auditor or your insurer. Set up in one afternoon, no change of bank or accounting software.</p>
 <h2>How it works</h2>
-<ol><li>The payment order or account change arrives where it always does: your email or your accounting software.</li><li>Verifix lives inside those tools: an Outlook or Gmail add-in that detects the invoice or the order and checks the IBAN against known suppliers; a module in the ERP or accounting software (Odoo first; then Holded, A3, Sage) that blocks the payment until it is confirmed; and, if you pay by batch file, the option to run the payment file through Verifix before uploading it to the bank.</li><li>The approver gets the alert through the channel already on file (app or WhatsApp) and confirms or rejects. Never through the number or email in the message.</li><li>No confirmation, the payment does not leave the ERP approval flow. With confirmation, you keep a record of who approved what, ready for your accountant, auditor and insurer.</li></ol>
+<ol><li>The invoice or the account change arrives where it always does: the company's billing mailbox, the accountant's email or the accounting software.</li><li>Verifix lives inside those tools: a copy or alias of the billing mailbox (invoices@yourcompany) and an Outlook or Gmail add-in for the accountant's email, which read the IBAN on each invoice and check it against known suppliers; a module in the ERP or accounting software (Odoo first; then Holded, A3, Sage) that blocks the payment until it is confirmed; and, if you pay by batch file, the option to run the payment file through Verifix before uploading it to the bank.</li><li>The approver gets the alert through the channel already on file (app or WhatsApp) and confirms or rejects. Never through the number or email in the message.</li><li>No confirmation, the payment does not leave the ERP approval flow. With confirmation, you keep a record of who approved what, ready for your accountant, auditor and insurer.</li></ol>
 <p><strong>Setup.</strong> Install the email add-in (2 minutes) or the ERP module (your IT person installs it, or we do on a 20-minute video call); register who approves for each client and their phone. No change of bank or software. A minimal web panel only for the log and so the accounting firm can see all its clients.</p>
 <p><strong>How you know it works.</strong> On day one Verifix sends you a simulated fraud (a "change of account" email from a real supplier) and you see it stop the payment and ask for confirmation; every month, a drill and a report with verified orders, detected changes and rejections, valid for your insurer.</p>
 <h2>Who it is for</h2>
-<p>Accounting and bookkeeping firms that order payments for clients; companies with 10 to 250 employees where the person who pays is not the person who approves.</p>
+<p>The accountant or admin at a company with 10 to 250 employees who pays suppliers by hand from the invoice that lands in their inbox. Also accounting and bookkeeping firms: to recommend it to their clients and to protect the payroll they run for them.</p>
 <p class="precio">From 29 EUR per month per company. Free while the waitlist is open.</p>
 <h2 id="lista">Waitlist</h2>
 <p>Join and we tell you before launch.</p>
 <form id="f" novalidate>
 <label>Work email<input type="email" name="email" autocomplete="email" required></label>
 <label>Company name<input type="text" name="empresa" autocomplete="organization" required></label>
-<label class="chk"><input type="checkbox" name="gestoria"><span>We are an accounting firm (if unchecked, we are a company)</span></label>
+<label class="chk"><input type="radio" name="tipo" value="empresa" checked><span>We are a company</span></label>
+<label class="chk"><input type="radio" name="tipo" value="gestoria"><span>We are an accounting firm</span></label>
 <label class="chk"><input type="checkbox" name="ya"><span>It already happened to us (optional)</span></label>
+<label>Which accounting software do you use? (optional)<select name="programa"><option value="">Choose an option</option><option>Holded</option><option>Sage</option><option>A3</option><option>Odoo</option><option>Quipu</option><option>Contasol</option><option value="otro">Other</option></select></label>
 <div class="hp" aria-hidden="true"><label>Web<input type="text" name="web" tabindex="-1" autocomplete="off"></label></div>
 <button class="btn" type="submit">Join</button>
 <div id="estado" role="status" aria-live="polite"></div>
@@ -50,7 +52,7 @@ e.preventDefault();s.className='';s.textContent='';
 if(!f.email.value||!f.empresa.value||!f.email.checkValidity()){f.reportValidity();return;}
 b.disabled=true;
 fetch('https://api.77delta.com/verifix',{method:'POST',headers:{'Content-Type':'application/json'},
-body:JSON.stringify({email:f.email.value.trim(),empresa:f.empresa.value.trim(),tipo:f.gestoria.checked?'gestoria':'empresa',ya_me_ha_pasado:f.ya.checked,idioma:'en',web:f.web.value})})
+body:JSON.stringify({email:f.email.value.trim(),empresa:f.empresa.value.trim(),tipo:f.tipo.value,programa:f.programa.value,ya_me_ha_pasado:f.ya.checked,idioma:'en',web:f.web.value})})
 .then(function(r){if(!r.ok)throw 0;s.className='ok';s.textContent=OK;f.reset();})
 .catch(function(){s.className='ko';s.textContent=KO;})
 .then(function(){b.disabled=false;});
