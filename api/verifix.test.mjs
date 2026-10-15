@@ -25,6 +25,8 @@ test('rechaza email malo, empresa vacía y tipo desconocido', () => {
 test('idioma desconocido cae a es y en se respeta', () => {
   assert.equal(validar({ ...ok, idioma: 'fr' }, 'ip').lead.idioma, 'es');
   assert.equal(validar({ ...ok, idioma: 'EN' }, 'ip').lead.idioma, 'en');
+  assert.equal(validar({ ...ok, idioma: 'ca' }, 'ip').lead.idioma, 'ca');
+  assert.equal(validar({ ...ok, idioma: 'CA' }, 'ip').lead.idioma, 'ca');
 });
 
 test('limpia saltos de línea y recorta (sin inyección de cabeceras)', () => {
