@@ -45,6 +45,15 @@
           "nota": "Registro A verifix.77delta.com -> 178.104.108.10 creado por Diego en Namecheap (decisión #522)."
         },
         {
+          "id": "verifix-landing",
+          "texto": "Landing Verifix con precios en verifix.77delta.com",
+          "estado": "hecho",
+          "dueno": "Bernat",
+          "peso": 1,
+          "fecha": "2026-10-15",
+          "nota": "f23de85 en vivo, precios #529 verificados en https://verifix.77delta.com."
+        },
+        {
           "id": "f0-tls",
           "texto": "Dominios y certificados TLS en Coolify para Windmill y Twenty (en .com tras el cambio del 14-10)",
           "estado": "hecho",
