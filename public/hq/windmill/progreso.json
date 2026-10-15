@@ -248,7 +248,7 @@
           "estado": "en_curso",
           "dueno": "Ariadna",
           "peso": 5,
-          "nota": "Comparación diaria fusionada (PR #18). Semana de comparación empieza el 15-10 (cron verificado por Bernat 01:35 Madrid). Activación del schedule en PR aparte, pendiente de aprobación del chief."
+          "nota": "Comparación diaria fusionada (PR #18). Comparación diaria activa desde el 15-10 (PR #37, 07:00 Madrid; cron verificado por Bernat 01:35). La semana de comparación empieza hoy, 15-10."
         },
         {
           "id": "f1-corte",
