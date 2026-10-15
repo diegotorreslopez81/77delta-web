@@ -3,61 +3,130 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Verifix · Ninguna orden de pago sin verificar</title>
-<meta name="description" content="Verifix confirma cada orden de pago y cada cambio de cuenta por un canal distinto, con quien puede autorizarla. Lista de espera.">
-<meta name="robots" content="index,follow">
-<link rel="stylesheet" href="verifix.css">
+<title>Verifix · Frena los pagos a IBAN falsos</title>
+<meta name="description" content="Verifix compara el IBAN de cada factura con el que ya tenías y retiene el pago si cambia, hasta que quien autoriza lo confirme. Gratis en lista de espera.">
+<link rel="canonical" href="https://verifix.77delta.com/">
+<link rel="alternate" hreflang="es" href="https://verifix.77delta.com/">
+<link rel="alternate" hreflang="ca" href="https://verifix.77delta.com/ca/">
+<link rel="alternate" hreflang="en" href="https://verifix.77delta.com/en/">
+<link rel="alternate" hreflang="x-default" href="https://verifix.77delta.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Verifix · Frena los pagos a IBAN falsos">
+<meta property="og:description" content="Verifix compara el IBAN de cada factura con el que ya tenías y retiene el pago si cambia, hasta que quien autoriza lo confirme. Gratis en lista de espera.">
+<meta property="og:url" content="https://verifix.77delta.com/">
+<meta property="og:locale" content="es_ES">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%231F4FD1' d='M16 2 4 7v8c0 7.5 5 12.7 12 15 7-2.3 12-7.5 12-15V7z'/%3E%3Cpath fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' d='m10.5 16.5 4 4 7-8'/%3E%3C/svg%3E">
+<link rel="preload" href="/fonts/sora-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/verifix.css">
+<script defer src="https://stats.77delta.com/script.js" data-website-id="07dd1024-0eb1-46a3-b64e-df07a9cde7e1"></script>
 </head>
 <body>
-<header><div class="w"><a class="marca" href="./">Verifix <span>· 77 Delta</span></a><a class="idioma" href="en/" hreflang="en">English</a></div></header>
-<main class="w">
-<h1>Ninguna orden de pago sin verificar.</h1>
-<hr class="regla">
-<p class="sub">Un correo del proveedor con "nueva cuenta bancaria". Un mensaje del director pidiendo una transferencia urgente. Una llamada con su voz. Hoy todo eso se falsifica. Verifix confirma cada orden de pago y cada cambio de cuenta por un canal distinto al que llegó, con quien de verdad puede autorizarla. Sin confirmación, no hay pago.</p>
-<p><a class="btn" href="#lista">Apuntarme a la lista de espera</a></p>
-<h2>El problema</h2>
-<ul><li>Te llega un correo del proveedor de siempre con un IBAN nuevo. Pagas la factura real a la cuenta del estafador. El banco ejecuta y no devuelve.</li><li>El director escribe "haz esta transferencia hoy, luego te explico". La persona que paga obedece y nadie lo comprueba.</li><li>Ahora también llaman con su voz clonada, o aparecen en una videollamada. Treinta segundos de audio público bastan.</li><li>El seguro no te devuelve la transferencia. Cubre forense y comunicación, no el dinero que salió.</li></ul>
-<p class="prueba">En 2025 las empresas denunciaron al FBI 3.046 millones de dólares perdidos por órdenes de pago falsas (BEC), 24.768 denuncias (FBI IC3, informe 2025, publicado en abril de 2026). El fraude de transferencia es el 27 % de los siniestros de ciberseguro, la pérdida media por incidente es de 141.000 dólares y el 52 % nace de un correo comprometido (Coalition, Cyber Claims Report, 5-03-2026). En España el Ministerio del Interior contó 429.677 estafas informáticas en 2025. El endoso de deepfake de Coalition (9-12-2025) paga servicios de respuesta, no la transferencia.</p>
-<h2>Qué hace Verifix</h2>
-<p>Cada orden de pago o cambio de cuenta que entra por correo, teléfono, WhatsApp o videollamada se registra y se confirma por otro canal con la persona autorizada: un código de un solo uso en su móvil, o una llamada a un número que ya tenías, nunca al que viene en el mensaje. Verifix no lee tu correo ni filtra nada: verifica la orden. Queda un registro de quién autorizó qué, para tu gestoría, tu auditor o tu seguro. Se pone en marcha en una tarde, sin cambiar de banco ni de programa de contabilidad.</p>
-<h2>Cómo funciona</h2>
-<ol><li>La factura o el cambio de cuenta llega donde siempre: al buzón de facturación de la empresa, al correo del contable o al programa contable.</li><li>Verifix está dentro de esas herramientas: copia o alias del buzón de facturación (facturas@tuempresa) y complemento de Outlook o Gmail para el correo del contable, que leen el IBAN de cada factura y lo comprueban contra los proveedores conocidos; módulo en el ERP o programa contable (Odoo primero; después Holded, A3, Sage) que bloquea el pago hasta que esté confirmado; y, si pagas por remesa, la opción de pasar el fichero de pagos por Verifix antes de subirlo al banco.</li><li>Quien autoriza recibe el aviso por el canal ya registrado (app o WhatsApp) y confirma o rechaza. Nunca por el número o el correo que vienen en el mensaje.</li><li>Sin confirmación, el pago no sale del circuito de aprobación del ERP. Con confirmación, queda registro de quién autorizó qué, listo para gestoría, auditor y seguro.</li></ol>
-<p><strong>Puesta en marcha.</strong> Instalar el complemento de correo (2 minutos) o el módulo del ERP (lo instala tu informático o nosotros en una videollamada de 20 minutos); dar de alta quién autoriza en cada cliente y su móvil. Sin cambiar de banco ni de programa. Panel web mínimo solo para el registro y para que la gestoría vea todos sus clientes.</p>
-<p><strong>Cómo sabes que funciona.</strong> El primer día Verifix te manda un fraude simulado (correo de "cambio de cuenta" de un proveedor real) y ves cómo lo frena y pide confirmación; cada mes, un simulacro y un informe con órdenes verificadas, cambios detectados y rechazos, válido para tu seguro.</p>
-<h2>Para quién</h2>
-<p>El contable o administrativo de una empresa de 10 a 250 empleados que paga a proveedores a mano desde la factura que le llega por correo. También gestorías y asesorías: para recomendarlo a sus clientes y para proteger las nóminas que pagan por ellos.</p>
-<p class="precio">Precio orientativo: 49 EUR al mes por empresa, sin límite de pagos. Gestorías: 29 EUR al mes por cliente a partir de 5 clientes. Gratis mientras dure la lista de espera.</p>
-<h2 id="lista">Lista de espera</h2>
-<p>Apúntate y te avisamos antes del lanzamiento.</p>
-<form id="f" novalidate>
-<label>Correo de empresa<input type="email" name="email" autocomplete="email" required></label>
-<label>Nombre de la empresa<input type="text" name="empresa" autocomplete="organization" required></label>
-<label class="chk"><input type="radio" name="tipo" value="empresa" checked><span>Soy empresa</span></label>
-<label class="chk"><input type="radio" name="tipo" value="gestoria"><span>Soy gestoría o asesoría</span></label>
-<label class="chk"><input type="checkbox" name="ya"><span>Ya me ha pasado (opcional)</span></label>
-<label>¿Qué programa usas? (opcional)<select name="programa"><option value="">Elige una opción</option><option>Holded</option><option>Sage</option><option>A3</option><option>Odoo</option><option>Quipu</option><option>Contasol</option><option value="otro">Otro</option></select></label>
-<div class="hp" aria-hidden="true"><label>Web<input type="text" name="web" tabindex="-1" autocomplete="off"></label></div>
-<button class="btn" type="submit">Apuntarme</button>
-<div id="estado" role="status" aria-live="polite"></div>
-<p class="nota">Responsable: Next Gen Academy SL. Finalidad: avisarte del lanzamiento de Verifix. Baja cuando quieras escribiendo a hola@77delta.com. Más información en la <a href="https://77delta.com/politica-privacidad/">política de privacidad</a>.</p>
+<header class="hd"><div class="w hd-i">
+<a class="logo" href="/">Verifix <small>de 77 Delta</small></a>
+<nav class="hd-r" aria-label="Idioma"><span class="lang cur" aria-current="true" lang="es">ES</span><a class="lang" href="/ca/" hreflang="ca" lang="ca" aria-label="Català">CA</a><a class="lang" href="/en/" hreflang="en" lang="en" aria-label="English">EN</a><a class="btn btn-s" href="#hero" data-cta data-umami-event="verifix-cta" data-umami-event-tipo="empresa">Unirme gratis</a></nav>
+</div></header>
+<main>
+<section class="hero" id="hero"><div class="w hero-g">
+<div class="hero-t"><p class="pill">Acceso anticipado gratis</p><h1>Si cambia el IBAN de un proveedor, nadie paga sin confirmarlo.</h1></div>
+<p class="sub">Verifix compara el IBAN de cada factura con el que ya tenías. Si no coincide, retiene el pago en tu programa contable, o te avisa antes de que lo hagas a mano, y pide confirmación a quien autoriza por un canal que el estafador no controla. Sin cambiar de banco ni de programa.</p>
+<div class="hero-f"><div class="fcard"><div class="fz" data-s="hero">
+<form class="f1" novalidate>
+<div class="row"><label class="sr" for="em-hero">Correo de trabajo</label><input id="em-hero" name="email" type="email" autocomplete="email" inputmode="email" placeholder="tu@empresa.com" required aria-describedby="sv-hero"><button class="btn" type="submit">Unirme gratis</button></div>
+<div class="hp" aria-hidden="true"><input name="web" tabindex="-1" autocomplete="off"></div>
 </form>
+<div class="ok" hidden>
+<p class="okh">Estás dentro. Te avisaremos antes del lanzamiento.</p>
+<form class="f2" novalidate>
+<p class="okx">¿Nos cuentas un poco más? Es opcional y nos ayuda a darte prioridad.</p>
+<label class="fl">Nombre de la empresa<input name="empresa" type="text" autocomplete="organization"></label>
+<div class="seg"><label><input type="radio" name="tipo-hero" value="empresa" checked><span>Empresa</span></label><label><input type="radio" name="tipo-hero" value="gestoria"><span>Gestoría o asesoría</span></label></div>
+<label class="chk"><input type="checkbox" name="ya"><span>Ya nos ha pasado (o casi)</span></label>
+<label class="fl">Programa contable<select name="programa"><option value="">Elige (opcional)</option><option>Holded</option><option>Sage</option><option>A3</option><option>Odoo</option><option>Quipu</option><option>Contasol</option><option value="otro">Otro</option></select></label>
+<div class="hp" aria-hidden="true"><input name="web" tabindex="-1" autocomplete="off"></div>
+<div class="acts"><button class="btn" type="submit">Guardar</button><button class="lnk" type="button" data-no>Ahora no</button></div>
+</form>
+<p class="fin" hidden>Gracias. Lo tenemos todo.</p>
+</div>
+<div class="sv err" id="sv-hero" role="status" aria-live="polite"></div>
+</div><p class="note">Gratis mientras dure la lista de espera. Sin tarjeta. Te escribimos solo para el lanzamiento. <a href="https://77delta.com/politica-privacidad/">Privacidad</a></p></div>
+<div class="hero-m"><div class="mk" aria-hidden="true"><div class="mk-h"><span>Verifix · ahora</span><b>Ejemplo</b></div>
+<p class="mk-i">Suministros Ejemplo SL · Factura 2026-118 · 4.830,00 EUR</p>
+<p class="mk-old"><s>ES12 •••• •••• 4471</s> <small>(habitual)</small></p>
+<p class="mk-new">ES98 •••• •••• 0032 <small>(nuevo)</small></p>
+<p><span class="tag">IBAN distinto al habitual</span></p>
+<p class="mk-s"><i></i>Pago retenido · esperando a Marta (Administración)</p></div></div></div>
+</div></section>
+<section class="sec alt band"><div class="w"><h2>Un riesgo real, una defensa sencilla</h2><ul class="g3 bd"><li><p class="big">27 %</p><p class="bx">de los siniestros de ciberseguro son transferencias fraudulentas</p><p class="src"><a href="https://www.coalitioninc.com/announcements/2026-cyber-claims-report" target="_blank" rel="noopener">Coalition, Cyber Claims Report 2026</a></p></li><li><p class="big">≈ 126.000 €</p><p class="bx">de pérdida media por cada siniestro de transferencia fraudulenta</p><p class="src"><a href="https://www.coalitioninc.com/announcements/2026-cyber-claims-report" target="_blank" rel="noopener">Coalition, Cyber Claims Report 2026 (141.000 USD al cambio del BCE del 14-10-2026)</a></p></li><li><p class="big">≈ 2.721 M €</p><p class="bx">perdidos en 2025 por correos de pago falsos (BEC) denunciados al FBI</p><p class="src"><a href="https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf" target="_blank" rel="noopener">FBI IC3, Informe 2025 (3.046 M USD al cambio del BCE del 14-10-2026)</a></p></li></ul><p class="vop">Desde el 9-10-2025 todos los bancos ofrecen gratis la comprobación de nombre contra IBAN. Ayuda, pero no sabe en qué cuenta cobraba siempre tu proveedor. <a href="https://clientebancario.bde.es/pcb/es/blog/nuevo-servicio-gratuito-de-verificacion-del-beneficiario-a-partir-del-9-de-octubre-de-2025-.html" target="_blank" rel="noopener">Banco de España</a>.</p></div></section>
+<section class="sec"><div class="w"><h2>Así se pierde el dinero de una factura</h2><ul class="g3"><li class="card"><span class="n" aria-hidden="true">1</span><p>El correo parece del proveedor de siempre. Mismo logo, misma firma, factura real. Solo cambia el IBAN.</p></li><li class="card"><span class="n" aria-hidden="true">2</span><p>Pagas. El banco ejecuta la transferencia y casi nunca la recupera.</p></li><li class="card"><span class="n" aria-hidden="true">3</span><p>Te enteras semanas después, cuando el proveedor reclama la factura que cree impagada.</p></li></ul></div></section>
+<section class="sec alt"><div class="w"><h2>Qué hace Verifix por ti</h2><ul class="g4"><li class="ben"><svg class="ic" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3 5 8v8c0 7 4.6 11.6 11 13 6.4-1.4 11-6 11-13V8z"/><path d="M11 16h10"/></svg><h3>Retiene el pago antes de la transferencia</h3><p>Si el IBAN no coincide, el pago se queda parado en tu programa o te avisamos antes de que lo hagas a mano.</p></li><li class="ben"><svg class="ic" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="14" height="26" rx="3"/><path d="m12.5 15 2.5 2.5 5-5.5"/></svg><h3>Confirmación fuera del correo, desde el móvil</h3><p>Quien autoriza confirma por un canal registrado de antemano, nunca por el teléfono o el correo del mensaje.</p></li><li class="ben"><svg class="ic" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h11l6 6v20H8z"/><path d="M19 3v6h6M12 16h9M12 21h9"/></svg><h3>Registro probatorio para el seguro</h3><p>Queda constancia de quién aprobó qué, lista para tu gestoría, tu auditor o tu seguro.</p></li><li class="ben"><svg class="ic" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h22M5 20h22"/><path d="m22 7 5 5-5 5M10 15l-5 5 5 5" transform="translate(0 -2)"/></svg><h3>Sin cambiar de banco ni de programa</h3><p>Verifix se coloca antes del pago, con tu banco y tu programa de siempre.</p></li></ul></div></section>
+<section class="sec"><div class="w"><h2>Cómo funciona</h2><ol class="steps"><li class="step"><div class="st-t"><span class="sn" aria-hidden="true">1</span><p>Recibe tus facturas como siempre. Verifix lee solo facturas: las que entran en tu buzón de facturación, las de tu programa contable y, si activas el complemento de Outlook o Gmail, las que llegan a tu bandeja. Nada más de tu correo.</p></div><div class="st-m"><div class="mk" aria-hidden="true"><div class="mk-h"><span>Factura recibida</span><b>Ejemplo</b></div>
+<p class="mk-i">Suministros Ejemplo SL · Factura 2026-118 · 4.830,00 EUR</p><p class="mk-old"><small>buzón de facturación</small></p><p class="mk-old">ES98 •••• •••• 0032</p></div></div></li><li class="step rev"><div class="st-t"><span class="sn" aria-hidden="true">2</span><p>Detecta el IBAN nuevo o cambiado. Lo compara con el que tenías de ese proveedor. Si no coincide, retiene el pago en tu programa o te avisa antes de que lo hagas a mano.</p></div><div class="st-m"><div class="mk" aria-hidden="true"><div class="mk-h"><span>Verifix · ahora</span><b>Ejemplo</b></div>
+<p class="mk-i">Suministros Ejemplo SL · Factura 2026-118 · 4.830,00 EUR</p>
+<p class="mk-old"><s>ES12 •••• •••• 4471</s> <small>(habitual)</small></p>
+<p class="mk-new">ES98 •••• •••• 0032 <small>(nuevo)</small></p>
+<p><span class="tag">IBAN distinto al habitual</span></p>
+<p class="mk-s"><i></i>Pago retenido · esperando a Marta (Administración)</p></div></div></li><li class="step"><div class="st-t"><span class="sn" aria-hidden="true">3</span><p>Quien autoriza confirma en su móvil. Por un canal registrado de antemano, nunca por el teléfono o el correo que vienen en el mensaje. Queda constancia de quién aprobó qué.</p></div><div class="st-m"><div class="mk mk-p" aria-hidden="true"><div class="mk-h"><span>Verifix · ahora</span></div>
+<p class="mk-i">¿Confirmas el pago de 4.830,00 EUR?</p><p><small>Suministros Ejemplo SL · IBAN nuevo</small></p>
+<div class="mk-b"><span class="b-r">Rechazar</span><span class="b-g">Confirmar por teléfono</span></div></div></div></li></ol><p class="cn">Primero con Odoo y buzón de facturación; después Holded, A3 y Sage. Si pagas por remesa, pásanos el fichero de pagos antes de subirlo al banco.</p></div></section>
+<section class="sec alt"><div class="w"><h2>Para empresas y para gestorías</h2><div class="g2">
+<div class="plan plan-a"><h3>Empresa</h3><p>Pagas a proveedores por transferencia o remesa desde la factura que te llega por correo.</p><p class="pr">49 EUR/mes por empresa, pagos ilimitados</p><p class="fr">Gratis mientras dure la lista de espera</p><a class="btn" href="#hero" data-cta data-umami-event="verifix-cta" data-umami-event-tipo="empresa">Apuntar mi empresa</a></div>
+<div class="plan"><h3>Gestoría o asesoría</h3><p>Pagas nóminas o facturas por tus clientes y quieres un control igual para todos, en un solo panel.</p><p class="pr">29 EUR/mes por cliente, a partir de 5 clientes</p><p class="fr">Gratis mientras dure la lista de espera</p><a class="btn" href="#hero" data-cta data-umami-event="verifix-cta" data-umami-event-tipo="gestoria">Apuntar mi gestoría</a></div>
+</div></div></section>
+<section class="sec"><div class="w nw"><p class="mech">El método es el que recomiendan el <a href="https://clientebancario.bde.es/pcb/es/blog/cuidado-con-las-estafas-a-la-hora-de-pagar-una-factura.html" target="_blank" rel="noopener">Banco de España</a> e <a href="https://www.incibe.es/empresas/blog/fraude-del-ceo-el-engano-que-puede-vaciar-la-cuenta-de-tu-pyme" target="_blank" rel="noopener">INCIBE</a>: ante un cambio de cuenta, confirmar por otro canal antes de pagar. Verifix lo hace obligatorio y deja registro.</p><h2 class="wt">Quién está detrás</h2><p class="who">Lo construye 77 Delta, equipo de producto en Barcelona (Next Gen Academy SL). Escríbenos a <a href="mailto:hola@77delta.com">hola@77delta.com</a>: contesta una persona.</p></div></section>
+<section class="sec alt"><div class="w nw"><h2>Preguntas frecuentes</h2><details><summary>Mi banco ya verifica el beneficiario. ¿Para qué lo necesito?</summary><p>El banco comprueba que el nombre que escribes coincide con el titular del IBAN. Si el estafador te da una cuenta a su nombre y tú copias ese nombre, o si se pasa por alto el aviso, el pago sale. Verifix sabe en qué cuenta cobraba ese proveedor y frena el cambio.</p></details><details><summary>¿Leéis mi correo?</summary><p>No. Solo leemos facturas, para sacar el IBAN y el importe: las de tu buzón de facturación, las de tu programa contable y, solo si activas el complemento de Outlook o Gmail, las que llegan a tu bandeja.</p></details><details><summary>¿Tengo que cambiar de banco o de programa contable?</summary><p>No. Verifix se coloca antes del pago, con tu banco y tu programa de siempre. Empezamos por Odoo; después Holded, A3 y Sage.</p></details><details><summary>¿Ya está disponible?</summary><p>Lo estamos construyendo con las primeras empresas y gestorías de la lista. Quien se apunta entra antes y gratis mientras dure la lista de espera.</p></details><details><summary>¿Cuánto costará después?</summary><p>49 EUR al mes por empresa, con pagos ilimitados. Gestorías: 29 EUR al mes por cliente a partir de 5 clientes. Sin permanencia.</p></details><details><summary>¿Qué hacéis con mis datos?</summary><p>Solo usamos tu correo para avisarte del lanzamiento. Responsable: Next Gen Academy SL. Puedes darte de baja cuando quieras escribiendo a hola@77delta.com.</p></details></div></section>
+<section class="fin-b"><div class="w"><h2>Que el próximo cambio de IBAN no te cueste una factura.</h2><p>Únete a la lista de espera. Gratis mientras dure.</p><div class="fcard fc-d"><div class="fz" data-s="final">
+<form class="f1" novalidate>
+<div class="row"><label class="sr" for="em-final">Correo de trabajo</label><input id="em-final" name="email" type="email" autocomplete="email" inputmode="email" placeholder="tu@empresa.com" required aria-describedby="sv-final"><button class="btn" type="submit">Unirme gratis</button></div>
+<div class="hp" aria-hidden="true"><input name="web" tabindex="-1" autocomplete="off"></div>
+</form>
+<div class="ok" hidden>
+<p class="okh">Estás dentro. Te avisaremos antes del lanzamiento.</p>
+<form class="f2" novalidate>
+<p class="okx">¿Nos cuentas un poco más? Es opcional y nos ayuda a darte prioridad.</p>
+<label class="fl">Nombre de la empresa<input name="empresa" type="text" autocomplete="organization"></label>
+<div class="seg"><label><input type="radio" name="tipo-final" value="empresa" checked><span>Empresa</span></label><label><input type="radio" name="tipo-final" value="gestoria"><span>Gestoría o asesoría</span></label></div>
+<label class="chk"><input type="checkbox" name="ya"><span>Ya nos ha pasado (o casi)</span></label>
+<label class="fl">Programa contable<select name="programa"><option value="">Elige (opcional)</option><option>Holded</option><option>Sage</option><option>A3</option><option>Odoo</option><option>Quipu</option><option>Contasol</option><option value="otro">Otro</option></select></label>
+<div class="hp" aria-hidden="true"><input name="web" tabindex="-1" autocomplete="off"></div>
+<div class="acts"><button class="btn" type="submit">Guardar</button><button class="lnk" type="button" data-no>Ahora no</button></div>
+</form>
+<p class="fin" hidden>Gracias. Lo tenemos todo.</p>
+</div>
+<div class="sv err" id="sv-final" role="status" aria-live="polite"></div>
+</div></div></div></section>
 </main>
-<footer><div class="w"><p>Verifix es un producto de 77 Delta, Barcelona. Next Gen Academy SL. Sin contrato ni tarjeta.</p><p><a href="https://77delta.com/aviso-legal/">Aviso legal</a> · <a href="https://77delta.com/politica-privacidad/">Privacidad</a></p></div></footer>
+<footer class="ft"><div class="w"><p>Verifix es un producto de 77 Delta, Barcelona. Next Gen Academy SL, CIF B44861649, Carrer Penedès 27, 08184 Palau-solità i Plegamans.</p><p><a href="https://77delta.com/aviso-legal/">Aviso legal</a> · <a href="https://77delta.com/politica-privacidad/">Privacidad</a> · <a href="mailto:hola@77delta.com">hola@77delta.com</a></p></div></footer>
 <script>
 (function(){
-var f=document.getElementById('f'),s=document.getElementById('estado'),b=f.querySelector('button');
-var OK='Listo. Te avisamos antes del lanzamiento.',KO='No se pudo enviar. Inténtalo de nuevo en unos minutos.';
-f.addEventListener('submit',function(e){
-e.preventDefault();s.className='';s.textContent='';
-if(!f.email.value||!f.empresa.value||!f.email.checkValidity()){f.reportValidity();return;}
-b.disabled=true;
-fetch('https://api.77delta.com/verifix',{method:'POST',headers:{'Content-Type':'application/json'},
-body:JSON.stringify({email:f.email.value.trim(),empresa:f.empresa.value.trim(),tipo:f.tipo.value,programa:f.programa.value,ya_me_ha_pasado:f.ya.checked,idioma:'es',web:f.web.value})})
-.then(function(r){if(!r.ok)throw 0;s.className='ok';s.textContent=OK;f.reset();})
-.catch(function(){s.className='ko';s.textContent=KO;})
-.then(function(){b.disabled=false;});
-});
-})();
+var D=document,L=D.documentElement.lang,V='A',T={"sending": "Enviando...", "e_val": "Escribe un correo válido, por ejemplo nombre@empresa.com.", "e400": "Revisa el correo, parece que falta algo.", "e429": "Demasiados intentos. Espera 10 minutos y vuelve a probar.", "enet": "No hemos podido enviarlo. Inténtalo de nuevo o escríbenos a hola@77delta.com."},tipo='empresa',emp='',em='';
+var G='gmail.com googlemail.com hotmail.com hotmail.es outlook.com outlook.es live.com msn.com yahoo.com yahoo.es icloud.com me.com proton.me protonmail.com gmx.com telefonica.net'.split(' ');
+var RX=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+function ev(n,d){try{window.umami&&window.umami.track(n,d)}catch(e){}}
+function dom(e){var d=e.split('@')[1].toLowerCase();return G.indexOf(d)>-1?'':d}
+function post(b,done){var x;try{x=fetch('https://api.77delta.com/verifix',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)})}catch(e){return done('net')}
+x.then(function(r){done(r.status===200?0:(r.status===400||r.status===429?r.status:'net'))},function(){done('net')})}
+function msg(c){return c===400?T.e400:c===429?T.e429:T.enet}
+function body(s,p,o){return Object.assign({email:em,idioma:L,ya_me_ha_pasado:false,programa:'',web:'',origen:'verifix.77delta.com|v='+V+'|s='+s+'|p='+p+'|l='+L},o)}
+function goForm(t){if(t)tipo=t;var f=D.getElementById('em-hero'),r=matchMedia('(prefers-reduced-motion: reduce)').matches;f.scrollIntoView({block:'center',behavior:r?'auto':'smooth'});f.focus({preventScroll:true})}
+D.querySelectorAll('[data-cta]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();goForm(a.getAttribute('data-umami-event-tipo'))})});
+var Z=D.querySelectorAll('.fz');
+Z.forEach(function(z){
+var s=z.getAttribute('data-s'),f1=z.querySelector('.f1'),b1=f1.querySelector('button'),i=f1.email,er=z.querySelector('.sv'),
+ok=z.querySelector('.ok'),f2=z.querySelector('.f2'),e2=er,b2=f2.querySelector('button'),n1=b1.textContent;
+f1.addEventListener('submit',function(e){e.preventDefault();er.textContent='';var v=i.value.trim();
+if(!RX.test(v)){er.textContent=T.e_val;i.setAttribute('aria-invalid','true');i.focus();return}
+i.removeAttribute('aria-invalid');em=v;emp=dom(v);b1.disabled=true;b1.textContent=T.sending;
+post(body(s,1,{empresa:emp||'(sin indicar)',tipo:tipo,web:f1.web.value}),function(c){b1.disabled=false;b1.textContent=n1;
+if(c){ev('verifix-submit-error',{codigo:String(c),idioma:L});er.textContent=msg(c);return}
+if(!f1.web.value)ev('verifix-submit-ok',{idioma:L,tipo:tipo});
+Z.forEach(function(o){o.querySelector('.f1').hidden=true;var k=o.querySelector('.ok');k.hidden=false;if(o!==z)k.querySelector('.f2').hidden=true});
+f2.empresa.value=emp;f2.querySelector('input[value='+tipo+']').checked=true})});
+f2.querySelector('[data-no]').addEventListener('click',function(){f2.hidden=true;z.querySelector('.fin').hidden=false});
+f2.addEventListener('submit',function(e){e.preventDefault();e2.textContent='';b2.disabled=true;var n=b2.textContent;b2.textContent=T.sending;
+post(body(s,2,{empresa:f2.empresa.value.trim()||emp||'(sin indicar)',tipo:f2.elements['tipo-'+s].value,ya_me_ha_pasado:f2.ya.checked,programa:f2.programa.value,web:f2.web.value}),function(c){
+b2.disabled=false;b2.textContent=n;if(c){ev('verifix-submit-error',{codigo:String(c),idioma:L});e2.textContent=msg(c);return}
+if(!f2.web.value)ev('verifix-step2-ok',{idioma:L});f2.hidden=true;z.querySelector('.fin').hidden=false})})});})();
 </script>
 </body>
 </html>
