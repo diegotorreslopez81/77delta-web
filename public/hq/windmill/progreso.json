@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-15T14:00:36Z",
+  "actualizado": "2026-10-15T17:18:21Z",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
   "fases": [
     {
@@ -34,60 +34,6 @@
           "dueno": "Diego",
           "peso": 1,
           "nota": "Hecho por Diego el 14-10 ~14:30 Madrid. Verificado: windmill.77delta.com y crm.77delta.com resuelven a 178.104.108.10, HTTPS 200; .net redirige 301 a .com."
-        },
-        {
-          "id": "verifix-dns",
-          "texto": "Registro DNS de verifix.77delta.com en Namecheap",
-          "estado": "hecho",
-          "dueno": "Diego",
-          "peso": 1,
-          "fecha": "2026-10-15",
-          "nota": "Registro A verifix.77delta.com -> 178.104.108.10 creado por Diego en Namecheap (decisión #522)."
-        },
-        {
-          "id": "verifix-landing",
-          "texto": "Landing Verifix con precios en verifix.77delta.com",
-          "estado": "hecho",
-          "dueno": "Bernat",
-          "peso": 1,
-          "fecha": "2026-10-15",
-          "nota": "f23de85 en vivo, precios #529 verificados en https://verifix.77delta.com."
-        },
-        {
-          "id": "verifix-landing-v2",
-          "texto": "Landing Verifix v3: más visual, catalán y Umami (decisión #538)",
-          "estado": "hecho",
-          "dueno": "Mireia",
-          "peso": 1,
-          "fecha": "2026-10-15",
-          "nota": "PR 6 mergeado 15-10 11:59Z; publicación en curso por Bernat."
-        },
-        {
-          "id": "verifix-landing-v4",
-          "texto": "Landing Verifix v4: feedback de Diego del 15-10",
-          "estado": "en_curso",
-          "dueno": "Mireia",
-          "peso": 1,
-          "fecha": "2026-10-15",
-          "nota": "Hito 16-10 12:00 Madrid. Feedback en ~/dev/producto/po-seguridad/docs/landing-verifix-feedback-diego-2026-10-15.md"
-        },
-        {
-          "id": "verifix-campana-correo",
-          "texto": "Aprobar el correo de la campaña Verifix (tarjeta #1955, vence 16-10 12:00)",
-          "estado": "hecho",
-          "dueno": "Carla",
-          "peso": 1,
-          "fecha": "2026-10-15",
-          "nota": "Campaña enviada 15-10 12:30Z, 10 correos al día (OK de Diego, tarjetas #1955 y #1959). Sigue Carla con las respuestas."
-        },
-        {
-          "id": "verifix-fuente-leads",
-          "texto": "Decidir fuente de leads para Verifix: OK a Apollo de pago (ya usado en mayo) o 48 h más con fuentes gratis; Biel bloqueado para llegar a 300 el 16-10 12:00",
-          "estado": "hecho",
-          "dueno": "Diego",
-          "peso": 1,
-          "fecha": "2026-10-15",
-          "nota": "Decidido por Diego (HQ #536): Apollo de pago un mes, OK."
         },
         {
           "id": "f0-tls",
@@ -166,23 +112,6 @@
           "nota": "Sin OAuth: team@ conectado por IMAP (993) y SMTP (587 STARTTLS; el 465 está cerrado en VPS6). Sincroniza correo (339 mensajes importados). Envío real desde la interfaz de Twenty sin probar; login SMTP verificado. Solo team@",
           "peso": 1,
           "fecha": "2026-10-14"
-        },
-        {
-          "id": "f0-progreso",
-          "texto": "Página de progreso en HQ y artefacto para Diego",
-          "estado": "hecho",
-          "dueno": "Marc",
-          "fecha": "2026-10-14",
-          "peso": 1
-        },
-        {
-          "id": "f0-hqtab",
-          "texto": "Pestaña Progreso en HQ y menú lateral fijo",
-          "estado": "hecho",
-          "dueno": "Pol",
-          "fecha": "2026-10-14",
-          "nota": "Servido en 77delta.com (sw hq-v33); sin captura de pantalla",
-          "peso": 1
         },
         {
           "id": "f0-google",
@@ -379,15 +308,6 @@
           "dueno": "Marc",
           "peso": 1,
           "nota": "Solo al final del piloto y con OK aparte de Diego (decisión HQ del 14-10)."
-        },
-        {
-          "id": "f2-vps6-login",
-          "texto": "Login humano en VPS6 para cerrar la checklist de la tanda F (tarjeta #1392, bloqueada)",
-          "estado": "hecho",
-          "dueno": "Diego",
-          "peso": 1,
-          "fecha": "2026-10-15",
-          "nota": "Diego entró el 15-10. Tarjeta #1392 cerrada 10:03Z; 4 sesiones vivas en firma-nga-3."
         }
       ]
     },
@@ -485,15 +405,6 @@
           "nota": "Solo documento docs/f4-plan.md en rama sombra/f4-plan. Sin código hasta OK."
         },
         {
-          "id": "f4-hq5",
-          "texto": "HQ con 5 pestañas (Hoy, Licitaciones, Ventas, Dinero, Sistema): código listo y apagado, falta OK",
-          "estado": "hecho",
-          "dueno": "Pol",
-          "peso": 1,
-          "fecha": "2026-10-14",
-          "nota": "Menú 5 activo por defecto (hq.menu5=0 lo apaga); título de Progreso arreglado; sw hq-v34"
-        },
-        {
           "id": "f4-langfuse",
           "texto": "Langfuse para observar los jobs de criterio, sí o no",
           "estado": "hecho",
@@ -501,13 +412,6 @@
           "peso": 1,
           "fecha": "2026-10-14",
           "nota": "Decidido 14-10 (HQ #500): no por ahora; bastan los logs de jobs de Windmill. Se revisa tras F1"
-        },
-        {
-          "id": "f4-nuria",
-          "texto": "Nuria-HQ con ventana propia o Pol sigue con HQ",
-          "estado": "pendiente",
-          "dueno": "Marc",
-          "peso": 1
         },
         {
           "id": "f4-docs",
