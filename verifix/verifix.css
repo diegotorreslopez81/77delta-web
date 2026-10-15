@@ -30,3 +30,5 @@ label.chk input{margin-top:5px}
 #estado{margin-top:14px;font-weight:500}.ok{color:var(--exito)}.ko{color:var(--error)}
 footer{border-top:1px solid var(--linea);margin-top:64px;padding:24px 0 40px;font-size:14px;color:var(--pizarra)}
 @media(max-width:560px){body{font-size:16px}h1{margin-top:36px}}
+select{display:block;width:100%;margin-top:6px;padding:12px;border:1px solid var(--linea);border-radius:10px;background:#fff;font:16px var(--body);color:var(--tinta)}
+select:focus-visible{outline:2px solid var(--oro);outline-offset:2px}
