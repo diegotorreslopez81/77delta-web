@@ -147,7 +147,8 @@ details p{padding:0 0 16px;color:var(--mut);max-width:640px}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 
 /* v4 */
-.logo{display:inline-flex;align-items:center;gap:8px}
+.logo{display:inline-flex;align-items:baseline;gap:1px}
+.lg{align-self:center;margin-top:-2px}
 .logo b{color:var(--cta);font-weight:700}
 .lg{flex:none}
 .lg-d{transform-origin:16px 11px;animation:lgp 5s ease-in-out 1s 2}
