@@ -399,11 +399,11 @@
         {
           "id": "f3-rag-vault",
           "texto": "Dar acceso al vault para la base de conocimiento: el worker de Windmill no llega al Mac. Opciones: repo privado en GitHub o copia en el servidor",
-          "estado": "en_curso",
+          "estado": "hecho",
           "dueno": "Diego",
           "peso": 1,
           "fecha": "2026-10-15",
-          "nota": "repo privado vault-sops creado, Diego sube los SOPs, Bernat conecta el worker con deploy key de lectura"
+          "nota": "repo vault-sops publicado por Diego 15-10, 21 SOPs ingeridos, 365 chunks; embeddings pendientes de decisión de Diego"
         },
         {
           "id": "f3-rag-embeddings",
