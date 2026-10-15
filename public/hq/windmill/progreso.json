@@ -38,11 +38,11 @@
         {
           "id": "verifix-dns",
           "texto": "Registro DNS de verifix.77delta.com en Namecheap",
-          "estado": "diego",
+          "estado": "hecho",
           "dueno": "Diego",
           "peso": 1,
           "fecha": "2026-10-15",
-          "nota": "Verifix (decisión #522): crear en Namecheap el registro A verifix.77delta.com -> 178.104.108.10, TTL 300. Sin él no se puede publicar la landing."
+          "nota": "Registro A verifix.77delta.com -> 178.104.108.10 creado por Diego en Namecheap (decisión #522)."
         },
         {
           "id": "f0-tls",
@@ -399,11 +399,11 @@
         {
           "id": "f3-rag-vault",
           "texto": "Dar acceso al vault para la base de conocimiento: el worker de Windmill no llega al Mac. Opciones: repo privado en GitHub o copia en el servidor",
-          "estado": "diego",
+          "estado": "en_curso",
           "dueno": "Diego",
           "peso": 1,
           "fecha": "2026-10-15",
-          "nota": "Mientras no haya acceso, la fuente sops_vault queda inactiva (activa=false) y el RAG ingiere solo 77delta/docs."
+          "nota": "repo privado vault-sops creado, Diego sube los SOPs, Bernat conecta el worker con deploy key de lectura"
         },
         {
           "id": "f3-rag-embeddings",
