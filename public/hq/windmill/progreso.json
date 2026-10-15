@@ -1,7 +1,7 @@
 {
   "proyecto": "Windmill y Twenty",
   "descripcion": "Motor de flujos (Windmill) y CRM (Twenty) para el equipo de agentes de 77 Delta. Decisiones HQ #496 y #497.",
-  "actualizado": "2026-10-15T17:18:21Z",
+  "actualizado": "2026-10-15T17:37:48Z",
   "como_actualizar": "Cada agente edita su tarea en este fichero (estado, fecha, nota) al empezar o cerrar, hace commit y push en 77delta-web. GitHub Pages publica en un minuto. Estados: hecho, en_curso, pendiente, bloqueado, diego (espera decisión de Diego). Cada tarea lleva peso por esfuerzo (montaje 1, flow 3, semana en sombra o piloto 5); el % se calcula con ese peso.",
   "fases": [
     {
@@ -143,7 +143,7 @@
     {
       "id": "F1",
       "nombre": "Licitaciones en sombra",
-      "plazo": "15 a 28 de octubre",
+      "plazo": "15 a 21 de octubre en sombra; corte a real el 22-10 con OK de Diego",
       "dueno": "Ariadna",
       "tareas": [
         {
@@ -245,7 +245,7 @@
     {
       "id": "F2",
       "nombre": "Ventas y CRM",
-      "plazo": "desde el 15 de octubre, en paralelo con la fase 1 (adelantada por Diego el 14-10)",
+      "plazo": "piloto hasta el 21-10, paso a Twenty el 23-10 (decisión #561)",
       "dueno": "Carla, Biel y Bernat",
       "tareas": [
         {
@@ -314,7 +314,7 @@
     {
       "id": "F3",
       "nombre": "Operaciones internas",
-      "plazo": "12 a 18 de noviembre",
+      "plazo": "hasta el 24 de octubre",
       "dueno": "Bernat, Pol y Marc",
       "tareas": [
         {
@@ -393,7 +393,7 @@
     {
       "id": "F4",
       "nombre": "Sistema general",
-      "plazo": "19 a 25 de noviembre",
+      "plazo": "plan semanal desde el 26-10, cierre el 30-10",
       "dueno": "Marc y Pol",
       "tareas": [
         {
