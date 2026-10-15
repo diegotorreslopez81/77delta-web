@@ -36,16 +36,40 @@ test('fila solo lleva las columnas de la tabla', () => {
   assert.deepEqual(Object.keys(fila(validar(ok, 'ip').lead)).sort(), ['email', 'empresa', 'idioma', 'ip_hash', 'origen', 'programa', 'tipo', 'ya_me_ha_pasado']);
 });
 
-test('insertarSupabase: éxito, 500 y excepción son blandos', async () => {
+test('insertarSupabase: inserta si no existe, blando ante 500 y excepción', async () => {
   const lead = validar(ok, 'ip').lead;
   const cfg = { url: 'https://sb.test', service: 'k' };
-  let visto;
-  assert.equal(await insertarSupabase(lead, cfg, async (u, o) => { visto = { u, o }; return { ok: true, status: 201 }; }), true);
-  assert.equal(visto.u, 'https://sb.test/rest/v1/verifix_lista_espera');
-  assert.equal(JSON.parse(visto.o.body).email, 'ana@gestoria.es');
-  assert.equal(await insertarSupabase(lead, cfg, async () => ({ ok: false, status: 500 })), false);
+  const visto = [];
+  const http = async (u, o) => { visto.push({ u, o }); return o.method === 'PATCH' ? { ok: true, json: async () => [] } : { ok: true, status: 201 }; };
+  assert.equal(await insertarSupabase(lead, cfg, http), true);
+  assert.equal(visto[0].o.method, 'PATCH');
+  assert.equal(visto[0].u, 'https://sb.test/rest/v1/verifix_lista_espera?email=eq.ana%40gestoria.es&select=id');
+  assert.equal(visto[1].o.method, 'POST');
+  assert.equal(visto[1].u, 'https://sb.test/rest/v1/verifix_lista_espera');
+  assert.equal(JSON.parse(visto[1].o.body).email, 'ana@gestoria.es');
+  const falla = async (u, o) => (o.method === 'PATCH' ? { ok: true, json: async () => [] } : { ok: false, status: 500 });
+  assert.equal(await insertarSupabase(lead, cfg, falla), false);
   assert.equal(await insertarSupabase(lead, cfg, async () => { throw new Error('red'); }), false);
   assert.equal(await insertarSupabase(lead, { url: '', service: '' }, async () => { throw new Error('no debe llamarse'); }), false);
+});
+
+test('insertarSupabase: email existente se actualiza y no se inserta otra fila', async () => {
+  const lead = validar({ ...ok, empresa: 'Gil SL', programa: 'Holded', ya_me_ha_pasado: true }, 'ip').lead;
+  const llamadas = [];
+  const http = async (u, o) => { llamadas.push(o.method); return { ok: true, json: async () => [{ id: 7 }] }; };
+  assert.equal(await insertarSupabase(lead, { url: 'https://sb.test', service: 'k' }, http), true);
+  assert.deepEqual(llamadas, ['PATCH']);
+});
+
+test('insertarSupabase: PATCH solo toca empresa, tipo, idioma, ya_me_ha_pasado y programa', async () => {
+  const lead = validar(ok, 'ip').lead;
+  let cuerpo;
+  await insertarSupabase(lead, { url: 'https://sb.test', service: 'k' }, async (u, o) => { cuerpo = JSON.parse(o.body); return { ok: true, json: async () => [{ id: 1 }] }; });
+  assert.deepEqual(Object.keys(cuerpo).sort(), ['empresa', 'idioma', 'programa', 'tipo', 'ya_me_ha_pasado']);
+});
+
+test('email se guarda en minúsculas', () => {
+  assert.equal(validar({ ...ok, email: 'Ana@Gestoria.ES' }, 'ip').lead.email, 'ana@gestoria.es');
 });
 
 test('correo: asunto y destinatario', () => {
