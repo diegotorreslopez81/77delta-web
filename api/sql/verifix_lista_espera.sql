@@ -13,3 +13,6 @@ create table if not exists public.verifix_lista_espera (
 -- RLS activa y sin políticas: anon y authenticated no leen ni escriben. service_role la salta.
 alter table public.verifix_lista_espera enable row level security;
 revoke all on public.verifix_lista_espera from anon, authenticated, public;
+
+-- Migración: columna ya_me_ha_pasado (el alta indica si ya sufrió un fraude de pago). Idempotente.
+alter table public.verifix_lista_espera add column if not exists ya_me_ha_pasado boolean not null default false;
