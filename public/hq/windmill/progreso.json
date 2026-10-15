@@ -324,6 +324,15 @@
           "dueno": "Marc",
           "peso": 1,
           "nota": "Solo al final del piloto y con OK aparte de Diego (decisión HQ del 14-10)."
+        },
+        {
+          "id": "f2-vps6-login",
+          "texto": "Login humano en VPS6 para cerrar la checklist de la tanda F (tarjeta #1392, bloqueada)",
+          "estado": "diego",
+          "dueno": "Diego",
+          "peso": 1,
+          "fecha": "2026-10-15",
+          "nota": "Detalle de la tarjeta #1392: la checklist de cierre pide sesión viva de portales y LinkedIn en VPS6; ninguno tiene sesión guardada, el login es siempre manual. Portales sin sesión: PLACSP, KPE/Idazki, Sobre Digital Gencat, Vortal. LinkedIn: la cuenta de Diego y la de Irene si algún agente la usa. Qué hacer: abrir el enlace noVNC (solo por Tailscale) y entrar una vez en cada portal y en LinkedIn, resolviendo el captcha si sale. La contraseña de noVNC está en VPS6, fichero config/novnc-pass.txt de agentes-77d (no se copia aquí). La tarjeta #1391 (autotest de correo) es aparte."
         }
       ]
     },
@@ -376,6 +385,15 @@
           "nota": "PR #17: diseño docs/f3-rag.md, tablas rag.*, ingestión con 11 tests, consulta stub. PR #20: fallback por texto (tsvector), fixture con guarda y objetos de prueba propios. Sin proveedor de embeddings (decide Diego). SQL sin probar en pgvector real. 15-10: ingestión solo de 77delta/docs (checkout /srv/rag listo); falta el vault (vive en el Mac de Diego, sin repo) por decisión de Diego, fuente sops_vault inactiva (activa=false, PR #31). 15-10 verificado en producción: primera ingestión real docs77delta = 123 documentos, 1079 chunks, 0 borrados, estado ok; 1079 pendientes de embedding (sin clave). rag.buscar modo texto devuelve 5 filas para \"tablas\" y \"windmill\" (0 para \"retencion de datos\"). sops_vault inactiva (activa=false), se salta sin fila. Cron sigue apagado; encender decide el chief. 15-10: PR #38 (embeddings voyage/openai/ninguno detrás de rag.embed_proveedor, cron :15 apagado, runbook en docs/f3-rag.md), sin llamadas externas. Vault pendiente de Diego (vive en su Mac, sin repo).",
           "peso": 5,
           "fecha": "2026-10-14"
+        },
+        {
+          "id": "f3-rag-vault",
+          "texto": "Dar acceso al vault para la base de conocimiento: el worker de Windmill no llega al Mac. Opciones: repo privado en GitHub o copia en el servidor",
+          "estado": "diego",
+          "dueno": "Diego",
+          "peso": 1,
+          "fecha": "2026-10-15",
+          "nota": "Mientras no haya acceso, la fuente sops_vault queda inactiva (activa=false) y el RAG ingiere solo 77delta/docs."
         },
         {
           "id": "f3-rag-embeddings",
