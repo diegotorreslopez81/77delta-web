@@ -34,6 +34,7 @@ export const AREAS = [
   { id: 'expedientes', nombre: 'Expedientes', icono: ICONOS.expedientes, vistas: [{ clave: 'operacion/expedientes', nombre: 'Expedientes' }] },
   { id: 'tablero', nombre: 'Tablero', icono: ICONOS.operacion, vistas: [{ clave: 'operacion/tablero', nombre: 'Tablero' }] },
   { id: 'ventas', nombre: 'Ventas', icono: ICONOS.kpis, vistas: [{ clave: 'operacion/ventas', nombre: 'Ventas' }] },
+  { id: 'web', nombre: 'Web', icono: ICONOS.kpis, vistas: [{ clave: 'web', nombre: 'Web' }] },
   { id: 'salud', nombre: 'Salud', icono: ICONOS.salud, vistas: [{ clave: 'operacion/salud', nombre: 'Salud' }] },
   { id: 'progreso', nombre: 'Progreso', icono: ICONOS.salud, vistas: [{ clave: 'progreso', nombre: 'Progreso' }] },
   { id: 'admin', nombre: 'Admin', icono: ICONOS.admin, vistas: [{ clave: 'operacion/admin', nombre: 'Admin' }] },
@@ -43,7 +44,7 @@ export const AREAS = [
   { id: 'direccion', nombre: 'Plan estratégico', icono: ICONOS.direccion, vistas: [{ clave: 'direccion/objetivo', nombre: 'Plan estratégico' }] },
 ];
 // Claves que tienen vista. 'equipo/agente' no sale en el menú (es la ficha) pero es una ruta válida.
-export const CLAVES = new Set(['hoy', 'avisos', 'kpis', 'direccion/objetivo', 'operacion/tablero', 'operacion/expedientes', 'operacion/licitaciones', 'operacion/salud', 'operacion/ventas', 'operacion/admin', 'equipo/organigrama', 'equipo/colaboradores', 'equipo/agente', 'recursos/computo', 'licita-engine', 'progreso']);
+export const CLAVES = new Set(['hoy', 'avisos', 'kpis', 'direccion/objetivo', 'operacion/tablero', 'operacion/expedientes', 'operacion/licitaciones', 'operacion/salud', 'operacion/ventas', 'operacion/admin', 'equipo/organigrama', 'equipo/colaboradores', 'equipo/agente', 'recursos/computo', 'licita-engine', 'progreso', 'web']);
 // Rutas de la v2.0 (tabs): se redirigen para que no se rompa ningún enlace ya enviado en tarjetas o push.
 const VIEJAS = { inicio: 'hoy', plan: 'direccion/objetivo', tablero: 'operacion/tablero', equipo: 'equipo/organigrama', expedientes: 'operacion/expedientes' };
 // Área sin vista (o con vista desconocida): a su vista por defecto. Recursos: Cómputo desde el lote 1e (#1054); Dinero llega en la tanda 3.
