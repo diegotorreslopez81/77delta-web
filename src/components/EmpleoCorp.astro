@@ -1,0 +1,286 @@
+---
+/**
+ * Página corporativa de empleo (es, en, ca). El reto técnico con agente vive en /developer/.
+ * Sin precios ni promesas de sueldo. Noindex hasta el OK de Diego.
+ */
+import Base from '../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import Boton from './Boton.astro';
+import HeroFoto from './HeroFoto.astro';
+import Icono from './Icono.astro';
+import Cta from './Cta.astro';
+import diego from '../assets/diego.png';
+
+interface Props {
+  idioma: 'es' | 'en' | 'ca';
+}
+const { idioma } = Astro.props;
+
+const MAIL = 'team@77delta.com';
+
+const t = {
+  es: {
+    title: 'Trabaja con nosotros',
+    desc: 'Consultora de IA con base en Barcelona. Trabajamos en remoto y por proyecto con agentes y automatización.',
+    eyebrow: 'Trabaja con nosotros',
+    h1: 'Construimos con IA. Buscamos gente con criterio.',
+    p: 'Somos una consultora tecnológica de Barcelona. Ayudamos a pymes a aplicar inteligencia artificial con criterio: agentes y automatización que cambian cómo trabaja la empresa.',
+    heroAlt: 'Equipo profesional en una reunión de trabajo',
+    cta1: 'Ver cómo trabajamos',
+    quienesE: '01 · Quiénes somos',
+    quienes: 'Una consultora pequeña, con la IA en el centro.',
+    quienesP: [
+      'Somos una consultora tecnológica con base en Barcelona. Ayudamos a pymes a aplicar inteligencia artificial con criterio y sin tecnicismos.',
+      'Trabajamos con agentes, automatización de procesos y herramientas a medida. Equipos pequeños, trato directo y resultados que se pueden medir.',
+    ],
+    quienesAlt: 'Oficina abierta con escritorios y equipo trabajando',
+    comoE: '02 · Cómo trabajamos',
+    como: 'Remoto, por proyecto y con IA como herramienta.',
+    items: [
+      ['globo', 'Remoto', 'Trabajas desde donde quieras. Nos coordinamos por escrito y con reuniones cortas.'],
+      ['propuesta', 'Por proyecto', 'Colaboraciones por encargo, con alcance y plazos claros desde el principio.'],
+      ['integracion', 'Con IA en el día a día', 'Agentes y automatización forman parte del trabajo. La supervisión es siempre humana.'],
+      ['medir', 'Criterio y honestidad', 'Si algo no tiene sentido, lo decimos. Entregamos resultados que se pueden medir.'],
+    ],
+    culturaE: '03 · Cultura',
+    cultura: 'La IA aumenta a los equipos, no los sustituye.',
+    culturaP: 'Trabajamos con agentes todos los días. Por eso buscamos personas que sepan dirigirlos, revisarlos y decidir mejor que ellos.',
+    citaP: 'La diferencia no es el presupuesto. Es el criterio con el que se toman las decisiones.',
+    citaN: 'Diego Torres · Fundador y director técnico',
+    dato: '+500',
+    datoT: 'startups mentorizadas por nuestro fundador',
+    diegoAlt: 'Diego Torres, fundador de 77 Delta',
+    rolesE: '04 · Encuentra tu sitio',
+    roles: 'Dos maneras de empezar.',
+    tec: '¿Eres técnico?',
+    tecP: 'Desarrollo, datos e IA. Tenemos un proceso propio, pensado para trabajar con tu agente.',
+    tecB: 'Ver el proceso técnico',
+    tecAlt: 'Desarrolladores trabajando juntos en un equipo',
+    otro: 'Otro rol',
+    otroP: 'Marketing, gestión de proyectos, formación. Escríbenos con tu CV y el enlace a tu LinkedIn.',
+    otroAlt: 'Personas trabajando juntas con portátiles',
+    roles_: ['Marketing', 'Gestión de proyectos', 'Formación'],
+    asunto: 'Candidatura',
+    cuerpo: 'Hola,\n\nAdjunto mi CV.\nLinkedIn: \n\nUn saludo.',
+    ctaT: '¿No ves tu rol? Cuéntanos qué sabes hacer.',
+    ctaX: 'Escríbenos con tu CV y tu LinkedIn. Leemos todas las candidaturas.',
+    ctaB: 'Enviar candidatura',
+    gdpr: 'Responsable: Next Gen Academy SL (77 Delta). Usamos tus datos solo para valorar tu candidatura. Borrado: hola@77delta.com.',
+    dev: '/trabaja-con-nosotros/developer/',
+  },
+  en: {
+    title: 'Work with us',
+    desc: 'AI consultancy based in Barcelona. We work remotely and by project with agents and automation.',
+    eyebrow: 'Work with us',
+    h1: 'We build with AI. We look for people with judgement.',
+    p: 'We are a technology consultancy in Barcelona. We help small and mid-sized companies apply artificial intelligence with judgement: agents and automation that change how the business works.',
+    heroAlt: 'Professional team in a work meeting',
+    cta1: 'See how we work',
+    quienesE: '01 · Who we are',
+    quienes: 'A small consultancy with AI at the centre.',
+    quienesP: [
+      'We are a technology consultancy based in Barcelona. We help small and mid-sized companies apply artificial intelligence with judgement and without jargon.',
+      'We work with agents, process automation and custom tools. Small teams, direct contact and results you can measure.',
+    ],
+    quienesAlt: 'Open-plan office with desks and a team at work',
+    comoE: '02 · How we work',
+    como: 'Remote, by project and with AI as a tool.',
+    items: [
+      ['globo', 'Remote', 'Work from wherever you like. We coordinate in writing and with short meetings.'],
+      ['propuesta', 'By project', 'Commissioned collaborations, with clear scope and deadlines from the start.'],
+      ['integracion', 'AI every day', 'Agents and automation are part of the work. Supervision is always human.'],
+      ['medir', 'Judgement and honesty', 'If something makes no sense, we say so. We deliver results you can measure.'],
+    ],
+    culturaE: '03 · Culture',
+    cultura: 'AI augments teams, it does not replace them.',
+    culturaP: 'We work with agents every day. That is why we look for people who can direct them, review them and decide better than they do.',
+    citaP: 'The difference is not the budget. It is the judgement behind the decisions.',
+    citaN: 'Diego Torres · Founder and technical director',
+    dato: '500+',
+    datoT: 'startups mentored by our founder',
+    diegoAlt: 'Diego Torres, founder of 77 Delta',
+    rolesE: '04 · Find your place',
+    roles: 'Two ways to start.',
+    tec: 'Are you technical?',
+    tecP: 'Development, data and AI. We have our own process, designed to work with your agent.',
+    tecB: 'See the technical process',
+    tecAlt: 'Developers working together as a team',
+    otro: 'Another role',
+    otroP: 'Marketing, project management, training. Write to us with your CV and a link to your LinkedIn.',
+    otroAlt: 'People working together with laptops',
+    roles_: ['Marketing', 'Project management', 'Training'],
+    asunto: 'Application',
+    cuerpo: 'Hello,\n\nI attach my CV.\nLinkedIn: \n\nKind regards.',
+    ctaT: 'Do not see your role? Tell us what you can do.',
+    ctaX: 'Write to us with your CV and your LinkedIn. We read every application.',
+    ctaB: 'Send application',
+    gdpr: 'Controller: Next Gen Academy SL (77 Delta). We use your data only to assess your application. Deletion: hola@77delta.com.',
+    dev: '/en/work-with-us/developer/',
+  },
+  ca: {
+    title: 'Treballa amb nosaltres',
+    desc: "Consultora d'IA amb base a Barcelona. Treballem en remot i per projecte amb agents i automatització.",
+    eyebrow: 'Treballa amb nosaltres',
+    h1: 'Construïm amb IA. Busquem gent amb criteri.',
+    p: "Som una consultora tecnològica de Barcelona. Ajudem pimes a aplicar intel·ligència artificial amb criteri: agents i automatització que canvien com treballa l'empresa.",
+    heroAlt: 'Equip professional en una reunió de treball',
+    cta1: 'Veure com treballem',
+    quienesE: '01 · Qui som',
+    quienes: "Una consultora petita, amb la IA al centre.",
+    quienesP: [
+      'Som una consultora tecnològica amb base a Barcelona. Ajudem pimes a aplicar intel·ligència artificial amb criteri i sense tecnicismes.',
+      'Treballem amb agents, automatització de processos i eines a mida. Equips petits, tracte directe i resultats que es poden mesurar.',
+    ],
+    quienesAlt: 'Oficina oberta amb escriptoris i equip treballant',
+    comoE: '02 · Com treballem',
+    como: 'En remot, per projecte i amb la IA com a eina.',
+    items: [
+      ['globo', 'En remot', 'Treballes des d’on vulguis. Ens coordinem per escrit i amb reunions curtes.'],
+      ['propuesta', 'Per projecte', 'Col·laboracions per encàrrec, amb abast i terminis clars des del principi.'],
+      ['integracion', 'Amb IA cada dia', 'Agents i automatització formen part de la feina. La supervisió és sempre humana.'],
+      ['medir', 'Criteri i honestedat', 'Si alguna cosa no té sentit, ho diem. Lliurem resultats que es poden mesurar.'],
+    ],
+    culturaE: '03 · Cultura',
+    cultura: 'La IA augmenta els equips, no els substitueix.',
+    culturaP: 'Treballem amb agents cada dia. Per això busquem persones que sàpiguen dirigir-los, revisar-los i decidir millor que ells.',
+    citaP: 'La diferència no és el pressupost. És el criteri amb què es prenen les decisions.',
+    citaN: 'Diego Torres · Fundador i director tècnic',
+    dato: '+500',
+    datoT: 'startups mentoritzades pel nostre fundador',
+    diegoAlt: 'Diego Torres, fundador de 77 Delta',
+    rolesE: '04 · Troba el teu lloc',
+    roles: 'Dues maneres de començar.',
+    tec: 'Ets tècnic?',
+    tecP: 'Desenvolupament, dades i IA. Tenim un procés propi, pensat per treballar amb el teu agent.',
+    tecB: 'Veure el procés tècnic',
+    tecAlt: 'Desenvolupadors treballant junts en equip',
+    otro: 'Un altre rol',
+    otroP: 'Màrqueting, gestió de projectes, formació. Escriu-nos amb el teu CV i l’enllaç al teu LinkedIn.',
+    otroAlt: 'Persones treballant juntes amb portàtils',
+    roles_: ['Màrqueting', 'Gestió de projectes', 'Formació'],
+    asunto: 'Candidatura',
+    cuerpo: 'Hola,\n\nAdjunto el meu CV.\nLinkedIn: \n\nUna salutació.',
+    ctaT: 'No veus el teu rol? Explica’ns què saps fer.',
+    ctaX: 'Escriu-nos amb el teu CV i el teu LinkedIn. Llegim totes les candidatures.',
+    ctaB: 'Enviar candidatura',
+    gdpr: 'Responsable: Next Gen Academy SL (77 Delta). Fem servir les teves dades només per valorar la teva candidatura. Esborrament: hola@77delta.com.',
+    dev: '/ca/treballa-amb-nosaltres/developer/',
+  },
+}[idioma];
+
+const rutas = { es: '/trabaja-con-nosotros/', en: '/en/work-with-us/', ca: '/ca/treballa-amb-nosaltres/' };
+const lang = idioma === 'en' ? 'en' : undefined;
+const alternates =
+  idioma === 'en'
+    ? [
+        { hreflang: 'es', href: rutas.es },
+        { hreflang: 'ca', href: rutas.ca },
+        { hreflang: 'en', href: rutas.en },
+      ]
+    : undefined;
+const mailtoGeneral = `mailto:${MAIL}?subject=${encodeURIComponent(t.asunto)}&body=${encodeURIComponent(t.cuerpo)}`;
+const mailto = (rol: string) =>
+  `mailto:${MAIL}?subject=${encodeURIComponent(`${t.asunto} - ${rol}`)}&body=${encodeURIComponent(t.cuerpo)}`;
+---
+
+<Base title={t.title} description={t.desc} noindex={true} lang={lang} alternates={alternates} selectorIdioma={false}>
+  <section class="wrap py-24 md:py-32">
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>{t.eyebrow}</p>
+        <h1 class="mt-7 max-w-[16ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]" data-reveal>{t.h1}</h1>
+        <p class="mt-8 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>{t.p}</p>
+        <div class="mt-10 flex flex-wrap gap-3" data-reveal>
+          <Boton href="#como">{t.cta1}</Boton>
+        </div>
+      </div>
+      <HeroFoto foto="equipo" alt={t.heroAlt} class="lg:col-span-5" />
+    </div>
+  </section>
+
+  <section class="hairline">
+    <div class="wrap grid items-center gap-12 py-24 md:grid-cols-12 md:py-32">
+      <div class="md:col-span-6" data-reveal>
+        <p class="eyebrow">{t.quienesE}</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">{t.quienes}</h2>
+        <div class="mt-8 space-y-5 text-[17px] text-pizarra">{t.quienesP.map((x) => <p>{x}</p>)}</div>
+      </div>
+      <div class="md:col-span-6" data-reveal>
+        <img src="/img/fotos/diagnostico-1600.webp" srcset="/img/fotos/diagnostico-900.webp 900w, /img/fotos/diagnostico-1600.webp 1600w" sizes="(min-width: 768px) 45vw, 100vw" alt={t.quienesAlt} loading="lazy" decoding="async" class="aspect-[5/4] w-full rounded-[20px] object-cover shadow-[0_30px_80px_rgba(10,22,40,.18)]" />
+      </div>
+    </div>
+  </section>
+
+  <section id="como" class="hairline bg-panel scroll-mt-20">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">{t.comoE}</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">{t.como}</h2>
+      </div>
+      <ul class="mt-16 grid gap-x-12 gap-y-12 sm:grid-cols-2 lg:grid-cols-4" role="list">
+        {
+          t.items.map(([ic, a, b]) => (
+            <li class="border-t border-linea pt-6" data-reveal>
+              <span class="flex h-12 w-12 items-center justify-center rounded-[12px] border border-linea bg-marfil text-oro-oscuro"><Icono nombre={ic as any} class="h-6 w-6" /></span>
+              <h3 class="mt-5 font-display text-[20px] font-semibold">{a}</h3>
+              <p class="mt-3 text-[16px] text-pizarra">{b}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="relative isolate overflow-hidden bg-marino text-marfil">
+    <div class="wrap grid items-center gap-12 py-24 md:grid-cols-12 md:py-32">
+      <div class="md:col-span-7" data-reveal>
+        <p class="eyebrow !text-oro-luz">{t.culturaE}</p>
+        <h2 class="mt-5 max-w-[20ch] font-display text-[clamp(28px,3.6vw,48px)] font-extralight leading-[1.1] tracking-[-0.03em]">{t.cultura}</h2>
+        <p class="mt-6 max-w-[54ch] text-[17px] text-marfil/78">{t.culturaP}</p>
+        <figure class="mt-10 max-w-[54ch] border-l border-oro-luz pl-6">
+          <blockquote class="font-display text-[clamp(20px,2.2vw,26px)] font-extralight leading-[1.25] tracking-[-0.02em]">{t.citaP}</blockquote>
+          <figcaption class="mt-4 font-mono text-[12px] uppercase tracking-[0.14em] text-marfil/70">{t.citaN}</figcaption>
+        </figure>
+      </div>
+      <div class="md:col-span-5" data-reveal>
+        <Image src={diego} width={720} format="webp" alt={t.diegoAlt} loading="lazy" class="w-full max-w-[360px] rounded-[16px] border border-marfil/15 object-cover" />
+        <p class="mt-8 font-display text-[clamp(44px,6vw,76px)] font-extralight leading-none tracking-[-0.03em] text-oro-luz">{t.dato}</p>
+        <p class="mt-2 text-[15px] text-marfil/78">{t.datoT}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="hairline">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">{t.rolesE}</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">{t.roles}</h2>
+      </div>
+      <div class="mt-16 grid gap-8 md:grid-cols-2">
+        <article class="overflow-hidden rounded-[20px] border border-linea bg-panel" data-reveal>
+          <img src="/img/fotos/gerente-900.webp" alt={t.tecAlt} loading="lazy" decoding="async" class="aspect-[16/9] w-full object-cover" />
+          <div class="p-8 md:p-10">
+            <span class="flex h-12 w-12 items-center justify-center rounded-[12px] border border-linea bg-marfil text-oro-oscuro"><Icono nombre="produccion" class="h-6 w-6" /></span>
+            <h3 class="mt-5 font-display text-[clamp(24px,2.6vw,32px)] font-extralight tracking-[-0.02em]">{t.tec}</h3>
+            <p class="mt-4 text-[17px] text-pizarra">{t.tecP}</p>
+            <div class="mt-8"><Boton href={t.dev}>{t.tecB} →</Boton></div>
+          </div>
+        </article>
+        <article class="overflow-hidden rounded-[20px] border border-linea bg-panel" data-reveal>
+          <img src="/img/fotos/formacion-900.webp" alt={t.otroAlt} loading="lazy" decoding="async" class="aspect-[16/9] w-full object-cover" />
+          <div class="p-8 md:p-10">
+            <span class="flex h-12 w-12 items-center justify-center rounded-[12px] border border-linea bg-marfil text-oro-oscuro"><Icono nombre="partner" class="h-6 w-6" /></span>
+            <h3 class="mt-5 font-display text-[clamp(24px,2.6vw,32px)] font-extralight tracking-[-0.02em]">{t.otro}</h3>
+            <p class="mt-4 text-[17px] text-pizarra">{t.otroP}</p>
+            <div class="mt-8 flex flex-wrap gap-3">
+              {t.roles_.map((r) => <Boton href={mailto(r)} variante="linea">{r}</Boton>)}
+            </div>
+          </div>
+        </article>
+      </div>
+      <p class="mt-8 max-w-[72ch] text-[14px] text-pizarra">{t.gdpr}</p>
+    </div>
+  </section>
+
+  <Cta titulo={t.ctaT} texto={t.ctaX} boton={t.ctaB} enlace={mailtoGeneral} />
+</Base>
