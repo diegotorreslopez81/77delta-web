@@ -1,6 +1,6 @@
 // Avisos (#2159): lo que ha llegado por notificación push al móvil o al navegador, del más nuevo al más viejo.
 // Sirve para releer un aviso que se cerró o se perdió. Sin datos o sin IndexedDB se dice claro, no se deja vacío.
-import { el, fecha } from '../ui.js';
+import { el, fecha, confirmar } from '../ui.js';
 import { listar, marcarLeido, marcarTodosLeidos, vaciar, sinLeer, enlaceApp } from '../avisos.js';
 
 const ACCIONES = { listar, marcarLeido, marcarTodosLeidos, vaciar };
@@ -35,7 +35,7 @@ export async function render(raiz, S, arg, filtros, ahora = new Date()) {
     el('h2', { text: 'Avisos' }),
     el('span', { class: 'sub', text: avisos.length ? `${nuevos} sin leer de ${avisos.length}` : '' }),
     nuevos ? el('button', { class: 'btn', type: 'button', text: 'Marcar todo leído', onclick: () => acciones.marcarTodosLeidos().then(recargar).catch(() => {}) }) : null,
-    avisos.length ? el('button', { class: 'btn peligro', type: 'button', text: 'Vaciar', onclick: () => acciones.vaciar().then(recargar).catch(() => {}) }) : null]);
+    avisos.length ? el('button', { class: 'btn peligro', type: 'button', text: 'Vaciar', onclick: async () => { if (await confirmar('Vaciar avisos', 'Se borran todos los avisos de este dispositivo. No se puede deshacer.', 'Vaciar')) acciones.vaciar().then(recargar).catch(() => {}); } }) : null]);
   raiz.append(el('section', { class: 'avisos' }, [
     cab,
     avisos.length
