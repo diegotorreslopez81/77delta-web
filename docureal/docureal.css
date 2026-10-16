@@ -197,3 +197,5 @@ details p{padding:0 0 16px;color:var(--mut);max-width:640px}
 .fin-b .fcard a{color:var(--cta)}
 @media(max-width:519px){.hd-i{gap:8px}.hd .btn-s{padding:0 10px;font-size:13px;white-space:nowrap}.hd .lang{padding:0 4px}}
 @media(max-width:439px){.hd-r{gap:6px}.hd .lang{font-size:13px;padding:0 2px}.hd .btn-s{font-size:12px;padding:0 8px;min-height:40px;line-height:1.1;text-align:center;max-width:104px;white-space:normal}.logo{font-size:18px}}
+
+.logo{align-items:center;gap:8px}.lg{width:22px;height:22px;margin:0;align-self:center}.lw{font-weight:700;color:var(--ink)}.logo small{margin-left:2px;color:var(--mut)}
