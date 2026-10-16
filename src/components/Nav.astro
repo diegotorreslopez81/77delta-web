@@ -122,7 +122,7 @@ const enlaceOtroIdioma = idioma === 'ca' ? equivalenteEs(actual) : equivalenteCa
     </div>
   </div>
 
-  <div id="menu-movil" class="hidden border-t border-marfil/10 bg-marino shadow-[0_16px_40px_rgba(0,0,0,.35)] lg:hidden" data-menu>
+  <div id="menu-movil" class="absolute inset-x-0 top-full hidden h-[calc(100dvh-72px)] overflow-y-auto overscroll-contain border-t border-marfil/10 bg-marino shadow-[0_16px_40px_rgba(0,0,0,.35)] lg:hidden" data-menu>
     <nav aria-label="Principal, móvil" class="wrap flex flex-col py-3">
       {idiomas && <SelectorIdiomas idiomas={idiomas} class="px-3 pb-3 pt-1 sm:hidden" />}
       {
@@ -180,6 +180,14 @@ const enlaceOtroIdioma = idioma === 'ca' ? equivalenteEs(actual) : equivalenteCa
     boton.setAttribute('aria-expanded', String(!abierto));
     boton.setAttribute('aria-label', abierto ? 'Abrir menú' : 'Cerrar menú');
     menu?.classList.toggle('hidden', abierto);
+    // Con el menú abierto, el scroll es del panel y no de la página de detrás.
+    document.body.classList.toggle('overflow-hidden', !abierto);
+  });
+  // Al pasar a escritorio con el menú abierto, se libera el scroll.
+  matchMedia('(min-width: 1024px)').addEventListener('change', (e) => {
+    if (e.matches) {
+      document.body.classList.remove('overflow-hidden');
+    }
   });
 
   // Elección manual de idioma: se recuerda, para que el script de detección de Base.astro no la pise.
