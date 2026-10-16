@@ -6,11 +6,14 @@ interface Props {
   titulo?: string;
   texto?: string;
   boton?: string;
+  /** Destino del botón; por defecto la página de contacto. */
+  enlace?: string;
 }
 const {
   titulo = '30 minutos. Sin compromiso. La decisión es tuya.',
   texto = 'Entrevista estructurada con tu empresa. Te entregamos una propuesta personalizada con estado inicial, plan de trabajo y presupuesto.',
   boton = 'Reservar diagnóstico gratuito',
+  enlace,
 } = Astro.props;
 const href = Astro.currentLocale === 'ca' ? hrefCa : hrefEs;
 ---
@@ -32,7 +35,7 @@ const href = Astro.currentLocale === 'ca' ? hrefCa : hrefEs;
     </h2>
     <p class="mx-auto mt-6 max-w-[56ch] text-[clamp(16px,1.3vw,19px)] text-marfil/78">{texto}</p>
     <a
-      href={href('/contacto/')}
+      href={enlace ?? href('/contacto/')}
       class="mt-10 inline-flex items-center gap-2 rounded-[10px] bg-oro px-8 py-4 text-[16px] font-bold text-marfil shadow-[0_12px_40px_rgba(167,120,27,.35)] transition-[background-color,color,transform] duration-200 hover:-translate-y-0.5 hover:bg-marfil hover:text-tinta"
     >
       {boton} →
