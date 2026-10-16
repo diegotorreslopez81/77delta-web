@@ -7,7 +7,9 @@ Endpoint del formulario de contacto de 77delta.com. Node 22 sin framework, `node
 - `GET /health` devuelve `{ok, smtp}`.
 - Cada lead se guarda en `LEADS_FILE` y, si hay SMTP, se envía a `MAIL_TO` con `Reply-To` del remitente.
 
-Variables: `SMTP_HOST`, `SMTP_PORT` (465), `SMTP_SECURE` (true), `SMTP_USER`, `SMTP_PASS`, `MAIL_TO`, `MAIL_FROM`, `CORS_ORIGINS` (si se define en Coolify, debe incluir `https://verifix.77delta.com`).
+- `POST /docureal` con JSON `{email, empresa, tipo (agencia|administrador|aseguradora|otro), idioma (es|en|ca), candidaturas_mes, ya_me_paso, preferencia_precio, comentario, origen, web}`: demo de DocuReal. Calco de `/verifix`: upsert por email (el paso 2 reenvía con `comentario`), `LEADS_FILE`, Supabase `docureal_lista_espera` (fallo blando), correo a `MAIL_TO`, límite propio de 5 por IP cada 10 min, IP solo como hash. Migración: `api/sql/docureal_lista_espera.sql`. Tests: `node --test api/docureal.test.mjs`.
+
+Variables: `SMTP_HOST`, `SMTP_PORT` (465), `SMTP_SECURE` (true), `SMTP_USER`, `SMTP_PASS`, `MAIL_TO`, `MAIL_FROM`, `CORS_ORIGINS` (si se define en Coolify, debe incluir `https://verifix.77delta.com` y `https://docureal.77delta.com`).
 Desplegado con Coolify (VPS6) desde esta carpeta.
 
 ## Despliegue
