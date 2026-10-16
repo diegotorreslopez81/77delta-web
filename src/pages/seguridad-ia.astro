@@ -1,0 +1,7 @@
+---
+// Ruta raíz efímera, retirada. Puente directo a /ciberseguridad/ (no al puente de /servicios/seguridad-ia/,
+// para no encadenar dos saltos). Como página propia y no como redirect de Astro, porque el redirect genera noindex.
+import Puente from '../components/Puente.astro';
+---
+
+<Puente destino="/ciberseguridad/" />

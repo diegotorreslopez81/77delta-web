@@ -1,6 +1,6 @@
 ---
 /**
- * JSON-LD: Organization en la home (es/ca) y Service en /servicios/<x>/.
+ * JSON-LD: Organization en la home (es/ca), Service en /servicios/<x>/ y en las cuatro líneas de trabajo.
  * Todo sale de site.ts y de los props de la página; nada inventado.
  */
 import { site, nav, navCa } from '../lib/site';
@@ -19,7 +19,9 @@ const { title, description, idioma, canonical, lang, migas } = Astro.props;
 const origen = new URL('/', Astro.site).href;
 const ruta = new URL(canonical).pathname.replace(/^\/ca(?=\/)/, '');
 const esHome = ruta === '/';
-const esServicio = /^\/servicios\/[^/]+\/$/.test(ruta) || /^\/(ayuntamientos|ajuntaments|gl\/concellos|eu\/udalak)\/$/.test(ruta);
+// Líneas de trabajo del reorden de 2026-10 (es y ca), también Service.
+const esLinea = /^\/(inteligencia-artificial|ciberseguridad|identidad-digital|espacios-de-datos|intel-ligencia-artificial|ciberseguretat|identitat-digital|espais-de-dades)\/$/.test(ruta);
+const esServicio = esLinea || /^\/servicios\/[^/]+\/$/.test(ruta) || /^\/(ayuntamientos|ajuntaments|gl\/concellos|eu\/udalak)\/$/.test(ruta);
 const esProducto = /^\/productos\/[^/]+\/$/.test(ruta);
 
 const organizacion = {

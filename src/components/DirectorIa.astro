@@ -35,7 +35,7 @@ const opciones = orden.map((i) => ({
 }));
 
 const enlace = idioma === 'ca' ? hrefCa : href;
-const rutaServicios = idioma === 'ca' ? hrefCa('/servicios/') : href('/servicios/');
+const rutaServicios = idioma === 'ca' ? hrefCa('/intel-ligencia-artificial/') : href('/inteligencia-artificial/');
 const otros = idioma === 'en' ? [] : (idioma === 'ca' ? resumenCa : resumenEs);
 const whatsapp = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(c.whatsappTexto)}`;
 const faqJson = JSON.stringify({

@@ -1,0 +1,56 @@
+---
+import Base from '../../layouts/Base.astro';
+import HeroFoto from '../../components/HeroFoto.astro';
+import Boton from '../../components/Boton.astro';
+import Cta from '../../components/Cta.astro';
+import { href } from '../../lib/site';
+---
+
+<Base
+  title="Herramientas"
+  description="Herramientas de 77 Delta: Licita, para detectar y resumir licitaciones, y Corpora, formación en salud para equipos. Dos herramientas propias para tu empresa."
+>
+  <!-- Hero -->
+  <section class="wrap py-24 md:py-32">
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Herramientas</p>
+        <h1
+          class="mt-7 max-w-[20ch] font-display text-[clamp(32px,4.2vw,54px)] font-extralight leading-[1.06] tracking-[-0.035em]"
+          data-reveal
+        >
+          Dos herramientas propias, <span class="font-semibold text-oro-oscuro">listas para usar</span> desde el primer día.
+        </h1>
+        <p class="mt-8 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Junto a las líneas de consultoría, tenemos dos herramientas que usamos nosotros y ponemos a disposición de tu empresa.
+        </p>
+      </div>
+      <HeroFoto foto="oficina" alt="Equipo trabajando en una oficina" class="lg:col-span-5" />
+    </div>
+  </section>
+
+  <!-- Las dos herramientas -->
+  <section class="hairline bg-panel">
+    <div class="wrap grid gap-6 py-24 md:grid-cols-2 md:py-32">
+      <article class="flex flex-col rounded-[4px] border border-linea bg-marfil p-8 md:p-10" data-reveal>
+        <p class="eyebrow">Licitaciones</p>
+        <h2 class="mt-5 font-display text-[clamp(26px,3.2vw,38px)] font-semibold leading-[1.1] tracking-[-0.02em]">Licita</h2>
+        <p class="mt-6 flex-1 text-[16px] text-pizarra">Rastrea licitaciones publicadas en las 17 comunidades autónomas y en las plataformas europeas (TED), todos los días. Descarta lo que no encaja con lo que tu empresa sabe hacer y resume cada pliego en una ficha corta: fecha de cierre, importe, solvencia exigida y el motivo concreto para ir o no ir.</p>
+        <Boton href={href('/licita/')} class="mt-8 self-start">Ver Licita →</Boton>
+      </article>
+      <article id="corpora" class="flex flex-col scroll-mt-24 rounded-[4px] border border-linea bg-marfil p-8 md:p-10" data-reveal>
+        <p class="eyebrow">Formación en salud para empresas</p>
+        <h2 class="mt-5 font-display text-[clamp(26px,3.2vw,38px)] font-semibold leading-[1.1] tracking-[-0.02em]">Corpora</h2>
+        <p class="mt-6 flex-1 text-[16px] text-pizarra">Formaciones en salud para equipos profesionales, impartidas por una fisioterapeuta y profesora universitaria. Contenidos fundamentados en la evidencia y aplicados al puesto de trabajo. Presencial u online, en castellano y catalán.</p>
+        <p class="mt-6 font-mono text-[12px] uppercase tracking-[0.14em] text-oro-oscuro">Formación bonificable por FUNDAE</p>
+        <Boton href="https://corpora.cat" variante="linea" externo class="mt-8 self-start">Visitar corpora.cat →</Boton>
+      </article>
+    </div>
+  </section>
+
+  <Cta
+    titulo="Hablemos de cuál te sirve."
+    texto="30 minutos para entender tu realidad y decirte si alguna de las dos encaja."
+    boton="Reservar diagnóstico"
+  />
+</Base>

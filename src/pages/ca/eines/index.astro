@@ -1,0 +1,56 @@
+---
+import Base from '../../../layouts/Base.astro';
+import HeroFoto from '../../../components/HeroFoto.astro';
+import Boton from '../../../components/Boton.astro';
+import Cta from '../../../components/Cta.astro';
+import { hrefCa as href } from '../../../lib/site';
+---
+
+<Base
+  title="Eines"
+  description="Eines de 77 Delta: Licita, per detectar i resumir licitacions, i Corpora, formació en salut per a equips. Dues eines pròpies al servei de la teva empresa."
+>
+  <!-- Hero -->
+  <section class="wrap py-24 md:py-32">
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Eines</p>
+        <h1
+          class="mt-7 max-w-[20ch] font-display text-[clamp(32px,4.2vw,54px)] font-extralight leading-[1.06] tracking-[-0.035em]"
+          data-reveal
+        >
+          Dues eines pròpies, <span class="font-semibold text-oro-oscuro">a punt per fer servir</span> des del primer dia.
+        </h1>
+        <p class="mt-8 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Al costat de les línies de consultoria, tenim dues eines que fem servir nosaltres i posem a disposició de la teva empresa.
+        </p>
+      </div>
+      <HeroFoto foto="oficina" alt="Equip treballant en una oficina" class="lg:col-span-5" />
+    </div>
+  </section>
+
+  <!-- Las dos herramientas -->
+  <section class="hairline bg-panel">
+    <div class="wrap grid gap-6 py-24 md:grid-cols-2 md:py-32">
+      <article class="flex flex-col rounded-[4px] border border-linea bg-marfil p-8 md:p-10" data-reveal>
+        <p class="eyebrow">Licitacions</p>
+        <h2 class="mt-5 font-display text-[clamp(26px,3.2vw,38px)] font-semibold leading-[1.1] tracking-[-0.02em]">Licita</h2>
+        <p class="mt-6 flex-1 text-[16px] text-pizarra">Rastreja licitacions publicades a les 17 comunitats autònomes i a les plataformes europees (TED), cada dia. Descarta el que no encaixa amb el que la teva empresa sap fer i resumeix cada plec en una fitxa curta: data de tancament, import, solvència exigida i el motiu concret per anar-hi o no.</p>
+        <Boton href={href('/licita/')} class="mt-8 self-start">Veure Licita →</Boton>
+      </article>
+      <article id="corpora" class="flex flex-col scroll-mt-24 rounded-[4px] border border-linea bg-marfil p-8 md:p-10" data-reveal>
+        <p class="eyebrow">Formació en salut per a empreses</p>
+        <h2 class="mt-5 font-display text-[clamp(26px,3.2vw,38px)] font-semibold leading-[1.1] tracking-[-0.02em]">Corpora</h2>
+        <p class="mt-6 flex-1 text-[16px] text-pizarra">Formacions en salut per a equips professionals, impartides per una fisioterapeuta i professora universitària. Continguts fonamentats en l’evidència i aplicats al lloc de treball. Presencial o online, en castellà i català.</p>
+        <p class="mt-6 font-mono text-[12px] uppercase tracking-[0.14em] text-oro-oscuro">Formació bonificable per FUNDAE</p>
+        <Boton href="https://corpora.cat" variante="linea" externo class="mt-8 self-start">Visitar corpora.cat →</Boton>
+      </article>
+    </div>
+  </section>
+
+  <Cta
+    titulo="Parlem de quina eina et serveix."
+    texto="30 minuts per entendre la teva realitat i dir-te si alguna de les dues encaixa."
+    boton="Reservar diagnòstic"
+  />
+</Base>

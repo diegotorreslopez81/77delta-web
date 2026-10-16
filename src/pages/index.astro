@@ -10,7 +10,7 @@ import { site } from '../lib/site';
 import { casos, familias } from '../data/casos-de-uso';
 ---
 
-<Base title="" description={site.descripcion}>
+<Base title="" description="Consultora tecnológica de Barcelona: IA, ciberseguridad, identidad digital y espacios de datos. Diagnóstico gratuito para pymes.">
 <div class="home">
 <!-- HERO -->
 <section class="hero">
@@ -19,10 +19,11 @@ import { casos, familias } from '../data/casos-de-uso';
       <div>
         <div class="pill"><span class="badge"></span>Acreditados por ACCIÓ</div>
         <h1>Aplicamos la IA para <em>ahorrar costes</em> a tu empresa.</h1>
-        <p class="lead">Consultora tecnológica especializada en pymes. Diagnóstico gratuito, transformación operativa con IA y partner tecnológico.</p>
+        <p class="lead">Consultora tecnológica para pymes. IA para ahorrar costes y, junto a ella, ciberseguridad, identidad digital y espacios de datos.</p>
+        <p class="tambien">También trabajamos en: <a href="/ciberseguridad/">Ciberseguridad</a> · <a href="/identidad-digital/">Identidad digital</a> · <a href="/espacios-de-datos/">Espacios de datos</a></p>
         <div class="ctas">
           <a href="/contacto/" class="btn-primary">Reservar diagnóstico <span>→</span></a>
-          <a href="/servicios/" class="btn-ghost">Ver cómo trabajamos</a>
+          <a href="#lineas" class="btn-ghost">Ver las cuatro líneas</a>
         </div>
       </div>
       <div class="photo">
@@ -66,11 +67,48 @@ import { casos, familias } from '../data/casos-de-uso';
   </div>
 </section>
 
+<!-- CUATRO LÍNEAS -->
+<section class="lineas" id="lineas">
+  <div class="cont">
+    <div class="section-head">
+      <span class="section-tag">Cuatro líneas de trabajo</span>
+      <h2>Conocimiento, consultoría y desarrollo en cuatro frentes.</h2>
+      <p>La IA sigue siendo el punto de entrada. Las otras tres líneas cubren lo que una pyme necesita para usarla con seguridad y con datos fiables.</p>
+    </div>
+    <div class="lineas-grid">
+      <a href="/inteligencia-artificial/" class="linea-card principal">
+        <div class="num">01</div>
+        <h3>Inteligencia artificial</h3>
+        <p>Reduce costes con IA aplicada a tus procesos, de la idea a la puesta en marcha. Director de IA, diagnóstico, transformación operativa y partner tecnológico.</p>
+        <div class="go"><span>Ver la línea</span><span class="arrow">→</span></div>
+      </a>
+      <a href="/ciberseguridad/" class="linea-card">
+        <div class="num">02</div>
+        <h3>Ciberseguridad</h3>
+        <p>Detecta y cierra los puntos débiles antes de que los encuentre otro. Consultoría, auditoría y desarrollo seguro.</p>
+        <div class="go"><span>Ver la línea</span><span class="arrow">→</span></div>
+      </a>
+      <a href="/identidad-digital/" class="linea-card">
+        <div class="num">03</div>
+        <h3>Identidad digital</h3>
+        <p>Credenciales verificables y cartera europea de identidad digital. Te ayudamos a entender el modelo SSI, decidir qué te conviene y construirlo.</p>
+        <div class="go"><span>Ver la línea</span><span class="arrow">→</span></div>
+      </a>
+      <a href="/espacios-de-datos/" class="linea-card">
+        <div class="num">04</div>
+        <h3>Espacios de datos</h3>
+        <p>Comparte datos con clientes y proveedores sin perder el control sobre ellos. Conocimiento y consultoría sobre Gaia-X e IDSA, y desarrollo de conectores.</p>
+        <div class="go"><span>Ver la línea</span><span class="arrow">→</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- SERVICIOS -->
 <section class="services" id="servicios">
   <div class="cont">
     <div class="section-head">
-      <span class="section-tag">Cómo trabajamos</span>
+      <span class="section-tag">Inteligencia artificial · Cómo trabajamos</span>
       <h2>Empezamos por un diagnóstico. Después, tú decides el recorrido.</h2>
       <p>Cada empresa es distinta. El proceso es lineal: primero entendemos tu realidad, luego construimos la transformación y, si quieres, te acompañamos en el medio y largo plazo como tu partner tecnológico.</p>
     </div>
@@ -137,11 +175,10 @@ import { casos, familias } from '../data/casos-de-uso';
         <span class="section-tag">Seguridad de IA</span>
         <h2>Tu chatbot <em>revela más información de la que crees.</em></h2>
         <p>Publicar un asistente con IA en la web es rápido. Auditarlo es poco habitual. Lo probamos como lo haría un atacante y te mostramos qué información se le escapa: las instrucciones internas, los precios que no debería dar, los datos de clientes a los que llega y lo que dice cuando se le aparta de su guion.</p>
-        <p class="aisec-nota">Lo hacemos con LeakAI, la herramienta que hemos construido para esto. Con ella rastreamos 391 webs españolas en septiembre de 2026 y seguimos auditando a fondo los asistentes con IA que encontramos. El diagnóstico es gratuito. El servicio de pago consiste en corregir las vulnerabilidades detectadas.</p>
+        <p class="aisec-nota">Revisamos tu asistente con pruebas reales y te entregamos un informe con cada hallazgo y la conversación que lo demuestra. El diagnóstico es gratuito. El servicio de pago consiste en corregir lo detectado.</p>
         <p class="aisec-nota"><a href="/estudio-asistentes-ia/" class="aisec-enlace">Ver el estudio con los datos &#8594;</a></p>
         <div class="ctas">
-          <a href="/seguridad-ia/" class="btn-primary">Pedir el escaneo gratuito <span>&#8594;</span></a>
-          <a href="/productos/#leakai" class="btn-ghost">Conocer LeakAI</a>
+          <a href="/ciberseguridad/#asistentes-ia" class="btn-primary">Pedir el escaneo gratuito <span>&#8594;</span></a>
         </div>
       </div>
 
@@ -237,7 +274,7 @@ import { casos, familias } from '../data/casos-de-uso';
     <div class="section-head">
       <span class="section-tag">Qué sabemos hacer</span>
       <h2>{casos.length} capacidades catalogadas, en ocho familias.</h2>
-      <p>De los asistentes conversacionales a la seguridad de IA, pasando por agentes, búsqueda sobre tu documentación, automatización de procesos, cumplimiento europeo y modelos propios. Todas están en producción en entornos reales. Los ejemplos son representativos y están anonimizados.</p>
+      <p>De los asistentes conversacionales a la seguridad de IA, pasando por agentes, búsqueda sobre tu documentación, automatización de procesos, cumplimiento europeo y modelos propios. Los ejemplos son representativos y están anonimizados.</p>
     </div>
     <ul class="caps-grid">
       {
@@ -272,7 +309,7 @@ import { casos, familias } from '../data/casos-de-uso';
           <span class="section-tag">Caso 1 de 5 · Clínicas dentales · Barcelona</span>
           <h3>Tres clínicas dentales compartían el mismo problema.</h3>
           <p>Un número elevado de pacientes no acudía a sus citas sin previo aviso. La recepción no disponía del tiempo necesario para las llamadas de confirmación.</p>
-          <p>En cuatro semanas implantamos Contestia, una recepcionista virtual por WhatsApp. La inversión se amortizó en menos de un mes.</p>
+          <p>En cuatro semanas implantamos una recepcionista virtual por WhatsApp. La inversión se amortizó en menos de un mes.</p>
           <a href="/historias-de-exito/clinicas-dentales-barcelona/" class="arrow-btn">Leer el caso completo <span>→</span></a>
         </div>
       </div></div></div>
@@ -364,7 +401,7 @@ import { casos, familias } from '../data/casos-de-uso';
   </div>
 </section>
 
-<!-- POR QUÉ INFINITE LABS -->
+<!-- POR QUÉ 77 DELTA -->
 <section class="why">
   <div class="cont">
     <div class="section-head">
@@ -384,13 +421,13 @@ import { casos, familias } from '../data/casos-de-uso';
       </div>
       <div class="why-item">
         <div class="icon">03</div>
-        <h3>Construimos lo que implantamos</h3>
-        <p>Operamos productos propios en producción con empresas reales. La tecnología que proponemos está validada con clientes activos.</p>
+        <h3>Conocemos lo que implantamos</h3>
+        <p>Diseñamos, desarrollamos y probamos cada solución con tus datos y tu equipo antes de darla por buena.</p>
       </div>
       <div class="why-item">
         <div class="icon">04</div>
-        <h3>Datos en Europa, cumplimiento garantizado</h3>
-        <p>Infraestructura propia en la UE. Cumplimiento del RGPD. Sin dependencias de terceros países. Soporte en español y catalán.</p>
+        <h3>Pensado para el marco europeo</h3>
+        <p>Diseñamos según el RGPD y la normativa europea. Soporte en español y catalán.</p>
       </div>
       <div class="why-item">
         <div class="icon">05</div>
@@ -414,6 +451,7 @@ import { casos, familias } from '../data/casos-de-uso';
         <span class="section-tag">Sobre nosotros</span>
         <h2>Una consultora con historia, <em>nacida desde dentro del problema.</em></h2>
         <p>Más de 20 años aplicando tecnología a empresas reales. Acreditados por la Generalitat de Catalunya. Con clientes desde Barcelona hasta Dubái. Y con una convicción: la IA solo aporta valor cuando se aplica con criterio.</p>
+        <p>Hoy trabajamos en cuatro líneas: IA, ciberseguridad, identidad digital y espacios de datos.</p>
         <p>77 Delta nace de la experiencia acumulada por Diego Torres a lo largo de dos décadas. Tras acompañar a más de 500 startups, observó un patrón: las grandes empresas tenían consultoras estratégicas, las pymes quedaban desorientadas frente a la rápida evolución tecnológica. Nació para ser ese interlocutor de confianza para tu empresa.</p>
         <p class="signature"><strong>Diego Torres</strong>, fundador</p>
         <a href="/sobre-nosotros/" class="arrow-btn">Conoce nuestra misión <span>→</span></a>
@@ -613,6 +651,25 @@ import { casos, familias } from '../data/casos-de-uso';
   .svc-card .price{font-size:14px;color:var(--ink-2);font-weight:600;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
   .svc-card .price .arrow{color:var(--accent);font-size:18px}
 
+  /* CUATRO LÍNEAS */
+  .lineas{padding:140px 0}
+  .lineas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .linea-card{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--line);border-radius:18px;padding:36px;transition:transform .25s var(--ease),box-shadow .25s var(--ease),border-color .25s var(--ease)}
+  .linea-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(10,22,40,.08);border-color:var(--line-strong)}
+  .linea-card .num{font-family:'Sora',system-ui,sans-serif;font-size:13px;color:var(--accent);font-weight:600;margin-bottom:20px;letter-spacing:.05em}
+  .linea-card h3{font-size:22px;margin-bottom:12px}
+  .linea-card p{color:var(--ink-3);font-size:15px;line-height:1.55;margin-bottom:24px;flex:1}
+  .linea-card .go{font-size:14px;color:var(--ink-2);font-weight:600;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  .linea-card .go .arrow{color:var(--accent);font-size:18px}
+  .linea-card.principal{grid-column:1/-1;background:var(--ink);border-color:var(--ink);padding:44px}
+  .linea-card.principal .num{color:var(--accent-luz)}
+  .linea-card.principal h3{font-size:32px;color:#EDEAE3}
+  .linea-card.principal p{color:rgba(237,234,227,.82);font-size:17px;max-width:62ch}
+  .linea-card.principal .go{color:#EDEAE3;border-top-color:rgba(237,234,227,.2)}
+  .hero .tambien{font-size:14px;color:rgba(237,234,227,.7);margin:-12px 0 28px;line-height:1.6}
+  .hero .tambien a{color:#EDEAE3;font-weight:600;border-bottom:1px solid rgba(237,234,227,.35)}
+  .hero .tambien a:hover{border-bottom-color:var(--accent-luz)}
+
 
   /* DIRECTOR DE IA (servicio principal) */
   .director{padding:0 0 140px}
@@ -678,7 +735,7 @@ import { casos, familias } from '../data/casos-de-uso';
   .case .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:all .3s var(--ease);border:none;padding:0}
   .case .dot.active{background:var(--accent);width:32px;border-radius:100px;box-shadow:0 0 12px var(--accent-glow)}
 
-  /* POR QUÉ INFINITE LABS (6 puntos sobrios) */
+  /* POR QUÉ 77 DELTA (6 puntos sobrios) */
   .why{padding:140px 0}
   .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px 24px;margin-top:32px}
   .why-item{padding-top:32px;border-top:2px solid var(--ink)}
@@ -733,6 +790,7 @@ import { casos, familias } from '../data/casos-de-uso';
     .caps-grid{grid-template-columns:repeat(2,1fr)}
     .sec-grid{grid-template-columns:repeat(2,1fr)}
     .svc-grid{grid-template-columns:1fr}
+    .lineas-grid{grid-template-columns:1fr}
     .director-paquetes{grid-template-columns:1fr}
     .director-panel{padding:48px 40px}
     .trust .logos{grid-template-columns:repeat(3,1fr);gap:24px 16px}
@@ -770,6 +828,10 @@ import { casos, familias } from '../data/casos-de-uso';
     .svc-featured h3{font-size:28px}
     .svc-featured p{font-size:15px}
     .svc-card{padding:28px}
+    .lineas-grid{grid-template-columns:1fr}
+    .linea-card{padding:28px}
+    .linea-card.principal{padding:28px}
+    .linea-card.principal h3{font-size:24px}
     .svc-card h3{font-size:20px}
     .director{padding:0 0 80px}
     .director-panel{padding:32px 24px;border-radius:18px}

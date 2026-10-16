@@ -29,7 +29,7 @@ const familiesTextCa: Record<string, string> = {
 };
 ---
 
-<Base title="" description={site.descripcionCa}>
+<Base title="" description="Consultora tecnològica de Barcelona: IA, ciberseguretat, identitat digital i espais de dades. Diagnòstic gratuït per a pimes.">
 <div class="home">
 <!-- HERO -->
 <section class="hero">
@@ -38,10 +38,11 @@ const familiesTextCa: Record<string, string> = {
       <div>
         <div class="pill"><span class="badge"></span>Acreditats per ACCIÓ</div>
         <h1>Apliquem la IA per <em>estalviar costos</em> a la teva empresa.</h1>
-        <p class="lead">Consultora tecnològica especialitzada en pimes. Diagnòstic gratuït, transformació operativa amb IA i soci tecnològic.</p>
+        <p class="lead">Consultora tecnològica per a pimes. IA per estalviar costos i, al costat, ciberseguretat, identitat digital i espais de dades.</p>
+        <p class="tambien">També treballem en: <a href="/ca/ciberseguretat/">Ciberseguretat</a> · <a href="/ca/identitat-digital/">Identitat digital</a> · <a href="/ca/espais-de-dades/">Espais de dades</a></p>
         <div class="ctas">
           <a href="/ca/contacto/" class="btn-primary">Reservar diagnòstic <span>→</span></a>
-          <a href="/ca/servicios/" class="btn-ghost">Veure com treballem</a>
+          <a href="#lineas" class="btn-ghost">Veure les quatre línies</a>
         </div>
       </div>
       <div class="photo">
@@ -84,11 +85,48 @@ const familiesTextCa: Record<string, string> = {
   </div>
 </section>
 
+<!-- CUATRO LÍNEAS -->
+<section class="lineas" id="lineas">
+  <div class="cont">
+    <div class="section-head">
+      <span class="section-tag">Quatre línies de treball</span>
+      <h2>Coneixement, consultoria i desenvolupament en quatre fronts.</h2>
+      <p>La IA continua sent el punt d’entrada. Les altres tres línies cobreixen el que una pime necessita per fer-la servir amb seguretat i amb dades fiables.</p>
+    </div>
+    <div class="lineas-grid">
+      <a href="/ca/intel-ligencia-artificial/" class="linea-card principal">
+        <div class="num">01</div>
+        <h3>Intel·ligència artificial</h3>
+        <p>Redueix costos amb IA aplicada als teus processos, de la idea a la posada en marxa. Director d’IA, diagnòstic, transformació operativa i soci tecnològic.</p>
+        <div class="go"><span>Veure la línia</span><span class="arrow">→</span></div>
+      </a>
+      <a href="/ca/ciberseguretat/" class="linea-card">
+        <div class="num">02</div>
+        <h3>Ciberseguretat</h3>
+        <p>Detecta i tanca els punts febles abans que els trobi un altre. Consultoria, auditoria i desenvolupament segur.</p>
+        <div class="go"><span>Veure la línia</span><span class="arrow">→</span></div>
+      </a>
+      <a href="/ca/identitat-digital/" class="linea-card">
+        <div class="num">03</div>
+        <h3>Identitat digital</h3>
+        <p>Credencials verificables i cartera europea d’identitat digital. T’ajudem a entendre el model SSI, decidir què et convé i construir-lo.</p>
+        <div class="go"><span>Veure la línia</span><span class="arrow">→</span></div>
+      </a>
+      <a href="/ca/espais-de-dades/" class="linea-card">
+        <div class="num">04</div>
+        <h3>Espais de dades</h3>
+        <p>Comparteix dades amb clients i proveïdors sense perdre’n el control. Coneixement i consultoria sobre Gaia-X i IDSA, i desenvolupament de connectors.</p>
+        <div class="go"><span>Veure la línia</span><span class="arrow">→</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- SERVICIOS -->
 <section class="services" id="servicios">
   <div class="cont">
     <div class="section-head">
-      <span class="section-tag">Com treballem</span>
+      <span class="section-tag">Intel·ligència artificial · Com treballem</span>
       <h2>Comencem per un diagnòstic. Després, tu decideixes el recorregut.</h2>
       <p>Cada empresa és diferent. El procés és lineal: primer entenem la teva realitat, després construïm la transformació i, si vols, t’acompanyem a mitjà i llarg termini com el teu soci tecnològic.</p>
     </div>
@@ -155,11 +193,10 @@ const familiesTextCa: Record<string, string> = {
         <span class="section-tag">Seguretat d’IA</span>
         <h2>El teu chatbot <em>revela més informació de la que et penses.</em></h2>
         <p>Publicar un assistent amb IA a la web és ràpid. Auditar-lo és poc habitual. El provem com ho faria un atacant i et mostrem quina informació se li escapa: les instruccions internes, els preus que no hauria de donar, les dades de clients a què arriba i el que diu quan se l’aparta del seu guió.</p>
-        <p class="aisec-nota">Ho fem amb LeakAI, l’eina que hem construït per a això. Amb ella vam rastrejar 391 webs espanyoles el setembre de 2026 i seguim auditant a fons els assistents amb IA que hem trobat. El diagnòstic és gratuït. El servei de pagament consisteix a corregir les vulnerabilitats detectades.</p>
+        <p class="aisec-nota">Revisem el teu assistent amb proves reals i et lliurem un informe amb cada troballa i la conversa que ho demostra. El diagnòstic és gratuït. El servei de pagament consisteix a corregir el que s’ha detectat.</p>
         <p class="aisec-nota"><a href="/ca/estudio-asistentes-ia/" class="aisec-enlace">Veure l’estudi amb les dades &#8594;</a></p>
         <div class="ctas">
-          <a href="/ca/servicios/seguridad-ia/" class="btn-primary">Demanar l’escaneig gratuït <span>&#8594;</span></a>
-          <a href="/ca/productos/#leakai" class="btn-ghost">Conèixer LeakAI</a>
+          <a href="/ca/ciberseguretat/#asistentes-ia" class="btn-primary">Demanar l’escaneig gratuït <span>&#8594;</span></a>
         </div>
       </div>
 
@@ -254,7 +291,7 @@ const familiesTextCa: Record<string, string> = {
     <div class="section-head">
       <span class="section-tag">Què sabem fer</span>
       <h2>{casos.length} capacitats catalogades, en vuit famílies.</h2>
-      <p>Dels assistents conversacionals a la seguretat d’IA, passant per agents, cerca sobre la teva documentació, automatització de processos, compliment europeu i models propis. Totes estan en producció en entorns reals. Els exemples són representatius i estan anonimitzats.</p>
+      <p>Dels assistents conversacionals a la seguretat d’IA, passant per agents, cerca sobre la teva documentació, automatització de processos, compliment europeu i models propis. Els exemples són representatius i estan anonimitzats.</p>
     </div>
     <ul class="caps-grid">
       {
@@ -289,7 +326,7 @@ const familiesTextCa: Record<string, string> = {
           <span class="section-tag">Cas 1 de 5 · Clíniques dentals · Barcelona</span>
           <h3>Tres clíniques dentals compartien el mateix problema.</h3>
           <p>Un nombre elevat de pacients no acudia a les cites sense avís previ. La recepció no disposava del temps necessari per a les trucades de confirmació.</p>
-          <p>En quatre setmanes vam implantar Contestia, una recepcionista virtual per WhatsApp. La inversió es va amortitzar en menys d’un mes.</p>
+          <p>En quatre setmanes vam implantar una recepcionista virtual per WhatsApp. La inversió es va amortitzar en menys d’un mes.</p>
           <a href="/ca/historias-de-exito/clinicas-dentales-barcelona/" class="arrow-btn">Llegir el cas complet <span>→</span></a>
         </div>
       </div></div></div>
@@ -401,13 +438,13 @@ const familiesTextCa: Record<string, string> = {
       </div>
       <div class="why-item">
         <div class="icon">03</div>
-        <h3>Construïm el que implantem</h3>
-        <p>Operem productes propis en producció amb empreses reals. La tecnologia que proposem està validada amb clients actius.</p>
+        <h3>Coneixem el que implantem</h3>
+        <p>Dissenyem, desenvolupem i provem cada solució amb les teves dades i el teu equip abans de donar-la per bona.</p>
       </div>
       <div class="why-item">
         <div class="icon">04</div>
-        <h3>Dades a Europa, compliment garantit</h3>
-        <p>Infraestructura pròpia a la UE. Compliment del RGPD. Sense dependències de tercers països. Suport en català i castellà.</p>
+        <h3>Pensat per al marc europeu</h3>
+        <p>Dissenyem segons el RGPD i la normativa europea. Suport en català i castellà.</p>
       </div>
       <div class="why-item">
         <div class="icon">05</div>
@@ -431,6 +468,7 @@ const familiesTextCa: Record<string, string> = {
         <span class="section-tag">Sobre nosaltres</span>
         <h2>Una consultora amb història, <em>nascuda des de dins del problema.</em></h2>
         <p>Més de 20 anys aplicant tecnologia a empreses reals. Acreditats per la Generalitat de Catalunya. Amb clients des de Barcelona fins a Dubai. I amb una convicció: la IA només aporta valor quan s’aplica amb criteri.</p>
+        <p>Avui treballem en quatre línies: IA, ciberseguretat, identitat digital i espais de dades.</p>
         <p>77 Delta neix de l’experiència acumulada per Diego Torres al llarg de dues dècades. Després d’acompanyar més de 500 startups, va observar un patró: les grans empreses tenien consultores estratègiques, les pimes quedaven desorientades davant la ràpida evolució tecnològica. Va néixer per ser aquest interlocutor de confiança per a la teva empresa.</p>
         <p class="signature"><strong>Diego Torres</strong>, fundador</p>
         <a href="/ca/sobre-nosotros/" class="arrow-btn">Coneix la nostra missió <span>→</span></a>
@@ -630,6 +668,25 @@ const familiesTextCa: Record<string, string> = {
   .svc-card .price{font-size:14px;color:var(--ink-2);font-weight:600;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
   .svc-card .price .arrow{color:var(--accent);font-size:18px}
 
+  /* CUATRO LÍNEAS */
+  .lineas{padding:140px 0}
+  .lineas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .linea-card{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--line);border-radius:18px;padding:36px;transition:transform .25s var(--ease),box-shadow .25s var(--ease),border-color .25s var(--ease)}
+  .linea-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(10,22,40,.08);border-color:var(--line-strong)}
+  .linea-card .num{font-family:'Sora',system-ui,sans-serif;font-size:13px;color:var(--accent);font-weight:600;margin-bottom:20px;letter-spacing:.05em}
+  .linea-card h3{font-size:22px;margin-bottom:12px}
+  .linea-card p{color:var(--ink-3);font-size:15px;line-height:1.55;margin-bottom:24px;flex:1}
+  .linea-card .go{font-size:14px;color:var(--ink-2);font-weight:600;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  .linea-card .go .arrow{color:var(--accent);font-size:18px}
+  .linea-card.principal{grid-column:1/-1;background:var(--ink);border-color:var(--ink);padding:44px}
+  .linea-card.principal .num{color:var(--accent-luz)}
+  .linea-card.principal h3{font-size:32px;color:#EDEAE3}
+  .linea-card.principal p{color:rgba(237,234,227,.82);font-size:17px;max-width:62ch}
+  .linea-card.principal .go{color:#EDEAE3;border-top-color:rgba(237,234,227,.2)}
+  .hero .tambien{font-size:14px;color:rgba(237,234,227,.7);margin:-12px 0 28px;line-height:1.6}
+  .hero .tambien a{color:#EDEAE3;font-weight:600;border-bottom:1px solid rgba(237,234,227,.35)}
+  .hero .tambien a:hover{border-bottom-color:var(--accent-luz)}
+
 
   /* DIRECTOR DE IA (servicio principal) */
   .director{padding:0 0 140px}
@@ -750,6 +807,7 @@ const familiesTextCa: Record<string, string> = {
     .caps-grid{grid-template-columns:repeat(2,1fr)}
     .sec-grid{grid-template-columns:repeat(2,1fr)}
     .svc-grid{grid-template-columns:1fr}
+    .lineas-grid{grid-template-columns:1fr}
     .director-paquetes{grid-template-columns:1fr}
     .director-panel{padding:48px 40px}
     .trust .logos{grid-template-columns:repeat(3,1fr);gap:24px 16px}
@@ -787,6 +845,10 @@ const familiesTextCa: Record<string, string> = {
     .svc-featured h3{font-size:28px}
     .svc-featured p{font-size:15px}
     .svc-card{padding:28px}
+    .lineas-grid{grid-template-columns:1fr}
+    .linea-card{padding:28px}
+    .linea-card.principal{padding:28px}
+    .linea-card.principal h3{font-size:24px}
     .svc-card h3{font-size:20px}
     .director{padding:0 0 80px}
     .director-panel{padding:32px 24px;border-radius:18px}

@@ -8,9 +8,9 @@ export const site = {
   claim: 'Aplicamos la IA para ahorrar costes a tu empresa',
   claimCa: 'Apliquem la IA per estalviar costos a la teva empresa',
   descripcion:
-    'Consultora tecnológica especializada en pymes. Diagnóstico gratuito, transformación operativa con IA, auditoría de seguridad de asistentes y partner tecnológico. Barcelona.',
+    'Consultora de inteligencia artificial para pymes en Barcelona. Diagnóstico gratuito, implantación con IA, ciberseguridad, identidad digital y espacios de datos.',
   descripcionCa:
-    "Consultora tecnològica especialitzada en pimes. Diagnòstic gratuït, transformació operativa amb IA, auditoria de seguretat d'assistents i soci tecnològic. Barcelona.",
+    "Consultora d'intel·ligència artificial per a pimes a Barcelona. Diagnòstic gratuït, implantació amb IA, ciberseguretat, identitat digital i espais de dades.",
   ciudad: 'Barcelona',
   // Pendiente: activar el buzón cuando se compre el dominio.
   email: 'hola@77delta.com',
@@ -50,14 +50,26 @@ export function hrefCa(path: string): string {
   return getRelativeLocaleUrl('ca', limpio);
 }
 
+/** Slugs de primer nivel que cambian en catalán (reorden 2026-10). El resto comparte slug bajo /ca/. */
+export const slugsCa: Readonly<Record<string, string>> = {
+  'inteligencia-artificial': 'intel-ligencia-artificial',
+  ciberseguridad: 'ciberseguretat',
+  'identidad-digital': 'identitat-digital',
+  'espacios-de-datos': 'espais-de-dades',
+  herramientas: 'eines',
+};
+const slugsEs: Readonly<Record<string, string>> = Object.fromEntries(Object.entries(slugsCa).map(([es, ca]) => [ca, es]));
+const traduceSlug = (pathname: string, mapa: Readonly<Record<string, string>>) =>
+  pathname.replace(/^\/([^/]+)\//, (todo, slug) => (mapa[slug] ? `/${mapa[slug]}/` : todo));
+
 /** Dado un pathname de castellano (p.ej. '/servicios/'), la ruta equivalente en catalán. */
 export function equivalenteCa(pathnameEs: string): string {
-  return hrefCa(pathnameEs);
+  return hrefCa(traduceSlug(pathnameEs, slugsCa));
 }
 
 /** Dado un pathname de catalán bajo /ca/, la ruta equivalente en castellano. */
 export function equivalenteEs(pathnameCa: string): string {
-  const sinCa = pathnameCa.replace(/^\/ca(\/|$)/, '/');
+  const sinCa = traduceSlug(pathnameCa.replace(/^\/ca(\/|$)/, '/'), slugsEs);
   // La 404 en castellano es un fichero especial plano (dist/404.html, lo exige GitHub Pages),
   // no una carpeta: no lleva barra final como el resto de páginas.
   if (sinCa === '/404' || sinCa === '/404/') return href('/404.html');
@@ -74,19 +86,18 @@ export interface ItemNav {
 }
 
 /**
- * Menú principal: qué hacemos (Servicios), para quién (Sectores), pruebas (Resultados), Productos,
- * Blog y Sobre nosotros. Contacto va en el botón "Reservar diagnóstico" y en el pie.
+ * Menú principal (reorden 2026-10): Qué hacemos (4 líneas: IA, ciberseguridad, identidad digital,
+ * espacios de datos), para quién (Sectores), pruebas (Resultados), Blog y Sobre nosotros. Contacto va en el botón "Reservar diagnóstico" y en el pie.
  */
 export const nav: readonly ItemNav[] = [
   {
-    texto: 'Servicios',
-    ruta: '/servicios/',
+    texto: 'Qué hacemos',
+    ruta: '/inteligencia-artificial/',
     hijos: [
-      { texto: 'Director de IA externo', ruta: '/servicios/director-ia/', nota: 'Desde 1.200 €/mes' },
-      { texto: 'Diagnóstico', ruta: '/servicios/diagnostico/', nota: 'Gratuito' },
-      { texto: 'Transformación operativa', ruta: '/servicios/transformacion/' },
-      { texto: 'Seguridad de IA', ruta: '/servicios/seguridad-ia/' },
-      { texto: 'Partner tecnológico', ruta: '/servicios/partner/' },
+      { texto: 'Inteligencia artificial', ruta: '/inteligencia-artificial/' },
+      { texto: 'Ciberseguridad', ruta: '/ciberseguridad/' },
+      { texto: 'Identidad digital', ruta: '/identidad-digital/' },
+      { texto: 'Espacios de datos', ruta: '/espacios-de-datos/' },
     ],
   },
   { texto: 'Sectores', ruta: '/sectores/' },
@@ -96,11 +107,9 @@ export const nav: readonly ItemNav[] = [
     hijos: [
       { texto: 'Historias de éxito', ruta: '/historias-de-exito/' },
       { texto: 'Casos de uso', ruta: '/casos-de-uso/' },
-      { texto: 'Estudio: asistentes de IA', ruta: '/estudio-asistentes-ia/' },
       { texto: 'Proyectos en curso', ruta: '/proyectos-en-curso/' },
     ],
   },
-  { texto: 'Productos', ruta: '/productos/' },
   { texto: 'Blog', ruta: '/blog/' },
   { texto: 'Sobre nosotros', ruta: '/sobre-nosotros/' },
 ];
@@ -119,14 +128,13 @@ export const cta = { texto: 'Reservar diagnóstico', ruta: '/contacto/' } as con
 /** Mismas rutas que `nav`, en catalán, para las páginas de /ca/. */
 export const navCa: readonly ItemNav[] = [
   {
-    texto: 'Serveis',
-    ruta: '/servicios/',
+    texto: 'Què fem',
+    ruta: '/intel-ligencia-artificial/',
     hijos: [
-      { texto: 'Director d’IA extern', ruta: '/servicios/director-ia/', nota: 'Des de 1.200 €/mes' },
-      { texto: 'Diagnòstic', ruta: '/servicios/diagnostico/', nota: 'Gratuït' },
-      { texto: 'Transformació operativa', ruta: '/servicios/transformacion/' },
-      { texto: 'Seguretat d’IA', ruta: '/servicios/seguridad-ia/' },
-      { texto: 'Soci tecnològic', ruta: '/servicios/partner/' },
+      { texto: 'Intel·ligència artificial', ruta: '/intel-ligencia-artificial/' },
+      { texto: 'Ciberseguretat', ruta: '/ciberseguretat/' },
+      { texto: 'Identitat digital', ruta: '/identitat-digital/' },
+      { texto: 'Espais de dades', ruta: '/espais-de-dades/' },
     ],
   },
   { texto: 'Sectors', ruta: '/sectores/' },
@@ -136,11 +144,9 @@ export const navCa: readonly ItemNav[] = [
     hijos: [
       { texto: 'Històries d’èxit', ruta: '/historias-de-exito/' },
       { texto: 'Casos d’ús', ruta: '/casos-de-uso/' },
-      { texto: 'Estudi: assistents d’IA', ruta: '/estudio-asistentes-ia/' },
       { texto: 'Projectes en curs', ruta: '/proyectos-en-curso/' },
     ],
   },
-  { texto: 'Productes', ruta: '/productos/' },
   { texto: 'Blog', ruta: '/blog/' },
   { texto: 'Sobre nosaltres', ruta: '/sobre-nosotros/' },
 ];
