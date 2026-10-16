@@ -30,7 +30,26 @@
 <main>
 <section class="hero" id="hero"><div class="w hero-g dr-hero">
 <div class="dr-t"><h1>Detecta nòmines i extractes falsos abans de signar el lloguer.</h1><p class="sub">Puja el document del candidat i en un minut saps si és autèntic. Informe clar, registre probatori i la decisió sempre a les teves mans.</p>
-<p class="dr-acts"><a class="btn" href="#demo" data-cta data-umami-event="docureal-cta" data-umami-event-tipo="hero">Demana una demo gratuïta</a><a class="btn btn-o" href="#como-funciona">Com funciona</a></p>
+<div class="fcard fc-d" id="demo"><div class="fz">
+<form class="f1" novalidate>
+<label class="fl">Correu d&#x27;empresa<input id="em" name="email" type="email" autocomplete="email" inputmode="email" placeholder="tu@immobiliaria.com" required aria-describedby="sv"></label>
+<fieldset class="fs"><legend>Tipus d&#x27;empresa</legend><div class="seg"><label><input type="radio" name="tipo" value="agencia" checked><span>Immobiliària o agència de lloguer</span></label><label><input type="radio" name="tipo" value="administrador"><span>Administrador de finques</span></label><label><input type="radio" name="tipo" value="aseguradora"><span>Asseguradora o garant</span></label><label><input type="radio" name="tipo" value="otro"><span>Altres</span></label></div></fieldset>
+<div class="hp" aria-hidden="true"><input name="web" tabindex="-1" autocomplete="off"></div>
+<button class="btn" type="submit" data-umami-event="docureal-cta" data-umami-event-tipo="hero">Demana una demo gratuïta</button>
+<p class="lg-t">Farem servir el teu correu només per concertar la demo de DocuReal. Responsable: Next Gen Academy SL (77 Delta). Et pots donar de baixa en qualsevol moment. <a href="https://77delta.com/ca/politica-privacidad/">Política de privacitat</a></p>
+</form>
+<div class="ok" hidden><p class="okh">Rebut. T&#x27;escrivim per concertar la demo.</p>
+<form class="f2" novalidate>
+<label class="fl">Nom de l&#x27;empresa<input name="empresa" type="text" autocomplete="organization"></label>
+<label class="fl">Candidatures que revises al mes<select name="cand"><option value="">Tria</option><option value="menos-5">Menys de 5</option><option value="5-20">De 5 a 20</option><option value="21-50">De 21 a 50</option><option value="mas-50">Més de 50</option></select></label>
+<label class="chk"><input type="checkbox" name="ya"><span>Ja m&#x27;han colat un document fals alguna vegada.</span></label>
+<label class="fl okx">Ens expliques en una línia quin document et preocupa més? És opcional i ens serveix per preparar la demo.<textarea name="comentario" rows="3" maxlength="500" aria-label="Quin document et preocupa més"></textarea></label>
+<div class="hp" aria-hidden="true"><input name="web" tabindex="-1" autocomplete="off"></div>
+<div class="acts"><button class="btn" type="submit">Desa</button><button class="lnk" type="button" data-no>Ara no</button></div></form>
+<p class="fin" hidden>Gràcies. Ho tindrem en compte per a la demo.</p></div>
+<div class="sv err" id="sv" role="status" aria-live="polite"></div>
+</div></div>
+<p class="dr-acts"><a class="btn btn-o" href="#como-funciona">Com funciona</a></p>
 <p class="note">Sense compromís. Sense targeta. T&#x27;escrivim per concertar dia i hora.</p></div>
 <div class="dr-m"><div class="mk" aria-hidden="true"><div class="mk-h"><span>DocuReal · informe</span><b>Exemple</b></div>
 <p class="mk-i">Nòmina de setembre · Candidat 014</p>
@@ -42,26 +61,9 @@
 <section class="sec alt band"><div class="w"><h2>Un risc real: el llogater que no paga</h2><ul class="g3 bd"><li><p class="big">8.489 €</p><p class="bx">de deute mitjà va deixar un llogater morós el 2025, uns set mesos de renda. A la província de Barcelona, 14.036 €.</p><p class="src">Font: <a href="https://forbes.es/economia/884036/" target="_blank" rel="noopener">Observatori del Lloguer, 2025</a></p></li><li><p class="big">18.317</p><p class="bx">desnonaments per lloguer a Espanya el 2025, 3.577 a Barcelona. Cadascun, mesos d&#x27;advocats i rendes perdudes.</p><p class="src">Font: <a href="https://www.ocu.org/fincas-y-casas/gestion/alquiler/analisis/2026/09/desahucios-cifras-consejos" target="_blank" rel="noopener">CGPJ, 2025, via OCU</a></p></li><li><p class="big">x5</p><p class="bx">El frau documental amb IA es va multiplicar per cinc el 2025. Una nòmina en PDF es retoca en cinc minuts i a ull no es veu.</p><p class="src">Font: <a href="https://inscribe-marketing-mirror.inscribe.ai/reports/2026-document-fraud-report" target="_blank" rel="noopener">Inscribe, 2026</a></p></li></ul></div></section>
 <section class="sec" id="como-funciona"><div class="w"><h2>Com funciona</h2><ol class="steps"><li class="step"><div class="st-t"><span class="sn" aria-hidden="true">1</span><p><b>Puja el document.</b> PDF o foto de la nòmina, l&#x27;extracte, el contracte o la vida laboral. Des del mòbil o l&#x27;ordinador.</p></div></li><li class="step"><div class="st-t"><span class="sn" aria-hidden="true">2</span><p><b>DocuReal l&#x27;analitza en un minut.</b> Metadades, tipus de lletra, capes, plantilles conegudes, aritmètica de la nòmina, NIF i empresa, i si aquest mateix document ja s&#x27;ha fet servir en una altra sol·licitud.</p></div></li><li class="step"><div class="st-t"><span class="sn" aria-hidden="true">3</span><p><b>Reps un informe amb semàfor.</b> Verd, ambre o vermell amb els motius, registre probatori amb data i, si hi ha dubte, la petició automàtica d&#x27;un segon document. Tu decideixes.</p></div></li></ol></div></section>
 <section class="sec alt"><div class="w"><h2>Per a immobiliàries i per a administradors</h2><div class="g2"><div class="plan plan-a"><h3>Immobiliàries i agències de lloguer</h3><ul class="pls"><li>Verifiques cada candidatura abans de proposar-la al propietari.</li><li>Informe compartible amb el propietari.</li><li>Historial per expedient.</li></ul><p class="fr">Gratis per als primers clients fins al llançament</p><a class="btn" href="#demo" data-cta data-tipo="agencia" data-umami-event="docureal-cta" data-umami-event-tipo="plan-agencia">Demanar demo per a la meva immobiliària</a></div><div class="plan"><h3>Administradors de finques i gestors de carteres</h3><ul class="pls"><li>Diverses comunitats o carteres en un compte.</li><li>Registre probatori per al propietari.</li><li>Verifiques només quan ho necessites.</li></ul><p class="fr">Gratis per als primers clients fins al llançament</p><a class="btn" href="#demo" data-cta data-tipo="administrador" data-umami-event="docureal-cta" data-umami-event-tipo="plan-administrador">Demanar demo per al meu despatx</a></div></div></div></section>
-<section class="sec"><div class="w"><h2>Per què confiar-hi</h2><ul class="g3"><li class="ben"><h3>Eina de suport, no un jutge</h3><p>DocuReal assenyala indicis i els explica. La decisió de llogar és sempre d&#x27;una persona. Compleix el RGPD i la jurisprudència europea sobre decisions automatitzades.</p></li><li class="ben"><h3>Les teves dades i les del candidat, protegides</h3><p>Servidors a la Unió Europea, esborrat automàtic als 30 dies, contracte d&#x27;encarregat del tractament. Mai fem servir els documents per a res més.</p></li><li class="ben"><h3>Fet a Barcelona per 77 Delta</h3><p>Empresa espanyola, suport en castellà i català.</p></li></ul></div></section>
+<section class="sec"><div class="w"><h2>Per què confiar-hi</h2><ul class="g3"><li class="ben"><h3>Eina de suport, no un jutge</h3><p>DocuReal assenyala indicis i els explica. La decisió de llogar és sempre d&#x27;una persona. Compleix el RGPD i la jurisprudència europea sobre decisions automatitzades.</p></li><li class="ben"><h3>Les teves dades i les del candidat, protegides</h3><p>Esborrat automàtic dels documents als 30 dies i contracte d&#x27;encarregat del tractament. Mai fem servir els documents per a res més.</p></li><li class="ben"><h3>Fet a Barcelona per 77 Delta</h3><p>Empresa espanyola, suport en castellà i català.</p></li></ul></div></section>
 <section class="sec alt"><div class="w nw"><h2>Preguntes freqüents</h2><details><summary>Quins documents verifica?</summary><p>Nòmines, extractes bancaris, contractes de treball, vida laboral i declaracions de la renda en PDF o foto. Si el document porta codi CEA de la Seguretat Social, també el comprovem contra la seu electrònica.</p></details><details><summary>Es pot equivocar?</summary><p>Sí. Cap sistema detecta el 100 % de les falsificacions ni evita totes les falses alarmes. Per això l&#x27;informe explica els motius i proposa demanar un segon document en lloc de rebutjar el candidat.</p></details><details><summary>És legal demanar la nòmina a un candidat?</summary><p>Sí, com a tractament previ al contracte i amb la informació que exigeix el RGPD. DocuReal et dona el text informatiu per al candidat i esborra els documents als 30 dies.</p></details><details><summary>Substitueix l&#x27;assegurança d&#x27;impagament?</summary><p>No. La complementa: un candidat amb documentació verificada entra a l&#x27;assegurança amb menys fricció, i evites pagar la pòlissa d&#x27;algú que mai no pagaria.</p></details><details><summary>Què costa?</summary><p>Gratis per als primers clients fins al llançament. El preu definitiu te l&#x27;expliquem a la demo, segons el volum de candidatures que revisis.</p></details><details><summary>Quan estarà disponible?</summary><p>Som en fase de demo amb les primeres immobiliàries i administradors de finques. Demana la teva: t&#x27;ensenyem com funciona, resolem els teus dubtes i entres abans que ningú.</p></details></div></section>
-<section class="fin-b" id="demo"><div class="w"><h2>Que cap document fals et costi un desnonament.</h2><p>Demana una demo gratuïta. Sense compromís.</p><div class="fcard fc-d"><div class="fz">
-<form class="f1" novalidate>
-<label class="fl">Correu d&#x27;empresa<input id="em" name="email" type="email" autocomplete="email" inputmode="email" placeholder="tu@immobiliaria.com" required aria-describedby="sv"></label>
-<label class="fl">Nom de l&#x27;empresa<input name="empresa" type="text" autocomplete="organization" required></label>
-<fieldset class="fs"><legend>Tipus d&#x27;empresa</legend><div class="seg"><label><input type="radio" name="tipo" value="agencia" checked><span>Immobiliària o agència de lloguer</span></label><label><input type="radio" name="tipo" value="administrador"><span>Administrador de finques</span></label><label><input type="radio" name="tipo" value="aseguradora"><span>Asseguradora o garant</span></label><label><input type="radio" name="tipo" value="otro"><span>Altres</span></label></div></fieldset>
-<label class="fl">Candidatures que revises al mes<select name="cand"><option value="">Tria</option><option value="menos-5">Menys de 5</option><option value="5-20">De 5 a 20</option><option value="21-50">De 21 a 50</option><option value="mas-50">Més de 50</option></select></label>
-<label class="chk"><input type="checkbox" name="ya"><span>Ja m&#x27;han colat un document fals alguna vegada.</span></label>
-<div class="hp" aria-hidden="true"><input name="web" tabindex="-1" autocomplete="off"></div>
-<button class="btn" type="submit" data-umami-event-cta="demo">Demana una demo gratuïta</button>
-<p class="lg-t">Farem servir el teu correu només per concertar la demo de DocuReal. Responsable: Next Gen Academy SL (77 Delta). Et pots donar de baixa en qualsevol moment. <a href="https://77delta.com/ca/politica-privacidad/">Política de privacitat</a></p>
-</form>
-<div class="ok" hidden><p class="okh">Rebut. T&#x27;escrivim per concertar la demo.</p>
-<form class="f2" novalidate><label class="fl okx">Ens expliques en una línia quin document et preocupa més? És opcional i ens serveix per preparar la demo.<textarea name="comentario" rows="3" maxlength="500" aria-label="Quin document et preocupa més"></textarea></label>
-<div class="hp" aria-hidden="true"><input name="web" tabindex="-1" autocomplete="off"></div>
-<div class="acts"><button class="btn" type="submit">Desa</button><button class="lnk" type="button" data-no>Ara no</button></div></form>
-<p class="fin" hidden>Gràcies. Ho tindrem en compte per a la demo.</p></div>
-<div class="sv err" id="sv" role="status" aria-live="polite"></div>
-</div></div></div></section>
+<section class="fin-b"><div class="w"><h2>Que cap document fals et costi un desnonament.</h2><p>Demana una demo gratuïta. Sense compromís.</p><p><a class="btn" href="#demo" data-cta data-umami-event="docureal-cta" data-umami-event-tipo="final">Demana una demo gratuïta</a></p></div></section>
 </main>
 <footer class="ft"><div class="w"><p>DocuReal és un producte de 77 Delta, Barcelona. Next Gen Academy SL, CIF B44861649, Carrer Penedès 27, 08184 Palau-solità i Plegamans.</p><p><a href="https://77delta.com/ca/aviso-legal/">Avís legal</a> · <a href="https://77delta.com/ca/politica-privacidad/">Privacitat</a> · <a href="mailto:hola@77delta.com">Contacte: hola@77delta.com</a></p></div></footer>
 <script>
@@ -79,20 +81,20 @@ var z=D.querySelector('.fz'),f1=z.querySelector('.f1'),f2=z.querySelector('.f2')
 function setTipo(t){var r=f1.querySelector('input[name=tipo][value='+t+']');if(r)r.checked=true}
 D.querySelectorAll('[data-cta]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var t=a.getAttribute('data-tipo');if(t)setTipo(t);var f=D.getElementById('em'),r=matchMedia('(prefers-reduced-motion: reduce)').matches;f.scrollIntoView({block:'center',behavior:r?'auto':'smooth'});f.focus({preventScroll:true})})});
 f1.email.addEventListener('blur',function(){var v=f1.email.value.trim();er.className='sv'+(RX.test(v)&&free(v)?'':' err');er.textContent=RX.test(v)&&free(v)?T.soft:''});
-f1.addEventListener('submit',function(e){e.preventDefault();er.className='sv err';er.textContent='';var v=f1.email.value.trim(),emp=f1.empresa.value.trim();
+f1.addEventListener('submit',function(e){e.preventDefault();er.className='sv err';er.textContent='';var v=f1.email.value.trim();
 if(!RX.test(v)){er.textContent=T.e_val;f1.email.setAttribute('aria-invalid','true');f1.email.focus();return}
 f1.email.removeAttribute('aria-invalid');
-if(!emp){er.textContent=T.e_emp;f1.empresa.focus();return}
-base={email:v,empresa:emp,tipo:f1.tipo.value,candidaturas_mes:f1.cand.value,ya_me_paso:f1.ya.checked,idioma:L,comentario:'',origen:'docureal.77delta.com|v=A|s=final|p=1|l='+L+'|utm='+UTM+'|cta=demo',web:f1.web.value};
+var dm=v.split('@')[1].toLowerCase(),emp=free(v)?'(sin indicar)':dm.split('.').slice(0,-1).join('.').replace(/^./,function(c){return c.toUpperCase()});
+base={email:v,empresa:emp,tipo:f1.tipo.value,candidaturas_mes:'',ya_me_paso:false,idioma:L,comentario:'',origen:'docureal.77delta.com|v=A|s=hero|p=1|l='+L+'|utm='+UTM+'|cta=demo',web:f1.web.value};
 b1.disabled=true;b1.textContent=T.sending;
 post(base,function(c){b1.disabled=false;b1.textContent=n1;
 if(c){ev('docureal-submit-error',{codigo:String(c),idioma:L});er.textContent=msg(c);return}
 if(!f1.web.value)ev('docureal-submit-ok',{idioma:L,tipo:base.tipo});
-f1.hidden=true;ok.hidden=false})});
+f1.hidden=true;ok.hidden=false;var h=ok.querySelector('.okh');h.setAttribute('tabindex','-1');h.focus()})});
 f2.querySelector('[data-no]').addEventListener('click',function(){f2.hidden=true;z.querySelector('.fin').hidden=false});
-f2.addEventListener('submit',function(e){e.preventDefault();er.textContent='';var c=f2.comentario.value.trim();if(!c){f2.hidden=true;z.querySelector('.fin').hidden=false;return}
+f2.addEventListener('submit',function(e){e.preventDefault();er.textContent='';var c=f2.comentario.value.trim(),emp=f2.empresa.value.trim();
 b2.disabled=true;var n=b2.textContent;b2.textContent=T.sending;
-post(Object.assign({},base,{comentario:c,web:f2.web.value}),function(k){b2.disabled=false;b2.textContent=n;
+post(Object.assign({},base,{empresa:emp||base.empresa,candidaturas_mes:f2.cand.value,ya_me_paso:f2.ya.checked,comentario:c,web:f2.web.value}),function(k){b2.disabled=false;b2.textContent=n;
 if(k){ev('docureal-submit-error',{codigo:String(k),idioma:L});er.textContent=msg(k);return}
 if(!f2.web.value)ev('docureal-step2-ok',{idioma:L});f2.hidden=true;z.querySelector('.fin').hidden=false})});
 })();
