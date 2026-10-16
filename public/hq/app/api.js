@@ -1,8 +1,17 @@
 // Acceso a HQ: config, token y RPC. Sin canal realtime (T7-b: main.js recarga por intervalo, no por
 // suscripción); sin estado de negocio (eso está en estado.js).
 const API = 'https://api.77delta.com';
+// El token entra por el fragmento (#t=...), que no viaja al servidor ni al Referer; ?t= se sigue aceptando
+// por los enlaces antiguos. En ambos casos se borra de la URL en cuanto se guarda.
 const params = new URLSearchParams(location.search);
-if (params.get('t')) { localStorage.setItem('hq_t', params.get('t')); history.replaceState(null, '', location.pathname + location.hash); }
+const hashP = new URLSearchParams(location.hash.replace(/^#/, ''));
+const tIn = hashP.get('t') || params.get('t');
+if (tIn) {
+  localStorage.setItem('hq_t', tIn);
+  params.delete('t'); hashP.delete('t');
+  const q = params.toString(), h = hashP.toString();
+  history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + (h ? '#' + h : ''));
+}
 export let TOKEN = localStorage.getItem('hq_t');
 let sb = null, CFG = null;
 

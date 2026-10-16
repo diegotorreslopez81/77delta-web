@@ -57,6 +57,14 @@ export function modal({ titulo, cuerpo, acciones = [] }) {
   document.body.classList.add('con-modal');
   return { cerrar, caja };
 }
+// Confirmación de una acción destructiva: resuelve true solo si se pulsa el botón rojo; cerrar o Cancelar da false.
+export function confirmar(titulo, texto, etiqueta = 'Confirmar') {
+  return new Promise(res => {
+    const m = modal({ titulo, cuerpo: [el('p', { text: texto })], acciones: [
+      el('button', { class: 'btn', text: 'Cancelar', onclick: () => { m.cerrar(); res(false); } }),
+      el('button', { class: 'btn peligro', text: etiqueta, onclick: () => { m.cerrar(); res(true); } })] });
+  });
+}
 // Brief B (19-sep): el aviso de "Trabajar con" cuando no se puede abrir el chat necesita quedarse al
 // menos 6s (hay que leer motivo + qué hacer). `duracion` por defecto sigue en 4000 para no tocar ningún
 // toast existente.

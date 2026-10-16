@@ -24,7 +24,7 @@
 // rompia el atributo href del enlace autogenerado e inyectaba atributos (XSS). Se sustituye por enlazar(),
 // que construye los nodos <a>/<br> via el() (atributos DOM reales, no interpolacion de string en innerHTML).
 import { rpc } from '../api.js';
-import { el, modal, toast, fecha, eur, enlazar, urlSegura, campoTexto } from '../ui.js';
+import { el, modal, toast, fecha, eur, enlazar, urlSegura, campoTexto, confirmar } from '../ui.js';
 import { recargar, render as repintar } from '../main.js';
 import { S, listaDecisiones } from '../estado.js';
 import { conSalida, resolucionLocal } from '../salida.js';
@@ -105,7 +105,7 @@ function tarjeta(p, abierta, hilo, soloComentar) {
       el('button', { class: 'btn', text: 'Copiar para el chat', onclick: () => copiar(p, campo) }),
       el('button', { class: 'btn', text: 'Comentar', onclick: () => actuar(p, 'comentar', campo) }),
       el('button', { class: 'btn', text: 'Posponer', onclick: () => posponer(p) }),
-      el('button', { class: 'btn peligro', text: 'Rechazar', onclick: () => actuar(p, 'rechazada', campo) }),
+      el('button', { class: 'btn peligro', text: 'Rechazar', onclick: async () => { if (await confirmar('Rechazar', 'Se rechaza esta solicitud y se avisa al agente.', 'Rechazar')) actuar(p, 'rechazada', campo); } }),
       p.tipo === 'duda' ? el('button', { class: 'btn primario', text: 'Responder', onclick: () => actuar(p, 'respondida', campo) })
         : el('button', { class: 'btn primario', text: 'Aprobar', onclick: () => actuar(p, 'aprobada', campo) })])]);
   // Brief 2021 (capa D): abrir/cerrar la tarjeta a mano deja rastro en la URL (sin navegar, replaceState),
