@@ -1,5 +1,5 @@
 ---
-/** Pie de página: franja de tinta, como en la web anterior. Mismo orden que el menú: Servicios, Resultados, Productos, Empresa, Legal. */
+/** Pie de página: franja de tinta, como en la web anterior. Mismo orden que el menú: Qué hacemos (4 líneas + servicios), Resultados, Herramientas, Empresa, Legal. */
 import Monograma from './Monograma.astro';
 import { site, href, hrefCa } from '../lib/site';
 
@@ -9,14 +9,18 @@ const enlace = idioma === 'ca' ? hrefCa : href;
 
 const columnasEs = [
   {
-    titulo: 'Servicios',
+    titulo: 'Qué hacemos',
     enlaces: [
+      { texto: 'Inteligencia artificial', ruta: '/inteligencia-artificial/' },
+      { texto: 'Ciberseguridad', ruta: '/ciberseguridad/' },
+      { texto: 'Identidad digital', ruta: '/identidad-digital/' },
+      { texto: 'Espacios de datos', ruta: '/espacios-de-datos/' },
       { texto: 'Director de IA externo', ruta: '/servicios/director-ia/' },
       { texto: 'Diagnóstico', ruta: '/servicios/diagnostico/' },
       { texto: 'Transformación operativa', ruta: '/servicios/transformacion/' },
-      { texto: 'Seguridad de IA', ruta: '/servicios/seguridad-ia/' },
+      { texto: 'Seguridad de asistentes de IA', ruta: '/ciberseguridad/#asistentes-ia' },
       { texto: 'Partner tecnológico', ruta: '/servicios/partner/' },
-      { texto: 'Acreditación ACCIÓ', ruta: '/servicios/#cupo' },
+      { texto: 'Acreditación ACCIÓ', ruta: '/inteligencia-artificial/#cupo' },
     ],
   },
   {
@@ -25,22 +29,14 @@ const columnasEs = [
       { texto: 'Historias de éxito', ruta: '/historias-de-exito/' },
       { texto: 'Casos de uso', ruta: '/casos-de-uso/' },
       { texto: 'Sectores', ruta: '/sectores/' },
-      { texto: 'Estudio: asistentes de IA', ruta: '/estudio-asistentes-ia/' },
       { texto: 'Proyectos en curso', ruta: '/proyectos-en-curso/' },
     ],
   },
   {
-    titulo: 'Productos',
+    titulo: 'Herramientas',
     enlaces: [
       { texto: 'Licita', ruta: '/licita/' },
-      { texto: 'LeakAI', ruta: '/productos/leakai/' },
-      { texto: 'Regulia', ruta: '/productos/regulia/' },
-      { texto: 'Contestia', ruta: '/productos/contestia/' },
-      { texto: 'InstantExam', ruta: '/productos/instantexam/' },
-      { texto: 'ScoreFlow', ruta: '/productos/scoreflow/' },
-      { texto: 'Contablia', ruta: '/productos/contablia/' },
-      { texto: 'Swarmix', ruta: '/productos/swarmix/' },
-      { texto: 'Corpora', ruta: '/productos/#corpora' },
+      { texto: 'Corpora', ruta: '/herramientas/#corpora' },
     ],
   },
   {
@@ -64,14 +60,18 @@ const columnasEs = [
 
 const columnasCa = [
   {
-    titulo: 'Serveis',
+    titulo: 'Què fem',
     enlaces: [
+      { texto: 'Intel·ligència artificial', ruta: '/intel-ligencia-artificial/' },
+      { texto: 'Ciberseguretat', ruta: '/ciberseguretat/' },
+      { texto: 'Identitat digital', ruta: '/identitat-digital/' },
+      { texto: 'Espais de dades', ruta: '/espais-de-dades/' },
       { texto: 'Director d’IA extern', ruta: '/servicios/director-ia/' },
       { texto: 'Diagnòstic', ruta: '/servicios/diagnostico/' },
       { texto: 'Transformació operativa', ruta: '/servicios/transformacion/' },
-      { texto: 'Seguretat d’IA', ruta: '/servicios/seguridad-ia/' },
+      { texto: 'Seguretat d’assistents d’IA', ruta: '/ciberseguretat/#asistentes-ia' },
       { texto: 'Soci tecnològic', ruta: '/servicios/partner/' },
-      { texto: 'Acreditació ACCIÓ', ruta: '/servicios/#cupo' },
+      { texto: 'Acreditació ACCIÓ', ruta: '/intel-ligencia-artificial/#cupo' },
     ],
   },
   {
@@ -80,22 +80,14 @@ const columnasCa = [
       { texto: 'Històries d’èxit', ruta: '/historias-de-exito/' },
       { texto: 'Casos d’ús', ruta: '/casos-de-uso/' },
       { texto: 'Sectors', ruta: '/sectores/' },
-      { texto: 'Estudi: assistents d’IA', ruta: '/estudio-asistentes-ia/' },
       { texto: 'Projectes en curs', ruta: '/proyectos-en-curso/' },
     ],
   },
   {
-    titulo: 'Productes',
+    titulo: 'Eines',
     enlaces: [
       { texto: 'Licita', ruta: '/licita/' },
-      { texto: 'LeakAI', ruta: '/productos/leakai/' },
-      { texto: 'Regulia', ruta: '/productos/regulia/' },
-      { texto: 'Contestia', ruta: '/productos/contestia/' },
-      { texto: 'InstantExam', ruta: '/productos/instantexam/' },
-      { texto: 'ScoreFlow', ruta: '/productos/scoreflow/' },
-      { texto: 'Contablia', ruta: '/productos/contablia/' },
-      { texto: 'Swarmix', ruta: '/productos/swarmix/' },
-      { texto: 'Corpora', ruta: '/productos/#corpora' },
+      { texto: 'Corpora', ruta: '/eines/#corpora' },
     ],
   },
   {
