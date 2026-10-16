@@ -40,7 +40,7 @@ const familiesTextCa: Record<string, string> = {
         <h1>Apliquem la IA per <em>estalviar costos</em> a la teva empresa.</h1>
         <p class="lead">Consultora tecnològica especialitzada en pimes. Diagnòstic gratuït, transformació operativa amb IA i soci tecnològic.</p>
         <div class="ctas">
-          <a href="/ca/contacto/" class="btn-primary">Reservar diagnòstic <span>→</span></a>
+          <a href="/ca/contacto/" class="btn-primary" data-umami-event="reservar" data-umami-event-pagina={Astro.url.pathname} data-umami-event-lugar="hero">Reservar diagnòstic <span>→</span></a>
           <a href="/ca/servicios/" class="btn-ghost">Veure com treballem</a>
         </div>
       </div>
@@ -448,7 +448,7 @@ const familiesTextCa: Record<string, string> = {
   <div class="cont">
     <h2>30 minuts. <em>Sense compromís.</em><br>La decisió és teva.</h2>
     <p>Entrevista estructurada amb la teva empresa. Et lliurem una proposta personalitzada amb estat inicial, pla de treball i pressupost.</p>
-    <a href="/ca/contacto/" class="btn-primary">Reservar diagnòstic gratuït →</a>
+    <a href="/ca/contacto/" class="btn-primary" data-umami-event="reservar" data-umami-event-pagina={Astro.url.pathname} data-umami-event-lugar="cierre">Reservar diagnòstic gratuït →</a>
   </div>
 </section>
 
