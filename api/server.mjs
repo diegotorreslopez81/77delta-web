@@ -1,6 +1,7 @@
 // api.77delta.com · formulario de contacto de 77delta.com y avisos push de HQ.
 // POST /contacto {nombre, empresa, email, sector, mensaje, web(honeypot)} -> email a MAIL_TO por SMTP.
 // Sin SMTP configurado, el lead se guarda en LEADS_FILE y en el log, y se responde 200 igualmente.
+// POST /docureal {email, empresa, tipo, idioma, candidaturas_mes, ya_me_paso, preferencia_precio, comentario, origen, web(honeypot)} -> LEADS_FILE, Supabase docureal_lista_espera y correo a MAIL_TO.
 // POST /verifix {email, empresa, tipo gestoria|empresa, idioma, ya_me_ha_pasado y programa opcionales, web(honeypot)} -> LEADS_FILE, Supabase verifix_lista_espera y correo a MAIL_TO.
 // GET /hiring -> {mcp_url}. POST /hiring {campos del formulario, token del reto MCP, web(honeypot)} -> Windmill f/hiring/alta.
 // GET /hq/vapid -> clave pública VAPID. POST /hq/notificar {token, id} -> push a los móviles del owner de esa empresa.
@@ -10,9 +11,10 @@ import nodemailer from 'nodemailer';
 import webpush from 'web-push';
 import { preparar as prepararHiring, reenviar as reenviarHiring, MAX_CUERPO as MAX_HIRING } from './hiring.mjs';
 import { validar as validarVerifix, insertarSupabase, correo as correoVerifix } from './verifix.mjs';
+import { validar as validarDocureal, insertarSupabase as insertarDocureal, correo as correoDocureal } from './docureal.mjs';
 
 const PORT = Number(process.env.PORT || 3000);
-const ORIGENES = (process.env.CORS_ORIGINS || 'https://77delta.com,https://www.77delta.com,https://verifix.77delta.com').split(',').map((s) => s.trim());
+const ORIGENES = (process.env.CORS_ORIGINS || 'https://77delta.com,https://www.77delta.com,https://verifix.77delta.com,https://docureal.77delta.com').split(',').map((s) => s.trim());
 const MAIL_TO = process.env.MAIL_TO || 'hola@77delta.com';
 const MAIL_FROM = process.env.MAIL_FROM || process.env.SMTP_USER || MAIL_TO;
 const LEADS_FILE = process.env.LEADS_FILE || '/data/leads.jsonl';
@@ -346,6 +348,25 @@ const servidor = http.createServer(async (req, res) => {
     transporte.sendMail(correoVerifix(v.lead, MAIL_FROM, MAIL_TO))
       .then((info) => console.log('smtp ok verifix', info.messageId))
       .catch((e) => console.error('smtp error verifix', e.message, '· lead guardado en', LEADS_FILE));
+    return;
+  }
+
+  if (ruta === '/docureal' && req.method === 'POST') {
+    const ipd = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+    if (!permitido(ipd, 'docureal:')) return responder(res, 429, { ok: false, error: 'Demasiados envíos. Prueba en unos minutos.' });
+    let cuerpoD;
+    try { cuerpoD = await leerJson(req); } catch { return responder(res, 400, { ok: false, error: 'Cuerpo no válido.' }); }
+    const d = validarDocureal(cuerpoD, ipd, process.env.VERIFIX_IP_SALT || '');
+    if (d.honeypot) return responder(res, 200, { ok: true });
+    if (d.error) return responder(res, 400, { ok: false, error: d.error });
+    await guardar({ tipo_lead: 'docureal', ...d.lead });
+    console.log('lead docureal', JSON.stringify({ tipo: d.lead.tipo, idioma: d.lead.idioma }));
+    const enBaseD = await insertarDocureal(d.lead, { url: HQ.url, service: HQ.service });
+    responder(res, 200, { ok: true, enviado: Boolean(transporte), registrado: enBaseD });
+    if (!transporte) return;
+    transporte.sendMail(correoDocureal(d.lead, MAIL_FROM, MAIL_TO))
+      .then((info) => console.log('smtp ok docureal', info.messageId))
+      .catch((e) => console.error('smtp error docureal', e.message, '· lead guardado en', LEADS_FILE));
     return;
   }
 
