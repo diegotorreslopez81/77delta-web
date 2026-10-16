@@ -50,14 +50,25 @@ export function hrefCa(path: string): string {
   return getRelativeLocaleUrl('ca', limpio);
 }
 
+/** Slugs de primer nivel que cambian en catalán (reorden 2026-10). El resto comparte slug bajo /ca/. */
+export const slugsCa: Readonly<Record<string, string>> = {
+  'inteligencia-artificial': 'intel-ligencia-artificial',
+  ciberseguridad: 'ciberseguretat',
+  'identidad-digital': 'identitat-digital',
+  'espacios-de-datos': 'espais-de-dades',
+};
+const slugsEs: Readonly<Record<string, string>> = Object.fromEntries(Object.entries(slugsCa).map(([es, ca]) => [ca, es]));
+const traduceSlug = (pathname: string, mapa: Readonly<Record<string, string>>) =>
+  pathname.replace(/^\/([^/]+)\//, (todo, slug) => (mapa[slug] ? `/${mapa[slug]}/` : todo));
+
 /** Dado un pathname de castellano (p.ej. '/servicios/'), la ruta equivalente en catalán. */
 export function equivalenteCa(pathnameEs: string): string {
-  return hrefCa(pathnameEs);
+  return hrefCa(traduceSlug(pathnameEs, slugsCa));
 }
 
 /** Dado un pathname de catalán bajo /ca/, la ruta equivalente en castellano. */
 export function equivalenteEs(pathnameCa: string): string {
-  const sinCa = pathnameCa.replace(/^\/ca(\/|$)/, '/');
+  const sinCa = traduceSlug(pathnameCa.replace(/^\/ca(\/|$)/, '/'), slugsEs);
   // La 404 en castellano es un fichero especial plano (dist/404.html, lo exige GitHub Pages),
   // no una carpeta: no lleva barra final como el resto de páginas.
   if (sinCa === '/404' || sinCa === '/404/') return href('/404.html');

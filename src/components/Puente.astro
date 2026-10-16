@@ -1,0 +1,41 @@
+---
+/**
+ * Página puente para rutas retiradas o movidas. GitHub Pages no sirve redirecciones 301, así que
+ * la página antigua se sustituye por esta: meta refresh 0 + canonical a la URL nueva + enlace visible.
+ * Sin noindex: Google trata el refresh 0 como redirección permanente, y noindex junto a canonical
+ * son señales contradictorias. Sin hreflang ni analítica: la página no debe indexarse por sí misma.
+ *
+ * Uso en src/pages/<ruta-antigua>.astro:
+ *   <Puente destino="/ciberseguridad/" />
+ */
+import { site, href } from '../lib/site';
+
+interface Props {
+  /** Ruta nueva (pathname), p. ej. '/ciberseguridad/'. */
+  destino: string;
+  /** Idioma del aviso. */
+  idioma?: 'es' | 'ca';
+}
+const { destino, idioma = 'es' } = Astro.props;
+const destinoAbs = new URL(href(destino), Astro.site).href;
+const textos = {
+  es: { titulo: 'Página movida', aviso: 'Esta página se ha movido a', enlace: 'Ir a la nueva página' },
+  ca: { titulo: 'Pàgina moguda', aviso: "Aquesta pàgina s'ha mogut a", enlace: 'Anar a la pàgina nova' },
+}[idioma];
+---
+
+<!doctype html>
+<html lang={idioma}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{textos.titulo} · {site.nombre}</title>
+    <meta http-equiv="refresh" content={`0; url=${destinoAbs}`} />
+    <link rel="canonical" href={destinoAbs} />
+    <link rel="icon" type="image/svg+xml" href={href('/favicon.svg')} />
+    <meta name="theme-color" content="#06101F" />
+  </head>
+  <body style="font-family: system-ui, sans-serif; background: #06101F; color: #fff; margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 16px;">
+    <p>{textos.aviso} <a href={destinoAbs} style="color: #fff;">{destinoAbs}</a>. <a href={destinoAbs} style="color: #fff;">{textos.enlace}</a>.</p>
+  </body>
+</html>

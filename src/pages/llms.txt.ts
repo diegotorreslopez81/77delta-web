@@ -15,7 +15,7 @@ export const GET: APIRoute = async () => {
     : [
         '## Blog',
         '',
-        `- [Blog](${sitio}/blog/): guías prácticas de IA aplicada a la pyme industrial.`,
+        `- [Blog](${sitio}/blog/): guías prácticas sobre IA, ciberseguridad, identidad digital y datos para pymes.`,
         ...es.map((e) => linea(e, '')),
         ...(ca.length ? [`- [Blog en catalán](${sitio}/ca/blog/)`, ...ca.map((e) => linea(e, '/ca'))] : []),
         '',

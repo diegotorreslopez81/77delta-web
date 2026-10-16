@@ -1,0 +1,21 @@
+---
+/**
+ * JSON-LD FAQPage a partir de la lista de preguntas que ya pinta la página.
+ * Las preguntas y respuestas deben ser las mismas que se ven en el HTML (requisito de Google).
+ *
+ * Uso: <FaqSchema faq={faq} /> dentro de <Base>, junto al bloque visible de preguntas.
+ */
+interface Props {
+  faq: readonly { pregunta: string; respuesta: string }[];
+}
+const { faq } = Astro.props;
+const datos = faq.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.pregunta, acceptedAnswer: { '@type': 'Answer', text: f.respuesta } })),
+    }
+  : null;
+---
+
+{datos && <script type="application/ld+json" set:html={JSON.stringify(datos)} />}
