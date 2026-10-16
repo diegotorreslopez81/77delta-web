@@ -5,6 +5,7 @@
 // POST /verifix {email, empresa, tipo gestoria|empresa, idioma, ya_me_ha_pasado y programa opcionales, web(honeypot)} -> LEADS_FILE, Supabase verifix_lista_espera y correo a MAIL_TO.
 // GET /hiring -> {mcp_url}. POST /hiring {campos del formulario, token del reto MCP, web(honeypot)} -> Windmill f/hiring/alta.
 // GET /hq/vapid -> clave pública VAPID. POST /hq/notificar {token, id} -> push a los móviles del owner de esa empresa.
+// Tras cada envío con éxito de /contacto, /hiring y /docureal se registra un evento en Umami (form-contacto, form-empleo, form-docureal) vía UMAMI_URL/api/send.
 import http from 'node:http';
 import { appendFile } from 'node:fs/promises';
 import nodemailer from 'nodemailer';
@@ -19,6 +20,13 @@ const MAIL_TO = process.env.MAIL_TO || 'hola@77delta.com';
 const MAIL_FROM = process.env.MAIL_FROM || process.env.SMTP_USER || MAIL_TO;
 const LEADS_FILE = process.env.LEADS_FILE || '/data/leads.jsonl';
 const SMTP_OK = Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
+// Eventos de conversión en Umami (envíos con éxito de formularios). Sin cookies ni datos personales:
+// solo nombre del evento, origen e idioma. UMAMI_URL vacío desactiva el envío.
+const UMAMI = {
+  url: (process.env.UMAMI_URL || 'https://stats.77delta.com').replace(/\/$/, ''),
+  web: process.env.UMAMI_WEBSITE_77DELTA || '0847eaa4-a0ce-47ee-9acf-8e796160bdd9',
+  docureal: process.env.UMAMI_WEBSITE_DOCUREAL || '',
+};
 
 // HQ: Supabase propio (anon para validar tokens por RPC, service para leer suscripciones) y claves VAPID.
 const HQ = {
@@ -122,6 +130,26 @@ async function guardar(lead) {
 }
 
 // ---- HQ ----
+/**
+ * Registra un evento en Umami desde el servidor (POST /api/send). Nunca bloquea la respuesta
+ * al visitante: se lanza después de responder y los fallos solo se registran en el log.
+ * sitio: 'web' (77delta.com) o 'docureal' (docureal.77delta.com, con su propio website en Umami).
+ */
+function eventoUmami(nombre, { sitio = 'web', url = '/', datos = {} } = {}) {
+  if (!UMAMI.url) return;
+  const website = sitio === 'docureal' && UMAMI.docureal ? UMAMI.docureal : UMAMI.web;
+  const hostname = sitio === 'docureal' ? 'docureal.77delta.com' : '77delta.com';
+  const payload = { type: 'event', payload: { website, hostname, url, name: nombre, language: datos.idioma || 'es', data: datos } };
+  fetch(`${UMAMI.url}/api/send`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'User-Agent': 'api-77delta/1.0 (+https://api.77delta.com)' },
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(5000),
+  })
+    .then((r) => (r.ok ? console.log('umami', nombre) : console.error('umami error', nombre, r.status)))
+    .catch((e) => console.error('umami error', nombre, e.message));
+}
+
 async function supa(ruta, opciones = {}, clave = HQ.anon) {
   const r = await fetch(HQ.url + ruta, {
     ...opciones,
@@ -329,7 +357,9 @@ const servidor = http.createServer(async (req, res) => {
     if (prep.error) return responder(res, 400, { ok: false, errores: [prep.error] });
     const r = await reenviarHiring(prep.payload, process.env);
     console.log('hiring', r.codigo);
-    return responder(res, r.codigo, r.cuerpo);
+    responder(res, r.codigo, r.cuerpo);
+    if (r.codigo === 200) eventoUmami('form-empleo', { url: '/trabaja-con-nosotros/', datos: { origen: limpiar(cuerpoH.origen, 200) } });
+    return;
   }
 
   if (ruta === '/verifix' && req.method === 'POST') {
@@ -363,6 +393,7 @@ const servidor = http.createServer(async (req, res) => {
     console.log('lead docureal', JSON.stringify({ tipo: d.lead.tipo, idioma: d.lead.idioma }));
     const enBaseD = await insertarDocureal(d.lead, { url: HQ.url, service: HQ.service });
     responder(res, 200, { ok: true, enviado: Boolean(transporte), registrado: enBaseD });
+    eventoUmami('form-docureal', { sitio: 'docureal', url: d.lead.idioma === 'es' ? '/' : `/${d.lead.idioma}/`, datos: { tipo: d.lead.tipo, idioma: d.lead.idioma, origen: d.lead.origen || '' } });
     if (!transporte) return;
     transporte.sendMail(correoDocureal(d.lead, MAIL_FROM, MAIL_TO))
       .then((info) => console.log('smtp ok docureal', info.messageId))
@@ -404,6 +435,7 @@ const servidor = http.createServer(async (req, res) => {
 
   // El lead ya está a salvo: respondemos ya y el correo sale en segundo plano.
   responder(res, 200, { ok: true, enviado: Boolean(transporte) });
+  eventoUmami('form-contacto', { url: '/contacto/', datos: { sector: lead.sector, origen: lead.origen || '' } });
   if (!transporte) return;
 
   const texto = [

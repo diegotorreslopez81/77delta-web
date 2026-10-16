@@ -21,7 +21,7 @@ import { casos, familias } from '../data/casos-de-uso';
         <h1>Aplicamos la IA para <em>ahorrar costes</em> a tu empresa.</h1>
         <p class="lead">Consultora tecnológica especializada en pymes. Diagnóstico gratuito, transformación operativa con IA y partner tecnológico.</p>
         <div class="ctas">
-          <a href="/contacto/" class="btn-primary">Reservar diagnóstico <span>→</span></a>
+          <a href="/contacto/" class="btn-primary" data-umami-event="reservar" data-umami-event-pagina={Astro.url.pathname} data-umami-event-lugar="hero">Reservar diagnóstico <span>→</span></a>
           <a href="/servicios/" class="btn-ghost">Ver cómo trabajamos</a>
         </div>
       </div>
@@ -431,7 +431,7 @@ import { casos, familias } from '../data/casos-de-uso';
   <div class="cont">
     <h2>30 minutos. <em>Sin compromiso.</em><br>La decisión es tuya.</h2>
     <p>Entrevista estructurada con tu empresa. Te entregamos una propuesta personalizada con estado inicial, plan de trabajo y presupuesto.</p>
-    <a href="/contacto/" class="btn-primary">Reservar diagnóstico gratuito →</a>
+    <a href="/contacto/" class="btn-primary" data-umami-event="reservar" data-umami-event-pagina={Astro.url.pathname} data-umami-event-lugar="cierre">Reservar diagnóstico gratuito →</a>
   </div>
 </section>
 

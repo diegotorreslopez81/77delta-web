@@ -104,6 +104,9 @@ const enlaceOtroIdioma = idioma === 'ca' ? equivalenteEs(actual) : equivalenteCa
       )}
       <a
         href={enlace(boton.ruta)}
+        data-umami-event="reservar"
+        data-umami-event-pagina={Astro.url.pathname}
+        data-umami-event-lugar="nav"
         class="inline-flex items-center whitespace-nowrap rounded-[8px] bg-oro px-4 py-2.5 text-[13px] font-semibold text-marfil transition-[background-color,color,box-shadow] duration-200 hover:bg-marfil hover:text-tinta hover:shadow-[0_6px_20px_rgba(0,0,0,.3)] sm:px-5"
       >
         <span class="hidden sm:inline">{boton.texto}</span><span class="sm:hidden">{idioma === 'ca' ? 'Reservar' : 'Reservar'}</span>
