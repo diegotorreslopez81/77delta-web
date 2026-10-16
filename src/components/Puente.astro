@@ -2,7 +2,7 @@
 /**
  * Página puente para rutas retiradas o movidas. GitHub Pages no sirve redirecciones 301, así que
  * la página antigua se sustituye por esta: meta refresh 0 + canonical a la URL nueva + enlace visible.
- * Sin noindex: Google trata el refresh 0 como redirección permanente, y noindex junto a canonical
+ * El canonical va sin fragmento. Sin noindex: Google trata el refresh 0 como redirección permanente, y noindex junto a canonical
  * son señales contradictorias. Sin hreflang ni analítica: la página no debe indexarse por sí misma.
  *
  * Uso en src/pages/<ruta-antigua>.astro:
@@ -18,6 +18,8 @@ interface Props {
 }
 const { destino, idioma = 'es' } = Astro.props;
 const destinoAbs = new URL(href(destino), Astro.site).href;
+// El canonical nunca lleva fragmento (#ancla): Google lo ignora o lo trata como URL distinta.
+const canonicalAbs = destinoAbs.split('#')[0];
 const textos = {
   es: { titulo: 'Página movida', aviso: 'Esta página se ha movido a', enlace: 'Ir a la nueva página' },
   ca: { titulo: 'Pàgina moguda', aviso: "Aquesta pàgina s'ha mogut a", enlace: 'Anar a la pàgina nova' },
@@ -31,7 +33,7 @@ const textos = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{textos.titulo} · {site.nombre}</title>
     <meta http-equiv="refresh" content={`0; url=${destinoAbs}`} />
-    <link rel="canonical" href={destinoAbs} />
+    <link rel="canonical" href={canonicalAbs} />
     <link rel="icon" type="image/svg+xml" href={href('/favicon.svg')} />
     <meta name="theme-color" content="#06101F" />
   </head>

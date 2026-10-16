@@ -14,8 +14,6 @@ export default defineConfig({
   site,
   base,
   trailingSlash: 'always',
-  // /seguridad-ia (raíz, efímera) redirige directo a /ciberseguridad/ para no encadenar dos saltos vía el puente de /servicios/seguridad-ia/.
-  redirects: { '/seguridad-ia': '/ciberseguridad/' },
   build: { format: 'directory' },
   // Castellano en la raíz (no rompe URLs ya indexadas), catalán bajo /ca/.
   i18n: {
