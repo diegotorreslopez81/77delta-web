@@ -22,6 +22,7 @@ import * as admin from './vistas/admin.js';
 import * as ventas from './vistas/ventas.js';
 import * as progreso from './vistas/progreso.js';
 import * as web from './vistas/web.js';
+import { conectar as conectarADemanda } from './a-demanda.js';
 
 // Plan 3a: una vista por clave de ruta (rutas.js). 'equipo/agente' es la ficha de equipo.js (arg = id).
 // #1057 tarea 29: Hoy ya monta la bandeja de decisiones ella misma (decisiones.montar, solo owner),
@@ -134,6 +135,8 @@ if ('serviceWorker' in navigator) {
 
 if (!TOKEN) pedirToken();
 else {
+  // schema-v153: hilos y enlaces de pliegos se piden al pintarse (a-demanda.js); sin token nunca se conecta.
+  conectarADemanda(rpc, render);
   conf().then(recargarYMarcar).catch(e => { raiz.innerHTML = ''; raiz.append(el('p', { class: 'error', text: 'No se pudo cargar HQ: ' + e.message })); });
   // D17 (#1355): estados/transiciones de Licita en directo, opcional y sin bloquear el arranque (mismo
   // patron que el push de mas abajo): si falla, la vista de licitaciones sigue con el snapshot de
