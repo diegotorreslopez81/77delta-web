@@ -3,11 +3,13 @@
 // Sin SMTP configurado, el lead se guarda en LEADS_FILE y en el log, y se responde 200 igualmente.
 // POST /docureal {email, empresa, tipo, idioma, candidaturas_mes, ya_me_paso, preferencia_precio, comentario, origen, web(honeypot)} -> LEADS_FILE, Supabase docureal_lista_espera y correo a MAIL_TO.
 // POST /verifix {email, empresa, tipo gestoria|empresa, idioma, ya_me_ha_pasado y programa opcionales, web(honeypot)} -> LEADS_FILE, Supabase verifix_lista_espera y correo a MAIL_TO.
+// GET /hiring -> {mcp_url}. POST /hiring {campos del formulario, token del reto MCP, web(honeypot)} -> Windmill f/hiring/alta.
 // GET /hq/vapid -> clave pública VAPID. POST /hq/notificar {token, id} -> push a los móviles del owner de esa empresa.
 import http from 'node:http';
 import { appendFile } from 'node:fs/promises';
 import nodemailer from 'nodemailer';
 import webpush from 'web-push';
+import { preparar as prepararHiring, reenviar as reenviarHiring, MAX_CUERPO as MAX_HIRING } from './hiring.mjs';
 import { validar as validarVerifix, insertarSupabase, correo as correoVerifix } from './verifix.mjs';
 import { validar as validarDocureal, insertarSupabase as insertarDocureal, correo as correoDocureal } from './docureal.mjs';
 
@@ -73,11 +75,11 @@ function responder(res, codigo, cuerpo) {
   res.end(JSON.stringify(cuerpo));
 }
 
-async function leerJson(req) {
+async function leerJson(req, max = 20_000) {
   let datos = '';
   for await (const trozo of req) {
     datos += trozo;
-    if (datos.length > 20_000) throw new Error('demasiado grande');
+    if (datos.length > max) throw new Error('demasiado grande');
   }
   return JSON.parse(datos || '{}');
 }
@@ -311,6 +313,23 @@ const servidor = http.createServer(async (req, res) => {
       console.error('hq notificar-lic', e.message);
       return responder(res, /token|encontrada/i.test(e.message) ? 403 : 502, { ok: false, error: e.message });
     }
+  }
+
+  // Hiring Argentina: GET da la URL del servidor MCP del reto; POST valida la forma del token y reenvia a Windmill.
+  if (ruta === '/hiring' && req.method === 'GET') {
+    return responder(res, 200, { ok: true, mcp_url: process.env.MCP_URL || '' });
+  }
+  if (ruta === '/hiring' && req.method === 'POST') {
+    const ipH = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+    if (!permitido(ipH, 'hiring')) return responder(res, 429, { ok: false, errores: ['demasiados_envios'] });
+    let cuerpoH;
+    try { cuerpoH = await leerJson(req, MAX_HIRING); } catch { return responder(res, 400, { ok: false, errores: ['cuerpo_invalido'] }); }
+    const prep = prepararHiring(cuerpoH);
+    if (prep.honeypot) return responder(res, 200, { ok: true });
+    if (prep.error) return responder(res, 400, { ok: false, errores: [prep.error] });
+    const r = await reenviarHiring(prep.payload, process.env);
+    console.log('hiring', r.codigo);
+    return responder(res, r.codigo, r.cuerpo);
   }
 
   if (ruta === '/verifix' && req.method === 'POST') {
