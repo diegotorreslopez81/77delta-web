@@ -1,7 +1,7 @@
-@font-face{font-family:Sora;font-weight:600;font-display:swap;src:url(/docureal/fonts/sora-latin-600-normal.woff2) format("woff2")}
-@font-face{font-family:Sora;font-weight:700;font-display:swap;src:url(/docureal/fonts/sora-latin-700-normal.woff2) format("woff2")}
-@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(/docureal/fonts/inter-latin-400-normal.woff2) format("woff2")}
-@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(/docureal/fonts/inter-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:Sora;font-weight:600;font-display:swap;src:url(/fonts/sora-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:Sora;font-weight:700;font-display:swap;src:url(/fonts/sora-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(/fonts/inter-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(/fonts/inter-latin-600-normal.woff2) format("woff2")}
 :root{--bg:#fff;--bg2:#F5F7FA;--line:#E3E8EF;--ink:#0A1628;--mut:#475467;--cta:#1F4FD1;--cta-h:#173FA8;--ok:#067647;--ok-bg:#ECFDF3;--bad:#B42318;--bad-bg:#FEF3F2;--warn:#B54708;--warn-bg:#FFFAEB}
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-padding-top:72px;-webkit-text-size-adjust:100%}
@@ -155,7 +155,7 @@ details p{padding:0 0 16px;color:var(--mut);max-width:640px}
 @keyframes lgp{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
 .more{display:none;color:var(--mut);font-weight:600;text-decoration:none;padding:0 10px;min-height:44px;align-items:center}
 .more:hover{color:var(--ink);text-decoration:underline}
-.hero{background:url(/docureal/hero-bg.svg) center bottom/cover no-repeat,var(--bg)}
+.hero{background:url(/hero-bg.svg) center bottom/cover no-repeat,var(--bg)}
 .rob-sub{max-width:720px;margin:-8px 0 28px;color:var(--mut)}
 .robs{align-items:stretch}
 .rob{position:relative;background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px}
