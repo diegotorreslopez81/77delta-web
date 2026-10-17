@@ -2,6 +2,7 @@
 /** Barra de confianza: instituciones y partners tecnológicos, en negro al 50 % sobre papel. */
 import { instituciones, tecnologia } from '../data/logos';
 import { href } from '../lib/site';
+import { dimensiones } from '../lib/imagen';
 
 const todos = [...instituciones, ...tecnologia];
 ---
@@ -24,6 +25,8 @@ const todos = [...instituciones, ...tecnologia];
               <img
                 src={href(`/img/logos/${l.src}`)}
                 alt={l.alt}
+                width={dimensiones(`/img/logos/${l.src}`)?.width}
+                height={dimensiones(`/img/logos/${l.src}`)?.height}
                 loading="lazy"
                 decoding="async"
                 class:list={[

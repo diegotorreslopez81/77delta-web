@@ -4,6 +4,7 @@ import Base from '../../../layouts/Base.astro';
 import HeroFoto from '../../../components/HeroFoto.astro';
 import Cta from '../../../components/Cta.astro';
 import { site, hrefCa as href } from '../../../lib/site';
+import { dimensiones } from '../../../lib/imagen';
 import diego from '../../../assets/diego.png';
 import irene from '../../../assets/irene.jpg';
 
@@ -222,6 +223,8 @@ const descripcio =
                   <img
                     src={href(`/img/logos/${s.src}`)}
                     alt={s.alt}
+                    width={dimensiones(`/img/logos/${s.src}`)?.width}
+                    height={dimensiones(`/img/logos/${s.src}`)?.height}
                     loading="lazy"
                     decoding="async"
                     class="h-auto max-h-10 w-auto max-w-[140px] object-contain brightness-0 opacity-60 transition-opacity duration-300 group-hover:opacity-90"
