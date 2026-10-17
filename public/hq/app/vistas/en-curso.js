@@ -16,7 +16,7 @@ export function modeloEnCurso(filas) {
 
 function linea(f) {
   const sin = f.dias_sin_avance == null ? 'sin avance registrado' : f.dias_sin_avance + ' d sin avance';
-  const hito = f.proximo_hito ? f.proximo_hito + (f.fecha_hito ? ' (' + fdia(f.fecha_hito) + ')' : '') : 'sin hito';
+  const hito = f.proximo_hito ? f.proximo_hito + ' (' + (f.fecha_hito ? fdia(f.fecha_hito) : 'sin fecha') + ')' : 'sin fecha';
   const caja = el('div', { class: 'vt-card compacta en-curso-item sem-' + f.semaforo });
   const t = el('h3', {});
   t.append(el('a', { href: f.enlace || '#', text: '#' + f.id }), el('span', { text: ' ' + (f.titulo || '') }));
