@@ -195,8 +195,7 @@ export function bandeja(S, arg, ahora = new Date()) {
     sec('Vence hoy', g.hoy), sec('Esta semana', g.semana),
     plegada('Sin fecha' + cnt('home.tarjetas.depende_de_ti', g.resto.length) + ' · pospuestas' + cnt('home.tarjetas.pospuestas', g.pospuestas.length), otras, otras.some(p => p.id === abierta)),
     secSeguimiento,
-    lic.length ? el('details', { class: 'grupo-criba' }, [el('summary', {}, [el('h2', { text: 'Licitaciones por decidir' + cnt('home.licitaciones.por_decidir', lic.length) })]), lineaCriba, ...lic.map(l => licitacion(l, d.rol)),
-      el('a', { class: 'btn-enlace', href: '/hq/v1/#licita', text: 'histórico y fichas completas en HQ v1' })]) : lineaCriba,
+    lic.length ? el('details', { class: 'grupo-criba' }, [el('summary', {}, [el('h2', { text: 'Licitaciones por decidir' + cnt('home.licitaciones.por_decidir', lic.length) })]), lineaCriba, ...lic.map(l => licitacion(l, d.rol))]) : lineaCriba,
   ]);
 }
 // Ids que la bandeja ya pinta (pendientes, pospuestas y seguimiento del snapshot).
