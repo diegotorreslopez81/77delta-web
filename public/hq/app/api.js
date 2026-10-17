@@ -6,13 +6,20 @@ const API = 'https://api.77delta.com';
 const params = new URLSearchParams(location.search);
 const hashP = new URLSearchParams(location.hash.replace(/^#/, ''));
 const tIn = hashP.get('t') || params.get('t');
+// El token vive solo en sessionStorage (se borra al cerrar la pestaña); nunca en localStorage. Si no hay
+// sessionStorage (modo privado o tests), queda en memoria. Se purga el que dejaron versiones anteriores.
+const memTok = { v: null };
+const tokGet = () => { try { return sessionStorage.getItem('hq_t') || memTok.v; } catch { return memTok.v; } };
+const tokSet = t => { memTok.v = t; try { sessionStorage.setItem('hq_t', t); } catch { /* en memoria */ } };
+const tokDel = () => { memTok.v = null; try { sessionStorage.removeItem('hq_t'); } catch { /* nada */ } };
+try { localStorage.removeItem('hq_t'); } catch { /* nada que purgar */ }
 if (tIn) {
-  localStorage.setItem('hq_t', tIn);
+  tokSet(tIn);
   params.delete('t'); hashP.delete('t');
   const q = params.toString(), h = hashP.toString();
   history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + (h ? '#' + h : ''));
 }
-export let TOKEN = localStorage.getItem('hq_t');
+export let TOKEN = tokGet();
 let sb = null, CFG = null;
 
 export async function conf() {
@@ -23,8 +30,8 @@ export async function conf() {
   sb = window.supabase.createClient(CFG.url, CFG.anon, { auth: { persistSession: false, autoRefreshToken: false } });
   return CFG;
 }
-export function guardarToken(t) { localStorage.setItem('hq_t', t); TOKEN = t; }
-export function salir() { localStorage.removeItem('hq_t'); TOKEN = null; location.reload(); }
+export function guardarToken(t) { tokSet(t); TOKEN = t; }
+export function salir() { tokDel(); TOKEN = null; location.reload(); }
 export async function rpc(fn, args = {}) {
   if (!sb) await conf();
   const r = await sb.rpc(fn, { p_token: TOKEN, ...args });

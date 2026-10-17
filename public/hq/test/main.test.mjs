@@ -46,7 +46,7 @@ if (typeof globalThis.localStorage === 'undefined') {
 }
 globalThis.matchMedia = () => ({ matches: false });
 
-// Sin 'hq_t' en localStorage: TOKEN queda null (api.js lo lee al importarse). main.js, al no haber
+// Sin 'hq_t' en sessionStorage: TOKEN queda null (api.js lo lee al importarse). main.js, al no haber
 // token, llama a pedirToken() nada mas importarse (ver comentario de decisiones.test.mjs).
 const { render } = await import('../app/main.js');
 
