@@ -28,6 +28,8 @@ export default defineConfig({
         const ruta = new URL(page).pathname;
         return (
           !ruta.includes('/propuestas/') &&
+          // Paginas con noindex (Base.astro) no van al sitemap.
+          !/^\/(ca\/|en\/)?(trabaja-con-nosotros|treballa-amb-nosaltres|work-with-us)\/$/.test(ruta) &&
           !/^\/(ca\/)?productos\//.test(ruta) &&
           !/^\/(ca\/)?servicios\/(seguridad-ia\/)?$/.test(ruta) &&
           ruta !== '/seguridad-ia/'
