@@ -32,6 +32,7 @@ const organizacion = {
   url: origen,
   description: idioma === 'ca' ? site.descripcionCa : site.descripcion,
   image: new URL('/img/og.png', Astro.site).href,
+  logo: new URL('/img/logo-512.png', Astro.site).href,
   telephone: `+${site.whatsapp}`,
   address: {
     '@type': 'PostalAddress',

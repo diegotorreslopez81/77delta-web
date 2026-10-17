@@ -34,6 +34,9 @@ const imagen = d.imagen ?? `/blog/cluster-${d.cluster}.png`;
 // og:image y schema no admiten SVG: se usa el PNG hermano.
 const imagenOg = imagen.replace(/\.svg$/, '.png');
 const url = new URL(href(`/blog/${slug}/`), Astro.site).href;
+// Mismo @id que la Organization de Schema.astro: author y publisher apuntan a la misma entidad.
+const origen = new URL('/', Astro.site).href;
+const logo = new URL('/img/logo-512.png', Astro.site).href;
 const abs = (p: string) => new URL(hrefEs(p), Astro.site).href;
 const nombres = new Map<string, string>([
   ...(idioma === 'ca' ? resCa : resEs).map((r) => [r.ruta, r.titulo] as [string, string]),
@@ -55,8 +58,8 @@ const jsonld = [
     dateModified: (d.updatedDate ?? d.pubDate).toISOString(),
     inLanguage: idioma,
     mainEntityOfPage: url,
-    author: { '@type': 'Organization', name: site.nombre },
-    publisher: { '@type': 'Organization', name: site.nombre },
+    author: { '@type': 'Organization', '@id': `${origen}#organizacion`, name: site.nombre, url: origen },
+    publisher: { '@type': 'Organization', '@id': `${origen}#organizacion`, name: site.nombre, url: origen, logo: { '@type': 'ImageObject', url: logo } },
   },
   ...(d.faq.length
     ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: d.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }]
