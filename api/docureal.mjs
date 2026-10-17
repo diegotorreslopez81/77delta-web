@@ -3,7 +3,7 @@
 import { createHash } from 'node:crypto';
 
 export const TIPOS = ['agencia', 'administrador', 'aseguradora', 'otro'];
-export const IDIOMAS = ['es', 'en', 'ca'];
+export const IDIOMAS = ['es', 'en', 'ca', 'eu', 'gl', 'va'];
 export const CANDIDATURAS = ['', 'menos-5', '5-20', '21-50', 'mas-50'];
 export const PREFERENCIAS = ['49-mes', 'por-verificacion', 'no-se'];
 export const ASUNTO = 'DocuReal: petición de demo';

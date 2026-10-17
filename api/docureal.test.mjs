@@ -13,6 +13,8 @@ test('datos validos normalizan email y conservan los campos del formulario', () 
   const { lead } = validar(ok, '1.1.1.1', 'sal');
   assert.equal(lead.email, 'ana@agencia.com');
   assert.equal(lead.idioma, 'ca');
+  for (const i of ['eu', 'gl', 'va']) assert.equal(validar({ ...ok, idioma: i }, '1.1.1.1', 'sal').lead.idioma, i);
+  assert.equal(validar({ ...ok, idioma: 'fr' }, '1.1.1.1', 'sal').lead.idioma, 'es');
   assert.equal(lead.candidaturas_mes, '5-20');
   assert.equal(lead.ya_me_paso, true);
   assert.equal(lead.preferencia_precio, '49-mes');
