@@ -6,6 +6,9 @@ import Icono from '../../../components/Icono.astro';
 import FaqSchema from '../../../components/FaqSchema.astro';
 import Cta from '../../../components/Cta.astro';
 import { hrefCa as href, site } from '../../../lib/site';
+import { dimensiones } from '../../../lib/imagen';
+
+const accio = dimensiones('/img/logos/accio.png');
 
 const queHacemos = [
   {
@@ -213,8 +216,8 @@ const faq = [
         <img
           src={href('/img/logos/accio.png')}
           alt="ACCIÓ, Generalitat de Catalunya"
-          width="320"
-          height="120"
+          width={accio?.width}
+          height={accio?.height}
           loading="lazy"
           decoding="async"
           class="h-14 w-auto"

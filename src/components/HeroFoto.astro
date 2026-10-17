@@ -4,6 +4,8 @@
  * fotografía de la portada: ocupa la columna derecha del hero y se apila bajo el texto en
  * pantallas estrechas. Las imágenes viven en /img/fotos/<nombre>-<ancho>.webp.
  */
+import { dimensiones } from '../lib/imagen';
+
 interface Props {
   /** Nombre base del fichero en /img/fotos/, sin ancho ni extensión. */
   foto: string;
@@ -15,6 +17,7 @@ interface Props {
 const { foto, alt, tamanos = [900, 1600], class: clase } = Astro.props;
 const src = `/img/fotos/${foto}-${tamanos[tamanos.length - 1]}.webp`;
 const srcset = tamanos.map((t) => `/img/fotos/${foto}-${t}.webp ${t}w`).join(', ');
+const dim = dimensiones(src);
 ---
 
 <div
@@ -29,6 +32,8 @@ const srcset = tamanos.map((t) => `/img/fotos/${foto}-${t}.webp ${t}w`).join(', 
     srcset={srcset}
     sizes="(min-width: 1024px) 40vw, 100vw"
     alt={alt}
+    width={dim?.width}
+    height={dim?.height}
     class="h-full w-full object-cover"
     fetchpriority="high"
     decoding="async"
