@@ -142,7 +142,7 @@ function eventoUmami(nombre, { sitio = 'web', url = '/', datos = {} } = {}) {
   const payload = { type: 'event', payload: { website, hostname, url, name: nombre, language: datos.idioma || 'es', data: datos } };
   fetch(`${UMAMI.url}/api/send`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'User-Agent': 'api-77delta/1.0 (+https://api.77delta.com)' },
+    headers: { 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36' },
     body: JSON.stringify(payload),
     signal: AbortSignal.timeout(5000),
   })
