@@ -48,13 +48,15 @@ export const AREAS = [
 // Claves que tienen vista. 'equipo/agente' no sale en el menú (es la ficha) pero es una ruta válida.
 export const CLAVES = new Set(['hoy', 'avisos', 'kpis', 'direccion/objetivo', 'operacion/tablero', 'operacion/expedientes', 'operacion/licitaciones', 'operacion/salud', 'operacion/ventas', 'operacion/admin', 'equipo/organigrama', 'equipo/colaboradores', 'equipo/agente', 'recursos/computo', 'licita-engine', 'web', 'operacion/en-curso', 'productos']);
 // Rutas de la v2.0 (tabs): se redirigen para que no se rompa ningún enlace ya enviado en tarjetas o push.
-const VIEJAS = { inicio: 'hoy', plan: 'direccion/objetivo', tablero: 'operacion/tablero', equipo: 'equipo/organigrama', expedientes: 'operacion/expedientes', progreso: 'operacion/en-curso', 'en-curso': 'operacion/en-curso' };
+const VIEJAS = { inicio: 'hoy', plan: 'direccion/objetivo', tablero: 'operacion/tablero', equipo: 'equipo/organigrama', expedientes: 'operacion/expedientes', progreso: 'operacion/en-curso', 'en-curso': 'operacion/en-curso', web: 'operacion/ventas', kpis: 'operacion/licitaciones', salud: 'equipo/organigrama', organigrama: 'equipo/organigrama', avisos: 'hoy', computo: 'hoy' };
+// Rutas de dos segmentos que dejaron de ser pantalla propia (menú de 6, 18-10): ningún enlace viejo da 404.
+const VIEJAS2 = { 'operacion/salud': 'equipo/organigrama', 'recursos/computo': 'hoy' };
 // Área sin vista (o con vista desconocida): a su vista por defecto. Recursos: Cómputo desde el lote 1e (#1054); Dinero llega en la tanda 3.
 // Diego 19-sep: "Licitaciones, Expedientes y Tablero" es el orden, así que '#operacion' a secas cae en
 // Licitaciones. No hay entrada 'equipo': ese prefijo lo intercepta siempre VIEJAS (línea de abajo) antes
 // de llegar aquí, así que sería código muerto; tampoco hacen falta 'organigrama'/'colaboradores' (como
 // tablero/expedientes/licitaciones, nadie genera un hash de un solo segmento con esos ids).
-const DEFECTO = { hoy: 'hoy', kpis: 'kpis', direccion: 'direccion/objetivo', operacion: 'operacion/licitaciones', recursos: 'recursos/computo' };
+const DEFECTO = { hoy: 'hoy', direccion: 'direccion/objetivo', operacion: 'operacion/licitaciones', recursos: 'hoy' };
 
 export function resolver(hash = '', search = '') {
   const idPush = new URLSearchParams(search || '').get('id');
@@ -74,6 +76,7 @@ export function resolver(hash = '', search = '') {
     if (seg[0] === 'equipo' && resto[0]) nueva[1] = 'agente';
     seg = [...nueva, ...resto]; redirigido = true;
   }
+  if (VIEJAS2[seg.slice(0, 2).join('/')]) { seg = [...VIEJAS2[seg.slice(0, 2).join('/')].split('/'), ...seg.slice(2)]; redirigido = true; }
   let clave = seg[0] === 'hoy' ? 'hoy' : seg.slice(0, 2).join('/');
   let arg = seg[0] === 'hoy' ? (/^(\d+|bandeja)$/.test(seg[1] || '') ? seg[1] : undefined) : (seg.slice(2).join('/') || undefined);
   if (!CLAVES.has(clave)) { clave = DEFECTO[seg[0]] || 'hoy'; arg = undefined; redirigido = true; if (clave === 'hoy') for (const k of Object.keys(filtros)) delete filtros[k]; }
