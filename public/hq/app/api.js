@@ -19,7 +19,8 @@ const tokGet = () => {
 const tokSet = (t, recordar) => {
   memTok.v = t;
   try { sessionStorage.setItem('hq_t', t); } catch { /* en memoria */ }
-  if (recordar) { try { localStorage.setItem('hq_t_disp', t); } catch { /* solo esta sesión */ } }
+  // Entrar sin casilla borra el token recordado de una entrada anterior (pedido de Pere, revisión de web#40).
+  try { if (recordar) localStorage.setItem('hq_t_disp', t); else localStorage.removeItem('hq_t_disp'); } catch { /* solo esta sesión */ }
 };
 const tokDel = () => {
   memTok.v = null;
