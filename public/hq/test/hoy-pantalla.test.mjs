@@ -81,7 +81,7 @@ test('modeloNegocio: omite filas sin principal (caja), máximo 2 pares de detall
 
 import { resolver } from '../app/rutas.js';
 test('modeloNegocio: enlaces de la vista resuelven a su ruta, no a Hoy; detalle en euros con formato', () => {
-  const enlaces = { contratado_mes: '#operacion/ventas/hoy', pipeline: '#operacion/ventas/pipeline', captacion_7d: '#operacion/ventas/campanas', licitaciones: '#operacion/licitaciones', caja: '#hoy' };
+  const enlaces = { ingresos: '#operacion/ventas/hoy', pipeline: '#operacion/ventas/pipeline', captacion_7d: '#operacion/ventas/campanas', licitaciones: '#operacion/licitaciones', caja: '#hoy' };
   for (const [k, e] of Object.entries(enlaces)) {
     const [m] = modeloNegocio([{ clave: k, etiqueta: k, principal: 1, enlace: e }]).concat({ enlace: '#hoy' });
     const r = resolver(m.enlace);
