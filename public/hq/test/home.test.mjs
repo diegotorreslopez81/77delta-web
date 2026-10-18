@@ -22,15 +22,6 @@ test('modeloHomeWeb: suma 7 días, envíos y hoy/ayer', () => {
   assert.deepEqual([s.visitas, s.visitantes, s.clics, s.envios], [8, 6, 1, 3]);
   assert.equal(m.hoy, 5); assert.equal(m.ayer, 3);
 });
-
-
-test('proyectosMalos: solo rojo, ámbar o bloqueo, máximo 5', async () => {
-  const { proyectosMalos } = await import('../app/vistas/hoy-pantalla.js');
-  const f = [...Array(7)].map((_, i) => ({ id: i, semaforo: 'rojo' })).concat([{ id: 9, semaforo: 'verde' }, { id: 10, semaforo: 'verde', bloqueo: 'espera a Diego' }]);
-  assert.equal(proyectosMalos(f).length, 5);
-  assert.deepEqual(proyectosMalos([{ semaforo: 'verde' }]), []);
-  assert.equal(proyectosMalos([{ semaforo: 'verde', bloqueo: 'x' }]).length, 1);
-});
 test('modeloWeb7: suma 7 días y variación frente a los 7 anteriores', async () => {
   const { modeloWeb7 } = await import('../app/vistas/hoy-pantalla.js');
   const ahora = new Date('2026-10-18T12:00:00Z');

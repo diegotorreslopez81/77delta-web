@@ -12,3 +12,25 @@ test('opcionesPosponer: miércoles → lunes siguiente', () => {
   assert.equal(o.manana, '2026-10-22T07:00:00.000Z');
   assert.equal(o.lunes, '2026-10-26T08:00:00.000Z'); // 25-10 cambio a CET, lunes 26 = +01:00
 });
+
+import { recuento, leerAbierto, guardarAbierto } from '../app/vistas/hoy-pantalla.js';
+const mem = () => { const d = {}; return { getItem: k => (k in d ? d[k] : null), setItem: (k, v) => { d[k] = String(v); } }; };
+
+test('recuento: suma claves de cifras y usa respaldo si faltan', () => {
+  const c = [{ clave: 'decidir', valor: 3, color: 'rojo' }, { clave: 'pagar', valor: 0, color: 'verde' }];
+  assert.deepEqual(recuento(c, ['decidir', 'pagar'], 9), { n: 3, color: 'rojo' });
+  assert.deepEqual(recuento([], ['correos'], 4), { n: 4, color: '' });
+  assert.equal(recuento([], ['web'], null).n, null);
+});
+test('estado de acordeón: plegado por defecto y recordado por bloque', () => {
+  const a = mem();
+  assert.equal(leerAbierto('hoy-decidir', a), false);
+  guardarAbierto('hoy-decidir', true, a);
+  assert.equal(leerAbierto('hoy-decidir', a), true);
+  assert.equal(leerAbierto('hoy-web', a), false);
+});
+test('estado de acordeón: storage que lanza no rompe', () => {
+  const roto = { getItem() { throw new Error('x'); }, setItem() { throw new Error('x'); } };
+  assert.equal(leerAbierto('hoy-web', roto), false);
+  assert.doesNotThrow(() => guardarAbierto('hoy-web', true, roto));
+});

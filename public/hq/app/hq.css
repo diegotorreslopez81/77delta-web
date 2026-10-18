@@ -457,3 +457,18 @@ a{color:inherit}
 @media (max-width: 899px) { .cab .buscador #busqueda, .cab .buscador .resultados, .cab .campana, .cab #contador { display: none; } }
 
 .aviso-banner, #aviso-nuevo { display: none !important; }
+
+/* Hoy en acordeón (spec 5, enmienda 4): cabecera 44 px, plegado por defecto */
+.hoy-acordeon{padding:0}
+.hoy-acordeon-cab{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;padding:0 12px;background:none;border:0;color:inherit;font:inherit;font-weight:600;text-align:left;cursor:pointer;box-sizing:border-box}
+.hoy-acordeon-cab .titulo{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hoy-acordeon-cab .chevron{transition:transform .15s}
+.hoy-acordeon.abierto .chevron{transform:rotate(180deg)}
+.hoy-acordeon.gris .hoy-acordeon-cab{color:var(--pizarra);cursor:default;font-weight:400}
+.hoy-acordeon-cab .punto-nuevo{width:9px;height:9px;border-radius:50%;background:var(--aviso,#d98e04);flex:none}
+.hoy-acordeon-cab .punto-nuevo.rojo{background:var(--error)}
+.hoy-acordeon-cuerpo{padding:0 12px 12px;max-width:100%;box-sizing:border-box}
+.hoy-acordeon-cuerpo[hidden]{display:none}
+.hoy-item-titulo{display:block;width:100%;min-height:44px;background:none;border:0;color:inherit;font:inherit;font-weight:600;text-align:left;padding:0;cursor:pointer}
+.hoy-item-detalle[hidden]{display:none}
+.hoy-item.destacada{outline:2px solid var(--oro,#c9a227)}
