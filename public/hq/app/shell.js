@@ -28,9 +28,9 @@ const ICONO_RECARGAR = '<svg class="ico" viewBox="0 0 24 24" stroke="currentColo
 // solo reparte el menu entre principales y un desplegable 'Más'. Se apaga con localStorage hq.menu5=0 o con ?menu5=0
 // (queda guardado) y se vuelve a encender con ?menu5=1. Dinero y Sistema agrupan vistas que ya existen (no hay vistas nuevas):
 // Dinero = KPIs (ingresos, cobros, costes) + Recursos (tokens y cuentas); Sistema = Salud + Organigrama + Plan estratégico + Colaboradores.
-export const MENU5 = ['hoy', 'licitaciones', 'ventas', 'web', 'dinero', 'sistema'];
-const GRUPOS5 = { dinero: ['kpis', 'recursos'], sistema: ['salud', 'organigrama', 'direccion', 'colaboradores'] };
-const NOMBRES5 = { dinero: 'Dinero', sistema: 'Sistema' };
+export const MENU5 = ['hoy', 'licitaciones', 'ventas', 'productos', 'proyectos', 'equipo'];
+const GRUPOS5 = {};
+const NOMBRES5 = {};
 export function menu5Activo(win = globalThis) {
   try {
     const q = new URLSearchParams(win.location?.search || '').get('menu5');
@@ -73,7 +73,21 @@ export function montarMenu(nav) {
     ref.areas.set(a.id, div); (mas && !MENU5.includes(a.id) ? mas : nav).append(div);
   }
   if (mas) nav.append(mas);
+  montarBarraInferior(cinco);
   return ref;
+}
+// Barra inferior móvil (<900 px, CSS): las seis entradas principales con icono y etiqueta corta. Solo con el menú de seis.
+function montarBarraInferior(cinco) {
+  document.getElementById?.('barra-inferior')?.remove();
+  ref.barra = new Map();
+  if (!cinco || typeof document === 'undefined') return;
+  const barra = el('nav', { id: 'barra-inferior', class: 'barra-inferior', 'aria-label': 'Menú principal' });
+  for (const a of AREAS.filter(x => MENU5.includes(x.id)).sort((x, y) => MENU5.indexOf(x.id) - MENU5.indexOf(y.id))) {
+    const v = a.vistas[0];
+    const e = el('a', { href: '#' + v.clave, 'data-area': a.id, title: a.nombre }, [el('span', { class: 'ico', html: a.icono }), el('span', { class: 'txt', text: a.corto || a.nombre })]);
+    ref.barra.set(a.id, e); barra.append(e);
+  }
+  document.body.append(barra);
 }
 // Cabecera del cajón móvil (logo + marca "HQ" + botón cerrar). Se monta una sola vez, la primera vez
 // que se llama a cablearShell() (que en producción solo ocurre una vez, al arrancar main.js).
@@ -110,8 +124,9 @@ export function marcarActiva(clave) {
   // menú: cae al prefijo 'equipo', pero desde el brief B (19-sep) ya no hay área 'equipo' (se repartió
   // en 'organigrama' y 'colaboradores'), así que ese prefijo se remapea a 'organigrama'.
   const area = AREAS.find(a => a.vistas.some(v => v.clave === clave))?.id
-    || (clave.split('/')[0] === 'equipo' ? 'organigrama' : clave.split('/')[0]);
+    || clave.split('/')[0];
   for (const [k, e] of ref.enlaces) e.classList.toggle('activa', k === clave);
+  for (const [id, e] of ref.barra || []) e.classList.toggle('activa', id === area);
   for (const [id, d] of ref.areas) d.classList.toggle('abierta', id === area || (ref.areas.has(id) && id === id5(area)));
   const mas = document.querySelector?.('.menu-mas');
   if (mas && area && !MENU5.includes(area) && !id5(area)) mas.open = true;

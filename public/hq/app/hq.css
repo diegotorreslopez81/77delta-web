@@ -430,7 +430,7 @@ a{color:inherit}
 .home, .home > *, .home-bloque, .home .vt-cards, .home .vt-card, .home-cifras > *, .hoy-bloque, .hoy-tarjeta { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
 .home-web .web-tabla { table-layout: fixed; }
 .home-web .web-tabla th, .home-web .web-tabla td { overflow-wrap: anywhere; padding: 4px 2px; }
-@media (max-width: 600px) { .home-cifras { grid-template-columns: 1fr; } .home-botones { flex-wrap: wrap; } }
+@media (max-width: 600px) { .home-botones { flex-wrap: wrap; } }
 .semaforo-pill.rojo{background:var(--error-suave);border-color:var(--error);color:var(--error)}
 .semaforo-pill.ambar{background:var(--tag-ambar-bg);border-color:var(--tag-ambar-fg);color:var(--tag-ambar-fg)}
 .semaforo-pill.verde{background:var(--exito-suave);border-color:var(--exito);color:var(--exito)}
@@ -441,3 +441,20 @@ a{color:inherit}
 .crono-fecha{font-weight:600;margin-right:6px}.crono-estado{font-size:12px;color:var(--pizarra)}.crono-texto{margin:2px 0}
 .crono-item.hecho{opacity:.55}.crono-item.vencido{border-left-color:var(--error)}.crono-item.vencido .crono-fecha{color:var(--error)}
 .proceso-fallo{color:var(--error)}
+
+/* Menú de seis (18-10): barra inferior móvil, seis entradas de 44 px de alto sin scroll horizontal a 390 px. */
+.barra-inferior { display: none; }
+@media (max-width: 899px) {
+  .barra-inferior { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--panel, var(--surface)); border-top: 1px solid var(--linea); padding-bottom: env(safe-area-inset-bottom); }
+  .barra-inferior a { flex: 1 1 0; min-width: 0; min-height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px 0; font-size: 10px; line-height: 1.1; color: var(--tinta-2); text-decoration: none; }
+  .barra-inferior a .ico, .barra-inferior a .ico svg { width: 20px; height: 20px; }
+  .barra-inferior a.activa { color: var(--tinta); font-weight: 600; }
+  .vista { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
+}
+
+/* Diego 18-10 15:0x: los contadores caben en la altura de dos tarjetas: rejilla 3x2 compacta, cada uno enlaza a su pantalla. */
+.home-cifras { grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
+.home-cifras .home-cifra { padding: 6px 4px; min-height: 0; gap: 0; }
+.home-cifras .home-cifra .valor { font-size: 1.15rem; line-height: 1.2; }
+.home-cifras .home-cifra .mudo { font-size: 11px; line-height: 1.2; }
+@media (max-width: 899px) { .cab .buscador #busqueda, .cab .buscador .resultados, .cab .campana, .cab #contador { display: none; } }
