@@ -33,7 +33,7 @@ import { conectar as conectarADemanda } from './a-demanda.js';
 // #1057 tarea 29: Hoy ya monta la bandeja de decisiones ella misma (decisiones.montar, solo owner),
 // justo debajo de la franja; no hace falta envolverla aquí.
 // Home v2 (spec 1, 18-10): owner sin arg ve la home de cuatro bloques; con arg (#hoy/bandeja, #hoy/<id>) y agentes, el Hoy de siempre.
-const hoyOHome = { render: (raiz, S, arg, filtros) => (S.datos?.rol === 'owner' ? (arg ? hoyPantalla : home) : hoy).render(raiz, S, arg, filtros) };
+const hoyOHome = { render: (raiz, S, arg, filtros) => (S.datos?.rol === 'owner' ? hoyPantalla : hoy).render(raiz, S, arg, filtros) };
 const VISTAS = { 'hoy': hoyOHome, 'avisos': avisos, 'kpis': kpis, 'direccion/objetivo': objetivo, 'operacion/tablero': tablero, 'operacion/expedientes': expedientes, 'operacion/licitaciones': licitaciones, 'operacion/salud': salud, 'operacion/ventas': ventas, 'operacion/admin': admin, 'equipo/organigrama': equipo, 'equipo/agente': equipo, 'equipo/colaboradores': colaboradores, 'recursos/computo': recursos, 'licita-engine': motor, 'web': web, 'operacion/en-curso': enCurso, 'productos': productos };
 const raiz = document.getElementById('vista');
 document.getElementById('ver').textContent = 'v' + HQ_VERSION.v;
