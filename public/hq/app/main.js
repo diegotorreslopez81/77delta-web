@@ -163,16 +163,10 @@ async function revisarAvisos(visita) {
   let standalone = false; try { standalone = navigator.standalone === true || matchMedia('(display-mode: standalone)').matches; } catch {}
   const origen = hayDestino || (visita === 'arranque' && location.hash) ? 'notificacion' : standalone ? 'icono' : 'pestana';
   trazaPag('pagina_abierta', { visita, origen, entrada: location.pathname + location.hash.slice(0, 60), cache, version: window.HQ_VERSION && HQ_VERSION.v, destinoPendiente: hayDestino, sinLeer: total, avisoN: a ? a.n : null, controlado: !!navigator.serviceWorker.controller }, reg);
-  if (!a || document.getElementById('aviso-nuevo')) return;
-  const h = hashDeAviso(a, location.origin), quitar = () => document.getElementById('aviso-nuevo')?.remove();
-  const abrir = () => { trazaPag('banner_abrir', { avisoN: a.n, url: a.url }, reg); marcarAvisoLeido(a.n).catch(() => {}); if (h) location.hash = h; quitar(); };
-  const cerrar = () => { trazaPag('banner_cerrar', { avisoN: a.n }, reg); quitar(); };
-  document.body.append(el('div', { class: 'aviso-banner', id: 'aviso-nuevo', role: 'alert' }, [
-    el('span', { class: 'aviso-texto', text: (a.title || 'HQ') + ' · ' + haceCuanto(a.t) }),
-    total > 1 ? el('a', { href: '#avisos', class: 'btn-enlace', text: 'y ' + (total - 1) + ' más', onclick: quitar }) : null,
-    el('button', { class: 'btn-enlace', text: 'Abrir', onclick: abrir }),
-    el('button', { class: 'btn-enlace', text: '✕', 'aria-label': 'Cerrar', onclick: cerrar })]));
-  trazaPag('banner_mostrado', { avisoN: a.n, total, url: a.url }, reg);
+  if (!a) return;
+  // 18-10 (Diego): sin banner flotante. Si la app se abrió desde la notificación y iOS no entregó notificationclick, el aviso abre su tarjeta directamente; los pendientes viven en Depende de ti y correos.
+  const h = hashDeAviso(a, location.origin);
+  if (origen === 'notificacion' && h && !hayDestino) { trazaPag('aviso_abierto_directo', { avisoN: a.n, url: a.url }, reg); marcarAvisoLeido(a.n).catch(() => {}); location.hash = h; }
 }
 if ('serviceWorker' in navigator) {
   const habiaControl = !!navigator.serviceWorker.controller;

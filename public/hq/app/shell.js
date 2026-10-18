@@ -113,7 +113,7 @@ function montarAcciones() {
     btnRecargar.classList.add('girando');
     try { if (typeof window !== 'undefined' && window.HQ_RECARGAR) await window.HQ_RECARGAR(); } finally { btnRecargar.classList.remove('girando'); }
   });
-  buscador.append(campana, btnRecargar);
+  buscador.append(btnRecargar); // 18-10 (Diego): fuera la campana; avisos pendientes en Depende de ti y correos
   ref.badgeCampana = badge; ref.campana = campana; ref.recargarBtn = btnRecargar;
 }
 export function marcarActiva(clave) {

@@ -192,7 +192,7 @@ test('cablearShell monta el logo junto a la marca "HQ" en la cabecera del cajón
 
 // #1057 tarea 29: campana de notificaciones (a #hoy/bandeja) y botón de recarga dentro de #buscador,
 // ya que index.html no se toca en este lote.
-test('cablearShell monta la campana (a #hoy/bandeja) y el botón de recarga en #buscador', async () => {
+test('cablearShell monta el botón de recarga en #buscador y ya no la campana (18-10)', async () => {
   delete nodos.menu; delete nodos.hamburguesa; delete nodos.velo; delete nodos.plegar; delete nodos.busqueda; delete nodos.resultados; delete nodos.buscador;
   document.body.classList.remove('menu-abierto');
   const nav = document.createElement('nav'); montarMenu(nav);
@@ -200,7 +200,7 @@ test('cablearShell monta la campana (a #hoy/bandeja) y el botón de recarga en #
   const buscador = document.getElementById('buscador');
   const campana = buscador.children.find(c => c.attrs.id === 'campana');
   const recargar = buscador.children.find(c => c.attrs.id === 'recargar-btn');
-  assert.ok(campana, 'falta la campana'); assert.equal(campana.attrs.href, '#hoy/bandeja');
+  assert.ok(!campana, 'la campana se retiró');
   assert.ok(recargar, 'falta el botón de recarga');
   let llamado = 0;
   globalThis.window.HQ_RECARGAR = () => { llamado++; return Promise.resolve(); };
@@ -212,19 +212,6 @@ test('cablearShell monta la campana (a #hoy/bandeja) y el botón de recarga en #
   delete globalThis.window.HQ_RECARGAR;
 });
 
-test('pintarBarra actualiza el número y la visibilidad de la campana', () => {
-  delete nodos.menu; delete nodos.hamburguesa; delete nodos.velo; delete nodos.plegar; delete nodos.busqueda; delete nodos.resultados; delete nodos.buscador;
-  document.body.classList.remove('menu-abierto');
-  const nav = document.createElement('nav'); montarMenu(nav);
-  cablearShell();
-  pintarBarra({ rol: 'owner', pendientes: [{ id: 1 }, { id: 2 }] });
-  const buscador = document.getElementById('buscador');
-  const campana = buscador.children.find(c => c.attrs.id === 'campana');
-  const badge = campana.children.find(c => c.className.includes('badge-campana'));
-  assert.equal(badge.textContent, '2'); assert.equal(badge.hidden, false);
-  pintarBarra({ rol: 'owner', pendientes: [] });
-  assert.equal(badge.hidden, true, 'sin pendientes se oculta la campana');
-});
 
 // Brief B (19-sep, feedback móvil de Diego: "no entiendo qué significa la bolita"): la bolita del
 // semáforo lleva ahora la etiqueta "cuentas" junto al punto; el toque mantiene el toast de siempre Y

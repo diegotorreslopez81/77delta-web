@@ -458,3 +458,5 @@ a{color:inherit}
 .home-cifras .home-cifra .valor { font-size: 1.15rem; line-height: 1.2; }
 .home-cifras .home-cifra .mudo { font-size: 11px; line-height: 1.2; }
 @media (max-width: 899px) { .cab .buscador #busqueda, .cab .buscador .resultados, .cab .campana, .cab #contador { display: none; } }
+
+.aviso-banner, #aviso-nuevo { display: none !important; }
