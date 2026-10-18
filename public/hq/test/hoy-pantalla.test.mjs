@@ -34,3 +34,11 @@ test('estado de acordeón: storage que lanza no rompe', () => {
   assert.equal(leerAbierto('hoy-web', roto), false);
   assert.doesNotThrow(() => guardarAbierto('hoy-web', true, roto));
 });
+
+import { enlaceCifra } from '../app/vistas/hoy-pantalla.js';
+test('enlaceCifra: decidir y pagar abren Depende de ti; firmar abre Licitaciones En redacción', () => {
+  assert.equal(enlaceCifra({ clave: 'decidir' }), '#hoy?bloque=decidir');
+  assert.equal(enlaceCifra({ clave: 'pagar' }), '#hoy?bloque=decidir');
+  assert.equal(enlaceCifra({ clave: 'firmar', enlace: 'licitaciones' }), '#licitaciones?estado=redaccion');
+  assert.equal(enlaceCifra({ clave: 'agentes', enlace: 'equipo' }), '#equipo');
+});

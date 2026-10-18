@@ -34,10 +34,15 @@ export function opcionesPosponer(ahora = new Date()) {
   return { manana: a9(sumar(1)), lunes: a9(sumar(hastaLunes)) };
 }
 
+// Contadores de Hoy: los de bloques de esta pantalla abren su acordeón; firmar cuenta licitaciones En redacción (hq_v_hoy_firmar) y abre Licitaciones en ese estado.
+export function enlaceCifra(x) {
+  const e = { decidir: '#hoy?bloque=decidir', pagar: '#hoy?bloque=decidir', correos: '#hoy?bloque=correos', firmar: '#licitaciones?estado=redaccion' }[x.clave];
+  return e || (x.enlace ? '#' + String(x.enlace).replace(/^#/, '') : '#hoy');
+}
 export function cabecera(cifras) {
   if (!(cifras || []).length) return el('div', { class: 'home-cifras' }, [vacio('Sin cifras')]);
   return el('div', { class: 'home-cifras' }, cifras.map(x =>
-    el('a', { class: 'vt-card compacta home-cifra ' + (x.color || ''), href: x.enlace ? '#' + String(x.enlace).replace(/^#/, '') : '#hoy' }, [
+    el('a', { class: 'vt-card compacta home-cifra ' + (x.color || ''), href: enlaceCifra(x) }, [
       el('span', { class: 'valor', text: valorCifra(x) }),
       el('span', { class: 'mudo', text: x.etiqueta || x.clave }),
     ])));
@@ -246,6 +251,7 @@ export function render(raiz, S, arg, filtros) {
       acordeon({ id: 'hoy-firmar', titulo: 'Firmar', cuenta: fir.n, color: fir.color, vacioTexto: 'Nada que firmar', abierto: abre('hoy-firmar') || leerAbierto('hoy-firmar'), contenido: () => pintarFirmar(h) }),
     ];
     cont.replaceChildren(cabecera(cifras), ...(aviso ? [aviso] : []), ...bloques);
+    if (pedido) document.getElementById(pedido)?.scrollIntoView?.({ block: 'start' });
     if (destacado) {
       // El ítem existe solo cuando el bloque está cargado: se espera a su carga antes de abrirlo y hacer scroll.
       const bloqueDecidir = bloques[0];
