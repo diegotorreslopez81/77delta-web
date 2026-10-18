@@ -1,6 +1,6 @@
 // Productos (spec 4, 18-10): ficha por producto y línea de tiempo de etapas, todo de hq_v_productos y el historial.
 // Sin nombres ni cifras en el JS: se pinta lo que devuelve hq_productos.
-import { el, fecha } from '../ui.js';
+import { el, fecha, urlSegura } from '../ui.js';
 
 let cargar = async () => (await import('../api.js')).rpc('hq_productos');
 export function usarCargador(f) { cargar = f; }
@@ -17,7 +17,7 @@ export function pintarFichas(datos) {
       el('p', { class: 'mudo', text: n(p.etapa_orden) + ' de ' + n(p.etapas_total) + ' · ' + p.etapa + ' · ' + n(p.dias_en_etapa) + ' d · dueño ' + (p.dueno || '-') }),
       p.siguiente_paso ? el('p', { text: p.siguiente_paso + (p.fecha_siguiente ? ' · ' + fecha(p.fecha_siguiente) : '') }) : null,
       el('p', { class: 'mudo', text: 'Leads abiertos ' + n(p.leads_abiertos) + ' · ganados ' + n(p.ganados) + (p.waitlist_n != null ? ' · lista de espera ' + n(p.waitlist_n) : '') }),
-      p.landing_url ? el('a', { class: 'btn', href: p.landing_url, target: '_blank', rel: 'noopener', text: 'Landing' }) : null,
+      urlSegura(p.landing_url) ? el('a', { class: 'btn', href: urlSegura(p.landing_url), target: '_blank', rel: 'noopener', text: 'Landing' }) : null,
       h.length ? el('ul', { class: 'mudo' }, h.map(x => el('li', { text: x.etapa + ' · ' + fecha(x.fecha) + (x.fuente ? ' · ' + x.fuente : '') }))) : null,
       el('span', { class: 'semaforo-pill ' + (p.semaforo || ''), text: p.semaforo || '' }),
     ]);

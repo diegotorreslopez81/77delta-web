@@ -56,3 +56,9 @@ test('modeloCaptacion: filtra periodo, total primero, % sobre paso anterior', ()
   assert.equal(m[0].pasos[1].pct, 25); assert.equal(m[0].pasos[0].pct, null);
   assert.equal(m[1].pasos.some(p => p.clave === 'visitas'), false);
 });
+
+test('productos: landing_url con javascript: no genera enlace', async () => {
+  const { urlSegura } = await import('../app/ui.js');
+  assert.equal(urlSegura('javascript:alert(1)'), null);
+  assert.ok(urlSegura('https://77delta.com/x'));
+});
