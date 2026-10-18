@@ -74,7 +74,7 @@ function cors(req, res) {
   if (origen && ORIGENES.includes(origen)) res.setHeader('Access-Control-Allow-Origin', origen);
   res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-HQ-Token');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-HQ-Token, Authorization');
   res.setHeader('Access-Control-Max-Age', '86400');
 }
 
@@ -262,6 +262,39 @@ async function notificarLote(token, ids) {
   return { enviados, fallidos, dispositivos: subs.length, tarjetas: filas.length };
 }
 
+// ---- HQ: tareas pendientes de Diego (Windmill f/google/tareas_pendientes, solo lectura) ----
+const TAREAS_RUTA = '/api/w/' + encodeURIComponent(process.env.WM_WORKSPACE || '') + '/jobs/run_wait_result/p/f/google/tareas_pendientes'; // ruta fija: no viene de la petición
+const TAREAS_OK = Boolean(process.env.WM_URL && process.env.WM_WORKSPACE && process.env.WM_TOKEN_TAREAS && process.env.WM_TAREAS_RECURSO);
+const TAREAS_ORIGEN = 'https://77delta.com';
+const TAREAS_CACHE_MS = 60_000;
+const TAREAS_LIMITE = 6; // por minuto
+let tareasCache = { hasta: 0, valor: null };
+let tareasVentana = [];
+const tareasFallos = new Map(); // ip -> marcas de tiempo de fallos de auth
+const TAREAS_LIMITE_FALLOS = 10; // fallos de auth por minuto y por IP
+// IP del cliente: la última de X-Forwarded-For la añade el proxy (Coolify); sin proxy, la del socket.
+const ipCliente = (req) => String(req.headers['x-forwarded-for'] || '').split(',').pop().trim().slice(0, 64) || req.socket.remoteAddress || '?';
+const entero = (v) => (Number.isInteger(v) && v >= 0 ? v : null);
+function tareasSaneadas(j) {
+  const proximo = typeof j?.proximo === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(j.proximo) ? j.proximo : null;
+  const r = { abiertas: entero(j?.abiertas), sin_fecha: entero(j?.sin_fecha), vencidas: entero(j?.vencidas), hoy: entero(j?.hoy), proximo, ts: typeof j?.ts === 'string' ? j.ts.slice(0, 40) : null };
+  if ([r.abiertas, r.sin_fecha, r.vencidas, r.hoy].includes(null)) throw new Error('respuesta no válida');
+  return r;
+}
+async function tareasPendientes() {
+  if (tareasCache.valor && Date.now() < tareasCache.hasta) return tareasCache.valor;
+  const r = await fetch(process.env.WM_URL.replace(/\/$/, '') + TAREAS_RUTA, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${process.env.WM_TOKEN_TAREAS}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ google_tasks: process.env.WM_TAREAS_RECURSO }),
+    signal: AbortSignal.timeout(20_000),
+  });
+  if (!r.ok) throw new Error('windmill ' + r.status);
+  const valor = tareasSaneadas(await r.json());
+  tareasCache = { hasta: Date.now() + TAREAS_CACHE_MS, valor };
+  return valor;
+}
+
 const servidor = http.createServer(async (req, res) => {
   cors(req, res);
   const ruta = new URL(req.url, 'http://x').pathname;
@@ -286,6 +319,36 @@ const servidor = http.createServer(async (req, res) => {
     }
   }
 
+  if (ruta === '/hq/tareas' && req.method === 'GET') {
+    // CORS solo desde 77delta.com (sin www); errores genéricos, sin token ni cuerpo en logs.
+    if (req.headers.origin !== TAREAS_ORIGEN) res.removeHeader('Access-Control-Allow-Origin');
+    if (!TAREAS_OK || !HQ.url || !HQ.anon) return responder(res, 503, { ok: false, error: 'no disponible' });
+    const ahora = Date.now();
+    // Fallos de auth: tope por IP (no gasta el cupo de Diego ni lo bloquea un anónimo).
+    const ip = ipCliente(req);
+    const marcas = (tareasFallos.get(ip) || []).filter((t) => ahora - t < 60_000);
+    if (marcas.length >= TAREAS_LIMITE_FALLOS) return responder(res, 429, { ok: false, error: 'demasiadas peticiones' });
+    const fallo = (codigo) => {
+      if (tareasFallos.size > 5000) tareasFallos.clear();
+      tareasFallos.set(ip, [...marcas, ahora]);
+      return responder(res, codigo, { ok: false, error: 'no autorizado' });
+    };
+    const m = /^Bearer (\S{1,120})$/.exec(String(req.headers.authorization || ''));
+    if (!m) return fallo(401);
+    let info;
+    try { info = await rpc('omc_token_info', { p_token: m[1] }); } catch { return fallo(403); }
+    if (info?.rol !== 'owner') return fallo(403);
+    // El límite de 6/min cuenta solo peticiones de un owner autenticado.
+    tareasVentana = tareasVentana.filter((t) => ahora - t < 60_000);
+    if (tareasVentana.length >= TAREAS_LIMITE) return responder(res, 429, { ok: false, error: 'demasiadas peticiones' });
+    tareasVentana.push(ahora);
+    try {
+      return responder(res, 200, await tareasPendientes());
+    } catch {
+      console.error('hq tareas: fallo al consultar');
+      return responder(res, 502, { ok: false, error: 'no disponible' });
+    }
+  }
   if (ruta === '/hq/config' && req.method === 'GET') {
     // Configuración pública de la app (URL y clave anon de Supabase): así el repo público no lleva ninguna clave.
     if (!HQ.url || !HQ.anon) return responder(res, 503, { ok: false, error: 'HQ no configurado' });
