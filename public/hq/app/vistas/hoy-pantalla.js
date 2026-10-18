@@ -1,7 +1,7 @@
 // Pantalla Hoy de HQ v2 (spec 2, 18-10): cabecera de cifras y cuatro bloques - Depende de ti, Firmar, Pagar, Correos.
 // Solo pinta columnas de hq_v_hoy_* leídas por la RPC hq_hoy con p_token. Sin umbrales ni cálculo propio:
 // el rojo sale de umbral_decidir_h y umbral_correo_h que devuelve la RPC (hq_parametros).
-import { el, toast, eur, fecha, pedirTexto, modal } from '../ui.js';
+import { el, toast, eur, fecha, pedirTexto, modal, confirmar } from '../ui.js';
 
 let cargadores = {
   hoy: async () => (await import('../api.js')).rpc('hq_hoy'),
@@ -41,7 +41,7 @@ export function cabecera(cifras) {
 }
 
 // Tarjeta con Sí / No / Posponer / Comentar. `botones` permite quitar Posponer en Pagar si no aplica.
-function tarjeta(p, umbral, repintar, { destacada = false } = {}) {
+function tarjeta(p, umbral, repintar, { destacada = false, pago = false } = {}) {
   const roja = umbral > 0 && n(p.edad_h) > umbral;
   const act = fn => async () => { try { await fn(); toast('Hecho'); repintar(); } catch (e) { toast('No se pudo: ' + e.message); } };
   const posponer = () => {
@@ -63,12 +63,17 @@ function tarjeta(p, umbral, repintar, { destacada = false } = {}) {
     const t = await pedirTexto('Comentar', 'Comentario');
     if (t) await act(() => cargadores.comentar(p.id, t))();
   };
+  // Pagar: segundo toque con el importe antes de aprobar (Pere).
+  const sipago = async () => {
+    const quien = p.quien_pide ? ' pedido por ' + p.quien_pide : '';
+    if (await confirmar('Aprobar pago', 'Aprobar pago de ' + (p.importe != null ? eur(p.importe) : 'importe sin dato') + ' a ' + (p.titulo || p.concepto) + quien + '?', 'Sí, aprobar pago')) await act(() => cargadores.resolver(p.id, 'aprobada'))();
+  };
   return el('div', { class: 'home-decidir hoy-tarjeta' + (roja ? ' rojo' : '') + (destacada ? ' destacada' : ''), id: 'hoy-' + p.id }, [
     el('p', { class: 'titulo', text: p.titulo || p.concepto }),
     p.recomendacion ? el('p', { class: 'mudo', text: p.recomendacion }) : null,
     el('p', { class: 'mudo', text: [p.importe != null ? eur(p.importe) : null, p.edad_h != null ? hace(p.edad_h) : null, p.quien_pide ? 'pide ' + p.quien_pide : null, p.vence ? 'vence ' + fecha(p.vence) : null].filter(Boolean).join(' · ') }),
     el('div', { class: 'home-botones' }, [
-      el('button', { class: 'btn primario', text: 'Sí', onclick: act(() => cargadores.resolver(p.id, 'aprobada')) }),
+      el('button', { class: 'btn primario', text: 'Sí', onclick: pago ? sipago : act(() => cargadores.resolver(p.id, 'aprobada')) }),
       el('button', { class: 'btn peligro', text: 'No', onclick: act(() => cargadores.resolver(p.id, 'rechazada')) }),
       el('button', { class: 'btn', text: 'Posponer', onclick: posponer }),
       el('button', { class: 'btn', text: 'Comentar', onclick: comentar }),
@@ -97,7 +102,7 @@ export function pintarFirmar(h, ahora = new Date()) {
 export function pintarPagar(h, repintar = () => {}) {
   const filas = h?.pagar || [];
   if (!filas.length) return bloque('hoy-pagar', 'Pagar', vacio('Nada que pagar'));
-  return bloque('hoy-pagar', 'Pagar', filas.map(p => tarjeta({ ...p, titulo: p.concepto }, 0, repintar)));
+  return bloque('hoy-pagar', 'Pagar', filas.map(p => tarjeta({ ...p, titulo: p.concepto }, 0, repintar, { pago: true })));
 }
 
 export function pintarCorreos(h) {
