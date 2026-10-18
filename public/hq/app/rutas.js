@@ -8,6 +8,7 @@
 // Organigrama y Colaboradores (Diego: dos entradas directas donde antes estaba Equipo); las claves de
 // ruta 'equipo/organigrama' y 'equipo/colaboradores' no cambian, solo se reparten en dos áreas.
 const ICONOS = {
+  candado: '<svg class="ico" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
   hoy: '<svg class="ico" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>',
   avisos: '<svg class="ico" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>',
   kpis: '<svg class="ico" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="21" x2="21" y2="21"/><rect x="5" y="14" width="3" height="7"/><rect x="11" y="9" width="3" height="12"/><rect x="17" y="4" width="3" height="17"/></svg>',
@@ -25,9 +26,6 @@ const ICONOS = {
 };
 export const AREAS = [
   { id: 'hoy', nombre: 'Hoy', corto: 'Hoy', icono: ICONOS.hoy, vistas: [{ clave: 'hoy', nombre: 'Hoy' }] },
-  // #2159: avisos push guardados en el navegador, para releerlos si la notificación se cierra o se pierde.
-  { id: 'avisos', nombre: 'Avisos', icono: ICONOS.avisos, vistas: [{ clave: 'avisos', nombre: 'Avisos' }] },
-  { id: 'kpis', nombre: 'KPIs', icono: ICONOS.kpis, vistas: [{ clave: 'kpis', nombre: 'KPIs' }] },
   { id: 'licitaciones', nombre: 'Licitaciones', corto: 'Licita', icono: ICONOS.licitaciones, vistas: [{ clave: 'operacion/licitaciones', nombre: 'Licitaciones' }] },
   // D91 (Diego, 28-sep): el motor Licita autonomo, vista propia junto a Licitaciones.
   { id: 'licita-engine', nombre: 'Licita Engine', icono: ICONOS.motor, vistas: [{ clave: 'licita-engine', nombre: 'Licita Engine' }] },
@@ -38,27 +36,23 @@ export const AREAS = [
   { id: 'productos', nombre: 'Productos', corto: 'Productos', icono: ICONOS.motor, vistas: [{ clave: 'productos', nombre: 'Productos' }] },
   { id: 'proyectos', nombre: 'Proyectos', corto: 'Proyectos', icono: ICONOS.operacion, vistas: [{ clave: 'operacion/en-curso', nombre: 'Proyectos' }] },
   { id: 'equipo', nombre: 'Equipo', corto: 'Equipo', icono: ICONOS.equipo, vistas: [{ clave: 'equipo/organigrama', nombre: 'Equipo' }] },
-  // Spec 6 (18-10): solo propietario; la vista y las RPC lo comprueban. Sale en Más (no está en MENU5).
-  { id: 'secreto', nombre: 'Enviar secreto', icono: ICONOS.admin, vistas: [{ clave: 'secreto', nombre: 'Enviar secreto' }] },
-  { id: 'web', nombre: 'Web', icono: ICONOS.kpis, vistas: [{ clave: 'web', nombre: 'Web' }] },
-  { id: 'salud', nombre: 'Salud', icono: ICONOS.salud, vistas: [{ clave: 'operacion/salud', nombre: 'Salud' }] },
+  // Spec 6 (18-10): solo propietario; la vista y las RPC lo comprueban. Séptima entrada de la raíz (menú enmienda 1), visible solo para propietario.
+  { id: 'secreto', nombre: 'Enviar secreto', corto: 'Secreto', icono: ICONOS.candado, vistas: [{ clave: 'secreto', nombre: 'Enviar secreto' }] },
   { id: 'admin', nombre: 'Admin', icono: ICONOS.admin, vistas: [{ clave: 'operacion/admin', nombre: 'Admin' }] },
   { id: 'colaboradores', nombre: 'Colaboradores', icono: ICONOS.colaboradores, vistas: [{ clave: 'equipo/colaboradores', nombre: 'Colaboradores' }] },
-  { id: 'recursos', nombre: 'Recursos', icono: ICONOS.recursos, vistas: [{ clave: 'recursos/computo', nombre: 'Cómputo' }] },
-  { id: 'direccion', nombre: 'Plan estratégico', icono: ICONOS.direccion, vistas: [{ clave: 'direccion/objetivo', nombre: 'Plan estratégico' }] },
 ];
 // Claves que tienen vista. 'equipo/agente' no sale en el menú (es la ficha) pero es una ruta válida.
-export const CLAVES = new Set(['hoy', 'avisos', 'kpis', 'direccion/objetivo', 'operacion/tablero', 'operacion/expedientes', 'operacion/licitaciones', 'operacion/salud', 'operacion/ventas', 'operacion/admin', 'equipo/organigrama', 'equipo/colaboradores', 'equipo/agente', 'recursos/computo', 'licita-engine', 'web', 'operacion/en-curso', 'productos', 'secreto']);
+export const CLAVES = new Set(['hoy', 'operacion/tablero', 'operacion/expedientes', 'operacion/licitaciones', 'operacion/ventas', 'operacion/admin', 'equipo/organigrama', 'equipo/colaboradores', 'equipo/agente', 'licita-engine', 'operacion/en-curso', 'productos', 'secreto']);
 // Rutas de la v2.0 (tabs): se redirigen para que no se rompa ningún enlace ya enviado en tarjetas o push.
-const VIEJAS = { inicio: 'hoy', plan: 'direccion/objetivo', tablero: 'operacion/tablero', equipo: 'equipo/organigrama', expedientes: 'operacion/expedientes', progreso: 'operacion/en-curso', 'en-curso': 'operacion/en-curso', web: 'operacion/ventas', kpis: 'operacion/licitaciones', salud: 'equipo/organigrama', organigrama: 'equipo/organigrama', avisos: 'hoy', computo: 'hoy' };
+const VIEJAS = { inicio: 'hoy', plan: 'operacion/en-curso', tablero: 'operacion/tablero', equipo: 'equipo/organigrama', expedientes: 'operacion/expedientes', progreso: 'operacion/en-curso', 'en-curso': 'operacion/en-curso', web: 'operacion/ventas', kpis: 'operacion/licitaciones', salud: 'equipo/organigrama', organigrama: 'equipo/organigrama', avisos: 'hoy', computo: 'hoy' };
 // Rutas de dos segmentos que dejaron de ser pantalla propia (menú de 6, 18-10): ningún enlace viejo da 404.
-const VIEJAS2 = { 'operacion/salud': 'equipo/organigrama', 'recursos/computo': 'hoy' };
+const VIEJAS2 = { 'direccion/objetivo': 'operacion/en-curso', 'operacion/salud': 'equipo/organigrama', 'recursos/computo': 'hoy' };
 // Área sin vista (o con vista desconocida): a su vista por defecto. Recursos: Cómputo desde el lote 1e (#1054); Dinero llega en la tanda 3.
 // Diego 19-sep: "Licitaciones, Expedientes y Tablero" es el orden, así que '#operacion' a secas cae en
 // Licitaciones. No hay entrada 'equipo': ese prefijo lo intercepta siempre VIEJAS (línea de abajo) antes
 // de llegar aquí, así que sería código muerto; tampoco hacen falta 'organigrama'/'colaboradores' (como
 // tablero/expedientes/licitaciones, nadie genera un hash de un solo segmento con esos ids).
-const DEFECTO = { hoy: 'hoy', direccion: 'direccion/objetivo', operacion: 'operacion/licitaciones', recursos: 'hoy' };
+const DEFECTO = { hoy: 'hoy', direccion: 'operacion/en-curso', operacion: 'operacion/licitaciones', recursos: 'hoy' };
 
 export function resolver(hash = '', search = '') {
   const idPush = new URLSearchParams(search || '').get('id');

@@ -6,12 +6,11 @@ import { AREAS, CLAVES, resolver } from '../app/rutas.js';
 // Expedientes, Tablero (Diego: "así deberían ir ordenados y no al revés"); Equipo ya no agrupa: se
 // reparte en Organigrama y Colaboradores, en la posición que ocupaba Equipo (justo antes de Recursos).
 // O13a (D69, tanda E bis): Admin (panel generico de D9) justo despues de Salud.
-test('AREAS tiene las dieciocho áreas (menú de seis) del menú nuevo en orden y cada vista es una clave válida', () => {
-  assert.deepEqual(AREAS.map(a => a.id), ['hoy', 'avisos', 'kpis', 'licitaciones', 'licita-engine', 'expedientes', 'tablero', 'ventas', 'productos', 'proyectos', 'equipo', 'secreto', 'web', 'salud', 'admin', 'colaboradores', 'recursos', 'direccion']);
+test('AREAS tiene las doce áreas (menú de seis) del menú nuevo en orden y cada vista es una clave válida', () => {
+  assert.deepEqual(AREAS.map(a => a.id), ['hoy', 'licitaciones', 'licita-engine', 'expedientes', 'tablero', 'ventas', 'productos', 'proyectos', 'equipo', 'secreto', 'admin', 'colaboradores']);
   for (const a of AREAS) for (const v of a.vistas) assert.ok(CLAVES.has(v.clave), v.clave);
   assert.deepEqual(AREAS.find(a => a.id === 'equipo').vistas.map(v => v.clave), ['equipo/organigrama']);
   assert.deepEqual(AREAS.find(a => a.id === 'colaboradores').vistas.map(v => v.clave), ['equipo/colaboradores']);
-  assert.deepEqual(AREAS.find(a => a.id === 'recursos').vistas.map(v => v.clave), ['recursos/computo'], 'Recursos: Cómputo desde #1054; Dinero llega en la tanda 3');
 });
 
 const casos = [
@@ -19,8 +18,12 @@ const casos = [
   ['', '', 'hoy', undefined, {}, '#hoy', true],
   ['#hoy', '', 'hoy', undefined, {}, '#hoy', false],
   ['#inicio', '', 'hoy', undefined, {}, '#hoy', true],
-  ['#plan', '', 'direccion/objetivo', undefined, {}, '#direccion/objetivo', true],
-  ['#direccion', '', 'direccion/objetivo', undefined, {}, '#direccion/objetivo', true],
+  ['#plan', '', 'operacion/en-curso', undefined, {}, '#operacion/en-curso', true],
+  ['#kpis', '', 'operacion/licitaciones', undefined, {}, '#operacion/licitaciones', true],
+  ['#avisos', '', 'hoy', undefined, {}, '#hoy', true],
+  ['#recursos/computo', '', 'hoy', undefined, {}, '#hoy', true],
+  ['#direccion/objetivo', '', 'operacion/en-curso', undefined, {}, '#operacion/en-curso', true],
+  ['#direccion', '', 'operacion/en-curso', undefined, {}, '#operacion/en-curso', true],
   ['#tablero', '', 'operacion/tablero', undefined, {}, '#operacion/tablero', true],
   ['#tablero/f/A3', '', 'operacion/tablero', undefined, { frente: 'A3' }, '#operacion/tablero?frente=A3', true],
   ['#tablero/12', '', 'operacion/tablero', '12', {}, '#operacion/tablero/12', true],

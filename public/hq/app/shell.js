@@ -28,7 +28,7 @@ const ICONO_RECARGAR = '<svg class="ico" viewBox="0 0 24 24" stroke="currentColo
 // solo reparte el menu entre principales y un desplegable 'Más'. Se apaga con localStorage hq.menu5=0 o con ?menu5=0
 // (queda guardado) y se vuelve a encender con ?menu5=1. Dinero y Sistema agrupan vistas que ya existen (no hay vistas nuevas):
 // Dinero = KPIs (ingresos, cobros, costes) + Recursos (tokens y cuentas); Sistema = Salud + Organigrama + Plan estratégico + Colaboradores.
-export const MENU5 = ['hoy', 'licitaciones', 'ventas', 'productos', 'proyectos', 'equipo'];
+export const MENU5 = ['hoy', 'licitaciones', 'ventas', 'productos', 'proyectos', 'equipo', 'secreto'];
 const GRUPOS5 = {};
 const NOMBRES5 = {};
 export function menu5Activo(win = globalThis) {
@@ -75,6 +75,11 @@ export function montarMenu(nav) {
   if (mas) nav.append(mas);
   montarBarraInferior(cinco);
   return ref;
+}
+// Enviar secreto solo lo ve el propietario (menú enmienda 1): con otro rol se oculta en menú y barra.
+export function ocultarSoloOwner(rol, doc = globalThis.document) {
+  doc?.querySelectorAll?.('[data-area="secreto"]').forEach(e => { e.hidden = rol !== 'owner'; });
+  const a = ref.areas?.get?.('secreto'); if (a) a.hidden = rol !== 'owner';
 }
 // Barra inferior móvil (<900 px, CSS): las seis entradas principales con icono y etiqueta corta. Solo con el menú de seis.
 function montarBarraInferior(cinco) {

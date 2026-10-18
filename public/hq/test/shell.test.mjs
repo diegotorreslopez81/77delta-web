@@ -34,17 +34,14 @@ globalThis.localStorage.setItem('hq.menu5', '0'); // los tests de montarMenu mid
 const { montarMenu, marcarActiva, pintarBarra, cablearShell } = await import('../app/shell.js');
 const { AREAS } = await import('../app/rutas.js');
 
-test('montarMenu pinta las once áreas del menú nuevo, un enlace por vista y Cómputo en Recursos', () => {
+test('montarMenu pinta las doce áreas del menú nuevo, un enlace por vista y Cómputo en Recursos', () => {
   const nav = document.createElement('nav'); const m = montarMenu(nav);
-  assert.equal(nav.children.length, 18); assert.equal(m.enlaces.size, 18); // brief B 19-sep + Salud #1121 + Admin O13a (D9) + Licita Engine (D91): catorce áreas (Avisos #2159, Ventas #2236), todas de una sola vista (Equipo ya no agrupa)
+  assert.equal(nav.children.length, 12); assert.equal(m.enlaces.size, 12); // brief B 19-sep + Salud #1121 + Admin O13a (D9) + Licita Engine (D91): catorce áreas (Avisos #2159, Ventas #2236), todas de una sola vista (Equipo ya no agrupa)
   assert.equal(m.enlaces.get('operacion/tablero').attrs.href, '#operacion/tablero');
   // C3 (revision final): data-inicial era codigo muerto (nunca lo leia el CSS ni ningun otro modulo);
   // se retira, y en su lugar se comprueba lo que realmente hace visible el icono en modo plegado.
   assert.ok(m.enlaces.get('hoy').children.some(c => c.className.includes('ico')), 'C3: cada enlace lleva su span.ico');
   assert.ok(m.enlaces.get('hoy').attrs['data-inicial'] === undefined, 'C3: data-inicial es codigo muerto, se retira');
-  // #1054: Recursos ya tiene vista (Cómputo); el "pronto" desaparece
-  assert.equal(m.enlaces.get('recursos/computo').attrs.href, '#recursos/computo');
-  assert.ok(!m.areas.get('recursos').textContent.includes('pronto'));
 });
 // C3 (revision final del controlador): con el menu plegado, las areas de varias vistas (operacion,
 // reglas si tuviera mas de una...) dejaban filas en blanco porque solo las areas de una vista pintaban
@@ -234,13 +231,13 @@ test('pintarBarra pinta "cuentas" junto al punto; el click en el semáforo manti
   assert.equal(location.hash, '#recursos/computo', 'el click navega a Recursos/Cómputo');
 });
 
-test('areasMenu: apagado no toca nada; encendido da Hoy, Licitaciones, Ventas, Productos, Proyectos, Equipo y luego el resto', async () => {
+test('areasMenu: apagado no toca nada; encendido da Hoy, Licitaciones, Ventas, Productos, Proyectos, Equipo, Secreto y luego el resto', async () => {
   const { areasMenu, menu5Activo, MENU5 } = await import('../app/shell.js');
   const { AREAS } = await import('../app/rutas.js');
   assert.equal(areasMenu(false), AREAS);
   const a = areasMenu(true);
   assert.deepEqual(a.slice(0, MENU5.length).map(x => x.id), MENU5);
-  assert.deepEqual(MENU5, ['hoy', 'licitaciones', 'ventas', 'productos', 'proyectos', 'equipo']);
+  assert.deepEqual(MENU5, ['hoy', 'licitaciones', 'ventas', 'productos', 'proyectos', 'equipo', 'secreto']);
   const claves = a.flatMap(x => x.vistas.map(v => v.clave)).sort();
   assert.deepEqual(claves, AREAS.flatMap(x => x.vistas.map(v => v.clave)).sort());
   assert.equal(menu5Activo({ location: { search: '' }, localStorage: { getItem: () => null, setItem() {} } }), true);
