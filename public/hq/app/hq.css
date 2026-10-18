@@ -410,3 +410,4 @@ a{color:inherit}
 .marco-progreso{display:block;position:relative;z-index:0;width:100%;height:calc(100vh - 160px);min-height:480px;margin-top:0;border:1px solid var(--linea);border-radius:var(--radio);background:var(--panel)}
 .decision .cuerpo-completo summary{cursor:pointer;font-weight:600;margin-top:8px}.decision .cuerpo-texto{white-space:pre-wrap}
 .entrar .recordar{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:14px}.entrar .recordar input{width:auto}
+.aviso-banner{position:fixed;top:env(safe-area-inset-top);left:0;right:0;background:var(--tinta);color:var(--papel);padding:10px 14px;z-index:40;display:flex;gap:12px;align-items:center;flex-wrap:wrap}.aviso-banner .aviso-texto{flex:1 1 100%;font-weight:600}
