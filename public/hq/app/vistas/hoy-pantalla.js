@@ -2,12 +2,14 @@
 // Solo pinta columnas de hq_v_hoy_* leídas por la RPC hq_hoy con p_token. Sin umbrales ni cálculo propio:
 // el rojo sale de umbral_decidir_h y umbral_correo_h que devuelve la RPC (hq_parametros).
 import { el, toast, eur, fecha, pedirTexto, modal, confirmar } from '../ui.js';
-import { pintarProyectos } from './home.js';
+import { pintarProyectos, pintarCaptacion, pintarProductos, valorCifra } from './home.js';
 
 let cargadores = {
   hoy: async () => (await import('../api.js')).rpc('hq_hoy'),
   proyectos: async () => (await import('../api.js')).rpc('hq_proyectos'),
   web: async () => (await import('../api.js')).rpc('hq_web', { p_dias: 14 }),
+  captacion: async () => (await import('../api.js')).rpc('hq_captacion'),
+  productos: async () => (await import('../api.js')).rpc('hq_productos'),
   resolver: async (id, estado) => (await import('../api.js')).rpc('omc_resolver', { p_id: id, p_estado: estado, p_respuesta: '' }),
   posponer: async (id, hasta) => (await import('../api.js')).rpc('omc_posponer', { p_id: id, p_hasta: hasta }),
   comentar: async (id, texto) => (await import('../api.js')).rpc('omc_comentar', { p_id: id, p_texto: texto }),
@@ -38,7 +40,7 @@ export function cabecera(cifras) {
   if (!(cifras || []).length) return el('div', { class: 'home-cifras' }, [vacio('Sin cifras')]);
   return el('div', { class: 'home-cifras' }, cifras.map(x =>
     el('a', { class: 'vt-card compacta home-cifra ' + (x.color || ''), href: x.enlace ? '#' + String(x.enlace).replace(/^#/, '') : '#hoy' }, [
-      el('span', { class: 'valor', text: String(x.valor ?? '-') + (x.unidad ? ' ' + x.unidad : '') }),
+      el('span', { class: 'valor', text: valorCifra(x) }),
       el('span', { class: 'mudo', text: x.etiqueta || x.clave }),
     ])));
 }
@@ -165,10 +167,13 @@ export function render(raiz, S, arg, filtros) {
   raiz.append(cont);
   const destacado = arg && arg !== 'bandeja' ? arg : null;
   const repintar = () => render(Object.assign(raiz, { innerHTML: '' }), S, arg, filtros);
-  const cola = [el('div', { 'data-b': 'pro' }), el('div', { 'data-b': 'web' })];
+  const cola = ['pro', 'prd', 'web', 'cap'].map(k => el('div', { 'data-b': k }));
   const poner = (i, nodo) => { if (cola[i].isConnected) cola[i].replaceWith(nodo); cola[i] = nodo; };
   cargadores.proyectos().then(f => poner(0, pintarProyectosMalos(f))).catch(() => poner(0, pintarProyectosMalos(null)));
-  cargadores.web().then(f => poner(1, pintarWeb7(f))).catch(() => poner(1, pintarWeb7(null)));
+  cargadores.productos().then(d => poner(1, pintarProductos(d))).catch(() => poner(1, pintarProductos(null)));
+  cargadores.web().then(f => poner(2, pintarWeb7(f))).catch(() => poner(2, pintarWeb7(null)));
+  const pintaCap = (filas, periodo) => poner(3, pintarCaptacion(filas, periodo, p => pintaCap(filas, p)));
+  cargadores.captacion().then(f => pintaCap(f, 7)).catch(() => pintaCap(null, 7));
   cargadores.hoy().then(h => {
     cont.replaceChildren(cabecera(h?.cifras), pintarDecidir(h, repintar, destacado), pintarFirmar(h), pintarPagar(h, repintar), pintarCorreos(h), ...cola);
     if (destacado) document.getElementById('hoy-' + destacado)?.scrollIntoView?.({ block: 'start' });
