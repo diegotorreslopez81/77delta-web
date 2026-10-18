@@ -25,3 +25,9 @@ test('la purga de hq_t no toca hq_t_disp y no deja hq_t antiguo', async () => {
   await cargar(l, almacen());
   assert.equal(l.getItem('hq_t'), null); assert.equal(l.getItem('hq_t_disp'), 'c'.repeat(24));
 });
+
+test('entrar sin casilla borra hq_t_disp de una entrada anterior', async () => {
+  const l = almacen(); l.setItem('hq_t_disp', 'd'.repeat(24)); const api = await cargar(l, almacen());
+  api.guardarToken('e'.repeat(24), false);
+  assert.equal(l.getItem('hq_t_disp'), null);
+});
