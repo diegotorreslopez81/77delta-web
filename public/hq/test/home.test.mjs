@@ -22,3 +22,8 @@ test('modeloHomeWeb: suma 7 días, envíos y hoy/ayer', () => {
   assert.deepEqual([s.visitas, s.visitantes, s.clics, s.envios], [8, 6, 1, 3]);
   assert.equal(m.hoy, 5); assert.equal(m.ayer, 3);
 });
+
+test('hotfix: tabla web de la home sin min-width heredado', async () => {
+  const { readFileSync } = await import('node:fs');
+  assert.match(readFileSync(new URL('../app/hq.css', import.meta.url), 'utf8'), /\.home-web \.web-tabla\{min-width:0\}/);
+});

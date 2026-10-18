@@ -460,3 +460,4 @@ a{color:inherit}
 @media (max-width: 899px) { .cab .buscador #busqueda, .cab .buscador .resultados, .cab .campana, .cab #contador { display: none; } }
 
 .aviso-banner, #aviso-nuevo { display: none !important; }
+.home-web .web-tabla{min-width:0}

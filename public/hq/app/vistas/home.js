@@ -4,10 +4,12 @@
 // Cada bloque carga y falla por separado: un bloque caído no tumba la home.
 import { el, toast, eur, fecha } from '../ui.js';
 import { modeloWeb } from './web.js';
+import { cabecera } from './hoy-pantalla.js';
 
 let cargadores = {
   home: async () => (await import('../api.js')).rpc('hq_home'),
   proyectos: async () => (await import('../api.js')).rpc('hq_proyectos'),
+  hoy: async () => (await import('../api.js')).rpc('hq_hoy'),
   web: async () => (await import('../api.js')).rpc('hq_web', { p_dias: 30 }),
   resolver: async (id, estado) => (await import('../api.js')).rpc('omc_resolver', { p_id: id, p_estado: estado, p_respuesta: '' }),
 };
@@ -110,14 +112,15 @@ export function pintarWeb(filas, ahora = new Date()) {
 
 export function render(raiz, S, arg, filtros, ahora = new Date()) {
   const cont = el('div', { class: 'home' });
-  const huecos = ['dec', 'pro', 'cif', 'web'].map(k => el('div', { 'data-b': k }, [el('p', { class: 'cargando', text: '...' })]));
+  const huecos = ['kpi', 'dec', 'pro', 'cif', 'web'].map(k => el('div', { 'data-b': k }, [el('p', { class: 'cargando', text: '...' })]));
   huecos.forEach(h => cont.append(h));
   raiz.append(cont);
   const poner = (i, nodo) => { if (huecos[i].isConnected) huecos[i].replaceWith(nodo); huecos[i] = nodo; };
   const repintar = () => render(Object.assign(raiz, { innerHTML: '' }), S, arg, filtros, ahora);
   const falla = (titulo, e) => bloque(titulo, pendiente(titulo + ': no se pudo cargar (' + (e?.message || 'error') + ')'));
-  cargadores.home().then(h => { poner(0, pintarDecidir(h, cargadores.resolver, repintar)); poner(2, pintarCifras(h?.cifras)); })
-    .catch(e => { poner(0, falla('Depende de ti', e)); poner(2, falla('Tres cifras', e)); });
-  cargadores.proyectos().then(f => poner(1, pintarProyectos(f))).catch(() => poner(1, pintarProyectos(null)));
-  cargadores.web().then(f => poner(3, pintarWeb(f, ahora))).catch(() => poner(3, pintarWeb(null)));
+  cargadores.hoy().then(h => poner(0, cabecera(h?.cifras))).catch(() => poner(0, el('p', { class: 'mudo', text: 'Contadores: no se pudieron cargar' })));
+  cargadores.home().then(h => { poner(1, pintarDecidir(h, cargadores.resolver, repintar)); poner(3, pintarCifras(h?.cifras)); })
+    .catch(e => { poner(1, falla('Depende de ti', e)); poner(3, falla('Tres cifras', e)); });
+  cargadores.proyectos().then(f => poner(2, pintarProyectos(f))).catch(() => poner(2, pintarProyectos(null)));
+  cargadores.web().then(f => poner(4, pintarWeb(f, ahora))).catch(() => poner(4, pintarWeb(null)));
 }
