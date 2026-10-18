@@ -43,8 +43,8 @@ a{color:inherit}
 .velo{display:none}
 .vista{flex:1;min-width:0;padding:14px;max-width:1280px;margin:0 auto;box-sizing:border-box}
 @media (max-width:899px){
-  .menu{position:fixed;top:0;bottom:0;left:0;z-index:25;width:min(84vw,320px);transform:translateX(-100%);transition:transform .2s var(--ease);overflow-y:auto;padding-bottom:env(safe-area-inset-bottom)}
-  body.menu-abierto .menu{transform:none}body.menu-abierto .velo{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:24}
+  .menu{position:fixed;top:0;bottom:0;left:0;z-index:var(--z-menu);width:min(84vw,320px);transform:translateX(-100%);transition:transform .2s var(--ease);overflow-y:auto;padding-bottom:env(safe-area-inset-bottom)}
+  body.menu-abierto .menu{transform:none}body.menu-abierto .velo{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:var(--z-velo-menu)}
   #plegar,.cab .salir{display:none}.cab .contador{font-size:12px;padding:2px 8px}
   /* I4 (revision final): .menu-cab (prepend de montarCabeceraMenu) suma un tercer hijo a .menu, que
      seguia usando justify-content:space-between de la regla base (linea 21): con tres hijos eso deja
@@ -80,13 +80,13 @@ a{color:inherit}
 :root[data-theme="dark"] .pill{background:rgba(212,160,58,.18);color:var(--oro-oscuro);border-color:rgba(212,160,58,.45)}
 .pill.codigo{font-family:var(--mono);background:var(--oro-suave);color:var(--tinta)}
 .mudo{color:var(--tinta-2);font-size:14px}
-.fondo{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20}
-.modal{background:var(--papel);width:100%;max-width:720px;max-height:92vh;overflow:auto;border-radius:var(--radio) var(--radio) 0 0;padding:14px}
+.fondo{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:var(--z-hoja)}
+.modal{background:var(--papel);width:100%;max-width:720px;max-height:92vh;overflow:auto;border-radius:var(--radio) var(--radio) 0 0;padding:14px 14px calc(14px + env(safe-area-inset-bottom))}
 .modal-cab{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .btn-x{font-size:24px;background:none;border:0;cursor:pointer;color:var(--tinta-2)}
 .modal-acciones{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
 .modal .chips{flex-wrap:wrap;overflow:visible}.modal textarea{width:100%;box-sizing:border-box;margin-top:10px}
-.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--tinta);color:var(--papel);padding:10px 14px;border-radius:var(--radio-boton);z-index:30;display:flex;gap:12px;align-items:center;max-width:92vw}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--tinta);color:var(--papel);padding:10px 14px;border-radius:var(--radio-boton);z-index:var(--z-toast);display:flex;gap:12px;align-items:center;max-width:92vw}
 .entrar{max-width:420px;margin:20vh auto;display:grid;gap:12px}
 .cargando,.error{text-align:center;color:var(--tinta-2);padding:40px 0}
 @media (min-width:900px){.fondo{align-items:center}.modal{border-radius:var(--radio)}.vista{padding:20px}}
@@ -357,7 +357,7 @@ a{color:inherit}
 .vt-feed li{display:grid;grid-template-columns:44px 1fr;gap:10px;font-size:13px;color:var(--tinta-2);padding:6px 0;border-bottom:1px solid var(--linea)}
 .vt-h{font-size:11.5px;color:var(--pizarra-tenue);font-variant-numeric:tabular-nums}
 .vt-q{color:var(--pizarra-tenue);font-size:12px}
-.vt-velo{position:fixed;inset:0;z-index:50;background:rgba(6,16,31,.35)}
+.vt-velo{position:fixed;inset:0;z-index:var(--z-hoja);background:rgba(6,16,31,.35)}
 .vt-ficha{position:absolute;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--papel);border-left:1px solid var(--linea);padding:18px 16px;overflow-y:auto}
 .vt-ficha h2{font-size:18px;line-height:1.2;margin:0 0 2px;padding-right:64px}
 .vt-ficha h3{margin-top:14px}
@@ -410,7 +410,7 @@ a{color:inherit}
 .marco-progreso{display:block;position:relative;z-index:0;width:100%;height:calc(100vh - 160px);min-height:480px;margin-top:0;border:1px solid var(--linea);border-radius:var(--radio);background:var(--panel)}
 .decision .cuerpo-completo summary{cursor:pointer;font-weight:600;margin-top:8px}.decision .cuerpo-texto{white-space:pre-wrap}
 .entrar .recordar{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:14px}.entrar .recordar input{width:auto}
-.aviso-banner{position:fixed;top:env(safe-area-inset-top);left:0;right:0;background:var(--tinta);color:var(--papel);padding:10px 14px;z-index:40;display:flex;gap:12px;align-items:center;flex-wrap:wrap}.aviso-banner .aviso-texto{flex:1 1 100%;font-weight:600}
+.aviso-banner{position:fixed;top:env(safe-area-inset-top);left:0;right:0;background:var(--tinta);color:var(--papel);padding:10px 14px;z-index:var(--z-banner);display:flex;gap:12px;align-items:center;flex-wrap:wrap}.aviso-banner .aviso-texto{flex:1 1 100%;font-weight:600}
 
 /* Home v2 (spec 1, 18-10): cuatro bloques apilados a 390 px, botones de 44 px */
 .home { display: flex; flex-direction: column; gap: 16px; }
@@ -429,7 +429,7 @@ a{color:inherit}
 .home-proyecto { display: block; text-decoration: none; color: var(--ink); margin-bottom: 8px; }
 /* 18-10: la home se salía del viewport en iPhone (390 px): ningún hijo fija ancho por su contenido. */
 .home, .home > *, .home-bloque, .home .vt-cards, .home .vt-card, .home-cifras > *, .hoy-bloque, .hoy-tarjeta { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
-@media (max-width: 600px) { .home-botones { flex-wrap: wrap; } }
+@media (max-width: 600px) { .home-botones { display: grid; grid-template-columns: 1fr 1fr; } .home-botones .btn { white-space: nowrap; min-width: 0; } }
 .semaforo-pill.rojo{background:var(--error-suave);border-color:var(--error);color:var(--error)}
 .semaforo-pill.ambar{background:var(--tag-ambar-bg);border-color:var(--tag-ambar-fg);color:var(--tag-ambar-fg)}
 .semaforo-pill.verde{background:var(--exito-suave);border-color:var(--exito);color:var(--exito)}
@@ -444,7 +444,7 @@ a{color:inherit}
 /* Menú de seis (18-10): barra inferior móvil, seis entradas de 44 px de alto sin scroll horizontal a 390 px. */
 .barra-inferior { display: none; }
 @media (max-width: 899px) {
-  .barra-inferior { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--panel, var(--surface)); border-top: 1px solid var(--linea); padding-bottom: env(safe-area-inset-bottom); }
+  .barra-inferior { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: var(--z-barra); background: var(--panel, var(--surface)); border-top: 1px solid var(--linea); padding-bottom: env(safe-area-inset-bottom); }
   .barra-inferior a { flex: 1 1 0; min-width: 0; min-height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px 0; font-size: 10px; line-height: 1.1; color: var(--tinta-2); text-decoration: none; }
   .barra-inferior a .ico, .barra-inferior a .ico svg { width: 20px; height: 20px; }
   .barra-inferior a.activa { color: var(--tinta); font-weight: 600; }
@@ -479,6 +479,8 @@ a{color:inherit}
 .barra-inferior a[hidden], #menu [hidden] { display: none !important; }
 
 /* Spec 8: franja de recordar dispositivo, encima de la barra inferior (390 px: ancho completo, 56 px; escritorio: 480 px centrada) */
-.franja-recordar{position:fixed;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom));min-height:56px;display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;justify-content:flex-end;padding:8px 12px;background:var(--oro-suave);color:var(--tinta);border-top:1px solid var(--linea);z-index:25;font-size:14px}
+.franja-recordar{position:fixed;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom));min-height:56px;display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;justify-content:flex-end;padding:8px 12px;background:var(--oro-suave);color:var(--tinta);border-top:1px solid var(--linea);z-index:var(--z-franja);font-size:14px}
 .franja-recordar span{flex:1 1 14em}.franja-recordar .btn{min-height:40px}
 @media (min-width:900px){.franja-recordar{left:50%;right:auto;width:480px;transform:translateX(-50%);bottom:16px;border:1px solid var(--linea);border-radius:var(--radio)}}
+/* Con una hoja o modal abierto, lo que flota encima de la barra se oculta para no tapar la hoja */
+body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
