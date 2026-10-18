@@ -9,9 +9,23 @@ const tIn = hashP.get('t') || params.get('t');
 // El token vive solo en sessionStorage (se borra al cerrar la pestaña); nunca en localStorage. Si no hay
 // sessionStorage (modo privado o tests), queda en memoria. Se purga el que dejaron versiones anteriores.
 const memTok = { v: null };
-const tokGet = () => { try { return sessionStorage.getItem('hq_t') || memTok.v; } catch { return memTok.v; } };
-const tokSet = t => { memTok.v = t; try { sessionStorage.setItem('hq_t', t); } catch { /* en memoria */ } };
-const tokDel = () => { memTok.v = null; try { sessionStorage.removeItem('hq_t'); } catch { /* nada */ } };
+// "Recordar este dispositivo" (opt-in, desmarcado por defecto): solo entonces el token se guarda también en
+// localStorage, con clave propia hq_t_disp. La purga de hq_t (clave antigua) no la toca.
+const tokGet = () => {
+  try { const s = sessionStorage.getItem('hq_t'); if (s) return s; } catch { /* sin sessionStorage */ }
+  try { const d = localStorage.getItem('hq_t_disp'); if (d) return d; } catch { /* sin localStorage */ }
+  return memTok.v;
+};
+const tokSet = (t, recordar) => {
+  memTok.v = t;
+  try { sessionStorage.setItem('hq_t', t); } catch { /* en memoria */ }
+  if (recordar) { try { localStorage.setItem('hq_t_disp', t); } catch { /* solo esta sesión */ } }
+};
+const tokDel = () => {
+  memTok.v = null;
+  try { sessionStorage.removeItem('hq_t'); } catch { /* nada */ }
+  try { localStorage.removeItem('hq_t_disp'); } catch { /* nada */ }
+};
 try { localStorage.removeItem('hq_t'); } catch { /* nada que purgar */ }
 if (tIn) {
   tokSet(tIn);
@@ -30,7 +44,7 @@ export async function conf() {
   sb = window.supabase.createClient(CFG.url, CFG.anon, { auth: { persistSession: false, autoRefreshToken: false } });
   return CFG;
 }
-export function guardarToken(t) { tokSet(t); TOKEN = t; }
+export function guardarToken(t, recordar) { tokSet(t, !!recordar); TOKEN = t; }
 export function salir() { tokDel(); TOKEN = null; location.reload(); }
 export async function rpc(fn, args = {}) {
   if (!sb) await conf();

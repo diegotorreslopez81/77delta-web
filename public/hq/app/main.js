@@ -78,8 +78,10 @@ window.HQ_RECARGAR = recargarYMarcar;
 
 function pedirToken() {
   const campo = el('input', { class: 'campo', placeholder: 'Pega el enlace de HQ o el token', autofocus: true });
+  const recordar = el('input', { type: 'checkbox', id: 'recordar-disp' });
   raiz.innerHTML = ''; raiz.append(el('div', { class: 'entrar' }, [el('h1', { text: 'HQ' }), campo,
-    el('button', { class: 'btn primario', text: 'Entrar', onclick: () => { const m = campo.value.match(/[?&#]t=([0-9a-f]{20,})/i) || campo.value.match(/^([0-9a-f]{20,})$/i); if (!m) { campo.focus(); return; } guardarToken(m[1]); location.reload(); } })]));
+    el('label', { class: 'recordar', for: 'recordar-disp' }, [recordar, ' Recordar este dispositivo']),
+    el('button', { class: 'btn primario', text: 'Entrar', onclick: () => { const m = campo.value.match(/[?&#]t=([0-9a-f]{20,})/i) || campo.value.match(/^([0-9a-f]{20,})$/i); if (!m) { campo.focus(); return; } guardarToken(m[1], recordar.checked); location.reload(); } })]));
 }
 window.addEventListener('hashchange', render);
 document.addEventListener('click', e => { if (e.target.closest('[data-salir]')) salir(); });
