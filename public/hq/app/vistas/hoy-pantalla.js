@@ -256,7 +256,7 @@ export function eurNegocio(v) {
   if (Math.abs(x) >= 1e6) return (x / 1e6).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' M €';
   return Math.round(x).toLocaleString('es-ES', { useGrouping: 'always' }) + ' €';
 }
-const valorNegocio = (v, unidad) => v == null ? '' : unidad === 'eur' ? eurNegocio(v) : String(v) + (unidad ? ' ' + unidad : '');
+const valorNegocio = (v, unidad) => v == null ? '' : unidad === 'eur' ? eurNegocio(v) : String(v) + (unidad && unidad !== 'n' ? ' ' + unidad : '');
 export function modeloNegocio(filas) {
   return (Array.isArray(filas) ? filas : []).filter(f => f && f.principal != null).map(f => ({
     clave: f.clave, etiqueta: f.etiqueta, color: f.color || '', enlace: '#' + String(f.enlace || 'hoy').replace(/^#\/?/, ''), periodo: f.periodo_texto || '',
