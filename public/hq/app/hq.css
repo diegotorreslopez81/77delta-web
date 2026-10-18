@@ -477,3 +477,8 @@ a{color:inherit}
 
 .home-cifras .home-cifra.gris { opacity: .6; } .home-cifras .home-cifra.gris .valor { color: var(--pizarra); font-size: .95rem; }
 .barra-inferior a[hidden], #menu [hidden] { display: none !important; }
+
+/* Spec 8: franja de recordar dispositivo, encima de la barra inferior (390 px: ancho completo, 56 px; escritorio: 480 px centrada) */
+.franja-recordar{position:fixed;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom));min-height:56px;display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;justify-content:flex-end;padding:8px 12px;background:var(--oro-suave);color:var(--tinta);border-top:1px solid var(--linea);z-index:25;font-size:14px}
+.franja-recordar span{flex:1 1 14em}.franja-recordar .btn{min-height:40px}
+@media (min-width:900px){.franja-recordar{left:50%;right:auto;width:480px;transform:translateX(-50%);bottom:16px;border:1px solid var(--linea);border-radius:var(--radio)}}

@@ -31,3 +31,19 @@ test('entrar sin casilla borra hq_t_disp de una entrada anterior', async () => {
   api.guardarToken('e'.repeat(24), false);
   assert.equal(l.getItem('hq_t_disp'), null);
 });
+
+test('enlace con token ya recordado: se conserva hq_t_disp y no se ofrece', async () => {
+  const l = almacen(); l.setItem('hq_t_disp', 'e'.repeat(24));
+  globalThis.sessionStorage = almacen(); globalThis.localStorage = l;
+  globalThis.location = { search: '', hash: '#t=' + 'e'.repeat(24), pathname: '/hq/', reload() {} }; globalThis.history = { replaceState() {} };
+  const api = await import('../app/api.js?' + Math.random());
+  assert.equal(api.entradaPorEnlace, true); assert.equal(api.recordado, true);
+  assert.equal(l.getItem('hq_t_disp'), 'e'.repeat(24));
+});
+test('enlace con otro token: otroRecordado y hq_t_disp se borra hasta que se pulse Recordar', async () => {
+  const l = almacen(); l.setItem('hq_t_disp', 'f'.repeat(24));
+  globalThis.sessionStorage = almacen(); globalThis.localStorage = l;
+  globalThis.location = { search: '', hash: '#t=' + 'a'.repeat(24), pathname: '/hq/', reload() {} }; globalThis.history = { replaceState() {} };
+  const api = await import('../app/api.js?' + Math.random());
+  assert.equal(api.otroRecordado, true); assert.equal(api.recordado, false);
+});
