@@ -28,8 +28,15 @@ const tokDel = () => {
   try { localStorage.removeItem('hq_t_disp'); } catch { /* nada */ }
 };
 try { localStorage.removeItem('hq_t'); } catch { /* nada que purgar */ }
+// Spec 8: entrar por enlace no ofrecía recordar. Se anota antes de guardar si el dispositivo ya tenía este token
+// (en ese caso se conserva) o uno distinto (la franja ofrece actualizarlo).
+let discoPrevio = null;
+try { discoPrevio = localStorage.getItem('hq_t_disp'); } catch { /* sin localStorage */ }
+export const entradaPorEnlace = !!tIn;
+export const recordado = !!tIn && discoPrevio === tIn;
+export const otroRecordado = !!tIn && !!discoPrevio && discoPrevio !== tIn;
 if (tIn) {
-  tokSet(tIn);
+  tokSet(tIn, recordado);
   params.delete('t'); hashP.delete('t');
   const q = params.toString(), h = hashP.toString();
   history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + (h ? '#' + h : ''));

@@ -1,4 +1,5 @@
-import { conf, TOKEN, cargar, rpc, guardarToken, salir, configLicita, catalogoDescarte } from './api.js';
+import { conf, TOKEN, cargar, rpc, guardarToken, salir, configLicita, catalogoDescarte, entradaPorEnlace, recordado, otroRecordado } from './api.js';
+import { franjaRecordar } from './recordar-enlace.js';
 import { S, poner } from './estado.js';
 import { el, toast } from './ui.js';
 import { crearRecargador, decidirRecargaAutomatica } from './recargador.js';
@@ -68,6 +69,7 @@ export function render() {
   VISTAS[r.clave].render(raiz, S, r.arg, r.filtros);
   if (foto) restaurar(raiz, foto);
   ultimaVista = r.clave;
+  franjaRecordar({ porEnlace: entradaPorEnlace, recordado, otro: otroRecordado, clave: r.clave, arg: r.arg, token: TOKEN, guardar: guardarToken, el, toast });
 }
 // Fix ronda 2 (revision final, D3): recargar() coalescido via crearRecargador (modulo sin DOM, con test
 // propio en test/recargador.test.mjs). cargarFn atrapa el error y muestra el toast (igual que antes:
