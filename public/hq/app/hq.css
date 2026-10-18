@@ -80,8 +80,8 @@ a{color:inherit}
 :root[data-theme="dark"] .pill{background:rgba(212,160,58,.18);color:var(--oro-oscuro);border-color:rgba(212,160,58,.45)}
 .pill.codigo{font-family:var(--mono);background:var(--oro-suave);color:var(--tinta)}
 .mudo{color:var(--tinta-2);font-size:14px}
-.fondo{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20}
-.modal{background:var(--papel);width:100%;max-width:720px;max-height:92vh;overflow:auto;border-radius:var(--radio) var(--radio) 0 0;padding:14px}
+.fondo{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:24}
+.modal{background:var(--papel);width:100%;max-width:720px;max-height:92vh;overflow:auto;border-radius:var(--radio) var(--radio) 0 0;padding:14px 14px calc(14px + env(safe-area-inset-bottom))}
 .modal-cab{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .btn-x{font-size:24px;background:none;border:0;cursor:pointer;color:var(--tinta-2)}
 .modal-acciones{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
@@ -429,7 +429,7 @@ a{color:inherit}
 .home-proyecto { display: block; text-decoration: none; color: var(--ink); margin-bottom: 8px; }
 /* 18-10: la home se salía del viewport en iPhone (390 px): ningún hijo fija ancho por su contenido. */
 .home, .home > *, .home-bloque, .home .vt-cards, .home .vt-card, .home-cifras > *, .hoy-bloque, .hoy-tarjeta { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
-@media (max-width: 600px) { .home-botones { flex-wrap: wrap; } }
+@media (max-width: 600px) { .home-botones { display: grid; grid-template-columns: 1fr 1fr; } .home-botones .btn { white-space: nowrap; min-width: 0; } }
 .semaforo-pill.rojo{background:var(--error-suave);border-color:var(--error);color:var(--error)}
 .semaforo-pill.ambar{background:var(--tag-ambar-bg);border-color:var(--tag-ambar-fg);color:var(--tag-ambar-fg)}
 .semaforo-pill.verde{background:var(--exito-suave);border-color:var(--exito);color:var(--exito)}
