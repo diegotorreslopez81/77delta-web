@@ -425,11 +425,8 @@ a{color:inherit}
 .home-cifra .valor { font-size: 1.5rem; font-weight: 600; }
 .home-cifra.rojo .valor { color: var(--error); }
 .home-proyecto { display: block; text-decoration: none; color: var(--ink); margin-bottom: 8px; }
-.home-web .web-tabla { width: 100%; }
 /* 18-10: la home se salía del viewport en iPhone (390 px): ningún hijo fija ancho por su contenido. */
 .home, .home > *, .home-bloque, .home .vt-cards, .home .vt-card, .home-cifras > *, .hoy-bloque, .hoy-tarjeta { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
-.home-web .web-tabla { table-layout: fixed; }
-.home-web .web-tabla th, .home-web .web-tabla td { overflow-wrap: anywhere; padding: 4px 2px; }
 @media (max-width: 600px) { .home-botones { flex-wrap: wrap; } }
 .semaforo-pill.rojo{background:var(--error-suave);border-color:var(--error);color:var(--error)}
 .semaforo-pill.ambar{background:var(--tag-ambar-bg);border-color:var(--tag-ambar-fg);color:var(--tag-ambar-fg)}
@@ -460,4 +457,3 @@ a{color:inherit}
 @media (max-width: 899px) { .cab .buscador #busqueda, .cab .buscador .resultados, .cab .campana, .cab #contador { display: none; } }
 
 .aviso-banner, #aviso-nuevo { display: none !important; }
-.home-web .web-tabla{min-width:0}

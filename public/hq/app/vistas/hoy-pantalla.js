@@ -2,9 +2,12 @@
 // Solo pinta columnas de hq_v_hoy_* leídas por la RPC hq_hoy con p_token. Sin umbrales ni cálculo propio:
 // el rojo sale de umbral_decidir_h y umbral_correo_h que devuelve la RPC (hq_parametros).
 import { el, toast, eur, fecha, pedirTexto, modal, confirmar } from '../ui.js';
+import { pintarProyectos } from './home.js';
 
 let cargadores = {
   hoy: async () => (await import('../api.js')).rpc('hq_hoy'),
+  proyectos: async () => (await import('../api.js')).rpc('hq_proyectos'),
+  web: async () => (await import('../api.js')).rpc('hq_web', { p_dias: 14 }),
   resolver: async (id, estado) => (await import('../api.js')).rpc('omc_resolver', { p_id: id, p_estado: estado, p_respuesta: '' }),
   posponer: async (id, hasta) => (await import('../api.js')).rpc('omc_posponer', { p_id: id, p_hasta: hasta }),
   comentar: async (id, texto) => (await import('../api.js')).rpc('omc_comentar', { p_id: id, p_texto: texto }),
@@ -119,13 +122,55 @@ export function pintarCorreos(h) {
   }));
 }
 
+// Spec 5: Proyectos que no van bien: rojo, ámbar o con bloqueo, máximo 5, en el orden de la vista.
+export function proyectosMalos(filas, max = 5) {
+  return (filas || []).filter(p => ['rojo', 'ambar'].includes(p.semaforo) || p.bloqueo).slice(0, max);
+}
+export function pintarProyectosMalos(filas) {
+  if (filas == null) return bloque('hoy-proyectos', 'Proyectos', vacio('Proyectos: pendiente de datos'));
+  const m = proyectosMalos(filas);
+  if (!m.length) return bloque('hoy-proyectos', 'Proyectos', vacio('Todos los proyectos en verde'));
+  const nodo = pintarProyectos(m);
+  nodo.id = 'hoy-proyectos';
+  return nodo;
+}
+
+// Spec 5: Web 7 días, una tarjeta por sitio, con variación de visitas frente a los 7 días anteriores.
+export function modeloWeb7(filas, ahora = new Date()) {
+  const dia = d => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Madrid' }).format(new Date(ahora.getTime() - d * 86400000));
+  const ini = dia(6), antIni = dia(13);
+  const sitios = {};
+  (filas || []).forEach(f => {
+    const s = sitios[f.sitio] || (sitios[f.sitio] = { sitio: f.sitio, visitas: 0, visitantes: 0, clics: 0, formularios: 0, antes: 0 });
+    if (f.dia >= ini) {
+      s.visitas += n(f.visitas); s.visitantes += n(f.visitantes); s.clics += n(f.clics_reservar);
+      s.formularios += n(f.envios_contacto) + n(f.envios_empleo) + n(f.envios_docureal);
+    } else if (f.dia >= antIni) s.antes += n(f.visitas);
+  });
+  return Object.values(sitios).map(s => ({ ...s, variacion: s.antes ? Math.round((s.visitas - s.antes) / s.antes * 100) : null }));
+}
+export function pintarWeb7(filas, ahora = new Date()) {
+  if (filas == null) return bloque('hoy-web', 'Web 7 días', vacio('Web: sin datos'));
+  const m = modeloWeb7(filas, ahora);
+  if (!m.length) return bloque('hoy-web', 'Web 7 días', vacio('Web: sin visitas'));
+  return bloque('hoy-web', 'Web 7 días', el('div', { class: 'vt-cards' }, m.map(s => el('a', { class: 'vt-card compacta web-tarjeta', href: '#operacion/ventas' }, [
+    el('h3', { text: s.sitio }),
+    el('p', { text: s.visitas + ' visitas' + (s.variacion != null ? ' (' + (s.variacion > 0 ? '+' : '') + s.variacion + '%)' : '') }),
+    el('p', { class: 'mudo', text: s.visitantes + ' visitantes · ' + s.clics + ' Reservar · ' + s.formularios + ' formularios' }),
+  ]))));
+}
+
 export function render(raiz, S, arg, filtros) {
   const cont = el('div', { class: 'home hoy' }, [el('p', { class: 'cargando', text: '...' })]);
   raiz.append(cont);
   const destacado = arg && arg !== 'bandeja' ? arg : null;
   const repintar = () => render(Object.assign(raiz, { innerHTML: '' }), S, arg, filtros);
+  const cola = [el('div', { 'data-b': 'pro' }), el('div', { 'data-b': 'web' })];
+  const poner = (i, nodo) => { if (cola[i].isConnected) cola[i].replaceWith(nodo); cola[i] = nodo; };
+  cargadores.proyectos().then(f => poner(0, pintarProyectosMalos(f))).catch(() => poner(0, pintarProyectosMalos(null)));
+  cargadores.web().then(f => poner(1, pintarWeb7(f))).catch(() => poner(1, pintarWeb7(null)));
   cargadores.hoy().then(h => {
-    cont.replaceChildren(cabecera(h?.cifras), pintarDecidir(h, repintar, destacado), pintarFirmar(h), pintarPagar(h, repintar), pintarCorreos(h));
+    cont.replaceChildren(cabecera(h?.cifras), pintarDecidir(h, repintar, destacado), pintarFirmar(h), pintarPagar(h, repintar), pintarCorreos(h), ...cola);
     if (destacado) document.getElementById('hoy-' + destacado)?.scrollIntoView?.({ block: 'start' });
   }).catch(e => cont.replaceChildren(bloque('hoy-error', 'Hoy', vacio('No se pudo cargar (' + (e?.message || 'error') + ')'))));
 }

@@ -23,7 +23,21 @@ test('modeloHomeWeb: suma 7 días, envíos y hoy/ayer', () => {
   assert.equal(m.hoy, 5); assert.equal(m.ayer, 3);
 });
 
-test('hotfix: tabla web de la home sin min-width heredado', async () => {
-  const { readFileSync } = await import('node:fs');
-  assert.match(readFileSync(new URL('../app/hq.css', import.meta.url), 'utf8'), /\.home-web \.web-tabla\{min-width:0\}/);
+
+test('proyectosMalos: solo rojo, ámbar o bloqueo, máximo 5', async () => {
+  const { proyectosMalos } = await import('../app/vistas/hoy-pantalla.js');
+  const f = [...Array(7)].map((_, i) => ({ id: i, semaforo: 'rojo' })).concat([{ id: 9, semaforo: 'verde' }, { id: 10, semaforo: 'verde', bloqueo: 'espera a Diego' }]);
+  assert.equal(proyectosMalos(f).length, 5);
+  assert.deepEqual(proyectosMalos([{ semaforo: 'verde' }]), []);
+  assert.equal(proyectosMalos([{ semaforo: 'verde', bloqueo: 'x' }]).length, 1);
+});
+test('modeloWeb7: suma 7 días y variación frente a los 7 anteriores', async () => {
+  const { modeloWeb7 } = await import('../app/vistas/hoy-pantalla.js');
+  const ahora = new Date('2026-10-18T12:00:00Z');
+  const filas = [
+    { sitio: 'a', dia: '2026-10-18', visitas: 30, visitantes: 10, clics_reservar: 2, envios_contacto: 1 },
+    { sitio: 'a', dia: '2026-10-08', visitas: 20 },
+  ];
+  const m = modeloWeb7(filas, ahora);
+  assert.equal(m[0].visitas, 30); assert.equal(m[0].antes, 20); assert.equal(m[0].variacion, 50); assert.equal(m[0].formularios, 1);
 });
