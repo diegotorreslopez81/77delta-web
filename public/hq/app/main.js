@@ -117,10 +117,40 @@ function escribiendo() {
     return !!a.isContentEditable;
   } catch { return false; }
 }
+// C1 (18-10): versión nueva. Con skipWaiting+clients.claim el sw nuevo toma el control solo: controllerchange
+// recarga UNA vez (marca en sessionStorage 15 s contra bucles) o, si Diego escribe, deja un aviso fijo con botón.
+// Primera instalación (sin controller previo) no recarga. Además se pide update() al volver a la app.
+let versionAvisada = false;
+function aplicarVersionNueva() {
+  if (versionAvisada) return; versionAvisada = true;
+  try { const t = Number(sessionStorage.getItem('hq_sw_recarga') || 0); if (Date.now() - t < 15000) return; } catch {}
+  const recargar = () => { try { sessionStorage.setItem('hq_sw_recarga', String(Date.now())); } catch {} location.reload(); };
+  if (!escribiendo()) { recargar(); return; }
+  const b = el('div', { class: 'toast', id: 'aviso-version' }, [el('span', { text: 'HQ tiene versión nueva' }), el('button', { class: 'btn-enlace', text: 'Recargar', onclick: recargar })]);
+  document.body.append(b);
+}
+// C2: destino de la notificación guardado por el sw (Cache 'hq-destino'): iOS puede abrir la PWA en la home y
+// perder el hash; se aplica si tiene menos de 2 min y se borra siempre.
+async function aplicarDestinoPendiente() {
+  try {
+    const c = await caches.open('hq-destino'), r = await c.match('/hq/__destino');
+    if (!r) return;
+    await c.delete('/hq/__destino');
+    const d = await r.json();
+    if (Date.now() - d.t > 120000) return;
+    const u = new URL(d.url, location.origin);
+    if (u.origin === location.origin && u.pathname.startsWith('/hq/') && u.hash) location.hash = u.hash;
+  } catch {}
+}
 if ('serviceWorker' in navigator) {
+  const habiaControl = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (habiaControl) aplicarVersionNueva(); });
+  aplicarDestinoPendiente();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) { aplicarDestinoPendiente(); navigator.serviceWorker.getRegistration('/hq/').then(r => r && r.update()).catch(() => {}); } });
   navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => { if (new URL(r.scope).pathname === '/hq/' && !(r.active && r.active.scriptURL.endsWith('/hq/sw.js'))) r.unregister(); }));
   navigator.serviceWorker.register('/hq/sw.js', { updateViaCache: 'none' }).then(reg => {
-    reg.addEventListener('updatefound', () => { const nuevo = reg.installing; if (nuevo) nuevo.addEventListener('statechange', () => { if (nuevo.state === 'activated' && navigator.serviceWorker.controller) { if (escribiendo()) toast('HQ tiene versión nueva', 'recargar', () => location.reload()); else location.reload(); } }); });
+    reg.addEventListener('updatefound', () => { const nuevo = reg.installing; if (nuevo) nuevo.addEventListener('statechange', () => { if (nuevo.state === 'activated' && navigator.serviceWorker.controller) aplicarVersionNueva(); }); });
+    reg.update().catch(() => {});
     if (Notification.permission === 'default') document.addEventListener('click', pedirPush, { once: true });
     else if (Notification.permission === 'granted') activarPush(reg);
   }).catch(() => {});
