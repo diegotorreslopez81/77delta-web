@@ -38,6 +38,8 @@ export const AREAS = [
   { id: 'productos', nombre: 'Productos', corto: 'Productos', icono: ICONOS.motor, vistas: [{ clave: 'productos', nombre: 'Productos' }] },
   { id: 'proyectos', nombre: 'Proyectos', corto: 'Proyectos', icono: ICONOS.operacion, vistas: [{ clave: 'operacion/en-curso', nombre: 'Proyectos' }] },
   { id: 'equipo', nombre: 'Equipo', corto: 'Equipo', icono: ICONOS.equipo, vistas: [{ clave: 'equipo/organigrama', nombre: 'Equipo' }] },
+  // Spec 6 (18-10): solo propietario; la vista y las RPC lo comprueban. Sale en Más (no está en MENU5).
+  { id: 'secreto', nombre: 'Enviar secreto', icono: ICONOS.admin, vistas: [{ clave: 'secreto', nombre: 'Enviar secreto' }] },
   { id: 'web', nombre: 'Web', icono: ICONOS.kpis, vistas: [{ clave: 'web', nombre: 'Web' }] },
   { id: 'salud', nombre: 'Salud', icono: ICONOS.salud, vistas: [{ clave: 'operacion/salud', nombre: 'Salud' }] },
   { id: 'admin', nombre: 'Admin', icono: ICONOS.admin, vistas: [{ clave: 'operacion/admin', nombre: 'Admin' }] },
@@ -46,7 +48,7 @@ export const AREAS = [
   { id: 'direccion', nombre: 'Plan estratégico', icono: ICONOS.direccion, vistas: [{ clave: 'direccion/objetivo', nombre: 'Plan estratégico' }] },
 ];
 // Claves que tienen vista. 'equipo/agente' no sale en el menú (es la ficha) pero es una ruta válida.
-export const CLAVES = new Set(['hoy', 'avisos', 'kpis', 'direccion/objetivo', 'operacion/tablero', 'operacion/expedientes', 'operacion/licitaciones', 'operacion/salud', 'operacion/ventas', 'operacion/admin', 'equipo/organigrama', 'equipo/colaboradores', 'equipo/agente', 'recursos/computo', 'licita-engine', 'web', 'operacion/en-curso', 'productos']);
+export const CLAVES = new Set(['hoy', 'avisos', 'kpis', 'direccion/objetivo', 'operacion/tablero', 'operacion/expedientes', 'operacion/licitaciones', 'operacion/salud', 'operacion/ventas', 'operacion/admin', 'equipo/organigrama', 'equipo/colaboradores', 'equipo/agente', 'recursos/computo', 'licita-engine', 'web', 'operacion/en-curso', 'productos', 'secreto']);
 // Rutas de la v2.0 (tabs): se redirigen para que no se rompa ningún enlace ya enviado en tarjetas o push.
 const VIEJAS = { inicio: 'hoy', plan: 'direccion/objetivo', tablero: 'operacion/tablero', equipo: 'equipo/organigrama', expedientes: 'operacion/expedientes', progreso: 'operacion/en-curso', 'en-curso': 'operacion/en-curso', web: 'operacion/ventas', kpis: 'operacion/licitaciones', salud: 'equipo/organigrama', organigrama: 'equipo/organigrama', avisos: 'hoy', computo: 'hoy' };
 // Rutas de dos segmentos que dejaron de ser pantalla propia (menú de 6, 18-10): ningún enlace viejo da 404.
