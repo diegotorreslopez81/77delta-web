@@ -2,11 +2,11 @@
    Supabase ni el payload omc_hq_v2 (van a otro origen, asi que ya quedan fuera del filtro de fetch).
    Push y notificationclick son el mismo comportamiento real que public/hq/v1/sw.js (mismo payload que
    envia hq-push en el servidor: title, body, url, tag, id, lic). */
-var CACHE = 'hq-v45';
+var CACHE = 'hq-v46';
 var SHELL = ['/hq/', '/hq/app/main.js', '/hq/app/api.js', '/hq/app/estado.js', '/hq/app/recargador.js', '/hq/app/rutas.js', '/hq/app/buscador.js', '/hq/app/licitaciones.js', '/hq/app/shell.js', '/hq/app/ui.js', '/hq/app/tarjeta.js', '/hq/app/detalle.js', '/hq/app/dnd.js', '/hq/app/vistas/hoy.js', '/hq/app/vistas/web.js', '/hq/app/vistas/objetivo.js', '/hq/app/vistas/tablero.js', '/hq/app/vistas/decisiones.js', '/hq/app/vistas/licitaciones.js', '/hq/app/vistas/licitaciones-menores.js', '/hq/app/vistas/equipo.js', '/hq/app/vistas/motor.js', '/hq/app/vistas/expedientes.js', '/hq/app/vistas/avisos.js', '/hq/app/avisos.js', '/hq/app/tokens.css', '/hq/app/hq.css', '/hq/manifest.webmanifest', '/hq/icon-192.png', '/hq/icon-512.png'];
 
 self.addEventListener('install', function (e) {
-  e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(SHELL); }).then(function () { return self.skipWaiting(); }));
+  e.waitUntil(caches.open(CACHE).then(function (c) { return Promise.all(SHELL.map(function (u) { return c.add(new Request(u, { cache: 'reload' })); })); }).then(function () { return self.skipWaiting(); }));
 });
 self.addEventListener('activate', function (e) {
   // Fix ronda 2 (revision final, F-d/D2): borrar solo caches de la propia familia v2 ('hq-v' seguido
@@ -21,7 +21,9 @@ self.addEventListener('fetch', function (e) {
   if (e.request.method !== 'GET' || u.origin !== location.origin || !u.pathname.startsWith('/hq/') || u.pathname.startsWith('/hq/v1/')) return;
   // Fix ronda 2 (F-f/D4): solo se cachea una respuesta si r.ok; una 4xx/5xx (p.ej. un 404 tras un
   // rename de fichero) ya no se guarda como si fuera valida para servirla luego en modo offline.
-  e.respondWith(fetch(e.request).then(function (r) { if (r.ok) { var copia = r.clone(); caches.open(CACHE).then(function (c) { c.put(e.request, copia); }); } return r; })
+  // C1 (18-10): cache:'no-cache' revalida siempre con el servidor (ETag) y se salta max-age=600 de la cache HTTP:
+  // sin esto el 'network-first' devolvia index.html y app/*.js viejos hasta 10 min despues de desplegar.
+  e.respondWith(fetch(e.request, { cache: 'no-cache' }).then(function (r) { if (r.ok) { var copia = r.clone(); caches.open(CACHE).then(function (c) { c.put(e.request, copia); }); } return r; })
     .catch(function () { return caches.match(e.request).then(function (r) { return r || caches.match('/hq/'); }); }));
 });
 // #2159: cada push se guarda en IndexedDB ('hq-avisos'/'avisos', la vista Avisos de la app lo lee) antes de
@@ -93,10 +95,10 @@ function trazaEp() {
   return TRAZA_EP;
 }
 function msg(err) { return String(err && (err.name ? err.name + ': ' : '') + (err.message || err)).slice(0, 200); }
-function traza(evento, datos) {
+function traza(evento, datos, epDado) {
   var base = { cache: CACHE, ios: IOS, t: Date.now() };
   for (var k in datos) base[k] = datos[k];
-  return Promise.all([trazaCfg(), trazaEp()]).then(function (r) {
+  return Promise.all([trazaCfg(), epDado || trazaEp()]).then(function (r) {
     var cfg = r[0], ep = r[1];
     if (!cfg || !cfg.url || !ep) return null;
     return fetch(cfg.url + '/rest/v1/rpc/omc_push_traza', { method: 'POST', keepalive: true,
@@ -107,11 +109,12 @@ function traza(evento, datos) {
 self.addEventListener('push', function (e) {
   var d = {}, errJson = null; try { d = e.data ? e.data.json() : {}; } catch (err) { errJson = msg(err); d = { body: e.data && e.data.text() }; }
   var aviso = nuevoAviso(d, Date.now());
+  var ep = null;
   var tz = [traza('push_recibido', { data: !!e.data, errJson: errJson, id: d.id || null, url: aviso.url, tag: aviso.tag })];
-  e.waitUntil(guardarAviso(aviso).catch(function (err) { tz.push(traza('push_guardar_fallo', { error: msg(err) })); return null; }).then(function (n) {
+  e.waitUntil(trazaEp().then(function (x) { ep = x; }).then(function () { return guardarAviso(aviso); }).catch(function (err) { tz.push(traza('push_guardar_fallo', { error: msg(err) })); return null; }).then(function (n) {
     return self.registration.showNotification(aviso.title, {
       body: aviso.body, icon: '/hq/icon-192.png', badge: '/hq/icon-192.png', tag: aviso.tag, renotify: true,
-      data: { url: aviso.url, id: aviso.id, lic: aviso.lic, n: n }
+      data: { url: aviso.url, id: aviso.id, lic: aviso.lic, n: n, ep: ep }
     }).then(function () { tz.push(traza('push_mostrado', { n: n })); }, function (err) { tz.push(traza('push_mostrar_fallo', { error: msg(err) })); throw err; });
   }).then(function () { return Promise.all(tz); }, function (err) { return Promise.all(tz).then(function () { throw err; }); }));
 });
@@ -128,18 +131,24 @@ self.addEventListener('notificationclick', function (e) {
   e.notification.close();
   var d = e.notification.data || {}, sinData = !e.notification.data;
   var url = urlAbs(d.url || (d.id ? '/hq/#hoy/' + d.id : '/hq/#avisos'));
-  var tz = [traza('click_inicio', { sinData: sinData, url: url, id: d.id || null, tag: e.notification.tag, camino: IOS ? 'ios-openWindow-directo' : 'focus-primero' })];
+  // C3: el endpoint viaja en la propia notificacion (d.ep): la traza ya no depende de getSubscription() ni del
+  // arranque en frio del sw. Cada toque deja click_inicio aunque falle todo lo demas.
+  var tr = function (ev, dat) { return traza(ev, dat, d.ep ? Promise.resolve(d.ep) : null); };
+  var tz = [tr('click_inicio', { sinData: sinData, url: url, id: d.id || null, tag: e.notification.tag, camino: IOS ? 'ios-openWindow-directo' : 'focus-primero' })];
+  // C2: destino pendiente en Cache API (nombre fuera de la familia hq-vN, no se borra al activar): si iOS abre
+  // la PWA en la home y descarta el hash, la app lo lee al arrancar o al volver y navega a la tarjeta.
+  try { tz.push(caches.open('hq-destino').then(function (c) { return c.put('/hq/__destino', new Response(JSON.stringify({ url: url, t: Date.now() }))); }).catch(function () {})); } catch (err) {}
   var abrir = function (motivo) {
     var p;
     try { p = Promise.resolve(clients.openWindow(url)); } catch (err) { p = Promise.reject(err); }
-    return p.then(function (w) { tz.push(traza('click_openWindow_ok', { motivo: motivo, devuelveCliente: !!w })); return w; },
-      function (err) { tz.push(traza('click_openWindow_fallo', { motivo: motivo, error: msg(err) })); });
+    return p.then(function (w) { tz.push(tr('click_openWindow_ok', { motivo: motivo, devuelveCliente: !!w })); return w; },
+      function (err) { tz.push(tr('click_openWindow_fallo', { motivo: motivo, error: msg(err) })); });
   };
   var trabajo = [marcarLeido(d.n).catch(function () {})];
   var abierta = IOS ? abrir('ios-directo') : null;
   trabajo.push(clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (ws) {
     var propias = ws.filter(function (w) { return w.url.indexOf('/hq/') >= 0 && w.url.indexOf('/hq/v1/') < 0; });
-    tz.push(traza('click_clientes', { total: ws.length, propias: propias.length, urls: ws.map(function (w) { return w.url + ' [' + w.visibilityState + (w.focused ? ',foco' : '') + ']'; }) }));
+    tz.push(tr('click_clientes', { total: ws.length, propias: propias.length, urls: ws.map(function (w) { return w.url + ' [' + w.visibilityState + (w.focused ? ',foco' : '') + ']'; }) }));
     propias.forEach(function (w) {
       try { w.postMessage({ tipo: 'ir', url: url }); } catch (err) {}
       if (d.id) { try { w.postMessage({ tipo: 'abrir', id: d.id }); } catch (err) {} }
@@ -149,7 +158,13 @@ self.addEventListener('notificationclick', function (e) {
     if (!propias.length) return abrir('sin-ventana');
     var w0 = propias[0], enfoque;
     try { enfoque = w0.focus ? Promise.resolve(w0.focus()) : Promise.reject(new Error('sin focus')); } catch (err) { enfoque = Promise.reject(err); }
-    return enfoque.then(function () { tz.push(traza('click_focus_ok', {})); }, function (err) { tz.push(traza('click_focus_fallo', { error: msg(err) })); return abrir('focus-fallo'); });
-  }, function (err) { tz.push(traza('click_matchAll_fallo', { error: msg(err) })); return IOS ? abierta : abrir('matchAll-fallo'); }));
+    return enfoque.then(function () { tz.push(tr('click_focus_ok', {})); }, function (err) { tz.push(tr('click_focus_fallo', { error: msg(err) })); return abrir('focus-fallo'); });
+  }, function (err) { tz.push(tr('click_matchAll_fallo', { error: msg(err) })); return IOS ? abierta : abrir('matchAll-fallo'); }));
   e.waitUntil(Promise.all(trabajo).then(function () { return Promise.all(tz); }));
+});
+
+// C3: un cierre sin toque tambien deja huella, para distinguir 'no toco' de 'toco y el sw no se enteró'.
+self.addEventListener('notificationclose', function (e) {
+  var d = e.notification.data || {};
+  e.waitUntil(traza('cierre', { id: d.id || null, tag: e.notification.tag }, d.ep ? Promise.resolve(d.ep) : null));
 });
