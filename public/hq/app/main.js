@@ -26,6 +26,7 @@ import * as web from './vistas/web.js';
 import * as home from './vistas/home.js';
 import * as hoyPantalla from './vistas/hoy-pantalla.js';
 import * as enCurso from './vistas/en-curso.js';
+import * as productos from './vistas/productos.js';
 import { conectar as conectarADemanda } from './a-demanda.js';
 
 // Plan 3a: una vista por clave de ruta (rutas.js). 'equipo/agente' es la ficha de equipo.js (arg = id).
@@ -33,7 +34,7 @@ import { conectar as conectarADemanda } from './a-demanda.js';
 // justo debajo de la franja; no hace falta envolverla aquí.
 // Home v2 (spec 1, 18-10): owner sin arg ve la home de cuatro bloques; con arg (#hoy/bandeja, #hoy/<id>) y agentes, el Hoy de siempre.
 const hoyOHome = { render: (raiz, S, arg, filtros) => (S.datos?.rol === 'owner' ? (arg ? hoyPantalla : home) : hoy).render(raiz, S, arg, filtros) };
-const VISTAS = { 'hoy': hoyOHome, 'avisos': avisos, 'kpis': kpis, 'direccion/objetivo': objetivo, 'operacion/tablero': tablero, 'operacion/expedientes': expedientes, 'operacion/licitaciones': licitaciones, 'operacion/salud': salud, 'operacion/ventas': ventas, 'operacion/admin': admin, 'equipo/organigrama': equipo, 'equipo/agente': equipo, 'equipo/colaboradores': colaboradores, 'recursos/computo': recursos, 'licita-engine': motor, 'web': web, 'operacion/en-curso': enCurso };
+const VISTAS = { 'hoy': hoyOHome, 'avisos': avisos, 'kpis': kpis, 'direccion/objetivo': objetivo, 'operacion/tablero': tablero, 'operacion/expedientes': expedientes, 'operacion/licitaciones': licitaciones, 'operacion/salud': salud, 'operacion/ventas': ventas, 'operacion/admin': admin, 'equipo/organigrama': equipo, 'equipo/agente': equipo, 'equipo/colaboradores': colaboradores, 'recursos/computo': recursos, 'licita-engine': motor, 'web': web, 'operacion/en-curso': enCurso, 'productos': productos };
 const raiz = document.getElementById('vista');
 document.getElementById('ver').textContent = 'v' + HQ_VERSION.v;
 montarMenu(document.getElementById('nav'));
@@ -162,16 +163,10 @@ async function revisarAvisos(visita) {
   let standalone = false; try { standalone = navigator.standalone === true || matchMedia('(display-mode: standalone)').matches; } catch {}
   const origen = hayDestino || (visita === 'arranque' && location.hash) ? 'notificacion' : standalone ? 'icono' : 'pestana';
   trazaPag('pagina_abierta', { visita, origen, entrada: location.pathname + location.hash.slice(0, 60), cache, version: window.HQ_VERSION && HQ_VERSION.v, destinoPendiente: hayDestino, sinLeer: total, avisoN: a ? a.n : null, controlado: !!navigator.serviceWorker.controller }, reg);
-  if (!a || document.getElementById('aviso-nuevo')) return;
-  const h = hashDeAviso(a, location.origin), quitar = () => document.getElementById('aviso-nuevo')?.remove();
-  const abrir = () => { trazaPag('banner_abrir', { avisoN: a.n, url: a.url }, reg); marcarAvisoLeido(a.n).catch(() => {}); if (h) location.hash = h; quitar(); };
-  const cerrar = () => { trazaPag('banner_cerrar', { avisoN: a.n }, reg); quitar(); };
-  document.body.append(el('div', { class: 'aviso-banner', id: 'aviso-nuevo', role: 'alert' }, [
-    el('span', { class: 'aviso-texto', text: (a.title || 'HQ') + ' · ' + haceCuanto(a.t) }),
-    total > 1 ? el('a', { href: '#avisos', class: 'btn-enlace', text: 'y ' + (total - 1) + ' más', onclick: quitar }) : null,
-    el('button', { class: 'btn-enlace', text: 'Abrir', onclick: abrir }),
-    el('button', { class: 'btn-enlace', text: '✕', 'aria-label': 'Cerrar', onclick: cerrar })]));
-  trazaPag('banner_mostrado', { avisoN: a.n, total, url: a.url }, reg);
+  if (!a) return;
+  // 18-10 (Diego): sin banner flotante. Si la app se abrió desde la notificación y iOS no entregó notificationclick, el aviso abre su tarjeta directamente; los pendientes viven en Depende de ti y correos.
+  const h = hashDeAviso(a, location.origin);
+  if (origen === 'notificacion' && h && !hayDestino) { trazaPag('aviso_abierto_directo', { avisoN: a.n, url: a.url }, reg); marcarAvisoLeido(a.n).catch(() => {}); location.hash = h; }
 }
 if ('serviceWorker' in navigator) {
   const habiaControl = !!navigator.serviceWorker.controller;
