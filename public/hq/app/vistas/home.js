@@ -8,6 +8,8 @@ import { modeloWeb } from './web.js';
 let cargadores = {
   home: async () => (await import('../api.js')).rpc('hq_home'),
   proyectos: async () => (await import('../api.js')).rpc('hq_proyectos'),
+  captacion: async () => (await import('../api.js')).rpc('hq_captacion'),
+  productos: async () => (await import('../api.js')).rpc('hq_productos'),
   web: async () => (await import('../api.js')).rpc('hq_web', { p_dias: 30 }),
   resolver: async (id, estado) => (await import('../api.js')).rpc('omc_resolver', { p_id: id, p_estado: estado, p_respuesta: '' }),
 };
@@ -70,15 +72,64 @@ export function pintarProyectos(filas) {
   return bloque('Proyectos', el('div', { class: 'vt-cards' }, lista));
 }
 
+export function valorCifra(x) {
+  if (x.valor == null) return x.unidad === 'eur' ? 'sin fuente' : '-';
+  return x.unidad === 'eur' ? eur(x.valor) : String(x.valor) + (x.unidad ? ' ' + x.unidad : '');
+}
+
 // Bloque 3. Tres cifras: las que fije hq_parametros (home_cifra_1..3), ya filtradas y ordenadas por la RPC.
 export function pintarCifras(cifras) {
   const c = (cifras || []).slice(0, 3);
   if (!c.length) return bloque('Tres cifras', pendiente('Sin cifras configuradas'));
   return bloque('Tres cifras', el('div', { class: 'home-cifras' }, c.map(x =>
     el('a', { class: 'vt-card compacta home-cifra ' + (x.color || ''), href: x.enlace ? '#' + String(x.enlace).replace(/^#/, '') : '#hoy' }, [
-      el('span', { class: 'valor', text: String(x.valor ?? '-') + (x.unidad ? ' ' + x.unidad : '') }),
+      el('span', { class: 'valor', text: valorCifra(x) }),
       el('span', { class: 'mudo', text: x.etiqueta || x.clave }),
     ]))));
+}
+
+// Captación: cinco pasos con cifra y % sobre el paso anterior. Total arriba, producto debajo; 7 o 30 días.
+// Nombres, periodos y cifras vienen de hq_v_captacion; solo se rotula.
+const PASOS = [['enviados', 'Enviados'], ['respuestas', 'Respuestas'], ['visitas', 'Visitas'], ['clics_reservar', 'Reservar'], ['formularios', 'Formularios'], ['ganados', 'Ganados']];
+const rotulo = p => p === 'total' ? 'Total' : p === 'sin_producto' ? 'Sin producto' : String(p).charAt(0).toUpperCase() + String(p).slice(1);
+export function modeloCaptacion(filas, periodo) {
+  const del = (filas || []).filter(f => n(f.periodo) === n(periodo));
+  const orden = f => f.producto === 'total' ? 0 : 1;
+  return del.slice().sort((a, b) => orden(a) - orden(b) || String(a.producto).localeCompare(String(b.producto))).map(f => {
+    const pasos = PASOS.filter(([k]) => f.producto === 'total' || !['visitas', 'clics_reservar', 'formularios'].includes(k)).map(([k, t], i, arr) => {
+      const prev = i ? n(f[arr[i - 1][0]]) : 0;
+      return { clave: k, titulo: t, valor: n(f[k]), pct: i && prev ? Math.round(n(f[k]) / prev * 100) : null };
+    });
+    return { producto: f.producto, titulo: rotulo(f.producto), pasos };
+  });
+}
+export function pintarCaptacion(filas, periodo = 7, cambiar = () => {}) {
+  if (filas == null) return bloque('Captación', pendiente('Captación: pendiente de datos'));
+  const filasP = modeloCaptacion(filas, periodo);
+  const periodos = [...new Set((filas || []).map(f => n(f.periodo)))].sort((a, b) => a - b);
+  const sel = el('div', { class: 'home-botones' }, periodos.map(p => el('button', { class: 'btn' + (p === n(periodo) ? ' primario' : ''), text: p + ' días', onclick: () => cambiar(p) })));
+  if (!filasP.length) return bloque('Captación', [sel, pendiente('Sin datos de captación')]);
+  return bloque('Captación', [sel, ...filasP.map(f => el('div', { class: 'captacion-fila' }, [
+    el('h3', { text: f.titulo }),
+    el('div', { class: 'home-cifras' }, f.pasos.map(p => el('div', { class: 'vt-card compacta home-cifra' }, [
+      el('span', { class: 'valor', text: String(p.valor) + (p.pct != null ? ' (' + p.pct + '%)' : '') }),
+      el('span', { class: 'mudo', text: p.titulo }),
+    ]))),
+  ]))]);
+}
+
+// Productos: una fila por producto con su paso "3 de 6", días en etapa, siguiente paso y leads.
+export function pintarProductos(datos) {
+  if (datos == null) return bloque('Productos', pendiente('Productos: pendiente de datos'));
+  const ps = datos.productos || [];
+  if (!ps.length) return bloque('Productos', pendiente('Sin productos todavía'));
+  return bloque('Productos', el('div', { class: 'vt-cards' }, ps.map(p => el('a', { class: 'vt-card compacta home-proyecto', href: '#productos' }, [
+    el('h3', { text: p.producto }),
+    el('p', { class: 'mudo', text: n(p.etapa_orden) + ' de ' + n(p.etapas_total) + ' · ' + p.etapa + ' · ' + n(p.dias_en_etapa) + ' d' }),
+    p.siguiente_paso ? el('p', { class: 'mudo', text: p.siguiente_paso + (p.fecha_siguiente ? ' · ' + fdia(p.fecha_siguiente) : '') }) : null,
+    el('p', { class: 'mudo', text: 'Leads abiertos ' + n(p.leads_abiertos) + ' · ganados ' + n(p.ganados) }),
+    el('span', { class: 'semaforo-pill ' + (p.semaforo || ''), text: p.semaforo || '' }),
+  ]))));
 }
 
 // Bloque 4. Web: suma de 7 días por sitio y hoy frente a ayer de 77delta.com. Sitios sin fila salen a 0.
@@ -110,7 +161,7 @@ export function pintarWeb(filas, ahora = new Date()) {
 
 export function render(raiz, S, arg, filtros, ahora = new Date()) {
   const cont = el('div', { class: 'home' });
-  const huecos = ['dec', 'pro', 'cif', 'web'].map(k => el('div', { 'data-b': k }, [el('p', { class: 'cargando', text: '...' })]));
+  const huecos = ['dec', 'pro', 'cif', 'cap', 'prd', 'web'].map(k => el('div', { 'data-b': k }, [el('p', { class: 'cargando', text: '...' })]));
   huecos.forEach(h => cont.append(h));
   raiz.append(cont);
   const poner = (i, nodo) => { if (huecos[i].isConnected) huecos[i].replaceWith(nodo); huecos[i] = nodo; };
@@ -119,5 +170,8 @@ export function render(raiz, S, arg, filtros, ahora = new Date()) {
   cargadores.home().then(h => { poner(0, pintarDecidir(h, cargadores.resolver, repintar)); poner(2, pintarCifras(h?.cifras)); })
     .catch(e => { poner(0, falla('Depende de ti', e)); poner(2, falla('Tres cifras', e)); });
   cargadores.proyectos().then(f => poner(1, pintarProyectos(f))).catch(() => poner(1, pintarProyectos(null)));
-  cargadores.web().then(f => poner(3, pintarWeb(f, ahora))).catch(() => poner(3, pintarWeb(null)));
+  const pintaCap = (filas, periodo) => poner(3, pintarCaptacion(filas, periodo, p => pintaCap(filas, p)));
+  cargadores.captacion().then(f => pintaCap(f, 7)).catch(() => poner(3, pintarCaptacion(null)));
+  cargadores.productos().then(d => poner(4, pintarProductos(d))).catch(() => poner(4, pintarProductos(null)));
+  cargadores.web().then(f => poner(5, pintarWeb(f, ahora))).catch(() => poner(5, pintarWeb(null)));
 }

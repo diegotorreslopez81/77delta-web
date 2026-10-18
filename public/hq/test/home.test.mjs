@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { modeloDecidir, modeloHomeWeb } from '../app/vistas/home.js';
+import { modeloDecidir, modeloHomeWeb, valorCifra, modeloCaptacion } from '../app/vistas/home.js';
 
 test('modeloDecidir: resto = decidir-1 + firmar + pagar', () => {
   const m = modeloDecidir({ decidir: [{ id: 1 }, { id: 2 }, { id: 3 }], firmar: new Array(38).fill({}), pagar: [], umbral_decidir_h: 24 });
@@ -40,4 +40,19 @@ test('modeloWeb7: suma 7 días y variación frente a los 7 anteriores', async ()
   ];
   const m = modeloWeb7(filas, ahora);
   assert.equal(m[0].visitas, 30); assert.equal(m[0].antes, 20); assert.equal(m[0].variacion, 50); assert.equal(m[0].formularios, 1);
+test('valorCifra: eur formatea, null en eur = sin fuente, otras unidades tal cual', () => {
+  assert.equal(valorCifra({ valor: null, unidad: 'eur' }), 'sin fuente');
+  assert.equal(valorCifra({ valor: 3, unidad: 'tarjetas' }), '3 tarjetas');
+  assert.match(valorCifra({ valor: 27438, unidad: 'eur' }), /EUR$/);
+});
+test('modeloCaptacion: filtra periodo, total primero, % sobre paso anterior', () => {
+  const filas = [
+    { periodo: 7, producto: 'zeta', enviados: 100, respuestas: 10, ganados: 1 },
+    { periodo: 7, producto: 'total', enviados: 200, respuestas: 50, visitas: 25, clics_reservar: 5, formularios: 1, ganados: 0 },
+    { periodo: 30, producto: 'total', enviados: 999 },
+  ];
+  const m = modeloCaptacion(filas, 7);
+  assert.equal(m.length, 2); assert.equal(m[0].producto, 'total');
+  assert.equal(m[0].pasos[1].pct, 25); assert.equal(m[0].pasos[0].pct, null);
+  assert.equal(m[1].pasos.some(p => p.clave === 'visitas'), false);
 });
