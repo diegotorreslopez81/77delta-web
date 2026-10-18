@@ -42,10 +42,10 @@ test('enlaceCifra: decidir y pagar abren Depende de ti; firmar abre la pestaña 
   assert.equal(enlaceCifra({ clave: 'firmar' }), '#licitaciones?bloque=firmar');
   assert.equal(enlaceCifra({ clave: 'tareas' }), 'https://tasks.google.com');
 });
-test('celdasCabecera: 6 celdas, sin cola_chief ni agentes, tareas y caja grises, pagar 0 gris', () => {
+test('celdasCabecera: 5 celdas, sin cola_chief, agentes ni caja, tareas gris, pagar 0 gris', () => {
   const c = celdasCabecera([{ clave: 'decidir', valor: 3 }, { clave: 'pagar', valor: 0 }, { clave: 'firmar', valor: 9 }, { clave: 'correos', valor: 3 }, { clave: 'cola_chief', valor: 124 }, { clave: 'agentes', valor: 45 }, { clave: 'caja', valor: null }]);
-  assert.deepEqual(c.map(x => x.clave), ['decidir', 'firmar', 'pagar', 'correos', 'tareas', 'caja']);
-  assert.deepEqual(c.map(x => !!x.gris), [false, false, true, false, true, true]);
+  assert.deepEqual(c.map(x => x.clave), ['decidir', 'firmar', 'pagar', 'correos', 'tareas']);
+  assert.deepEqual(c.map(x => !!x.gris), [false, false, true, false, true]);
 });
 
 
@@ -58,4 +58,23 @@ test('cifraTareas: rojo con vencidas u hoy, ámbar sin fecha, verde sin nada, gr
   assert.equal(cifraTareas({ error: 'x' }).valor, null);
   assert.equal(cifraTareas(null).valor, null);
   assert.equal(celdasCabecera([cifraTareas({ abiertas: 9, vencidas: 0, hoy: 0, sin_fecha: 0 })]).find(x => x.clave === 'tareas').gris, undefined);
+});
+
+import { eurNegocio, modeloNegocio } from '../app/vistas/hoy-pantalla.js';
+test('eurNegocio: punto de miles, sin decimales, M desde 1.000.000', () => {
+  assert.equal(eurNegocio(32438.02), '32.438 €');
+  assert.equal(eurNegocio(999999), '999.999 €');
+  assert.equal(eurNegocio(1120000), '1,12 M €');
+  assert.equal(eurNegocio(null), 'sin dato');
+});
+test('modeloNegocio: omite filas sin principal (caja), máximo 2 pares de detalle, usa texto de la vista', () => {
+  const m = modeloNegocio([
+    { clave: 'caja', etiqueta: 'Caja', principal: null },
+    { clave: 'pipeline', etiqueta: 'Pipeline', principal: 230500, principal_unidad: 'eur', secundario: 34, secundario_unidad: 'oportunidades', enlace: '#ventas?bloque=pipeline', detalle: [{ etiqueta: 'a', valor: 1 }, { etiqueta: 'b', valor: 2 }, { etiqueta: 'c', valor: 3 }] },
+  ]);
+  assert.equal(m.length, 1);
+  assert.equal(m[0].principal, '230.500 €');
+  assert.equal(m[0].secundario, '34 oportunidades');
+  assert.equal(m[0].detalle.length, 2);
+  assert.deepEqual(modeloNegocio(null), []);
 });

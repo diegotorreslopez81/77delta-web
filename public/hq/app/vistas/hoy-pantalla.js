@@ -9,6 +9,7 @@ let cargadores = {
   hoy: async () => (await import('../api.js')).rpc('hq_hoy'),
   web: async () => (await import('../api.js')).rpc('hq_web', { p_dias: 14 }),
   captacion: async () => (await import('../api.js')).rpc('hq_captacion'),
+  negocio: async () => (await import('../api.js')).rpc('hq_hoy_negocio'),
   tareas: async () => (await import('../api.js')).leerVivo('/hq/tareas'),
   resolver: async (id, estado) => (await import('../api.js')).rpc('omc_resolver', { p_id: id, p_estado: estado, p_respuesta: '' }),
   posponer: async (id, hasta) => (await import('../api.js')).rpc('omc_posponer', { p_id: id, p_hasta: hasta }),
@@ -37,7 +38,7 @@ export function opcionesPosponer(ahora = new Date()) {
 
 // Rejilla 3x2 (enmienda 5): decidir, firmar, pagar, correos, tareas y caja. Decidir y pagar abren Depende de ti;
 // firmar abre la pestaña de Licitaciones con las filas de hq_v_hoy_firmar. Tareas y caja, grises hasta que tengan fuente.
-export const CELDAS = ['decidir', 'firmar', 'pagar', 'correos', 'tareas', 'caja'];
+export const CELDAS = ['decidir', 'firmar', 'pagar', 'correos', 'tareas'];
 export function enlaceCifra(x) {
   const e = { decidir: '#hoy?bloque=decidir', pagar: '#hoy?bloque=decidir&filtro=pagar', correos: '#hoy?bloque=correos', firmar: '#licitaciones?bloque=firmar', tareas: 'https://tasks.google.com' }[x.clave];
   return e || (x.enlace ? '#' + String(x.enlace).replace(/^#/, '') : '#hoy');
@@ -64,7 +65,7 @@ export function celdasCabecera(cifras) {
 export function cabecera(cifras) {
   return el('div', { class: 'home-cifras' }, celdasCabecera(cifras).map(x => {
     const cuerpo = [
-      el('span', { class: 'valor', text: x.valor == null ? 'sin dato' : valorCifra(x) }),
+      el('span', { class: 'valor', text: x.valor == null ? 'sin dato' : x.unidad === 'eur' ? valorCifra(x) : String(x.valor) }),
       el('span', { class: 'mudo', text: x.etiqueta || x.clave }),
     ];
     if (x.gris) return el('div', { class: 'vt-card compacta home-cifra gris' }, cuerpo);
@@ -247,13 +248,43 @@ export function pintarWeb7(filas, ahora = new Date()) {
 }
 
 // Aviso y apertura por #hoy/N o ?bloque=: el bloque pedido se abre aunque estuviera plegado.
+// Spec 9: bloque Negocio (hq_hoy_negocio, solo propietario). Las cifras vienen hechas de la vista; aquí solo se formatea.
+// Euros con punto de miles y sin decimales; desde 1.000.000, "1,12 M €". Sin principal (caja) no se pinta la tarjeta.
+export function eurNegocio(v) {
+  const x = Number(v);
+  if (v == null || !Number.isFinite(x)) return 'sin dato';
+  if (Math.abs(x) >= 1e6) return (x / 1e6).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' M €';
+  return Math.round(x).toLocaleString('es-ES', { useGrouping: 'always' }) + ' €';
+}
+const valorNegocio = (v, unidad) => v == null ? '' : unidad === 'eur' ? eurNegocio(v) : String(v) + (unidad ? ' ' + unidad : '');
+export function modeloNegocio(filas) {
+  return (Array.isArray(filas) ? filas : []).filter(f => f && f.principal != null).map(f => ({
+    clave: f.clave, etiqueta: f.etiqueta, color: f.color || '', enlace: f.enlace || '#hoy', periodo: f.periodo_texto || '',
+    principal: f.principal_texto || valorNegocio(f.principal, f.principal_unidad),
+    secundario: f.secundario_texto || valorNegocio(f.secundario, f.secundario_unidad),
+    detalle: (Array.isArray(f.detalle) ? f.detalle : []).slice(0, 2),
+  }));
+}
+export function pintarNegocio(filas) {
+  const m = modeloNegocio(filas);
+  if (!m.length) return null;
+  return el('div', { class: 'hoy-negocio' }, m.map(x => el('a', { class: 'vt-card hoy-neg ' + x.color, href: '#' + String(x.enlace).replace(/^#/, '') }, [
+    el('span', { class: 'mudo neg-etiqueta', text: x.etiqueta || x.clave }),
+    x.periodo ? el('span', { class: 'mudo neg-periodo', text: x.periodo }) : null,
+    el('span', { class: 'neg-principal' }, x.principal.split(/ (?=[^\d€M])/).map((t, i) => i ? el('small', { text: ' ' + t }) : t)),
+    x.secundario ? el('span', { class: 'neg-secundario', text: x.secundario }) : null,
+    ...x.detalle.map(d => el('span', { class: 'mudo neg-detalle', text: d.etiqueta + ': ' + d.valor })),
+  ].filter(Boolean))));
+}
+
 export function render(raiz, S, arg, filtros) {
   const cont = el('div', { class: 'home hoy' }, [el('p', { class: 'cargando', text: '...' })]);
   raiz.append(cont);
   const destacado = arg && arg !== 'bandeja' ? arg : null;
   const pedido = filtros?.bloque ? 'hoy-' + filtros.bloque : null;
   const repintar = () => render(Object.assign(raiz, { innerHTML: '' }), S, arg, filtros);
-  cargadores.hoy().then(h => {
+  Promise.all([cargadores.hoy(), Promise.resolve().then(() => cargadores.negocio()).catch(() => null)]).then(([h, filasNeg]) => {
+    const neg = pintarNegocio(filasNeg);
     const cifras = h?.cifras || [];
     const dec = recuento(cifras, ['decidir', 'pagar'], (h?.decidir || []).length + (h?.pagar || []).length);
     const cor = recuento(cifras, ['correos'], (h?.correos || []).length);
@@ -275,9 +306,9 @@ export function render(raiz, S, arg, filtros) {
       } }),
       acordeon({ id: 'hoy-firmar', titulo: 'Firmar', cuenta: fir.n, color: fir.color, vacioTexto: 'Nada que firmar', abierto: abre('hoy-firmar') || leerAbierto('hoy-firmar'), contenido: () => pintarFirmar(h) }),
     ];
-    const pon = x => { const c = cabecera([...cifras.filter(y => y.clave !== 'tareas'), x]); cont.firstChild?.replaceWith(c); };
+    const pon = x => { const c = cabecera([...cifras.filter(y => y.clave !== 'tareas'), x]); cont.querySelector('.home-cifras')?.replaceWith(c); };
     cargadores.tareas().then(t => pon(cifraTareas(t))).catch(() => {});
-    cont.replaceChildren(cabecera(cifras), ...(aviso ? [aviso] : []), ...bloques);
+    cont.replaceChildren(...(neg ? [neg] : []), cabecera(cifras), ...(aviso ? [aviso] : []), ...bloques);
     if (pedido) document.getElementById(pedido)?.scrollIntoView?.({ block: 'start' });
     if (destacado) {
       // El ítem existe solo cuando el bloque está cargado: se espera a su carga antes de abrirlo y hacer scroll.
