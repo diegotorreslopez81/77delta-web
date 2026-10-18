@@ -4,6 +4,8 @@ import { el, toast } from './ui.js';
 import { crearRecargador, decidirRecargaAutomatica } from './recargador.js';
 import { fotografiar, restaurar } from './conservar.js';
 import { resolver } from './rutas.js';
+import { listar as listarAvisos, marcarLeido as marcarAvisoLeido } from './avisos.js';
+import { decidirAviso, haceCuanto, hashDeAviso, trazarPagina } from './aviso-pendiente.js';
 import { montarMenu, marcarActiva, pintarBarra, cablearShell } from './shell.js';
 import * as hoy from './vistas/hoy.js';
 import * as avisos from './vistas/avisos.js';
@@ -134,19 +136,45 @@ function aplicarVersionNueva() {
 async function aplicarDestinoPendiente() {
   try {
     const c = await caches.open('hq-destino'), r = await c.match('/hq/__destino');
-    if (!r) return;
+    if (!r) return false;
     await c.delete('/hq/__destino');
     const d = await r.json();
-    if (Date.now() - d.t > 120000) return;
+    if (Date.now() - d.t > 120000) return true;
     const u = new URL(d.url, location.origin);
     if (u.origin === location.origin && u.pathname.startsWith('/hq/') && u.hash) location.hash = u.hash;
-  } catch {}
+    return true;
+  } catch { return false; }
+}
+// C1/C3 (ronda 2, 18-10): fallback que no depende de notificationclick (iOS abre la PWA sin entregarlo). Al
+// arrancar y al volver visible: traza pagina_abierta y, si hay avisos sin leer en IndexedDB, banner fijo arriba con
+// el último (título, hace cuánto, Abrir, cerrar y "y N más" hacia Avisos). Cerrar no borra el aviso.
+const trazaPag = (ev, d, reg) => { let cfg = null; try { cfg = JSON.parse(localStorage.getItem('hq_cfg') || 'null'); } catch {} return trazarPagina(ev, d, { reg, cfg }); };
+async function revisarAvisos(visita) {
+  let reg = null, lista = [], hayDestino = false, cache = null;
+  try { reg = await navigator.serviceWorker.getRegistration('/hq/'); } catch {}
+  try { hayDestino = await aplicarDestinoPendiente(); } catch {}
+  try { lista = await listarAvisos(); } catch {}
+  try { cache = (await caches.keys()).filter(k => /^hq-v\d+$/.test(k)).join(',') || null; } catch {}
+  const { aviso: a, total } = decidirAviso(lista);
+  let standalone = false; try { standalone = navigator.standalone === true || matchMedia('(display-mode: standalone)').matches; } catch {}
+  const origen = hayDestino || (visita === 'arranque' && location.hash) ? 'notificacion' : standalone ? 'icono' : 'pestana';
+  trazaPag('pagina_abierta', { visita, origen, entrada: location.pathname + location.hash.slice(0, 60), cache, version: window.HQ_VERSION && HQ_VERSION.v, destinoPendiente: hayDestino, sinLeer: total, avisoN: a ? a.n : null, controlado: !!navigator.serviceWorker.controller }, reg);
+  if (!a || document.getElementById('aviso-nuevo')) return;
+  const h = hashDeAviso(a, location.origin), quitar = () => document.getElementById('aviso-nuevo')?.remove();
+  const abrir = () => { trazaPag('banner_abrir', { avisoN: a.n, url: a.url }, reg); marcarAvisoLeido(a.n).catch(() => {}); if (h) location.hash = h; quitar(); };
+  const cerrar = () => { trazaPag('banner_cerrar', { avisoN: a.n }, reg); quitar(); };
+  document.body.append(el('div', { class: 'aviso-banner', id: 'aviso-nuevo', role: 'alert' }, [
+    el('span', { class: 'aviso-texto', text: (a.title || 'HQ') + ' · ' + haceCuanto(a.t) }),
+    total > 1 ? el('a', { href: '#avisos', class: 'btn-enlace', text: 'y ' + (total - 1) + ' más', onclick: quitar }) : null,
+    el('button', { class: 'btn-enlace', text: 'Abrir', onclick: abrir }),
+    el('button', { class: 'btn-enlace', text: '✕', 'aria-label': 'Cerrar', onclick: cerrar })]));
+  trazaPag('banner_mostrado', { avisoN: a.n, total, url: a.url }, reg);
 }
 if ('serviceWorker' in navigator) {
   const habiaControl = !!navigator.serviceWorker.controller;
   navigator.serviceWorker.addEventListener('controllerchange', () => { if (habiaControl) aplicarVersionNueva(); });
-  aplicarDestinoPendiente();
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) { aplicarDestinoPendiente(); navigator.serviceWorker.getRegistration('/hq/').then(r => r && r.update()).catch(() => {}); } });
+  revisarAvisos('arranque');
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) { revisarAvisos('visible'); navigator.serviceWorker.getRegistration('/hq/').then(r => r && r.update()).catch(() => {}); } });
   navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => { if (new URL(r.scope).pathname === '/hq/' && !(r.active && r.active.scriptURL.endsWith('/hq/sw.js'))) r.unregister(); }));
   navigator.serviceWorker.register('/hq/sw.js', { updateViaCache: 'none' }).then(reg => {
     reg.addEventListener('updatefound', () => { const nuevo = reg.installing; if (nuevo) nuevo.addEventListener('statechange', () => { if (nuevo.state === 'activated' && navigator.serviceWorker.controller) aplicarVersionNueva(); }); });

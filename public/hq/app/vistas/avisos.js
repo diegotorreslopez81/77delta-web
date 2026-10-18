@@ -39,6 +39,6 @@ export async function render(raiz, S, arg, filtros, ahora = new Date()) {
   raiz.append(el('section', { class: 'avisos' }, [
     cab,
     avisos.length
-      ? el('ul', { class: 'avisos-lista' }, avisos.map(fila))
+      ? el('ul', { class: 'avisos-lista' }, [...avisos].sort((a, b) => (a.leido === true) - (b.leido === true) || b.t - a.t).map(fila))
       : el('p', { class: 'sub', text: 'Sin avisos todavía. Cada notificación que llegue a este navegador se guarda aquí.' })]));
 }
