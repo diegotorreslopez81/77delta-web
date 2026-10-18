@@ -60,14 +60,14 @@ const DEFECTO = { hoy: 'hoy', direccion: 'direccion/objetivo', operacion: 'opera
 
 export function resolver(hash = '', search = '') {
   const idPush = new URLSearchParams(search || '').get('id');
-  if (idPush && /^\d+$/.test(idPush)) return { clave: 'hoy', arg: undefined, filtros: {}, canonico: '#hoy', redirigido: true };
+  if (idPush && /^\d+$/.test(idPush)) return { clave: 'hoy', arg: idPush, filtros: {}, canonico: '#hoy/' + idPush, redirigido: true };
   const [camino, q = ''] = String(hash || '').replace(/^#/, '').split('?');
   const filtros = Object.fromEntries(new URLSearchParams(q));
   let seg = camino.split('/').filter(Boolean), redirigido = false;
   if (!seg.length) { seg = ['hoy']; redirigido = true; }
   // #1057 tarea 27: Decisiones vive en Hoy como bandeja. '#decisiones[/N]' y '#reglas[/decisiones[/N]]'
   // (tarjetas, push y enlaces ya enviados) van a '#hoy/N' o a '#hoy/bandeja'.
-  if (seg[0] === 'decisiones' || seg[0] === 'reglas') { const id = seg.find(x => /^\d+$/.test(x)); seg = ['hoy']; redirigido = true; }
+  if (seg[0] === 'decisiones' || seg[0] === 'reglas') { const id = seg.find(x => /^\d+$/.test(x)); seg = id ? ['hoy', id] : ['hoy']; redirigido = true; }
   // #1057 tarea 24: '#equipo/<vista>' con vista propia (organigrama, colaboradores, agente) no es la ruta
   // vieja '#equipo/<id>'; antes '#equipo/organigrama' acababa en '#equipo/agente/organigrama'.
   if (VIEJAS[seg[0]] && !(seg[0] === 'equipo' && CLAVES.has('equipo/' + seg[1]))) {
@@ -78,8 +78,8 @@ export function resolver(hash = '', search = '') {
   }
   if (VIEJAS2[seg.slice(0, 2).join('/')]) { seg = [...VIEJAS2[seg.slice(0, 2).join('/')].split('/'), ...seg.slice(2)]; redirigido = true; }
   let clave = seg[0] === 'hoy' ? 'hoy' : seg.slice(0, 2).join('/');
-  if (seg[0] === 'hoy' && seg.length > 1) { seg = ['hoy']; redirigido = true; } // spec 5: Hoy es una sola pantalla, #hoy/N y #hoy/bandeja vuelven a #hoy
-  let arg = seg[0] === 'hoy' ? undefined : (seg.slice(2).join('/') || undefined);
+  if (seg[0] === 'hoy' && seg.length > 1 && !/^\d+$/.test(seg[1])) { seg = ['hoy']; redirigido = true; } // spec 5: Hoy es una sola pantalla; #hoy/N conserva N (destacado), el resto vuelve a #hoy
+  let arg = seg[0] === 'hoy' ? (/^\d+$/.test(seg[1] || '') ? seg[1] : undefined) : (seg.slice(2).join('/') || undefined);
   if (!CLAVES.has(clave)) { clave = DEFECTO[seg[0]] || 'hoy'; arg = undefined; redirigido = true; if (clave === 'hoy') for (const k of Object.keys(filtros)) delete filtros[k]; }
   const qs = new URLSearchParams(filtros).toString();
   const canonico = '#' + clave + (arg ? '/' + arg : '') + (qs ? '?' + qs : '');
