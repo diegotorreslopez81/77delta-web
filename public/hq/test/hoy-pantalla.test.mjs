@@ -78,3 +78,16 @@ test('modeloNegocio: omite filas sin principal (caja), máximo 2 pares de detall
   assert.equal(m[0].detalle.length, 2);
   assert.deepEqual(modeloNegocio(null), []);
 });
+
+import { resolver } from '../app/rutas.js';
+test('modeloNegocio: enlaces de la vista resuelven a su ruta, no a Hoy; detalle en euros con formato', () => {
+  const enlaces = { contratado_mes: '#operacion/ventas/hoy', pipeline: '#operacion/ventas/pipeline', captacion_7d: '#operacion/ventas/campanas', licitaciones: '#operacion/licitaciones', caja: '#hoy' };
+  for (const [k, e] of Object.entries(enlaces)) {
+    const [m] = modeloNegocio([{ clave: k, etiqueta: k, principal: 1, enlace: e }]).concat({ enlace: '#hoy' });
+    const r = resolver(m.enlace);
+    assert.equal(r.redirigido, false, k);
+    assert.equal(r.clave === 'hoy', k === 'caja', k);
+  }
+  assert.equal(modeloNegocio([{ clave: 'x', principal: 1, enlace: '#/ventas', detalle: [{ etiqueta: 'a', valor: 142500, unidad: 'eur' }, { etiqueta: 'b', valor: 9 }] }])[0].enlace, '#ventas');
+  assert.deepEqual(modeloNegocio([{ clave: 'x', principal: 1, detalle: [{ etiqueta: 'a', valor: 142500, unidad: 'eur' }, { etiqueta: 'b', valor: 9 }] }])[0].detalle, [{ etiqueta: 'a', valor: '142.500 €' }, { etiqueta: 'b', valor: '9' }]);
+});

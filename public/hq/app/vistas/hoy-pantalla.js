@@ -259,16 +259,16 @@ export function eurNegocio(v) {
 const valorNegocio = (v, unidad) => v == null ? '' : unidad === 'eur' ? eurNegocio(v) : String(v) + (unidad ? ' ' + unidad : '');
 export function modeloNegocio(filas) {
   return (Array.isArray(filas) ? filas : []).filter(f => f && f.principal != null).map(f => ({
-    clave: f.clave, etiqueta: f.etiqueta, color: f.color || '', enlace: f.enlace || '#hoy', periodo: f.periodo_texto || '',
+    clave: f.clave, etiqueta: f.etiqueta, color: f.color || '', enlace: '#' + String(f.enlace || 'hoy').replace(/^#\/?/, ''), periodo: f.periodo_texto || '',
     principal: f.principal_texto || valorNegocio(f.principal, f.principal_unidad),
     secundario: f.secundario_texto || valorNegocio(f.secundario, f.secundario_unidad),
-    detalle: (Array.isArray(f.detalle) ? f.detalle : []).slice(0, 2),
+    detalle: (Array.isArray(f.detalle) ? f.detalle : []).slice(0, 2).map(d => ({ etiqueta: d.etiqueta, valor: valorNegocio(d.valor, d.unidad) || 'sin dato' })),
   }));
 }
 export function pintarNegocio(filas) {
   const m = modeloNegocio(filas);
   if (!m.length) return null;
-  return el('div', { class: 'hoy-negocio' }, m.map(x => el('a', { class: 'vt-card hoy-neg ' + x.color, href: '#' + String(x.enlace).replace(/^#/, '') }, [
+  return el('div', { class: 'hoy-negocio' }, m.map(x => el('a', { class: 'vt-card hoy-neg ' + x.color, href: x.enlace }, [
     el('span', { class: 'mudo neg-etiqueta', text: x.etiqueta || x.clave }),
     x.periodo ? el('span', { class: 'mudo neg-periodo', text: x.periodo }) : null,
     el('span', { class: 'neg-principal' }, x.principal.split(/ (?=[^\d€M])/).map((t, i) => i ? el('small', { text: ' ' + t }) : t)),
