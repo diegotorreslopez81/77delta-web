@@ -34,18 +34,34 @@ export function opcionesPosponer(ahora = new Date()) {
   return { manana: a9(sumar(1)), lunes: a9(sumar(hastaLunes)) };
 }
 
-// Contadores de Hoy: los de bloques de esta pantalla abren su acordeón; firmar cuenta licitaciones En redacción (hq_v_hoy_firmar) y abre Licitaciones en ese estado.
+// Rejilla 3x2 (enmienda 5): decidir, firmar, pagar, correos, tareas y caja. Decidir y pagar abren Depende de ti;
+// firmar abre la pestaña de Licitaciones con las filas de hq_v_hoy_firmar. Tareas y caja, grises hasta que tengan fuente.
+export const CELDAS = ['decidir', 'firmar', 'pagar', 'correos', 'tareas', 'caja'];
 export function enlaceCifra(x) {
-  const e = { decidir: '#hoy?bloque=decidir', pagar: '#hoy?bloque=decidir', correos: '#hoy?bloque=correos', firmar: '#licitaciones?estado=redaccion' }[x.clave];
+  const e = { decidir: '#hoy?bloque=decidir', pagar: '#hoy?bloque=decidir&filtro=pagar', correos: '#hoy?bloque=correos', firmar: '#licitaciones?bloque=firmar', tareas: 'https://tasks.google.com' }[x.clave];
   return e || (x.enlace ? '#' + String(x.enlace).replace(/^#/, '') : '#hoy');
 }
+// Gris y sin acción: sin dato (tareas, caja) o recuento 0 en pagar.
+export function celdaGris(x) {
+  return x.valor == null || (x.clave === 'pagar' && Number(x.valor) === 0);
+}
+export function celdasCabecera(cifras) {
+  const por = Object.fromEntries((cifras || []).map(x => [x.clave, x]));
+  return CELDAS.map(k => {
+    const x = por[k] || { clave: k, etiqueta: k === 'caja' ? 'Caja' : k === 'tareas' ? 'Tareas' : k, valor: null };
+    return celdaGris(x) ? { ...x, color: 'gris', gris: true } : x;
+  });
+}
 export function cabecera(cifras) {
-  if (!(cifras || []).length) return el('div', { class: 'home-cifras' }, [vacio('Sin cifras')]);
-  return el('div', { class: 'home-cifras' }, cifras.map(x =>
-    el('a', { class: 'vt-card compacta home-cifra ' + (x.color || ''), href: enlaceCifra(x) }, [
-      el('span', { class: 'valor', text: valorCifra(x) }),
+  return el('div', { class: 'home-cifras' }, celdasCabecera(cifras).map(x => {
+    const cuerpo = [
+      el('span', { class: 'valor', text: x.valor == null ? 'sin dato' : valorCifra(x) }),
       el('span', { class: 'mudo', text: x.etiqueta || x.clave }),
-    ])));
+    ];
+    if (x.gris) return el('div', { class: 'vt-card compacta home-cifra gris' }, cuerpo);
+    const ext = x.clave === 'tareas';
+    return el('a', { class: 'vt-card compacta home-cifra ' + (x.color || ''), href: enlaceCifra(x), ...(ext ? { target: '_blank', rel: 'noopener' } : {}) }, cuerpo);
+  }));
 }
 
 const lista = nodos => [].concat(nodos).filter(Boolean);
@@ -164,8 +180,8 @@ function tarjeta(p, umbral, repintar, { destacada = false, pago = false } = {}) 
   return item(p.titulo || p.concepto, detalle, botones, { roja, destacada, id: 'hoy-' + p.id });
 }
 
-export function pintarDecidir(h, repintar = () => {}, destacado = null) {
-  const filas = (h?.decidir || []).slice(0, n(h?.max_filas) || 50);
+export function pintarDecidir(h, repintar = () => {}, destacado = null, filtro = null) {
+  const filas = filtro === 'pagar' ? [] : (h?.decidir || []).slice(0, n(h?.max_filas) || 50);
   const pagos = h?.pagar || [];
   return [
     ...filas.map(p => tarjeta(p, n(h.umbral_decidir_h), repintar, { destacada: String(p.id) === String(destacado) })),
@@ -238,7 +254,7 @@ export function render(raiz, S, arg, filtros) {
     const aviso = destacado && !idsDecidir.includes(String(destacado)) ? el('p', { class: 'aviso', text: 'La tarjeta ' + destacado + ' ya no está pendiente' }) : null;
     const abre = id => (destacado && id === 'hoy-decidir') || pedido === id;
     const bloques = [
-      acordeon({ id: 'hoy-decidir', titulo: 'Depende de ti', cuenta: dec.n, color: dec.color, vacioTexto: 'Nada depende de ti', abierto: abre('hoy-decidir') || leerAbierto('hoy-decidir'), contenido: () => pintarDecidir(h, repintar, destacado) }),
+      acordeon({ id: 'hoy-decidir', titulo: 'Depende de ti', cuenta: dec.n, color: dec.color, vacioTexto: 'Nada depende de ti', abierto: abre('hoy-decidir') || leerAbierto('hoy-decidir'), contenido: () => pintarDecidir(h, repintar, destacado, filtros?.filtro) }),
       acordeon({ id: 'hoy-correos', titulo: 'Correos sin contestar', cuenta: cor.n, color: cor.color, vacioTexto: 'Nada sin contestar', abierto: abre('hoy-correos') || leerAbierto('hoy-correos'), contenido: () => [...pintarCorreos(h), el('a', { class: 'btn', href: '#licitaciones?bloque=correos', text: 'Ver todos' })] }),
       acordeon({ id: 'hoy-web', titulo: 'Web', cuenta: web.n, color: web.color, abierto: abre('hoy-web') || leerAbierto('hoy-web'), contenido: async () => pintarWeb7(await cargadores.web()) }),
       acordeon({ id: 'hoy-captacion', titulo: 'Captación', cuenta: cap.n, color: cap.color, abierto: abre('hoy-captacion') || leerAbierto('hoy-captacion'), contenido: async () => {

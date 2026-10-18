@@ -39,6 +39,23 @@ export function colorTextoPlazo(d) { return d == null || d < 0 ? 'neutro' : d <=
 // los tests sustituir la RPC por una funcion propia (misma idea que licitaciones-menores.js).
 let cargador = async filtro => (await import('../api.js')).licitacionesTabla(filtro);
 export function usarCargador(fn) { cargador = fn; }
+// Enmienda 5: pestaña ?bloque=firmar = exactamente las filas de hq_v_hoy_firmar (lotes de firma en plan), sin otro filtro.
+// La etiqueta es provisional hasta que Gerard fije el nombre.
+let cargadorFirmar = async () => (await import('../api.js')).rpc('hq_hoy');
+export function usarCargadorFirmar(fn) { cargadorFirmar = fn; }
+export const ETIQUETA_FIRMAR = 'Lotes de firma en plan';
+export function renderFirmar(raiz, ahora = new Date()) {
+  const caja = el('section', { class: 'lic-firmar' }, [el('h2', { text: ETIQUETA_FIRMAR }), el('p', { class: 'cargando', text: '...' })]);
+  raiz.append(caja);
+  cargadorFirmar().then(h => {
+    const filas = (h?.firmar || []).slice().sort((a, b) => String(a.plazo || '9999').localeCompare(String(b.plazo || '9999')));
+    caja.replaceChildren(el('h2', { text: ETIQUETA_FIRMAR + ' (' + filas.length + ')' }),
+      ...(filas.length ? filas.map(f => el('div', { class: 'vt-card compacta' + (f.plazo && new Date(f.plazo) < ahora ? ' rojo' : '') }, [
+        el('h3', { text: f.licitacion }),
+        el('p', { class: 'mudo', text: [f.organo, f.importe != null ? Number(f.importe).toLocaleString('es-ES') + ' €' : null, f.plazo ? 'plazo ' + fecha(f.plazo) : null, f.paso].filter(Boolean).join(' · ') }),
+      ])) : [el('p', { class: 'mudo', text: 'Nada que firmar' })]));
+  }).catch(() => caja.replaceChildren(el('h2', { text: ETIQUETA_FIRMAR }), el('p', { class: 'error', text: 'No se pudo cargar' })));
+}
 const CACHE_MS = 5 * 60e3;
 // Estado de la app de la última pintada: tras una transición se invalida la caché de la tabla, si no la
 // lista sigue mostrando el estado viejo hasta 5 min (Diego 23-sep, 229/2026 seguía en Por decidir).
@@ -459,6 +476,7 @@ export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
   const d = S.datos || {};
   const rol = d.rol || 'agente';
   if (/^\d+$/.test(arg || '')) return renderFicha(raiz, S, Number(arg), ahora, rol);
+  if (filtrosRuta.bloque === 'firmar') return renderFirmar(raiz, ahora);
   if (filtrosRuta.exp) return renderPorExpediente(raiz, S, filtrosRuta.exp);
   const estado = estadoChip(filtrosRuta.estado) || 'Por decidir';
   const valores = { estado, orden: filtrosRuta.orden === 'importe' ? 'importe' : 'cierre' };

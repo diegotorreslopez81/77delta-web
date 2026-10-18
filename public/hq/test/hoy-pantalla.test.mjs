@@ -35,10 +35,16 @@ test('estado de acordeón: storage que lanza no rompe', () => {
   assert.doesNotThrow(() => guardarAbierto('hoy-web', true, roto));
 });
 
-import { enlaceCifra } from '../app/vistas/hoy-pantalla.js';
-test('enlaceCifra: decidir y pagar abren Depende de ti; firmar abre Licitaciones En redacción', () => {
+import { enlaceCifra, celdasCabecera } from '../app/vistas/hoy-pantalla.js';
+test('enlaceCifra: decidir y pagar abren Depende de ti; firmar abre la pestaña de lotes', () => {
   assert.equal(enlaceCifra({ clave: 'decidir' }), '#hoy?bloque=decidir');
-  assert.equal(enlaceCifra({ clave: 'pagar' }), '#hoy?bloque=decidir');
-  assert.equal(enlaceCifra({ clave: 'firmar', enlace: 'licitaciones' }), '#licitaciones?estado=redaccion');
-  assert.equal(enlaceCifra({ clave: 'agentes', enlace: 'equipo' }), '#equipo');
+  assert.equal(enlaceCifra({ clave: 'pagar' }), '#hoy?bloque=decidir&filtro=pagar');
+  assert.equal(enlaceCifra({ clave: 'firmar' }), '#licitaciones?bloque=firmar');
+  assert.equal(enlaceCifra({ clave: 'tareas' }), 'https://tasks.google.com');
 });
+test('celdasCabecera: 6 celdas, sin cola_chief ni agentes, tareas y caja grises, pagar 0 gris', () => {
+  const c = celdasCabecera([{ clave: 'decidir', valor: 3 }, { clave: 'pagar', valor: 0 }, { clave: 'firmar', valor: 9 }, { clave: 'correos', valor: 3 }, { clave: 'cola_chief', valor: 124 }, { clave: 'agentes', valor: 45 }, { clave: 'caja', valor: null }]);
+  assert.deepEqual(c.map(x => x.clave), ['decidir', 'firmar', 'pagar', 'correos', 'tareas', 'caja']);
+  assert.deepEqual(c.map(x => !!x.gris), [false, false, true, false, true, true]);
+});
+
