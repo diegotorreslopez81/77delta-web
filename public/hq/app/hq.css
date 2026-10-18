@@ -434,3 +434,10 @@ a{color:inherit}
 .semaforo-pill.rojo{background:var(--error-suave);border-color:var(--error);color:var(--error)}
 .semaforo-pill.ambar{background:var(--tag-ambar-bg);border-color:var(--tag-ambar-fg);color:var(--tag-ambar-fg)}
 .semaforo-pill.verde{background:var(--exito-suave);border-color:var(--exito);color:var(--exito)}
+/* En curso: cronograma de proyecto (spec 3) */
+.proyecto-fila summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.cronograma{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.crono-item{border-left:3px solid var(--pizarra-tenue);padding-left:8px}
+.crono-fecha{font-weight:600;margin-right:6px}.crono-estado{font-size:12px;color:var(--pizarra)}.crono-texto{margin:2px 0}
+.crono-item.hecho{opacity:.55}.crono-item.vencido{border-left-color:var(--error)}.crono-item.vencido .crono-fecha{color:var(--error)}
+.proceso-fallo{color:var(--error)}
