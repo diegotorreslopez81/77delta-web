@@ -484,3 +484,17 @@ a{color:inherit}
 @media (min-width:900px){.franja-recordar{left:50%;right:auto;width:480px;transform:translateX(-50%);bottom:16px;border:1px solid var(--linea);border-radius:var(--radio)}}
 /* Con una hoja o modal abierto, lo que flota encima de la barra se oculta para no tapar la hoja */
 body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
+
+/* Spec 9: bloque Negocio (4 tarjetas, 2x2 en móvil, fila de 4 en escritorio) y operativa en fila de 5 con scroll propio. */
+.hoy-negocio { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+.hoy-neg { display: flex; flex-direction: column; gap: 2px; min-height: 120px; padding: 8px; text-decoration: none; color: var(--ink); position: relative; }
+.hoy-neg .neg-etiqueta { font-size: 12px; }
+.hoy-neg .neg-periodo { font-size: 11px; }
+.hoy-neg .neg-principal small { font-size: 14px; font-weight: 400; }
+.hoy-neg .neg-principal { font-size: 28px; font-weight: 600; line-height: 1.15; }
+.hoy-neg .neg-secundario { font-size: 14px; }
+.hoy-neg .neg-detalle { font-size: 12px; }
+.hoy-neg.rojo .neg-principal { color: var(--error); } .hoy-neg.ambar .neg-principal { color: var(--tag-ambar-fg); } .hoy-neg.verde .neg-principal { color: var(--exito); }
+@media (min-width: 900px) { .hoy-negocio { grid-template-columns: repeat(4, 1fr); } }
+.hoy .home-cifras { display: flex; overflow-x: auto; gap: 6px; }
+.hoy .home-cifras .home-cifra { flex: 0 0 80px; min-width: 80px; }
