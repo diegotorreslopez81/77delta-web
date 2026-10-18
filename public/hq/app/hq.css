@@ -424,6 +424,8 @@ a{color:inherit}
 .home-cifra { display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 44px; text-decoration: none; color: var(--ink); }
 .home-cifra .valor { font-size: 1.5rem; font-weight: 600; }
 .home-cifra.rojo .valor { color: var(--error); }
+.home-cifra.ambar .valor { color: var(--tag-ambar-fg); }
+.home-cifra.verde .valor { color: var(--exito); }
 .home-proyecto { display: block; text-decoration: none; color: var(--ink); margin-bottom: 8px; }
 /* 18-10: la home se salía del viewport en iPhone (390 px): ningún hijo fija ancho por su contenido. */
 .home, .home > *, .home-bloque, .home .vt-cards, .home .vt-card, .home-cifras > *, .hoy-bloque, .hoy-tarjeta { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }

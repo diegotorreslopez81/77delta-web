@@ -48,3 +48,14 @@ test('celdasCabecera: 6 celdas, sin cola_chief ni agentes, tareas y caja grises,
   assert.deepEqual(c.map(x => !!x.gris), [false, false, true, false, true, true]);
 });
 
+
+import { cifraTareas } from '../app/vistas/hoy-pantalla.js';
+test('cifraTareas: rojo con vencidas u hoy, ámbar sin fecha, verde sin nada, gris sin dato', () => {
+  assert.equal(cifraTareas({ estado: 'ok', vencidas: 1, hoy: 0, sin_fecha: 0 }).color, 'rojo');
+  assert.equal(cifraTareas({ estado: 'ok', vencidas: 0, hoy: 2, sin_fecha: 5 }).color, 'rojo');
+  assert.equal(cifraTareas({ estado: 'ok', vencidas: 0, hoy: 0, sin_fecha: 3 }).color, 'ambar');
+  assert.equal(cifraTareas({ estado: 'ok', vencidas: 0, hoy: 0, sin_fecha: 0 }).color, 'verde');
+  assert.equal(cifraTareas({ estado: 'sin_dato' }).valor, null);
+  assert.equal(cifraTareas(null).valor, null);
+  assert.equal(celdasCabecera([cifraTareas({ estado: 'ok', vencidas: 0, hoy: 0, sin_fecha: 0 })]).find(x => x.clave === 'tareas').gris, undefined);
+});
