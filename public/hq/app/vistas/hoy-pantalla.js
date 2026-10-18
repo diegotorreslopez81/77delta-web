@@ -9,6 +9,7 @@ let cargadores = {
   hoy: async () => (await import('../api.js')).rpc('hq_hoy'),
   web: async () => (await import('../api.js')).rpc('hq_web', { p_dias: 14 }),
   captacion: async () => (await import('../api.js')).rpc('hq_captacion'),
+  tareas: async () => (await import('../api.js')).leerVivo('/hq/tareas'),
   resolver: async (id, estado) => (await import('../api.js')).rpc('omc_resolver', { p_id: id, p_estado: estado, p_respuesta: '' }),
   posponer: async (id, hasta) => (await import('../api.js')).rpc('omc_posponer', { p_id: id, p_hasta: hasta }),
   comentar: async (id, texto) => (await import('../api.js')).rpc('omc_comentar', { p_id: id, p_texto: texto }),
@@ -44,6 +45,14 @@ export function enlaceCifra(x) {
 // Gris y sin acción: sin dato (tareas, caja) o recuento 0 en pagar.
 export function celdaGris(x) {
   return x.valor == null || (x.clave === 'pagar' && Number(x.valor) === 0);
+}
+// Celda Tareas (Google Tasks en vivo: GET api.77delta.com/hq/tareas, que ejecuta el script de Windmill): rojo con vencidas u hoy, ámbar con tareas sin fecha, verde sin nada.
+// Cualquier fallo o respuesta sin recuentos numéricos da valor nulo y la celda sale gris; nunca un número viejo.
+export function cifraTareas(t) {
+  const base = { clave: 'tareas', etiqueta: 'Tareas', valor: null };
+  if (!t || typeof t.abiertas !== 'number') return base;
+  const v = n(t.vencidas), h = n(t.hoy), s = n(t.sin_fecha);
+  return { ...base, valor: v + h + s, color: v + h > 0 ? 'rojo' : s > 0 ? 'ambar' : 'verde' };
 }
 export function celdasCabecera(cifras) {
   const por = Object.fromEntries((cifras || []).map(x => [x.clave, x]));
@@ -266,6 +275,8 @@ export function render(raiz, S, arg, filtros) {
       } }),
       acordeon({ id: 'hoy-firmar', titulo: 'Firmar', cuenta: fir.n, color: fir.color, vacioTexto: 'Nada que firmar', abierto: abre('hoy-firmar') || leerAbierto('hoy-firmar'), contenido: () => pintarFirmar(h) }),
     ];
+    const pon = x => { const c = cabecera([...cifras.filter(y => y.clave !== 'tareas'), x]); cont.firstChild?.replaceWith(c); };
+    cargadores.tareas().then(t => pon(cifraTareas(t))).catch(() => {});
     cont.replaceChildren(cabecera(cifras), ...(aviso ? [aviso] : []), ...bloques);
     if (pedido) document.getElementById(pedido)?.scrollIntoView?.({ block: 'start' });
     if (destacado) {

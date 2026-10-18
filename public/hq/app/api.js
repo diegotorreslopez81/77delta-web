@@ -53,6 +53,12 @@ export async function rpc(fn, args = {}) {
   if (r.error) throw new Error(r.error.message || 'error');
   return r.data;
 }
+// Lectura en vivo del original (regla de Diego 16-10): GET a la API con el token de propietario, sin caché ni volcados.
+export async function leerVivo(ruta) {
+  const r = await fetch(API + ruta, { headers: { Authorization: 'Bearer ' + TOKEN }, cache: 'no-store' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
 // Tanda 4 (LICITA-SPEC.md 5, 6.2, 6.3): unico camino de escritura de estado para toda la HQ. Sustituye a
 // omc_licitacion_cribar/omc_licitacion_decidir usados desde decision-lic.js y a cualquier PATCH directo.
 export const transicionLicitacion = (id, estado, extra = {}) => rpc('omc_licitacion_transicion', {
