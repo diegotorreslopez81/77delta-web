@@ -113,3 +113,13 @@ hr,.linea{border:0;border-top:1px solid var(--linea)}
 .medidor{height:8px;border-radius:99px;background:var(--linea);overflow:hidden}
 .medidor > span{display:block;height:100%;background:var(--oro);border-radius:99px}
 .icono-caja{display:grid;place-items:center;width:48px;height:48px;border-radius:8px;background:var(--oro-suave);color:var(--oro-oscuro)}
+
+/* Escala de capas fijas de HQ: todo elemento position:fixed usa estas variables, nunca un número suelto.
+   Orden de abajo arriba: fab < barra inferior < hoja o modal < franja recordar < menú < banner < toast. */
+:root{
+  --z-fab:19; --z-barra:20;
+  --z-hoja:30;
+  --z-franja:40;
+  --z-velo-menu:45; --z-menu:50;
+  --z-banner:60; --z-toast:70;
+}
