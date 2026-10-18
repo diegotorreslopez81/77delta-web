@@ -6,7 +6,7 @@ import { fotografiar, restaurar } from './conservar.js';
 import { resolver } from './rutas.js';
 import { listar as listarAvisos, marcarLeido as marcarAvisoLeido } from './avisos.js';
 import { decidirAviso, haceCuanto, hashDeAviso, trazarPagina } from './aviso-pendiente.js';
-import { montarMenu, marcarActiva, pintarBarra, cablearShell } from './shell.js';
+import { montarMenu, marcarActiva, pintarBarra, cablearShell, ocultarSoloOwner } from './shell.js';
 import * as hoy from './vistas/hoy.js';
 import * as avisos from './vistas/avisos.js';
 import * as kpis from './vistas/kpis.js';
@@ -63,7 +63,8 @@ export function render() {
   const foto = mismaVista ? fotografiar(raiz, document.activeElement) : null;
   raiz.innerHTML = ''; raiz.className = 'vista vista-' + r.clave.replace('/', '-');
   if (!S.datos) { raiz.append(el('p', { class: 'cargando', text: 'Cargando HQ...' })); ultimaVista = r.clave; return; }
-  window.HQ_DATOS = S.datos; pintarBarra(S.datos);
+  window.HQ_DATOS = S.datos; pintarBarra(S.datos); ocultarSoloOwner(S.datos.rol);
+  if (!mismaVista) navigator.serviceWorker?.getRegistration('/hq/').then(reg => trazaPag('vista_abierta', { hash: r.canonico.slice(0, 60), version: window.HQ_VERSION && HQ_VERSION.v }, reg)).catch(() => {});
   VISTAS[r.clave].render(raiz, S, r.arg, r.filtros);
   if (foto) restaurar(raiz, foto);
   ultimaVista = r.clave;

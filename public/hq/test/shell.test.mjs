@@ -231,13 +231,13 @@ test('pintarBarra pinta "cuentas" junto al punto; el click en el semáforo manti
   assert.equal(location.hash, '#recursos/computo', 'el click navega a Recursos/Cómputo');
 });
 
-test('areasMenu: apagado no toca nada; encendido da Hoy, Licitaciones, Ventas, Productos, Proyectos, Equipo y luego el resto', async () => {
+test('areasMenu: apagado no toca nada; encendido da Hoy, Licitaciones, Ventas, Productos, Proyectos, Equipo, Secreto y luego el resto', async () => {
   const { areasMenu, menu5Activo, MENU5 } = await import('../app/shell.js');
   const { AREAS } = await import('../app/rutas.js');
   assert.equal(areasMenu(false), AREAS);
   const a = areasMenu(true);
   assert.deepEqual(a.slice(0, MENU5.length).map(x => x.id), MENU5);
-  assert.deepEqual(MENU5, ['hoy', 'licitaciones', 'ventas', 'productos', 'proyectos', 'equipo']);
+  assert.deepEqual(MENU5, ['hoy', 'licitaciones', 'ventas', 'productos', 'proyectos', 'equipo', 'secreto']);
   const claves = a.flatMap(x => x.vistas.map(v => v.clave)).sort();
   assert.deepEqual(claves, AREAS.flatMap(x => x.vistas.map(v => v.clave)).sort());
   assert.equal(menu5Activo({ location: { search: '' }, localStorage: { getItem: () => null, setItem() {} } }), true);

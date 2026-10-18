@@ -474,3 +474,4 @@ a{color:inherit}
 .hoy-item.destacada{outline:2px solid var(--oro,#c9a227)}
 
 .home-cifras .home-cifra.gris { opacity: .6; } .home-cifras .home-cifra.gris .valor { color: var(--pizarra); font-size: .95rem; }
+.barra-inferior a[hidden], #menu [hidden] { display: none !important; }

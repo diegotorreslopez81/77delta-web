@@ -8,6 +8,7 @@
 // Organigrama y Colaboradores (Diego: dos entradas directas donde antes estaba Equipo); las claves de
 // ruta 'equipo/organigrama' y 'equipo/colaboradores' no cambian, solo se reparten en dos áreas.
 const ICONOS = {
+  candado: '<svg class="ico" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
   hoy: '<svg class="ico" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>',
   avisos: '<svg class="ico" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>',
   kpis: '<svg class="ico" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="21" x2="21" y2="21"/><rect x="5" y="14" width="3" height="7"/><rect x="11" y="9" width="3" height="12"/><rect x="17" y="4" width="3" height="17"/></svg>',
@@ -35,8 +36,8 @@ export const AREAS = [
   { id: 'productos', nombre: 'Productos', corto: 'Productos', icono: ICONOS.motor, vistas: [{ clave: 'productos', nombre: 'Productos' }] },
   { id: 'proyectos', nombre: 'Proyectos', corto: 'Proyectos', icono: ICONOS.operacion, vistas: [{ clave: 'operacion/en-curso', nombre: 'Proyectos' }] },
   { id: 'equipo', nombre: 'Equipo', corto: 'Equipo', icono: ICONOS.equipo, vistas: [{ clave: 'equipo/organigrama', nombre: 'Equipo' }] },
-  // Spec 6 (18-10): solo propietario; la vista y las RPC lo comprueban. Sale en Más (no está en MENU5).
-  { id: 'secreto', nombre: 'Enviar secreto', icono: ICONOS.admin, vistas: [{ clave: 'secreto', nombre: 'Enviar secreto' }] },
+  // Spec 6 (18-10): solo propietario; la vista y las RPC lo comprueban. Séptima entrada de la raíz (menú enmienda 1), visible solo para propietario.
+  { id: 'secreto', nombre: 'Enviar secreto', corto: 'Secreto', icono: ICONOS.candado, vistas: [{ clave: 'secreto', nombre: 'Enviar secreto' }] },
   { id: 'admin', nombre: 'Admin', icono: ICONOS.admin, vistas: [{ clave: 'operacion/admin', nombre: 'Admin' }] },
   { id: 'colaboradores', nombre: 'Colaboradores', icono: ICONOS.colaboradores, vistas: [{ clave: 'equipo/colaboradores', nombre: 'Colaboradores' }] },
 ];
