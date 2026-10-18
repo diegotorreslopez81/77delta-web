@@ -248,12 +248,12 @@ test('pintarBarra pinta "cuentas" junto al punto; el click en el semáforo manti
   assert.equal(location.hash, '#recursos/computo', 'el click navega a Recursos/Cómputo');
 });
 
-test('areasMenu: apagado no toca nada; encendido da Hoy, Licitaciones, Ventas, Dinero, Sistema y luego el resto', async () => {
+test('areasMenu: apagado no toca nada; encendido da Hoy, Licitaciones, Ventas, Web, Dinero, Sistema y luego el resto', async () => {
   const { areasMenu, menu5Activo, MENU5 } = await import('../app/shell.js');
   const { AREAS } = await import('../app/rutas.js');
   assert.equal(areasMenu(false), AREAS);
   const a = areasMenu(true);
-  assert.deepEqual(a.slice(0, 5).map(x => x.id), MENU5);
+  assert.deepEqual(a.slice(0, MENU5.length).map(x => x.id), MENU5);
   assert.ok(a.find(x => x.id === 'dinero').vistas.some(v => v.clave === 'kpis'));
   assert.ok(a.find(x => x.id === 'sistema').vistas.some(v => v.clave === 'operacion/salud'));
   const claves = a.flatMap(x => x.vistas.map(v => v.clave)).sort();

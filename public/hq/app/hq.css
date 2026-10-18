@@ -411,3 +411,21 @@ a{color:inherit}
 .decision .cuerpo-completo summary{cursor:pointer;font-weight:600;margin-top:8px}.decision .cuerpo-texto{white-space:pre-wrap}
 .entrar .recordar{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:14px}.entrar .recordar input{width:auto}
 .aviso-banner{position:fixed;top:env(safe-area-inset-top);left:0;right:0;background:var(--tinta);color:var(--papel);padding:10px 14px;z-index:40;display:flex;gap:12px;align-items:center;flex-wrap:wrap}.aviso-banner .aviso-texto{flex:1 1 100%;font-weight:600}
+
+/* Home v2 (spec 1, 18-10): cuatro bloques apilados a 390 px, botones de 44 px */
+.home { display: flex; flex-direction: column; gap: 16px; }
+.home-bloque { display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; color: var(--ink); text-decoration: none; }
+.home-bloque h2 { margin: 0 0 8px; font-size: 1rem; }
+.home-decidir.rojo { border-left: 4px solid var(--error); padding-left: 10px; }
+.home-botones { display: flex; gap: 8px; margin-top: 8px; }
+.home-botones .btn, .home-mas { min-height: 44px; flex: 1; display: inline-flex; align-items: center; justify-content: center; }
+.home-mas { margin-top: 8px; }
+.home-cifras { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.home-cifra { display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 44px; text-decoration: none; color: var(--ink); }
+.home-cifra .valor { font-size: 1.5rem; font-weight: 600; }
+.home-cifra.rojo .valor { color: var(--error); }
+.home-proyecto { display: block; text-decoration: none; color: var(--ink); margin-bottom: 8px; }
+.home-web .web-tabla { width: 100%; }
+.semaforo-pill.rojo{background:var(--error-suave);border-color:var(--error);color:var(--error)}
+.semaforo-pill.ambar{background:var(--tag-ambar-bg);border-color:var(--tag-ambar-fg);color:var(--tag-ambar-fg)}
+.semaforo-pill.verde{background:var(--exito-suave);border-color:var(--exito);color:var(--exito)}
