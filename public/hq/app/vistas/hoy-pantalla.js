@@ -89,7 +89,7 @@ export function acordeon({ id, titulo, cuenta, color = '', vacioTexto, abierto =
     if (abrir && !cargado) {
       cargado = true;
       cuerpo.replaceChildren(el('p', { class: 'cargando', text: '...' }));
-      Promise.resolve().then(contenido).then(nodos => cuerpo.replaceChildren(...lista(nodos)))
+      sec.carga = Promise.resolve().then(contenido).then(nodos => cuerpo.replaceChildren(...lista(nodos)))
         .catch(e => { cargado = false; cuerpo.replaceChildren(vacio('No se pudo cargar (' + (e?.message || 'error') + ')')); });
     }
     if (guardar) { guardarAbierto(id, abrir, almacen); if (abrir && cuenta != null) guardarVisto(id, cuenta, almacen); }
@@ -247,8 +247,12 @@ export function render(raiz, S, arg, filtros) {
     ];
     cont.replaceChildren(cabecera(cifras), ...(aviso ? [aviso] : []), ...bloques);
     if (destacado) {
-      const t = document.getElementById('hoy-' + destacado);
-      if (t) { t.alternar?.(true); t.scrollIntoView?.({ block: 'start' }); }
+      // El ítem existe solo cuando el bloque está cargado: se espera a su carga antes de abrirlo y hacer scroll.
+      const bloqueDecidir = bloques[0];
+      Promise.resolve(bloqueDecidir.carga).then(() => {
+        const t = document.getElementById('hoy-' + destacado);
+        if (t) { t.alternar?.(true); t.scrollIntoView?.({ block: 'start' }); }
+      });
     }
   }).catch(e => cont.replaceChildren(el('section', { class: 'home-bloque hoy-bloque', id: 'hoy-error' }, [el('h2', { text: 'Hoy' }), vacio('No se pudo cargar (' + (e?.message || 'error') + ')')])));
 }
