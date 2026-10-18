@@ -31,12 +31,17 @@ export function modeloCronograma(filas, ahora = new Date()) {
   return [...activos, ...cerrados].map(f => ({ ...f, cerrado: CERRADOS.includes(f.estado), vencido: !CERRADOS.includes(f.estado) && !!f.fecha_hito && f.fecha_hito < hoy }));
 }
 
-export function pintarCronograma(filas, ahora = new Date()) {
+const PESOS = [1, 2, 3, 5, 8];
+const fhora = iso => iso ? fdia(iso) + ' ' + new Intl.DateTimeFormat('es-ES', { timeZone: 'Europe/Madrid', hour: '2-digit', minute: '2-digit' }).format(new Date(iso)) : '';
+const haceTxt = h => h == null ? 'sin avances' : h < 1 ? 'hace menos de 1 h' : h < 48 ? 'hace ' + Math.round(h) + ' h' : 'hace ' + Math.round(h / 24) + ' d';
+
+export function pintarCronograma(filas, ahora = new Date(), opc = {}) {
   const m = modeloCronograma(filas, ahora);
   if (!m.length) return el('p', { class: 'mudo', text: 'Sin encargos en este proyecto' });
   return el('ol', { class: 'cronograma' }, m.map(f => el('li', { class: 'crono-item' + (f.cerrado ? ' hecho' : '') + (f.vencido ? ' vencido' : '') }, [
     el('span', { class: 'crono-fecha', text: f.fecha_hito ? fdia(f.fecha_hito) : 'sin fecha' }),
     el('span', { class: 'crono-estado', text: String(f.estado || '').replace(/_/g, ' ') }),
+    opc.puedePeso && !f.cerrado ? selectorPeso(f, opc.cambiarPeso) : el('span', { class: 'crono-peso', text: 'peso ' + (f.peso || 1) }),
     el('p', { class: 'crono-texto', text: '#' + f.encargo_id + ' ' + (f.texto || '') }),
     f.proximo_hito ? el('p', { class: 'mudo', text: 'Hito: ' + f.proximo_hito }) : null,
     f.ultimo_avance ? el('p', { class: 'mudo', text: 'Último avance' + (f.fecha_avance ? ' ' + fdia(f.fecha_avance) : '') + ': ' + f.ultimo_avance }) : null,
@@ -44,17 +49,31 @@ export function pintarCronograma(filas, ahora = new Date()) {
   ])));
 }
 
-function filaProyecto(p, ahora) {
+function selectorPeso(f, cambiar) {
+  const sel = el('select', { class: 'crono-peso', 'aria-label': 'Peso del encargo ' + f.encargo_id }, PESOS.map(v => el('option', { value: String(v), text: 'peso ' + v })));
+  sel.value = String(f.peso || 1);
+  sel.addEventListener('change', async () => {
+    const antes = f.peso || 1;
+    try { await cambiar(f.encargo_id, Number(sel.value)); f.peso = Number(sel.value); }
+    catch (e) { sel.value = String(antes); sel.title = 'No se pudo cambiar el peso'; }
+  });
+  return sel;
+}
+
+function filaProyecto(p, ahora, opc = {}) {
   const caja = el('div', { class: 'cronograma-caja' });
   const det = el('details', { class: 'vt-card compacta proyecto-fila' }, [
     el('summary', {}, [
-      el('span', { class: 'semaforo-pill ' + (p.semaforo || ''), text: p.semaforo || '' }),
-      p.bloqueo ? el('span', { class: 'pill rojo', text: p.bloqueo }) : null,
+      el('span', { class: 'punto ' + (p.semaforo || ''), 'aria-label': p.semaforo || '' }),
       el('strong', { text: ' ' + (p.nombre || '') }),
+      el('span', { class: 'pct-grande' + (p.sin_pasos || p.pct == null ? ' gris' : ''), text: p.sin_pasos || p.pct == null ? 'sin pasos' : n(p.pct) + ' %' }),
+      p.bloqueo ? el('span', { class: 'pill rojo', text: p.bloqueo }) : null,
     ]),
+    el('p', { class: 'mudo', text: [p.semaforo_motivo, p.ultimo_avance ? 'último avance ' + haceTxt(p.horas_sin_avance) : 'sin avances'].filter(Boolean).join(' · ') }),
     el('p', { class: 'mudo', text: 'Dueño ' + (p.dueno || '-') + ' · ' + textoFin(p) + (p.inicio ? ' · inicio ' + fdia(p.inicio) : '') }),
-    el('div', { class: 'barra ' + (p.semaforo || ''), role: 'img', 'aria-label': n(p.n_hechos) + ' de ' + n(p.n_total) }, [el('i', { style: 'width:' + Math.min(100, n(p.pct)) + '%' })]),
-    el('p', { class: 'mudo', text: n(p.n_hechos) + ' de ' + n(p.n_total) + ' (' + n(p.pct) + '%) · ' + (p.dias_sin_avance == null ? 'sin avance registrado' : p.dias_sin_avance + ' d sin avance') }),
+    p.sin_pasos || p.pct == null ? null : el('div', { class: 'barra ' + (p.semaforo || ''), role: 'img', 'aria-label': n(p.pct) + ' %' }, [el('i', { style: 'width:' + Math.min(100, n(p.pct)) + '%' })]),
+    el('p', { class: 'mudo', text: n(p.n_hechos) + ' de ' + n(p.n_total) + ' tareas' + (p.ponderado && !p.sin_pasos ? ' · ponderado' : '') }),
+    el('p', { class: 'mudo ultimo-avance', text: p.ultimo_avance ? 'Último avance: ' + fhora(p.ultimo_avance) + ', ' + (p.ultimo_avance_quien || '-') + ': ' + (p.ultimo_avance_texto || '') : 'sin avances' }),
     p.tarea_en_curso ? el('p', { class: 'mudo', text: p.tarea_en_curso + (p.fecha_tarea ? ' · ' + fdia(p.fecha_tarea) : '') }) : null,
     caja,
   ]);
@@ -63,15 +82,17 @@ function filaProyecto(p, ahora) {
     if (!det.open || cargado) return;
     cargado = true;
     caja.append(el('p', { class: 'mudo', text: 'Cargando...' }));
-    try { const f = await cargadores.encargos(p.id); caja.innerHTML = ''; caja.append(pintarCronograma(f, ahora)); }
+    try { const f = await cargadores.encargos(p.id); caja.innerHTML = ''; caja.append(pintarCronograma(f, ahora, opc)); }
     catch (e) { cargado = false; caja.innerHTML = ''; caja.append(el('p', { class: 'mudo', text: 'No se pudo cargar el cronograma: ' + (e.message || e) })); }
   });
   return det;
 }
 
-export function pintarProyectos(filas, ahora = new Date()) {
+export function pintarProyectos(filas, ahora = new Date(), opc = {}) {
   if (!filas || !filas.length) return el('p', { class: 'mudo', text: 'Sin proyectos dados de alta' });
-  return el('div', { class: 'vt-cards' }, filas.map(p => filaProyecto(p, ahora)));
+  const p0 = filas[0];
+  const ley = p0.rojo_dias != null ? 'Rojo: fin o hito vencidos, o más de ' + p0.rojo_dias + ' días parado. Ámbar: más de ' + p0.ambar_dias + ' días parado o fin cerca con poco avance.' : '';
+  return el('div', {}, [el('div', { class: 'vt-cards' }, filas.map(p => filaProyecto(p, ahora, opc))), ley ? el('p', { class: 'mudo leyenda', text: ley }) : null]);
 }
 
 // Procesos: filas de hq_v_procesos agrupadas por flujo (RPC hq_procesos, cuando exista el fdw a Windmill).
@@ -93,7 +114,8 @@ export async function render(raiz, S, arg, filtros, ahora = new Date()) {
   const secW = el('section', { class: 'home-bloque' }, [el('h2', { text: 'Procesos' }), el('p', { class: 'mudo', text: 'Cargando...' })]);
   raiz.append(secP, secW);
   const poner = (sec, nodo) => { sec.querySelector('p, div').replaceWith(nodo); };
-  cargadores.proyectos().then(f => poner(secP, pintarProyectos(f, ahora)))
+  const opc = { puedePeso: S?.datos?.rol === 'owner', cambiarPeso: async (id, v) => (await import('../api.js')).rpc('omc_encargo_peso', { p_id: id, p_peso: v }) };
+  cargadores.proyectos().then(f => poner(secP, pintarProyectos(f, ahora, opc)))
     .catch(e => poner(secP, el('p', { class: 'mudo', text: 'Proyectos: no se pudo cargar (' + (e?.message || 'error') + ')' })));
   cargadores.procesos().then(f => poner(secW, pintarProcesos(f, ahora))).catch(() => poner(secW, pintarProcesos(null)));
 }
