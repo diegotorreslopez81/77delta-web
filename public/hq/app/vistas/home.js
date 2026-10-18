@@ -72,9 +72,10 @@ export function pintarProyectos(filas) {
   return bloque('Proyectos', el('div', { class: 'vt-cards' }, lista));
 }
 
+const miles = v => Math.round(Number(v)).toLocaleString('es-ES', { useGrouping: 'always' });
 export function valorCifra(x) {
-  if (x.valor == null) return x.unidad === 'eur' ? 'sin fuente' : '-';
-  return x.unidad === 'eur' ? eur(x.valor) : String(x.valor) + (x.unidad ? ' ' + x.unidad : '');
+  if (x.valor == null) return x.unidad === 'eur' ? 'sin dato' : '-';
+  return x.unidad === 'eur' ? miles(x.valor) + ' €' : String(x.valor) + (x.unidad ? ' ' + x.unidad : '');
 }
 
 // Bloque 3. Tres cifras: las que fije hq_parametros (home_cifra_1..3), ya filtradas y ordenadas por la RPC.

@@ -42,9 +42,12 @@ test('modeloWeb7: suma 7 días y variación frente a los 7 anteriores', async ()
   assert.equal(m[0].visitas, 30); assert.equal(m[0].antes, 20); assert.equal(m[0].variacion, 50); assert.equal(m[0].formularios, 1);
 });
 test('valorCifra: eur formatea, null en eur = sin fuente, otras unidades tal cual', () => {
-  assert.equal(valorCifra({ valor: null, unidad: 'eur' }), 'sin fuente');
+  assert.equal(valorCifra({ valor: null, unidad: 'eur' }), 'sin dato');
   assert.equal(valorCifra({ valor: 3, unidad: 'tarjetas' }), '3 tarjetas');
-  assert.match(valorCifra({ valor: 27438, unidad: 'eur' }), /EUR$/);
+  assert.match(valorCifra({ valor: 27438, unidad: 'eur' }), / €$/);
+  assert.equal(valorCifra({ valor: 366500, unidad: 'eur' }), '366.500 €');
+  assert.equal(valorCifra({ valor: 32438.02, unidad: 'eur' }), '32.438 €');
+  assert.equal(valorCifra({ valor: 1234, unidad: 'eur' }), '1.234 €');
 });
 test('modeloCaptacion: filtra periodo, total primero, % sobre paso anterior', () => {
   const filas = [

@@ -2,7 +2,7 @@
 // Solo pinta columnas de hq_v_hoy_* leídas por la RPC hq_hoy con p_token. Sin umbrales ni cálculo propio:
 // el rojo sale de umbral_decidir_h y umbral_correo_h que devuelve la RPC (hq_parametros).
 import { el, toast, eur, fecha, pedirTexto, modal, confirmar } from '../ui.js';
-import { pintarProyectos, pintarCaptacion, pintarProductos } from './home.js';
+import { pintarProyectos, pintarCaptacion, pintarProductos, valorCifra } from './home.js';
 
 let cargadores = {
   hoy: async () => (await import('../api.js')).rpc('hq_hoy'),
@@ -40,7 +40,7 @@ export function cabecera(cifras) {
   if (!(cifras || []).length) return el('div', { class: 'home-cifras' }, [vacio('Sin cifras')]);
   return el('div', { class: 'home-cifras' }, cifras.map(x =>
     el('a', { class: 'vt-card compacta home-cifra ' + (x.color || ''), href: x.enlace ? '#' + String(x.enlace).replace(/^#/, '') : '#hoy' }, [
-      el('span', { class: 'valor', text: String(x.valor ?? '-') + (x.unidad ? ' ' + x.unidad : '') }),
+      el('span', { class: 'valor', text: valorCifra(x) }),
       el('span', { class: 'mudo', text: x.etiqueta || x.clave }),
     ])));
 }
