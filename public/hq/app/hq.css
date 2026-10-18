@@ -426,3 +426,6 @@ a{color:inherit}
 .home-cifra.rojo .valor { color: var(--error); }
 .home-proyecto { display: block; text-decoration: none; color: var(--ink); margin-bottom: 8px; }
 .home-web .web-tabla { width: 100%; }
+.semaforo-pill.rojo{background:var(--error-suave);border-color:var(--error);color:var(--error)}
+.semaforo-pill.ambar{background:var(--tag-ambar-bg);border-color:var(--tag-ambar-fg);color:var(--tag-ambar-fg)}
+.semaforo-pill.verde{background:var(--exito-suave);border-color:var(--exito);color:var(--exito)}
