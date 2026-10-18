@@ -75,6 +75,10 @@ test('modeloNegocio: omite filas sin principal (caja), máximo 2 pares de detall
   assert.equal(m.length, 1);
   assert.equal(m[0].principal, '230.500 €');
   assert.equal(m[0].secundario, '34 oportunidades');
+  const [i] = modeloNegocio([{ clave: 'ingresos', principal: 5000, principal_unidad: 'eur', principal_texto: 'facturado octubre', secundario: 5000, secundario_unidad: 'eur', secundario_texto: 'cobrado 2026' }]);
+  assert.equal(i.principal, '5.000 €');
+  assert.equal(i.principalTexto, 'facturado octubre');
+  assert.equal(i.secundario, '5.000 € cobrado 2026');
   assert.equal(m[0].detalle.length, 2);
   assert.deepEqual(modeloNegocio(null), []);
 });
