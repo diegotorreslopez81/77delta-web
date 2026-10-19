@@ -3,7 +3,7 @@
 // Sin umbrales ni cálculo propio: el rojo de edad usa umbral_decidir_h que devuelve la RPC (hq_parametros).
 // Cada bloque carga y falla por separado: un bloque caído no tumba la home.
 import { el, toast, eur, fecha } from '../ui.js';
-import { modeloWeb } from './web.js';
+import { modeloWeb, separar } from './web.js';
 
 let cargadores = {
   home: async () => (await import('../api.js')).rpc('hq_home'),
@@ -135,6 +135,7 @@ export function pintarProductos(datos) {
 
 // Bloque 4. Web: suma de 7 días por sitio y hoy frente a ayer de 77delta.com. Sitios sin fila salen a 0.
 export function modeloHomeWeb(filas, ahora = new Date()) {
+  filas = separar(filas).dias;
   const sitios = modeloWeb(filas, ahora);
   const dia = d => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Madrid' }).format(new Date(ahora.getTime() - d * 86400000));
   const suma = (sitio, d) => (filas || []).filter(f => f.sitio === sitio && f.dia === dia(d)).reduce((a, f) => a + n(f.visitas), 0);
@@ -151,6 +152,7 @@ export function modeloHomeWeb(filas, ahora = new Date()) {
 }
 export function pintarWeb(filas, ahora = new Date()) {
   if (filas == null) return bloque('Web', pendiente('Web: sin datos'));
+  filas = separar(filas).dias;
   const m = modeloHomeWeb(filas, ahora);
   const t = el('table', { class: 'tabla-lic web-tabla' }, [
     el('tr', {}, ['Sitio', 'Visitas', 'Visitantes', 'Reservar', 'Envíos'].map(x => el('th', { text: x }))),
