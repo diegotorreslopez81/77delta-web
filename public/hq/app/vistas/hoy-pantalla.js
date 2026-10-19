@@ -239,7 +239,7 @@ export function modeloWeb7(filas, ahora = new Date()) {
 }
 export function pintarWeb7(filas, ahora = new Date()) {
   if (filas == null) return [vacio('Web: sin datos')];
-  const m = modeloWeb7(filas, ahora);
+  const m = modeloWeb7(Array.isArray(filas) ? filas : filas.dias || [], ahora);
   if (!m.length) return [vacio('Web: sin visitas')];
   return [el('div', { class: 'vt-cards' }, m.map(s => el('a', { class: 'vt-card compacta web-tarjeta', href: '#ventas?bloque=web' }, [
     el('h3', { text: s.sitio }),

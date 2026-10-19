@@ -505,3 +505,9 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 .proyecto-fila summary{display:flex;align-items:center;gap:8px}.proyecto-fila .pct-grande{margin-left:auto;font-size:22px;font-weight:700}.proyecto-fila .pct-grande.gris{font-size:14px;color:var(--tinta-suave,#8a8f98)}
 .punto{width:10px;height:10px;border-radius:50%;background:#8a8f98;flex:none}.punto.rojo{background:var(--error)}.punto.ambar{background:var(--oro-luz)}.punto.verde{background:var(--exito)}
 .crono-peso{font-size:12px;margin-left:6px}.leyenda{margin-top:12px;font-size:12px}
+.web-bloques{display:grid;grid-template-columns:1fr;gap:8px}
+@media (min-width:1000px){.web-bloques{grid-template-columns:repeat(4,1fr)}}
+.web-bloque{cursor:default}
+.web-kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.web-num{font-size:26px;font-weight:700;line-height:1.1}
+.web-var{margin:0;font-size:13px;font-weight:600}.web-var.verde{color:var(--exito)}.web-var.rojo{color:var(--error)}
