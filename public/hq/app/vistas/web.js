@@ -18,19 +18,25 @@ export function modeloWeb(filas, ahora = new Date()) {
   const d7 = corte(7), d30 = corte(30);
   const sitios = {};
   (filas || []).forEach(f => {
-    const s = sitios[f.sitio] || (sitios[f.sitio] = { sitio: f.sitio, hoy: { v: 0, u: 0 }, s7: { v: 0, u: 0 }, s30: { v: 0, u: 0 }, fuentes: {}, dias: [] });
+    const s = sitios[f.sitio] || (sitios[f.sitio] = { sitio: f.sitio, hoy: { v: 0, u: 0 }, s7: { v: 0, u: 0 }, s30: { v: 0, u: 0 }, fuentes: {}, paginas: {}, dias: [], serie: [] });
     const v = n(f.visitas), u = n(f.visitantes);
     if (f.dia === hoy) { s.hoy.v += v; s.hoy.u += u; }
     if (f.dia >= d7) {
       s.s7.v += v; s.s7.u += u;
-      (f.fuentes_top || []).forEach(x => { s.fuentes[x.fuente] = (s.fuentes[x.fuente] || 0) + n(x.n); });
       s.dias.push({ dia: f.dia, v, u });
     }
-    if (f.dia >= d30) { s.s30.v += v; s.s30.u += u; }
+    if (f.dia >= d30) {
+      s.s30.v += v; s.s30.u += u;
+      (f.fuentes_top || []).forEach(x => { s.fuentes[x.fuente] = (s.fuentes[x.fuente] || 0) + n(x.n); });
+      (f.paginas_top || []).forEach(x => { s.paginas[x.url] = (s.paginas[x.url] || 0) + n(x.n); });
+      s.serie.push({ dia: f.dia, v, u });
+    }
   });
   return Object.values(sitios).map(s => ({
     ...s,
     fuentes: Object.entries(s.fuentes).map(([fuente, n]) => ({ fuente, n })).sort((a, b) => b.n - a.n).slice(0, 5),
+    paginas: Object.entries(s.paginas).map(([url, n]) => ({ url, n })).sort((a, b) => b.n - a.n).slice(0, 5),
+    serie: s.serie.sort((a, b) => a.dia.localeCompare(b.dia)),
     dias: s.dias.sort((a, b) => b.dia.localeCompare(a.dia)),
   })).sort((a, b) => b.s30.v - a.s30.v);
 }
@@ -65,6 +71,8 @@ export function bloquesWeb(r, ahora = new Date()) {
 }
 
 export const SITIOS = ['77delta.com', 'docureal.77delta.com', 'verifix.77delta.com', 'swarmix.co'];
+// Etiqueta corta: los subdominios salen sin el dominio (el nombre completo va en title) para no partir la palabra en la celda.
+export const etiquetaSitio = sitio => String(sitio).replace(/\.77delta\.com$/, '');
 export const anclaSitio = sitio => String(sitio).replace(/\./g, '');
 
 // Bloques en orden fijo: los cuatro sitios siempre salen; si la RPC no trae uno (swarmix.co antes de v183) va marcado sinDatos, nunca como 0.
@@ -75,9 +83,9 @@ export function bloquesOrdenados(r, ahora = new Date()) {
 }
 
 export function tarjeta(b) {
-  if (b.sinDatos) return el('a', { class: 'mini web-mini', href: '#operacion/ventas/web?sitio=' + anclaSitio(b.sitio) }, [el('h3', { text: b.sitio }), el('span', { class: 's', text: 'sin datos' })]);
+  if (b.sinDatos) return el('a', { class: 'mini web-mini', href: '#operacion/ventas/web?sitio=' + anclaSitio(b.sitio) }, [el('h3', { text: etiquetaSitio(b.sitio), title: b.sitio }), el('span', { class: 's', text: 'sin datos' })]);
   const hijos = [
-    el('h3', { text: b.sitio }),
+    el('h3', { text: etiquetaSitio(b.sitio), title: b.sitio }),
     el('div', { class: 'v' }, [String(miles(b.visitas)), el('small', { text: 'visitas' })]),
     el('div', { class: 'l', text: miles(b.visitantes) + ' visitantes' }),
   ];
@@ -90,16 +98,28 @@ export function tarjeta(b) {
 }
 export const rejillaWeb = (r, ahora) => el('div', { class: 'web-mini-grid' }, bloquesOrdenados(r, ahora).map(tarjeta));
 
-// Vista completa (pestaña Web de Ventas): las mismas tarjetas y, debajo, una sección por sitio con fuentes y serie de 7 días.
+// Barras de 30 días solo CSS: altura en % de la mayor, eje con tres fechas.
+export function barras(serie) {
+  const max = Math.max(1, ...serie.map(d => d.v));
+  const barra = d => el('div', { class: 'web-barra', style: 'height:' + Math.round(d.v * 100 / max) + '%', title: fdia(d.dia) + ': ' + d.v + ' visitas / ' + d.u + ' visitantes' });
+  const eje = [serie[0], serie[Math.floor((serie.length - 1) / 2)], serie[serie.length - 1]].map(d => el('span', { text: fdia(d.dia) }));
+  return el('div', { class: 'web-serie' }, [el('div', { class: 'web-barras' }, serie.map(barra)), el('div', { class: 'web-eje' }, eje)]);
+}
+function tablaTop(cab, filas, nombre, vacio) {
+  if (!filas || !filas.length) return el('p', { class: 'vt-nota', text: vacio });
+  return el('table', { class: 'vt-tabla' }, [el('tr', {}, [cab, 'Visitas'].map(h => el('th', { text: h }))), ...filas.slice(0, 5).map(f => el('tr', {}, [nombre(f), f.n].map(x => el('td', { text: String(x) }))))]);
+}
+
+// Vista completa (pestaña Web de Ventas): las mismas tarjetas y, debajo, una sección por sitio con barras de 30 días, fuentes y páginas top.
 export function vistaWeb(raiz, r, filtros = {}, ahora = new Date()) {
   raiz.append(rejillaWeb(r, ahora));
   const por = Object.fromEntries(modeloWeb(separar(r).dias, ahora).map(s => [s.sitio, s]));
   bloquesOrdenados(r, ahora).forEach(b => {
     const s = por[b.sitio];
     const sec = el('section', { class: 'home-bloque web-sitio' + (filtros.sitio === anclaSitio(b.sitio) ? ' destacado' : ''), id: 'web-' + anclaSitio(b.sitio) }, [el('h2', { text: b.sitio })]);
-    if (s && s.fuentes.length) sec.append(el('table', { class: 'vt-tabla' }, [el('tr', {}, ['Fuente (7 días)', 'Visitas'].map(h => el('th', { text: h }))), ...s.fuentes.map(f => el('tr', {}, [f.fuente, f.n].map(x => el('td', { text: String(x) }))))]));
-    else sec.append(el('p', { class: 'vt-nota', text: 'Sin fuentes en los últimos 7 días.' }));
-    if (s && s.dias.length) sec.append(el('p', { class: 'vt-nota', text: 'Por día: ' + s.dias.map(d => fdia(d.dia) + ' ' + d.v + '/' + d.u).join(' · ') }));
+    if (s && s.serie.length) sec.append(barras(s.serie));
+    sec.append(tablaTop('Fuente (30 días)', s && s.fuentes, f => f.fuente, 'Sin fuentes en los últimos 30 días.'));
+    sec.append(tablaTop('Página (30 días)', s && s.paginas, f => f.url, 'Sin páginas top todavía.'));
     raiz.append(sec);
     if (filtros.sitio === anclaSitio(b.sitio) && sec.scrollIntoView) setTimeout(() => sec.scrollIntoView(), 0);
   });
