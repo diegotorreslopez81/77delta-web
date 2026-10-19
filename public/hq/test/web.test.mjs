@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { bloquesWeb, separar } from '../app/vistas/web.js';
+import { bloquesWeb, separar, modeloWeb } from '../app/vistas/web.js';
 
 const ahora = new Date('2026-10-19T10:00:00Z');
 const dias = [
@@ -38,4 +38,16 @@ test('bloquesOrdenados: cuatro sitios en orden fijo, swarmix.co a 0 si la RPC no
   assert.equal(m[0].visitas, 100); assert.equal(m[0].variacion, 12); assert.equal(m[2].variacion, -10);
   assert.equal(m[3].sinDatos, true); assert.equal(m[0].sinDatos, undefined);
   assert.equal(anclaSitio('docureal.77delta.com'), 'docureal77deltacom');
+});
+
+test('modeloWeb: serie de 30 días ordenada, fuentes y páginas top sumadas', () => {
+  const ahora = new Date('2026-10-19T10:00:00Z');
+  const d = [
+    { dia: '2026-10-18', sitio: 'x.com', visitas: 10, visitantes: 4, fuentes_top: [{ fuente: 'g', n: 3 }], paginas_top: [{ url: '/a', n: 2 }] },
+    { dia: '2026-09-25', sitio: 'x.com', visitas: 5, visitantes: 3, fuentes_top: [{ fuente: 'g', n: 2 }], paginas_top: [{ url: '/a', n: 1 }, { url: '/b', n: 4 }] },
+  ];
+  const [s] = modeloWeb(d, ahora);
+  assert.deepEqual(s.serie.map(x => x.dia), ['2026-09-25', '2026-10-18']);
+  assert.deepEqual(s.fuentes, [{ fuente: 'g', n: 5 }]);
+  assert.deepEqual(s.paginas, [{ url: '/b', n: 4 }, { url: '/a', n: 3 }]);
 });
