@@ -57,6 +57,7 @@ const casos = [
   // #1057 tarea 29: nueva sección KPIs, con paso de grupo por query string igual que cualquier otro filtro.
   ['#kpis', '', 'operacion/licitaciones', undefined, {}, '#operacion/licitaciones', true],
   ['#kpis?grupo=licitaciones', '', 'operacion/licitaciones', undefined, { grupo: 'licitaciones' }, '#operacion/licitaciones?grupo=licitaciones', true],
+  ['#licitaciones?bloque=firmar', '', 'operacion/licitaciones', undefined, { bloque: 'firmar' }, '#operacion/licitaciones?bloque=firmar', true],
 ];
 for (const [hash, search, clave, arg, filtros, canonico, redirigido] of casos) {
   test('resolver ' + JSON.stringify(hash) + ' ' + JSON.stringify(search), () => {
