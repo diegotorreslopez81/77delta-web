@@ -43,7 +43,7 @@ const casos = [
   ['#operacion/salud', '', 'equipo/organigrama', undefined, {}, '#equipo/organigrama', true],
   ['#salud', '', 'equipo/organigrama', undefined, {}, '#equipo/organigrama', true],
   ['#organigrama', '', 'equipo/organigrama', undefined, {}, '#equipo/organigrama', true],
-  ['#web', '', 'operacion/ventas', undefined, {}, '#operacion/ventas', true],
+  ['#web', '', 'operacion/ventas', 'web', {}, '#operacion/ventas/web', true],
   ['#avisos', '', 'hoy', undefined, {}, '#hoy', true],
   ['#computo', '', 'hoy', undefined, {}, '#hoy', true],
   ['#operacion/admin', '', 'operacion/admin', undefined, {}, '#operacion/admin', false],

@@ -29,3 +29,13 @@ test('V1: forma nueva usa el resumen, incluye sitios a 0 y ordena por visitas', 
 test('V1: separar tolera null', () => {
   assert.deepEqual(separar(null), { dias: [], resumen: null });
 });
+
+test('bloquesOrdenados: cuatro sitios en orden fijo, swarmix.co a 0 si la RPC no lo trae', async () => {
+  const { bloquesOrdenados, anclaSitio } = await import('../app/vistas/web.js');
+  const r = { dias: [], resumen: [{ sitio: 'verifix.77delta.com', visitas_30d: 5, visitantes_30d: 3, visitas_total: 9, visitantes_total: 6, variacion_pct: -10 }, { sitio: '77delta.com', visitas_30d: 100, visitantes_30d: 40, visitas_total: 900, visitantes_total: 300, variacion_pct: 12 }] };
+  const m = bloquesOrdenados(r, new Date('2026-10-19T10:00:00Z'));
+  assert.deepEqual(m.map(b => b.sitio), ['77delta.com', 'docureal.77delta.com', 'verifix.77delta.com', 'swarmix.co']);
+  assert.equal(m[0].visitas, 100); assert.equal(m[0].variacion, 12); assert.equal(m[2].variacion, -10);
+  assert.equal(m[3].sinDatos, true); assert.equal(m[0].sinDatos, undefined);
+  assert.equal(anclaSitio('docureal.77delta.com'), 'docureal77deltacom');
+});

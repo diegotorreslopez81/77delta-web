@@ -4,6 +4,7 @@ import { el } from '../ui.js';
 
 let carga = async (dias) => (await import('../api.js')).rpc('hq_web', { p_dias: dias });
 export function usarCargador(fn) { if (fn) carga = fn; }
+export const cargarWeb = () => carga(30);
 
 const DIAS = 30;
 const hoyMadrid = ahora => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Madrid' }).format(ahora);
@@ -63,19 +64,46 @@ export function bloquesWeb(r, ahora = new Date()) {
   }).sort((a, b) => b.visitas - a.visitas);
 }
 
-function bloque(b) {
-  const caja = el('div', { class: 'vt-card compacta web-bloque' });
-  caja.append(el('h3', { text: b.sitio }));
-  caja.append(el('div', { class: 'web-kpis' }, [
-    el('div', {}, [el('div', { class: 'web-num', text: miles(b.visitas) }), el('div', { class: 'vt-nota', text: 'visitas 30 días' })]),
-    el('div', {}, [el('div', { class: 'web-num', text: miles(b.visitantes) }), el('div', { class: 'vt-nota', text: 'visitantes 30 días' })]),
-  ]));
-  if (b.visitas_total != null) caja.append(el('p', { class: 'vt-nota', text: 'Total: ' + miles(b.visitas_total) + ' visitas · ' + miles(b.visitantes_total) + ' visitantes' }));
-  if (b.variacion != null) {
-    const sube = b.variacion >= 0;
-    caja.append(el('p', { class: 'web-var ' + (sube ? 'verde' : 'rojo'), text: (sube ? '▲ +' : '▼ ') + b.variacion + ' % frente a los 30 días anteriores' }));
+export const SITIOS = ['77delta.com', 'docureal.77delta.com', 'verifix.77delta.com', 'swarmix.co'];
+export const anclaSitio = sitio => String(sitio).replace(/\./g, '');
+
+// Bloques en orden fijo: los cuatro sitios siempre salen; si la RPC no trae uno (swarmix.co antes de v183) va marcado sinDatos, nunca como 0.
+export function bloquesOrdenados(r, ahora = new Date()) {
+  const m = bloquesWeb(r, ahora), por = Object.fromEntries(m.map(b => [b.sitio, b]));
+  const resto = m.filter(b => !SITIOS.includes(b.sitio));
+  return [...SITIOS.map(sitio => por[sitio] || { sitio, sinDatos: true, visitas: 0, visitantes: 0, visitas_total: null, visitantes_total: null, variacion: null }), ...resto];
+}
+
+export function tarjeta(b) {
+  if (b.sinDatos) return el('a', { class: 'mini web-mini', href: '#operacion/ventas/web?sitio=' + anclaSitio(b.sitio) }, [el('h3', { text: b.sitio }), el('span', { class: 's', text: 'sin datos' })]);
+  const hijos = [
+    el('h3', { text: b.sitio }),
+    el('div', { class: 'v' }, [String(miles(b.visitas)), el('small', { text: 'visitas' })]),
+    el('div', { class: 'l', text: miles(b.visitantes) + ' visitantes' }),
+  ];
+  if (b.variacion) {
+    const sube = b.variacion > 0;
+    hijos.push(el('div', { class: 'l web-var ' + (sube ? 'verde t-verde' : 'rojo t-rojo'), text: (sube ? '▲ +' : '▼ ') + b.variacion + ' %' }));
   }
-  return caja;
+  if (b.visitas_total != null) hijos.push(el('span', { class: 's', text: 'Total ' + miles(b.visitas_total) + ' visitas · ' + miles(b.visitantes_total) + ' visitantes' }));
+  return el('a', { class: 'mini web-mini', href: '#operacion/ventas/web?sitio=' + anclaSitio(b.sitio) }, hijos);
+}
+export const rejillaWeb = (r, ahora) => el('div', { class: 'web-mini-grid' }, bloquesOrdenados(r, ahora).map(tarjeta));
+
+// Vista completa (pestaña Web de Ventas): las mismas tarjetas y, debajo, una sección por sitio con fuentes y serie de 7 días.
+export function vistaWeb(raiz, r, filtros = {}, ahora = new Date()) {
+  raiz.append(rejillaWeb(r, ahora));
+  const por = Object.fromEntries(modeloWeb(separar(r).dias, ahora).map(s => [s.sitio, s]));
+  bloquesOrdenados(r, ahora).forEach(b => {
+    const s = por[b.sitio];
+    const sec = el('section', { class: 'home-bloque web-sitio' + (filtros.sitio === anclaSitio(b.sitio) ? ' destacado' : ''), id: 'web-' + anclaSitio(b.sitio) }, [el('h2', { text: b.sitio })]);
+    if (s && s.fuentes.length) sec.append(el('table', { class: 'vt-tabla' }, [el('tr', {}, ['Fuente (7 días)', 'Visitas'].map(h => el('th', { text: h }))), ...s.fuentes.map(f => el('tr', {}, [f.fuente, f.n].map(x => el('td', { text: String(x) }))))]));
+    else sec.append(el('p', { class: 'vt-nota', text: 'Sin fuentes en los últimos 7 días.' }));
+    if (s && s.dias.length) sec.append(el('p', { class: 'vt-nota', text: 'Por día: ' + s.dias.map(d => fdia(d.dia) + ' ' + d.v + '/' + d.u).join(' · ') }));
+    raiz.append(sec);
+    if (filtros.sitio === anclaSitio(b.sitio) && sec.scrollIntoView) setTimeout(() => sec.scrollIntoView(), 0);
+  });
+  raiz.append(el('p', { class: 'vt-nota', text: 'Eventos (clics y formularios) pendientes de Umami.' }));
 }
 
 export async function render(raiz) {
@@ -89,5 +117,5 @@ export async function render(raiz) {
   const m = bloquesWeb(r);
   caja.innerHTML = '';
   if (!m.length) { caja.append(el('p', { class: 'vt-nota', text: 'Sin datos de Umami en los últimos 30 días.' })); return; }
-  m.forEach(b => caja.append(bloque(b)));
+  m.forEach(b => caja.append(tarjeta(b)));
 }
