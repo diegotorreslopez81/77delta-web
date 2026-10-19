@@ -520,5 +520,6 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 
 .web-mini h3{white-space:nowrap}
 .web-serie{margin:8px 0}.web-barras{display:flex;align-items:flex-end;gap:2px;height:80px}
-.web-barra{flex:1 1 0;min-width:0;background:var(--oro);border-radius:1px 1px 0 0;min-height:1px}
+.web-barra{flex:1 1 0;min-width:0;background:var(--tinta-2);border-radius:1px 1px 0 0;min-height:1px}
 .web-eje{display:flex;justify-content:space-between;font-size:11px;color:var(--tinta-2);margin-top:2px}
+.web-barra:last-child{background:var(--oro)}
