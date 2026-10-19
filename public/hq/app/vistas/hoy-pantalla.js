@@ -36,9 +36,9 @@ export function opcionesPosponer(ahora = new Date()) {
   return { manana: a9(sumar(1)), lunes: a9(sumar(hastaLunes)) };
 }
 
-// Cuatro celdas (#2584): decidir (suma decidir y pagar, listas disjuntas en hq_v_hoy_*), firmar, correos y tareas. Decidir abre Depende de ti;
+// Tres celdas (#2584, Diego: Correos fuera de la home): decidir (suma decidir y pagar, listas disjuntas en hq_v_hoy_*), firmar y tareas. Decidir abre Depende de ti;
 // firmar abre la pestaña de Licitaciones con las filas de hq_v_hoy_firmar. Tareas y caja, grises hasta que tengan fuente.
-export const CELDAS = ['decidir', 'firmar', 'correos', 'tareas'];
+export const CELDAS = ['decidir', 'firmar', 'tareas'];
 export function enlaceCifra(x) {
   const e = { decidir: '#hoy?bloque=decidir', pagar: '#hoy?bloque=decidir&filtro=pagar', correos: '#hoy?bloque=correos', firmar: '#licitaciones?bloque=firmar', tareas: 'https://tasks.google.com' }[x.clave];
   return e || (x.enlace ? '#' + String(x.enlace).replace(/^#/, '') : '#hoy');
@@ -303,7 +303,6 @@ export function render(raiz, S, arg, filtros) {
     const neg = pintarNegocio(filasNeg);
     const cifras = h?.cifras || [];
     const dec = recuento(cifras, ['decidir', 'pagar'], (h?.decidir || []).length + (h?.pagar || []).length);
-    const cor = recuento(cifras, ['correos'], (h?.correos || []).length);
     const fir = recuento(cifras, ['firmar'], (h?.firmar || []).length);
     const web = recuento(cifras, ['web'], null), cap = recuento(cifras, ['captacion'], null);
     if (window.HQ_DATOS?.rol === 'owner') { window.HQ_DATOS.depende_n = dec.n; window.HQ_PINTAR?.(); }
@@ -312,7 +311,6 @@ export function render(raiz, S, arg, filtros) {
     const abre = id => (destacado && id === 'hoy-decidir') || pedido === id;
     const bloques = [
       acordeon({ id: 'hoy-decidir', titulo: 'Depende de ti', cuenta: dec.n, color: dec.color, vacioTexto: 'Nada depende de ti', abierto: abre('hoy-decidir') || leerAbierto('hoy-decidir'), contenido: () => pintarDecidir(h, repintar, destacado, filtros?.filtro) }),
-      acordeon({ id: 'hoy-correos', titulo: 'Correos sin contestar', cuenta: cor.n, color: cor.color, vacioTexto: 'Nada sin contestar', abierto: abre('hoy-correos') || leerAbierto('hoy-correos'), contenido: () => [...pintarCorreos(h), el('a', { class: 'btn', href: '#licitaciones?bloque=correos', text: 'Ver todos' })] }),
       acordeon({ id: 'hoy-web', titulo: 'Web', cuenta: web.n, color: web.color, abierto: abre('hoy-web') || leerAbierto('hoy-web'), contenido: async () => pintarWeb7(await cargadores.web()) }),
       acordeon({ id: 'hoy-captacion', titulo: 'Captación', cuenta: cap.n, color: cap.color, abierto: abre('hoy-captacion') || leerAbierto('hoy-captacion'), contenido: async () => {
         const filas = await cargadores.captacion();

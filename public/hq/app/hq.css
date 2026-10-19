@@ -420,7 +420,7 @@ a{color:inherit}
 .home-botones { display: flex; gap: 8px; margin-top: 8px; }
 .home-botones .btn, .home-mas { min-height: 44px; flex: 1; display: inline-flex; align-items: center; justify-content: center; }
 .home-mas { margin-top: 8px; }
-.home-cifras { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.home-cifras { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .home-cifra { display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 44px; text-decoration: none; color: var(--ink); }
 .home-cifra .valor { font-size: 1.5rem; font-weight: 600; }
 .home-cifra.rojo .valor { color: var(--error); }
@@ -452,7 +452,7 @@ a{color:inherit}
 }
 
 /* Diego 18-10 15:0x: los contadores caben en la altura de dos tarjetas: rejilla 3x2 compacta, cada uno enlaza a su pantalla. */
-.home-cifras { grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px; }
+.home-cifras { grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
 .home-cifras .home-cifra { padding: 6px 4px; min-height: 0; gap: 0; }
 .home-cifras .home-cifra .valor { font-size: 1.15rem; line-height: 1.2; }
 .home-cifras .home-cifra .mudo { font-size: 11px; line-height: 1.2; }

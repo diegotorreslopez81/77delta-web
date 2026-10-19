@@ -42,10 +42,10 @@ test('enlaceCifra: decidir y pagar abren Depende de ti; firmar abre la pestaña 
   assert.equal(enlaceCifra({ clave: 'firmar' }), '#licitaciones?bloque=firmar');
   assert.equal(enlaceCifra({ clave: 'tareas' }), 'https://tasks.google.com');
 });
-test('celdasCabecera: 4 celdas, sin cola_chief, agentes ni caja ni pagar, tareas gris', () => {
+test('celdasCabecera: 3 celdas (sin correos), sin cola_chief, agentes ni caja ni pagar, tareas gris', () => {
   const c = celdasCabecera([{ clave: 'decidir', valor: 3 }, { clave: 'pagar', valor: 0 }, { clave: 'firmar', valor: 9 }, { clave: 'correos', valor: 3 }, { clave: 'cola_chief', valor: 124 }, { clave: 'agentes', valor: 45 }, { clave: 'caja', valor: null }]);
-  assert.deepEqual(c.map(x => x.clave), ['decidir', 'firmar', 'correos', 'tareas']);
-  assert.deepEqual(c.map(x => !!x.gris), [false, false, false, true]);
+  assert.deepEqual(c.map(x => x.clave), ['decidir', 'firmar', 'tareas']);
+  assert.deepEqual(c.map(x => !!x.gris), [false, false, true]);
 });
 
 
@@ -106,6 +106,6 @@ test('#2584: Ingresos con facturado del año grande y mes pequeño; sin (aprox.)
 });
 test('#2584: cuatro celdas, pagar suma en decidir', () => {
   const c = celdasCabecera([{ clave: 'decidir', valor: 4, color: 'ambar' }, { clave: 'pagar', valor: 2 }, { clave: 'firmar', valor: 1 }, { clave: 'correos', valor: 0 }]);
-  assert.deepEqual(c.map(x => x.clave), ['decidir', 'firmar', 'correos', 'tareas']);
+  assert.deepEqual(c.map(x => x.clave), ['decidir', 'firmar', 'tareas']);
   assert.equal(c[0].valor, 6);
 });
