@@ -271,6 +271,7 @@ function ingresosNueva(f) {
     periodo: String(anio.etiqueta || '').match(/\d{4}/)?.[0] || '', principal: eurNegocio(anio.valor), principalTexto: 'Facturado ' + (String(anio.etiqueta || '').match(/\d{4}/)?.[0] || ''),
     secundario: (mes ? mes + ' ' : '') + eurNegocio(f.secundario ?? f.principal),
     detalle: [...fila('por_facturar'), ...fila('cobrado_2026')],
+    lineas: Array.isArray(por('lineas_2026')?.lineas) ? por('lineas_2026').lineas.map(l => ({ etiqueta: l.etiqueta, pct: Number(l.pct) || 0 })) : [],
   };
 }
 function ingresosVieja(f) {
@@ -305,6 +306,8 @@ export function pintarNegocio(filas) {
     el('span', { class: 'neg-principal' }, [x.principal, x.principalTexto ? el('small', { text: ' ' + x.principalTexto }) : null].filter(Boolean)),
     x.secundario ? el('span', { class: 'neg-secundario', text: x.secundario }) : null,
     ...x.detalle.map(d => el('span', { class: 'mudo neg-detalle', text: d.etiqueta + ': ' + d.valor })),
+    x.lineas?.length ? el('span', { class: 'neg-barra', role: 'img', 'aria-label': 'Reparto por línea' }, x.lineas.filter(l => l.pct > 0).map(l => el('i', { class: 'neg-tramo l-' + l.etiqueta.toLowerCase(), style: 'width:' + l.pct + '%' }))) : null,
+    x.lineas?.length ? el('span', { class: 'mudo neg-detalle neg-leyenda', text: x.lineas.map(l => l.etiqueta + ' ' + l.pct + ' %').join(' · ') }) : null,
   ].filter(Boolean))));
 }
 
