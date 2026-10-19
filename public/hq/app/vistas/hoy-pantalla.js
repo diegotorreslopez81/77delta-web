@@ -313,7 +313,7 @@ export function pintarNegocio(filas) {
   return el('div', { class: 'hoy-negocio' }, m.map(x => el('a', { class: 'vt-card hoy-neg ' + x.color, href: x.enlace }, [
     el('span', { class: 'mudo neg-etiqueta', text: x.etiqueta || x.clave }),
     x.periodo ? el('span', { class: 'mudo neg-periodo', text: x.periodo }) : null,
-    el('span', { class: 'neg-principal' }, [x.principal, x.principalTexto ? el('small', { text: ' ' + x.principalTexto }) : null].filter(Boolean)),
+    el('span', { class: 'neg-principal' }, [x.principal, x.principalTexto ? el('small', { class: x.principalTexto.length > 20 ? 'bajo' : '', text: ' ' + x.principalTexto }) : null].filter(Boolean)),
     x.secundario ? el('span', { class: 'neg-secundario', text: x.secundario }) : null,
     ...x.detalle.map(d => el('span', { class: 'mudo neg-detalle', text: d.etiqueta + ': ' + d.valor })),
     x.lineas?.length ? el('span', { class: 'neg-barra', role: 'img', 'aria-label': 'Reparto por línea' }, x.lineas.filter(l => l.pct > 0).map(l => el('i', { class: 'neg-tramo l-' + l.etiqueta.toLowerCase(), style: 'width:' + l.pct + '%' }))) : null,
