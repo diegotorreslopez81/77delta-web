@@ -49,13 +49,13 @@ export function enlaceCifra(x) {
 export function celdaGris(x) {
   return x.valor == null || (x.clave === 'pagar' && Number(x.valor) === 0);
 }
-// Celda Tareas (Google Tasks en vivo: GET api.77delta.com/hq/tareas, que ejecuta el script de Windmill): rojo con vencidas u hoy, ámbar con tareas sin fecha, verde sin nada.
+// Celda Tareas (Google Tasks en vivo: GET api.77delta.com/hq/tareas, que ejecuta el script de Windmill): cifra = abiertas totales (#2584); color de urgencia: rojo con vencidas u hoy, ámbar con tareas sin fecha, verde sin nada.
 // Cualquier fallo o respuesta sin recuentos numéricos da valor nulo y la celda sale gris; nunca un número viejo.
 export function cifraTareas(t) {
   const base = { clave: 'tareas', etiqueta: 'Tareas', valor: null };
   if (!t || typeof t.abiertas !== 'number') return base;
   const v = n(t.vencidas), h = n(t.hoy), s = n(t.sin_fecha);
-  return { ...base, valor: v + h + s, color: v + h > 0 ? 'rojo' : s > 0 ? 'ambar' : 'verde' };
+  return { ...base, valor: t.abiertas, color: v + h > 0 ? 'rojo' : s > 0 ? 'ambar' : 'verde' };
 }
 export function celdasCabecera(cifras) {
   const por = Object.fromEntries((cifras || []).map(x => [x.clave, x]));
