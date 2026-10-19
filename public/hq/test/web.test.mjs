@@ -36,6 +36,6 @@ test('bloquesOrdenados: cuatro sitios en orden fijo, swarmix.co a 0 si la RPC no
   const m = bloquesOrdenados(r, new Date('2026-10-19T10:00:00Z'));
   assert.deepEqual(m.map(b => b.sitio), ['77delta.com', 'docureal.77delta.com', 'verifix.77delta.com', 'swarmix.co']);
   assert.equal(m[0].visitas, 100); assert.equal(m[0].variacion, 12); assert.equal(m[2].variacion, -10);
-  assert.equal(m[3].visitas, 0);
+  assert.equal(m[3].sinDatos, true); assert.equal(m[0].sinDatos, undefined);
   assert.equal(anclaSitio('docureal.77delta.com'), 'docureal77deltacom');
 });

@@ -67,14 +67,15 @@ export function bloquesWeb(r, ahora = new Date()) {
 export const SITIOS = ['77delta.com', 'docureal.77delta.com', 'verifix.77delta.com', 'swarmix.co'];
 export const anclaSitio = sitio => String(sitio).replace(/\./g, '');
 
-// Bloques en orden fijo: los cuatro sitios siempre salen (a 0 si la RPC aún no los trae, p. ej. swarmix.co antes de v183).
+// Bloques en orden fijo: los cuatro sitios siempre salen; si la RPC no trae uno (swarmix.co antes de v183) va marcado sinDatos, nunca como 0.
 export function bloquesOrdenados(r, ahora = new Date()) {
   const m = bloquesWeb(r, ahora), por = Object.fromEntries(m.map(b => [b.sitio, b]));
   const resto = m.filter(b => !SITIOS.includes(b.sitio));
-  return [...SITIOS.map(sitio => por[sitio] || { sitio, visitas: 0, visitantes: 0, visitas_total: null, visitantes_total: null, variacion: null }), ...resto];
+  return [...SITIOS.map(sitio => por[sitio] || { sitio, sinDatos: true, visitas: 0, visitantes: 0, visitas_total: null, visitantes_total: null, variacion: null }), ...resto];
 }
 
 export function tarjeta(b) {
+  if (b.sinDatos) return el('a', { class: 'mini web-mini', href: '#operacion/ventas/web?sitio=' + anclaSitio(b.sitio) }, [el('h3', { text: b.sitio }), el('span', { class: 's', text: 'sin datos' })]);
   const hijos = [
     el('h3', { text: b.sitio }),
     el('div', { class: 'v' }, [String(miles(b.visitas)), el('small', { text: 'visitas' })]),
