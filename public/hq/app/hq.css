@@ -444,12 +444,14 @@ a{color:inherit}
 /* Menú de seis (18-10): barra inferior móvil, seis entradas de 44 px de alto sin scroll horizontal a 390 px. */
 .barra-inferior { display: none; }
 @media (max-width: 899px) {
-  .barra-inferior { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: var(--z-barra); background: var(--panel, var(--surface)); border-top: 1px solid var(--linea); padding-bottom: env(safe-area-inset-bottom); }
+  .barra-inferior { display: flex; position: fixed; left: 0; right: 0; bottom: var(--vv-desfase, 0px); z-index: var(--z-barra); background: var(--panel, var(--surface)); border-top: 1px solid var(--linea); padding-bottom: env(safe-area-inset-bottom); }
   .barra-inferior a { flex: 1 1 0; min-width: 0; min-height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px 0; font-size: 10px; line-height: 1.1; color: var(--tinta-2); text-decoration: none; }
   .barra-inferior a .ico, .barra-inferior a .ico svg { width: 20px; height: 20px; }
   .barra-inferior a.activa { color: var(--tinta); font-weight: 600; }
+  body.tecleando .barra-inferior { transform: translateY(100%); }
   .vista { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
 }
+.hoy-item { scroll-margin-bottom: calc(72px + env(safe-area-inset-bottom)); scroll-margin-top: 64px; }
 
 /* Diego 18-10 15:0x: los contadores caben en la altura de dos tarjetas: rejilla 3x2 compacta, cada uno enlaza a su pantalla. */
 .home-cifras { grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }

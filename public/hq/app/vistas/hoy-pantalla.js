@@ -139,10 +139,10 @@ export function acordeon({ id, titulo, icono = '', cuenta, color = '', vacioText
 }
 
 // Ítem de lista: plegado enseña título y botones; al tocar el título se abre el detalle y se pliega el resto de ítems de su bloque.
-function item(titulo, detalle, botones, { roja = false, destacada = false, id = null } = {}) {
+function item(titulo, detalle, botones, { roja = false, destacada = false, id = null, aviso = '' } = {}) {
   const cab = el('button', { type: 'button', class: 'hoy-item-titulo', 'aria-expanded': 'false', text: titulo });
   const det = el('div', { class: 'hoy-item-detalle', hidden: '' }, lista(detalle));
-  const raiz = el('div', { class: 'home-decidir hoy-tarjeta hoy-item' + (roja ? ' rojo' : '') + (destacada ? ' destacada' : ''), id }, [cab, det, botones]);
+  const raiz = el('div', { class: 'home-decidir hoy-tarjeta hoy-item' + (roja ? ' rojo' : '') + (destacada ? ' destacada' : ''), id, ...(aviso ? { title: aviso } : {}) }, [cab, det, botones]);
   raiz.alternar = abrir => {
     cab.setAttribute('aria-expanded', abrir ? 'true' : 'false');
     if (abrir) det.removeAttribute('hidden'); else det.setAttribute('hidden', '');
@@ -193,7 +193,7 @@ function tarjeta(p, umbral, repintar, { destacada = false, pago = false } = {}) 
     p.recomendacion ? el('p', { class: 'mudo', text: p.recomendacion }) : null,
     el('p', { class: 'mudo', text: [p.importe != null ? eur(p.importe) : null, p.edad_h != null ? hace(p.edad_h) : null, p.quien_pide ? 'pide ' + p.quien_pide : null, p.vence ? 'vence ' + fecha(p.vence) : null].filter(Boolean).join(' · ') }),
   ];
-  return item(p.titulo || p.concepto, detalle, botones, { roja, destacada, id: 'hoy-' + p.id });
+  return item(p.titulo || p.concepto, detalle, botones, { roja, destacada, id: 'hoy-' + p.id, aviso: roja ? 'Lleva más de ' + umbral + ' h sin decidir' : '' });
 }
 
 export function pintarDecidir(h, repintar = () => {}, destacado = null, filtro = null) {
@@ -355,6 +355,7 @@ export function render(raiz, S, arg, filtros) {
     cargadores.tareas().then(t => pon(cifraTareas(t))).catch(() => {});
     cont.replaceChildren(...(neg ? [neg] : []), cabecera(cifras), ...(aviso ? [aviso] : []), ...bloques);
     if (pedido) document.getElementById(pedido)?.scrollIntoView?.({ block: 'start' });
+    if (destacado) setTimeout(() => cont.querySelector('.hoy-item.destacada')?.classList.remove('destacada'), 4000);
     if (destacado) {
       // El ítem existe solo cuando el bloque está cargado: se espera a su carga antes de abrirlo y hacer scroll.
       const bloqueDecidir = bloques[0];

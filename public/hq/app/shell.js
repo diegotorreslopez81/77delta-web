@@ -79,6 +79,30 @@ function montarBarraInferior() {
     [el('span', { class: 'ico', html: ICONO_MAS }), el('span', { class: 'txt', text: 'Más' })]);
   ref.barra.set('mas', masBtn); barra.append(masBtn);
   document.body.append(barra);
+  vigilarTeclado();
+}
+// #2610: en iPhone PWA el teclado encoge el visual viewport y WebKit deja la barra fixed a media pantalla
+// tras cerrarlo. Solo con body.tecleando (foco en textarea o input de texto) se sigue visualViewport.
+const TIPOS_TEXTO = ['text', 'search', 'email', 'url', 'tel', 'number', 'password'];
+const esCampoTexto = t => !!t && (t.tagName === 'TEXTAREA' || (t.tagName === 'INPUT' && TIPOS_TEXTO.includes((t.type || 'text').toLowerCase())));
+let tecladoVigilado = false;
+function vigilarTeclado() {
+  if (tecladoVigilado || typeof document === 'undefined') return;
+  tecladoVigilado = true;
+  const vv = window.visualViewport, raiz = document.documentElement;
+  const medir = () => { raiz.style.setProperty('--vv-desfase', Math.max(0, window.innerHeight - (vv.height + vv.offsetTop)) + 'px'); };
+  document.addEventListener('focusin', e => {
+    if (!esCampoTexto(e.target)) return;
+    document.body.classList.add('tecleando');
+    if (vv) { medir(); vv.addEventListener('resize', medir); vv.addEventListener('scroll', medir); }
+  });
+  document.addEventListener('focusout', e => {
+    if (!esCampoTexto(e.target)) return;
+    document.body.classList.remove('tecleando');
+    if (vv) { vv.removeEventListener('resize', medir); vv.removeEventListener('scroll', medir); }
+    raiz.style.setProperty('--vv-desfase', '0px');
+    setTimeout(() => window.scrollBy(0, 0), 100);
+  });
 }
 // Cabecera del cajón móvil (logo + marca "HQ" + botón cerrar). Se monta una sola vez, la primera vez
 // que se llama a cablearShell() (que en producción solo ocurre una vez, al arrancar main.js).
