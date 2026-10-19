@@ -51,3 +51,14 @@ test('modeloWeb: serie de 30 días ordenada, fuentes y páginas top sumadas', ()
   assert.deepEqual(s.fuentes, [{ fuente: 'g', n: 5 }]);
   assert.deepEqual(s.paginas, [{ url: '/b', n: 4 }, { url: '/a', n: 3 }]);
 });
+
+test('bloquesWeb: sitio con histórico y sin eventos en 30 días es sinSeguimiento, no 0', () => {
+  const ahora = new Date('2026-10-19T10:00:00Z');
+  const resumen = [
+    { sitio: 'swarmix.co', visitas_30d: 0, visitantes_30d: 0, visitas_total: 304, visitantes_total: 255, variacion_pct: null, ultimo_evento: '2026-06-18' },
+    { sitio: '77delta.com', visitas_30d: 370, visitantes_30d: 97, visitas_total: 589, visitantes_total: 157, variacion_pct: 69, ultimo_evento: '2026-10-19' },
+  ];
+  const por = Object.fromEntries(bloquesWeb({ dias: [], resumen }, ahora).map(b => [b.sitio, b]));
+  assert.equal(por['swarmix.co'].sinSeguimiento, true);
+  assert.equal(por['77delta.com'].sinSeguimiento, false);
+});

@@ -66,6 +66,9 @@ export function bloquesWeb(r, ahora = new Date()) {
       visitas_total: x ? n(x.visitas_total) : null,
       visitantes_total: x ? n(x.visitantes_total) : null,
       variacion: pct,
+      ultimo_evento: x && x.ultimo_evento ? x.ultimo_evento : null,
+      // Sin eventos en los últimos 30 días con histórico: el sitio dejó de enviar a Umami; no es "0 visitas".
+      sinSeguimiento: !!(x && x.ultimo_evento && n(x.visitas_30d) === 0 && x.ultimo_evento < hoyMadrid(new Date(ahora.getTime() - 29 * 86400000))),
     };
   }).sort((a, b) => b.visitas - a.visitas);
 }
@@ -83,6 +86,7 @@ export function bloquesOrdenados(r, ahora = new Date()) {
 }
 
 export function tarjeta(b) {
+  if (b.sinSeguimiento) return el('a', { class: 'mini web-mini', href: '#operacion/ventas/web?sitio=' + anclaSitio(b.sitio) }, [el('h3', { text: etiquetaSitio(b.sitio), title: b.sitio }), el('div', { class: 'l', text: 'sin seguimiento' }), el('span', { class: 's', text: 'Último evento ' + fdia(b.ultimo_evento) + ' · Total ' + miles(b.visitas_total) + ' visitas · ' + miles(b.visitantes_total) + ' visitantes' })]);
   if (b.sinDatos) return el('a', { class: 'mini web-mini', href: '#operacion/ventas/web?sitio=' + anclaSitio(b.sitio) }, [el('h3', { text: etiquetaSitio(b.sitio), title: b.sitio }), el('span', { class: 's', text: 'sin datos' })]);
   const hijos = [
     el('h3', { text: etiquetaSitio(b.sitio), title: b.sitio }),
