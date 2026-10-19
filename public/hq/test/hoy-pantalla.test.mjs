@@ -42,10 +42,10 @@ test('enlaceCifra: decidir y pagar abren Depende de ti; firmar abre la pestaña 
   assert.equal(enlaceCifra({ clave: 'firmar' }), '#licitaciones?bloque=firmar');
   assert.equal(enlaceCifra({ clave: 'tareas' }), 'https://tasks.google.com');
 });
-test('celdasCabecera: 5 celdas, sin cola_chief, agentes ni caja, tareas gris, pagar 0 gris', () => {
+test('celdasCabecera: 4 celdas, sin cola_chief, agentes ni caja ni pagar, tareas gris', () => {
   const c = celdasCabecera([{ clave: 'decidir', valor: 3 }, { clave: 'pagar', valor: 0 }, { clave: 'firmar', valor: 9 }, { clave: 'correos', valor: 3 }, { clave: 'cola_chief', valor: 124 }, { clave: 'agentes', valor: 45 }, { clave: 'caja', valor: null }]);
-  assert.deepEqual(c.map(x => x.clave), ['decidir', 'firmar', 'pagar', 'correos', 'tareas']);
-  assert.deepEqual(c.map(x => !!x.gris), [false, false, true, false, true]);
+  assert.deepEqual(c.map(x => x.clave), ['decidir', 'firmar', 'correos', 'tareas']);
+  assert.deepEqual(c.map(x => !!x.gris), [false, false, false, true]);
 });
 
 
@@ -94,4 +94,18 @@ test('modeloNegocio: enlaces de la vista resuelven a su ruta, no a Hoy; detalle 
   }
   assert.equal(modeloNegocio([{ clave: 'x', principal: 1, enlace: '#/ventas', detalle: [{ etiqueta: 'a', valor: 142500, unidad: 'eur' }, { etiqueta: 'b', valor: 9 }] }])[0].enlace, '#ventas');
   assert.deepEqual(modeloNegocio([{ clave: 'x', principal: 1, detalle: [{ etiqueta: 'a', valor: 142500, unidad: 'eur' }, { etiqueta: 'b', valor: 9 }] }])[0].detalle, [{ etiqueta: 'a', valor: '142.500 €' }, { etiqueta: 'b', valor: '9' }]);
+});
+
+test('#2584: Ingresos con facturado del año grande y mes pequeño; sin (aprox.)', () => {
+  const [i] = modeloNegocio([{ clave: 'ingresos', principal: 5000, principal_unidad: 'eur', principal_texto: 'facturado octubre', periodo_texto: 'octubre',
+    detalle: [{ etiqueta: 'por facturar (aprox.)', valor: 27438.02, unidad: 'eur' }, { etiqueta: '2026 facturado', valor: 15000, unidad: 'eur' }, { clave: 'concedido_2026', etiqueta: 'concedido 2026', valor: 16000, unidad: 'eur' }] }]);
+  assert.equal(i.principal, '15.000 €');
+  assert.equal(i.principalTexto, 'Facturado 2026');
+  assert.equal(i.secundario, 'octubre 5.000 €');
+  assert.deepEqual(i.detalle.map(d => d.etiqueta), ['por facturar', 'concedido 2026']);
+});
+test('#2584: cuatro celdas, pagar suma en decidir', () => {
+  const c = celdasCabecera([{ clave: 'decidir', valor: 4, color: 'ambar' }, { clave: 'pagar', valor: 2 }, { clave: 'firmar', valor: 1 }, { clave: 'correos', valor: 0 }]);
+  assert.deepEqual(c.map(x => x.clave), ['decidir', 'firmar', 'correos', 'tareas']);
+  assert.equal(c[0].valor, 6);
 });

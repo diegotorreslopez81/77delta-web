@@ -36,9 +36,9 @@ export function opcionesPosponer(ahora = new Date()) {
   return { manana: a9(sumar(1)), lunes: a9(sumar(hastaLunes)) };
 }
 
-// Rejilla 3x2 (enmienda 5): decidir, firmar, pagar, correos, tareas y caja. Decidir y pagar abren Depende de ti;
+// Cuatro celdas (#2584): decidir (suma decidir y pagar, listas disjuntas en hq_v_hoy_*), firmar, correos y tareas. Decidir abre Depende de ti;
 // firmar abre la pestaña de Licitaciones con las filas de hq_v_hoy_firmar. Tareas y caja, grises hasta que tengan fuente.
-export const CELDAS = ['decidir', 'firmar', 'pagar', 'correos', 'tareas'];
+export const CELDAS = ['decidir', 'firmar', 'correos', 'tareas'];
 export function enlaceCifra(x) {
   const e = { decidir: '#hoy?bloque=decidir', pagar: '#hoy?bloque=decidir&filtro=pagar', correos: '#hoy?bloque=correos', firmar: '#licitaciones?bloque=firmar', tareas: 'https://tasks.google.com' }[x.clave];
   return e || (x.enlace ? '#' + String(x.enlace).replace(/^#/, '') : '#hoy');
@@ -57,6 +57,7 @@ export function cifraTareas(t) {
 }
 export function celdasCabecera(cifras) {
   const por = Object.fromEntries((cifras || []).map(x => [x.clave, x]));
+  if (por.decidir && por.pagar) por.decidir = { ...por.decidir, valor: n(por.decidir.valor) + n(por.pagar.valor), color: n(por.decidir.valor) + n(por.pagar.valor) > 0 ? 'ambar' : por.decidir.color };
   return CELDAS.map(k => {
     const x = por[k] || { clave: k, etiqueta: k === 'caja' ? 'Caja' : k === 'tareas' ? 'Tareas' : k, valor: null };
     return celdaGris(x) ? { ...x, color: 'gris', gris: true } : x;
@@ -257,13 +258,27 @@ export function eurNegocio(v) {
   return Math.round(x).toLocaleString('es-ES', { useGrouping: 'always' }) + ' €';
 }
 const valorNegocio = (v, unidad) => v == null ? '' : unidad === 'eur' ? eurNegocio(v) : String(v) + (unidad && unidad !== 'n' ? ' ' + unidad : '');
+// Ingresos (#2584): cifra grande = facturado del año (detalle "2026 facturado"), debajo el mes en pequeño; sin "(aprox.)" en etiquetas.
+const sinAprox = e => String(e || '').replace(/\s*\(aprox\.?\)/i, '');
+function ingresosVieja(f) {
+  if (f?.clave !== 'ingresos' || !Array.isArray(f.detalle)) return {};
+  const i = f.detalle.findIndex(d => d && !d.clave && /^\d{4}\s+facturado/i.test(d.etiqueta || ''));
+  if (i < 0) return {};
+  const anio = f.detalle[i], mes = String(f.periodo_texto || '');
+  return {
+    principal: eurNegocio(anio.valor), principalTexto: 'Facturado ' + String(anio.etiqueta).match(/\d{4}/)[0],
+    secundario: (mes ? mes + ' ' : '') + eurNegocio(f.principal), periodo: '',
+    detalle: f.detalle.filter((d, j) => j !== i).slice(0, 2).map(d => ({ etiqueta: sinAprox(d.etiqueta), valor: valorNegocio(d.valor, d.unidad) || 'sin dato' })),
+  };
+}
 export function modeloNegocio(filas) {
   return (Array.isArray(filas) ? filas : []).filter(f => f && f.principal != null).map(f => ({
     clave: f.clave, etiqueta: f.etiqueta, color: f.color || '', enlace: '#' + String(f.enlace || 'hoy').replace(/^#\/?/, ''), periodo: f.periodo_texto || '',
     principal: valorNegocio(f.principal, f.principal_unidad),
     principalTexto: f.principal_texto || '',
     secundario: [valorNegocio(f.secundario, f.secundario_unidad), f.secundario_texto].filter(Boolean).join(' '),
-    detalle: (Array.isArray(f.detalle) ? f.detalle : []).slice(0, 2).map(d => ({ etiqueta: d.etiqueta, valor: valorNegocio(d.valor, d.unidad) || 'sin dato' })),
+    detalle: (Array.isArray(f.detalle) ? f.detalle : []).slice(0, 2).map(d => ({ etiqueta: sinAprox(d.etiqueta), valor: valorNegocio(d.valor, d.unidad) || 'sin dato' })),
+    ...ingresosVieja(f),
   }));
 }
 export function pintarNegocio(filas) {
