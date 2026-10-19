@@ -3,6 +3,7 @@
 // los agentes; la vista solo resta fechas y cuenta. Sin umbrales, sin tasas, sin datos de correo. Solo lectura.
 import { el } from '../ui.js';
 import { cargarWeb, vistaWeb } from './web.js';
+import { cargarAyudas, vistaAyudas } from './ayudas.js';
 import { ventasTwentyActivo, renderTwenty } from './ventas-twenty.js';
 
 let carga = async () => (await import('../api.js')).rpc('ven_hq');
@@ -251,6 +252,13 @@ export async function render(raiz, reloj, arg, filtros = {}) {
   raiz.append(el('h1', { text: 'Ventas' }));
   const caja = el('div', { class: 'ventas' });
   raiz.append(caja);
+  if (filtros.bloque === 'ayudas') {
+    caja.append(cabecera(null, tab, ahora));
+    const zona = el('div', { class: 'ventas-ayudas' }, [el('p', { class: 'cargando', text: 'Cargando ayudas...' })]);
+    caja.append(zona);
+    try { const r = await cargarAyudas(); zona.innerHTML = ''; vistaAyudas(zona, r); } catch (e) { zona.innerHTML = ''; zona.append(el('p', { class: 'aviso rojo', role: 'alert', text: 'No se pudo leer las ayudas (' + (e?.message || 'error') + ')' })); }
+    return;
+  }
   if (tab === 'web') {
     caja.append(cabecera(null, tab, ahora));
     const zona = el('div', { class: 'ventas-web' }, [el('p', { class: 'cargando', text: 'Cargando Umami...' })]);
