@@ -109,3 +109,15 @@ test('#2584: cuatro celdas, pagar suma en decidir', () => {
   assert.deepEqual(c.map(x => x.clave), ['decidir', 'firmar', 'tareas']);
   assert.equal(c[0].valor, 6);
 });
+
+test('#2584 ingresos con el formato real v181 (fila de hq_v_hoy_negocio 19-10)', () => {
+  const fila = {"clave":"ingresos","etiqueta":"Ingresos","principal":15000.0,"principal_unidad":"eur","principal_texto":"facturado 2026","secundario":5000.0,"secundario_unidad":"eur","secundario_texto":"facturado octubre","periodo_texto":"octubre","detalle":[{"clave":"facturado_2026","valor":15000.0,"unidad":"eur","etiqueta":"2026 facturado"},{"clave":"cobrado_2026","valor":5000.0,"unidad":"eur","etiqueta":"cobrado 2026"},{"clave":"por_facturar","valor":27438.02,"unidad":"eur","etiqueta":"por facturar"},{"clave":"contratado_2026","valor":27438.02,"unidad":"eur","etiqueta":"contratado 2026"},{"clave":"concedido_2026","valor":16000.0,"unidad":"eur","etiqueta":"concedido 2026"},{"clave":"lineas_2026","lineas":[{"pct":0,"etiqueta":"Licita","facturado":0},{"pct":100,"etiqueta":"Sales","facturado":15000.0},{"pct":0,"etiqueta":"Cupones","facturado":0},{"pct":0,"etiqueta":"Otros","facturado":0}],"etiqueta":"por línea"}],"color":"verde","enlace":"#ventas?bloque=ingresos"};
+  const [m] = modeloNegocio([fila]);
+  assert.equal(m.periodo, '2026');
+  assert.equal(m.principal.replace(/\s/g, ' '), '15.000 €');
+  assert.equal(m.principalTexto, 'Facturado 2026');
+  assert.equal(m.secundario.replace(/\s/g, ' '), 'octubre 5.000 €');
+  assert.deepEqual(m.detalle.map(d => d.etiqueta), ['por facturar', 'cobrado 2026']);
+  assert.equal(m.detalle[0].valor.replace(/\s/g, ' '), '27.438 €');
+  assert.deepEqual(m.lineas.map(l => l.etiqueta + ' ' + l.pct), ['Licita 0', 'Sales 100', 'Cupones 0', 'Otros 0']);
+});
