@@ -2,6 +2,7 @@
 // Orden: KPIs, Depende de ti (decidir y pagar), Correos, Web, Captación, Firmar. Sin proyectos ni productos (tienen pestaña).
 // Solo pinta columnas de hq_v_hoy_* leídas por la RPC hq_hoy con p_token. Sin umbrales ni cálculo propio:
 // el rojo sale de umbral_decidir_h y umbral_correo_h que devuelve la RPC (hq_parametros).
+import { ICONOS_HOY } from '../iconos.js';
 import { el, toast, eur, fecha, pedirTexto, modal, confirmar } from '../ui.js';
 import { cargarAyudas, lineaAyudas } from './ayudas.js';
 import { pintarCaptacion, valorCifra } from './home.js';
@@ -102,18 +103,20 @@ export function recuento(cifras, claves, respaldo) {
 }
 
 // Acordeón: cabecera de 44 px con "Título (N)" y chevron. Con 0 queda gris y sin chevron. El contenido se pide al abrir (una vez).
-export function acordeon({ id, titulo, cuenta, color = '', vacioTexto, abierto = false, contenido, almacen = globalThis.localStorage }) {
+export function acordeon({ id, titulo, icono = '', cuenta, color = '', vacioTexto, abierto = false, contenido, almacen = globalThis.localStorage }) {
   const sec = el('section', { class: 'home-bloque hoy-bloque hoy-acordeon' + (cuenta === 0 ? ' gris' : '') + (color ? ' ' + color : ''), id });
-  const texto = titulo + (cuenta == null ? '' : ' (' + cuenta + ')');
+  const texto = titulo;
+  const ico = () => icono ? el('span', { class: 'cab-ico', html: icono }) : null;
+  const pastilla = () => cuenta == null ? null : el('span', { class: 'pastilla ' + (color || ''), text: String(cuenta) });
   if (cuenta === 0) {
-    sec.append(el('div', { class: 'hoy-acordeon-cab vacio' }, [el('span', { class: 'titulo', text: texto }), el('span', { class: 'mudo', text: vacioTexto || '' })]));
+    sec.append(el('div', { class: 'hoy-acordeon-cab vacio' }, [ico(), el('span', { class: 'titulo', text: texto }), pastilla(), el('span', { class: 'mudo', text: vacioTexto || '' })]));
     return sec;
   }
   const visto = leerVisto(id, almacen);
   const nuevo = cuenta != null && visto != null && cuenta > visto;
   const chev = el('span', { class: 'chevron', 'aria-hidden': 'true', text: '▾' });
   const cab = el('button', { type: 'button', class: 'hoy-acordeon-cab', 'aria-expanded': 'false', 'aria-controls': id + '-cuerpo' }, [
-    el('span', { class: 'titulo', text: texto }), nuevo ? el('span', { class: 'punto-nuevo ' + (color || ''), title: 'Ha subido desde tu última visita' }) : null, chev]);
+    ico(), el('span', { class: 'titulo', text: texto }), pastilla(), nuevo ? el('span', { class: 'punto-nuevo ' + (color || ''), title: 'Ha subido desde tu última visita' }) : null, chev]);
   const cuerpo = el('div', { class: 'hoy-acordeon-cuerpo', id: id + '-cuerpo', hidden: '' });
   let cargado = false;
   const fijar = (abrir, guardar = true) => {
@@ -206,9 +209,13 @@ export function pintarFirmar(h, ahora = new Date()) {
   const filas = (h?.firmar || []).slice().sort((a, b) => String(a.plazo || '9999').localeCompare(String(b.plazo || '9999'))).slice(0, n(h?.max_filas) || 50);
   return filas.map(f => {
     const roja = f.plazo && new Date(f.plazo) < ahora;
-    return el('a', { class: 'vt-card compacta' + (roja ? ' rojo' : ''), href: '#licitaciones?bloque=firmar' }, [
-      el('h3', { text: f.licitacion }),
-      el('p', { class: 'mudo', text: [f.organo, f.importe != null ? eur(f.importe) : null, f.plazo ? 'plazo ' + fecha(f.plazo) : null, f.paso].filter(Boolean).join(' · ') }),
+    return el('a', { class: 'vt-card compacta firmar-card' + (roja ? ' rojo' : ''), href: '#licitaciones?bloque=firmar' }, [
+      el('span', { class: 'cab-ico', html: ICONOS_HOY.firmar }),
+      el('div', { class: 'firmar-datos' }, [
+        el('h3', { text: f.licitacion }),
+        el('p', { class: 'mudo', text: [f.organo, f.paso].filter(Boolean).join(' · ') }),
+        el('p', { class: 'firmar-meta' }, [el('strong', { text: f.importe != null ? eur(f.importe) : 'importe sin dato' }), f.plazo ? ' · plazo ' + fecha(f.plazo) : '']),
+      ]),
     ]);
   });
 }
@@ -245,9 +252,9 @@ export function pintarWeb7(filas, ahora = new Date()) {
 }
 // Bloque fijo (V1, #2584): cuatro tarjetas por sitio, 30 días, datos del resumen de hq_web; no se pliega.
 function bloqueWeb() {
-  const sec = el('section', { class: 'home-bloque home-web', id: 'hoy-web' }, [el('h2', { text: 'Web (30 días)' }), el('p', { class: 'mudo', text: 'Cargando...' })]);
-  Promise.resolve().then(() => cargadores.web()).catch(() => cargadores.web()).then(f => sec.replaceChildren(el('h2', { text: 'Web (30 días)' }), ...pintarWeb7(f)))
-    .catch(e => { console.error('hq_web', e); sec.replaceChildren(el('h2', { text: 'Web (30 días)' }), el('p', { class: 'mudo', text: 'Web: sin datos' + (e && e.message ? ' (' + String(e.message).slice(0, 80) + ')' : '') })); });
+  const sec = el('section', { class: 'home-bloque home-web', id: 'hoy-web' }, [el('h2', {}, [el('span', { class: 'cab-ico', html: ICONOS_HOY.web }), 'Web (30 días)']), el('p', { class: 'mudo', text: 'Cargando...' })]);
+  Promise.resolve().then(() => cargadores.web()).catch(() => cargadores.web()).then(f => sec.replaceChildren(el('h2', {}, [el('span', { class: 'cab-ico', html: ICONOS_HOY.web }), 'Web (30 días)']), ...pintarWeb7(f)))
+    .catch(e => { console.error('hq_web', e); sec.replaceChildren(el('h2', {}, [el('span', { class: 'cab-ico', html: ICONOS_HOY.web }), 'Web (30 días)']), el('p', { class: 'mudo', text: 'Web: sin datos' + (e && e.message ? ' (' + String(e.message).slice(0, 80) + ')' : '') })); });
   return sec;
 }
 
@@ -333,16 +340,16 @@ export function render(raiz, S, arg, filtros) {
     const aviso = destacado && !idsDecidir.includes(String(destacado)) ? el('p', { class: 'aviso', text: 'La tarjeta ' + destacado + ' ya no está pendiente' }) : null;
     const abre = id => (destacado && id === 'hoy-decidir') || pedido === id;
     const bloques = [
-      acordeon({ id: 'hoy-decidir', titulo: 'Depende de ti', cuenta: dec.n, color: dec.color, vacioTexto: 'Nada depende de ti', abierto: abre('hoy-decidir') || leerAbierto('hoy-decidir'), contenido: () => pintarDecidir(h, repintar, destacado, filtros?.filtro) }),
+      acordeon({ id: 'hoy-decidir', titulo: 'Depende de ti', icono: ICONOS_HOY.decidir, cuenta: dec.n, color: dec.color, vacioTexto: 'Nada depende de ti', abierto: abre('hoy-decidir') || leerAbierto('hoy-decidir'), contenido: () => pintarDecidir(h, repintar, destacado, filtros?.filtro) }),
       bloqueWeb(),
-      acordeon({ id: 'hoy-captacion', titulo: 'Captación', cuenta: cap.n, color: cap.color, abierto: abre('hoy-captacion') || leerAbierto('hoy-captacion'), contenido: async () => {
+      acordeon({ id: 'hoy-captacion', titulo: 'Captación', icono: ICONOS_HOY.captacion, cuenta: cap.n, color: cap.color, abierto: abre('hoy-captacion') || leerAbierto('hoy-captacion'), contenido: async () => {
         const filas = await cargadores.captacion();
         const caja = el('div', {});
         const pinta = (f, p) => caja.replaceChildren(pintarCaptacion(f, p, q => pinta(f, q)));
         pinta(filas, 7);
         return caja;
       } }),
-      acordeon({ id: 'hoy-firmar', titulo: 'Firmar', cuenta: fir.n, color: fir.color, vacioTexto: 'Nada que firmar', abierto: abre('hoy-firmar') || leerAbierto('hoy-firmar'), contenido: () => pintarFirmar(h) }),
+      acordeon({ id: 'hoy-firmar', titulo: 'Firmar', icono: ICONOS_HOY.firmar, cuenta: fir.n, color: fir.color, vacioTexto: 'Nada que firmar', abierto: abre('hoy-firmar') || leerAbierto('hoy-firmar'), contenido: () => pintarFirmar(h) }),
     ];
     const pon = x => { const c = cabecera([...cifras.filter(y => y.clave !== 'tareas'), x]); cont.querySelector('.home-cifras')?.replaceWith(c); };
     cargadores.tareas().then(t => pon(cifraTareas(t))).catch(() => {});

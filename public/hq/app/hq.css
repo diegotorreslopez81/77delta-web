@@ -524,3 +524,10 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 .web-eje{display:flex;justify-content:space-between;font-size:11px;color:var(--tinta-2);margin-top:2px}
 .web-barra:last-child{background:var(--oro)}
 .ayudas-linea{cursor:pointer;text-decoration:none}
+
+.cab-ico{display:inline-flex;flex:none;color:var(--oro-luz)}.cab-ico .ico{width:20px;height:20px}
+.home-web h2{display:flex;align-items:center;gap:8px}
+.pastilla{flex:none;min-width:22px;padding:2px 8px;border-radius:11px;background:var(--surface-3);font-size:13px;font-weight:600;text-align:center}
+.pastilla.rojo{background:var(--error);color:#fff}.pastilla.ambar{background:var(--oro-suave);color:var(--oro-oscuro)}.pastilla.verde{background:var(--exito-suave);color:var(--exito)}
+.firmar-card{display:flex;gap:10px;align-items:flex-start;border-left:4px solid var(--oro-luz)}.firmar-card.rojo{border-left-color:var(--error)}
+.firmar-card .firmar-datos{min-width:0;flex:1}.firmar-meta{margin:2px 0 0}.firmar-meta strong{font-size:16px}
