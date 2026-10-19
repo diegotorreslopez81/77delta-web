@@ -3,6 +3,7 @@
 // Solo pinta columnas de hq_v_hoy_* leídas por la RPC hq_hoy con p_token. Sin umbrales ni cálculo propio:
 // el rojo sale de umbral_decidir_h y umbral_correo_h que devuelve la RPC (hq_parametros).
 import { el, toast, eur, fecha, pedirTexto, modal, confirmar } from '../ui.js';
+import { cargarAyudas, filaAyudas } from './ayudas.js';
 import { pintarCaptacion, valorCifra } from './home.js';
 import { rejillaWeb } from './web.js';
 
@@ -321,6 +322,8 @@ export function render(raiz, S, arg, filtros) {
   const repintar = () => render(Object.assign(raiz, { innerHTML: '' }), S, arg, filtros);
   Promise.all([cargadores.hoy(), Promise.resolve().then(() => cargadores.negocio()).catch(() => null)]).then(([h, filasNeg]) => {
     const neg = pintarNegocio(filasNeg);
+    // Ayudas pedidas bajo el Pipeline (tolera que hq_ayudas no exista o falle: sin fila).
+    if (neg) Promise.resolve().then(() => cargarAyudas()).then(r => { const pip = [...neg.children].find(c => /pipeline/i.test(c.textContent)); (pip || neg.lastChild).after(filaAyudas(r)); }).catch(() => {});
     const cifras = h?.cifras || [];
     const dec = recuento(cifras, ['decidir', 'pagar'], (h?.decidir || []).length + (h?.pagar || []).length);
     const fir = recuento(cifras, ['firmar'], (h?.firmar || []).length);
