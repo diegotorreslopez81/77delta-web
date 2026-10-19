@@ -260,8 +260,23 @@ export function eurNegocio(v) {
 const valorNegocio = (v, unidad) => v == null ? '' : unidad === 'eur' ? eurNegocio(v) : String(v) + (unidad && unidad !== 'n' ? ' ' + unidad : '');
 // Ingresos (#2584): cifra grande = facturado del año (detalle "2026 facturado"), debajo el mes en pequeño; sin "(aprox.)" en etiquetas.
 const sinAprox = e => String(e || '').replace(/\s*\(aprox\.?\)/i, '');
+// Formato v181: detalle con clave. Cifra grande = facturado_2026, pequeño = mes en curso; el detalle solo muestra por facturar y cobrado.
+function ingresosNueva(f) {
+  const por = c => f.detalle.find(d => d && d.clave === c);
+  const anio = por('facturado_2026');
+  if (!anio) return null;
+  const mes = String(f.periodo_texto || '');
+  const fila = c => { const d = por(c); return d ? [{ etiqueta: sinAprox(d.etiqueta), valor: valorNegocio(d.valor, d.unidad) || 'sin dato' }] : []; };
+  return {
+    periodo: String(anio.etiqueta || '').match(/\d{4}/)?.[0] || '', principal: eurNegocio(anio.valor), principalTexto: 'Facturado ' + (String(anio.etiqueta || '').match(/\d{4}/)?.[0] || ''),
+    secundario: (mes ? mes + ' ' : '') + eurNegocio(f.secundario ?? f.principal),
+    detalle: [...fila('por_facturar'), ...fila('cobrado_2026')],
+  };
+}
 function ingresosVieja(f) {
   if (f?.clave !== 'ingresos' || !Array.isArray(f.detalle)) return {};
+  const nueva = ingresosNueva(f);
+  if (nueva) return nueva;
   const i = f.detalle.findIndex(d => d && !d.clave && /^\d{4}\s+facturado/i.test(d.etiqueta || ''));
   if (i < 0) return {};
   const anio = f.detalle[i], mes = String(f.periodo_texto || '');

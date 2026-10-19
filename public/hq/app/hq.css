@@ -496,8 +496,8 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 .hoy-neg .neg-detalle { font-size: 12px; }
 .hoy-neg.rojo .neg-principal { color: var(--error); } .hoy-neg.ambar .neg-principal { color: var(--tag-ambar-fg); } .hoy-neg.verde .neg-principal { color: var(--exito); }
 @media (min-width: 900px) { .hoy-negocio { grid-template-columns: repeat(4, 1fr); } }
-.hoy .home-cifras { display: flex; overflow-x: auto; gap: 6px; }
-.hoy .home-cifras .home-cifra { flex: 0 0 80px; min-width: 80px; }
+.hoy .home-cifras { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.hoy .home-cifras .home-cifra { min-width: 0; }
 
 .proyecto-fila summary{display:flex;align-items:center;gap:8px}.proyecto-fila .pct-grande{margin-left:auto;font-size:22px;font-weight:700}.proyecto-fila .pct-grande.gris{font-size:14px;color:var(--tinta-suave,#8a8f98)}
 .punto{width:10px;height:10px;border-radius:50%;background:#8a8f98;flex:none}.punto.rojo{background:var(--error)}.punto.ambar{background:var(--oro-luz)}.punto.verde{background:var(--exito)}
