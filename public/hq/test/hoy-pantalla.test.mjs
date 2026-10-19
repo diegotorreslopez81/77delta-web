@@ -52,6 +52,8 @@ test('celdasCabecera: 3 celdas (sin correos), sin cola_chief, agentes ni caja ni
 import { cifraTareas } from '../app/vistas/hoy-pantalla.js';
 test('cifraTareas: rojo con vencidas u hoy, ámbar sin fecha, verde sin nada, gris sin dato', () => {
   assert.equal(cifraTareas({ abiertas: 9, vencidas: 1, hoy: 0, sin_fecha: 0 }).color, 'rojo');
+  assert.equal(cifraTareas({ abiertas: 6, vencidas: 1, hoy: 0, sin_fecha: 2 }).valor, 6);
+  assert.equal(cifraTareas({ abiertas: 6, vencidas: 0, hoy: 0, sin_fecha: 0 }).valor, 6);
   assert.equal(cifraTareas({ abiertas: 9, vencidas: 0, hoy: 2, sin_fecha: 5 }).color, 'rojo');
   assert.equal(cifraTareas({ abiertas: 9, vencidas: 0, hoy: 0, sin_fecha: 3 }).color, 'ambar');
   assert.equal(cifraTareas({ abiertas: 9, vencidas: 0, hoy: 0, sin_fecha: 0 }).color, 'verde');
