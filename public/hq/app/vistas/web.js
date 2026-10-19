@@ -63,7 +63,7 @@ export function bloquesWeb(r, ahora = new Date()) {
   }).sort((a, b) => b.visitas - a.visitas);
 }
 
-function bloque(b) {
+export function bloque(b) {
   const caja = el('div', { class: 'vt-card compacta web-bloque' });
   caja.append(el('h3', { text: b.sitio }));
   caja.append(el('div', { class: 'web-kpis' }, [

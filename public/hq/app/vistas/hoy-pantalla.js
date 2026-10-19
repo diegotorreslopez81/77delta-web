@@ -4,10 +4,11 @@
 // el rojo sale de umbral_decidir_h y umbral_correo_h que devuelve la RPC (hq_parametros).
 import { el, toast, eur, fecha, pedirTexto, modal, confirmar } from '../ui.js';
 import { pintarCaptacion, valorCifra } from './home.js';
+import { bloquesWeb, bloque as bloqueWeb } from './web.js';
 
 let cargadores = {
   hoy: async () => (await import('../api.js')).rpc('hq_hoy'),
-  web: async () => (await import('../api.js')).rpc('hq_web', { p_dias: 14 }),
+  web: async () => (await import('../api.js')).rpc('hq_web', { p_dias: 30 }),
   captacion: async () => (await import('../api.js')).rpc('hq_captacion'),
   negocio: async () => (await import('../api.js')).rpc('hq_hoy_negocio'),
   tareas: async () => (await import('../api.js')).leerVivo('/hq/tareas'),
@@ -239,13 +240,9 @@ export function modeloWeb7(filas, ahora = new Date()) {
 }
 export function pintarWeb7(filas, ahora = new Date()) {
   if (filas == null) return [vacio('Web: sin datos')];
-  const m = modeloWeb7(Array.isArray(filas) ? filas : filas.dias || [], ahora);
+  const m = bloquesWeb(filas, ahora);
   if (!m.length) return [vacio('Web: sin visitas')];
-  return [el('div', { class: 'vt-cards' }, m.map(s => el('a', { class: 'vt-card compacta web-tarjeta', href: '#ventas?bloque=web' }, [
-    el('h3', { text: s.sitio }),
-    el('p', { text: s.visitas + ' visitas' + (s.variacion != null ? ' (' + (s.variacion > 0 ? '+' : '') + s.variacion + '%)' : '') }),
-    el('p', { class: 'mudo', text: s.visitantes + ' visitantes · ' + s.clics + ' Reservar · ' + s.formularios + ' formularios' }),
-  ])))];
+  return [el('div', { class: 'web-bloques' }, m.map(bloqueWeb))];
 }
 
 // Aviso y apertura por #hoy/N o ?bloque=: el bloque pedido se abre aunque estuviera plegado.
