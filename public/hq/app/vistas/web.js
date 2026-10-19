@@ -34,29 +34,60 @@ export function modeloWeb(filas, ahora = new Date()) {
   })).sort((a, b) => b.s30.v - a.s30.v);
 }
 
-function tarjeta(s) {
-  const caja = el('div', { class: 'vt-card compacta web-sitio' });
-  caja.append(el('h3', { text: s.sitio }));
-  const t = el('table', { class: 'tabla-lic web-tabla' });
-  t.append(el('tr', {}, [el('th', { text: '' }), el('th', { text: 'Hoy' }), el('th', { text: '7 días' }), el('th', { text: '30 días' })]));
-  t.append(el('tr', {}, [el('td', { text: 'Visitas' }), el('td', { text: String(s.hoy.v) }), el('td', { text: String(s.s7.v) }), el('td', { text: String(s.s30.v) })]));
-  t.append(el('tr', {}, [el('td', { text: 'Visitantes' }), el('td', { text: String(s.hoy.u) }), el('td', { text: String(s.s7.u) }), el('td', { text: String(s.s30.u) })]));
-  caja.append(t);
-  caja.append(el('p', { class: 'vt-nota', text: s.fuentes.length ? 'Fuentes (7 días): ' + s.fuentes.map(f => f.fuente + ' ' + f.n).join(' · ') : 'Fuentes (7 días): sin datos.' }));
-  if (s.dias.length) caja.append(el('p', { class: 'vt-nota', text: 'Por día (visitas / visitantes): ' + s.dias.map(d => fdia(d.dia) + ' ' + d.v + '/' + d.u).join(' · ') }));
+const miles = x => new Intl.NumberFormat('es-ES').format(n(x));
+
+// La RPC devuelve un array de días (forma vieja) o {dias, resumen} (v183).
+export function separar(r) {
+  if (Array.isArray(r)) return { dias: r, resumen: null };
+  return { dias: (r && r.dias) || [], resumen: (r && r.resumen) || null };
+}
+
+// Un bloque por sitio: 30 días y totales del resumen de la RPC; sin resumen, 30 días sumados de las filas.
+export function bloquesWeb(r, ahora = new Date()) {
+  const { dias, resumen } = separar(r);
+  const por = {};
+  modeloWeb(dias, ahora).forEach(s => { por[s.sitio] = s; });
+  const sitios = resumen && resumen.length ? resumen.map(x => x.sitio) : Object.keys(por);
+  return sitios.map(sitio => {
+    const x = (resumen || []).find(q => q.sitio === sitio);
+    const s = por[sitio];
+    const pct = x && x.variacion_pct != null ? n(x.variacion_pct) : null;
+    return {
+      sitio,
+      visitas: x ? n(x.visitas_30d) : s ? s.s30.v : 0,
+      visitantes: x ? n(x.visitantes_30d) : s ? s.s30.u : 0,
+      visitas_total: x ? n(x.visitas_total) : null,
+      visitantes_total: x ? n(x.visitantes_total) : null,
+      variacion: pct,
+    };
+  }).sort((a, b) => b.visitas - a.visitas);
+}
+
+function bloque(b) {
+  const caja = el('div', { class: 'vt-card compacta web-bloque' });
+  caja.append(el('h3', { text: b.sitio }));
+  caja.append(el('div', { class: 'web-kpis' }, [
+    el('div', {}, [el('div', { class: 'web-num', text: miles(b.visitas) }), el('div', { class: 'vt-nota', text: 'visitas 30 días' })]),
+    el('div', {}, [el('div', { class: 'web-num', text: miles(b.visitantes) }), el('div', { class: 'vt-nota', text: 'visitantes 30 días' })]),
+  ]));
+  if (b.visitas_total != null) caja.append(el('p', { class: 'vt-nota', text: 'Total: ' + miles(b.visitas_total) + ' visitas · ' + miles(b.visitantes_total) + ' visitantes' }));
+  if (b.variacion != null) {
+    const sube = b.variacion >= 0;
+    caja.append(el('p', { class: 'web-var ' + (sube ? 'verde' : 'rojo'), text: (sube ? '▲ +' : '▼ ') + b.variacion + ' % frente a los 30 días anteriores' }));
+  }
   return caja;
 }
 
 export async function render(raiz) {
   raiz.append(el('h2', { text: 'Web' }));
-  raiz.append(el('p', { class: 'vt-nota', text: 'Umami en directo (visitas y visitantes por sitio). Clics en Reservar y envíos de formularios llegarán cuando la web emita esos eventos.' }));
-  const caja = el('div', { class: 'vt-cards' });
+  raiz.append(el('p', { class: 'vt-nota', text: 'Umami en directo (visitas y visitantes por sitio).' }));
+  const caja = el('div', { class: 'web-bloques' });
   raiz.append(caja);
   caja.append(el('p', { class: 'vt-nota', text: 'Cargando...' }));
-  let filas;
-  try { filas = await carga(DIAS); } catch (e) { caja.innerHTML = ''; caja.append(el('p', { class: 'vt-nota', text: 'No se ha podido leer Umami: ' + (e.message || e) })); return; }
-  const m = modeloWeb(filas);
+  let r;
+  try { r = await carga(DIAS); } catch (e) { caja.innerHTML = ''; caja.append(el('p', { class: 'vt-nota', text: 'No se ha podido leer Umami: ' + (e.message || e) })); return; }
+  const m = bloquesWeb(r);
   caja.innerHTML = '';
   if (!m.length) { caja.append(el('p', { class: 'vt-nota', text: 'Sin datos de Umami en los últimos 30 días.' })); return; }
-  m.forEach(s => caja.append(tarjeta(s)));
+  m.forEach(b => caja.append(bloque(b)));
 }

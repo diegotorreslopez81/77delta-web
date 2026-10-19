@@ -22,6 +22,11 @@ test('modeloHomeWeb: suma 7 días, envíos y hoy/ayer', () => {
   assert.deepEqual([s.visitas, s.visitantes, s.clics, s.envios], [8, 6, 1, 3]);
   assert.equal(m.hoy, 5); assert.equal(m.ayer, 3);
 });
+test('modeloHomeWeb: acepta {dias, resumen} de v183 igual que el array', () => {
+  const ahora = new Date('2026-10-18T12:00:00Z');
+  const f = [{ sitio: '77delta.com', dia: '2026-10-18', visitas: 5, visitantes: 4 }];
+  assert.deepEqual(modeloHomeWeb({ dias: f, resumen: [] }, ahora), modeloHomeWeb(f, ahora));
+});
 test('modeloWeb7: suma 7 días y variación frente a los 7 anteriores', async () => {
   const { modeloWeb7 } = await import('../app/vistas/hoy-pantalla.js');
   const ahora = new Date('2026-10-18T12:00:00Z');
