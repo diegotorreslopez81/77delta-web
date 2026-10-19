@@ -291,6 +291,7 @@ export function render(raiz, S, arg, filtros) {
     const cor = recuento(cifras, ['correos'], (h?.correos || []).length);
     const fir = recuento(cifras, ['firmar'], (h?.firmar || []).length);
     const web = recuento(cifras, ['web'], null), cap = recuento(cifras, ['captacion'], null);
+    if (window.HQ_DATOS?.rol === 'owner') { window.HQ_DATOS.depende_n = dec.n; window.HQ_PINTAR?.(); }
     const idsDecidir = [...(h?.decidir || []), ...(h?.pagar || [])].map(p => String(p.id));
     const aviso = destacado && !idsDecidir.includes(String(destacado)) ? el('p', { class: 'aviso', text: 'La tarjeta ' + destacado + ' ya no está pendiente' }) : null;
     const abre = id => (destacado && id === 'hoy-decidir') || pedido === id;

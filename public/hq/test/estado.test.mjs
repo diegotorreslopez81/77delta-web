@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { derivar, kanban, filtrar, semana, sinAcentos, COLUMNAS } from '../app/estado.js';
-import { prorrateo, contador, semaforoCuentas, enCurso, cierres, frescuraFrente, frescuraPlan } from '../app/estado.js';
+import { dependeN, prorrateo, contador, semaforoCuentas, enCurso, cierres, frescuraFrente, frescuraPlan } from '../app/estado.js';
 
 const datos = {
   objetivos: [{ horizonte: 2026, meta_eur: 300000 }],
@@ -50,10 +50,10 @@ test('prorrateo reparte la meta anual por día natural; año futuro 0, año pasa
 });
 test('contador: owner cuenta lo que depende de Diego; agente cuenta lo que está en curso', () => {
   const owner = { rol: 'owner', pendientes: [{ id: 1 }, { id: 2 }], encargos: [{ id: 9, estado: 'en_curso' }] };
-  assert.deepEqual(contador(owner), { texto: 'Depende de ti', n: 2, href: '#hoy' });
+  assert.deepEqual(contador(owner), { texto: 'Depende de ti', n: 2, href: '#hoy?bloque=decidir' });
   const agente = { rol: 'agente', pendientes: [], encargos: [{ id: 9, estado: 'en_curso' }, { id: 10, estado: 'hecho' }, { id: 11, estado: 'bloqueado_diego' }] };
   assert.deepEqual(contador(agente), { texto: 'En curso', n: 1, href: '#operacion/tablero' });
-  assert.deepEqual(contador({ rol: 'owner' }), { texto: 'Depende de ti', n: 0, href: '#hoy' });
+  assert.deepEqual(contador({ rol: 'owner' }), { texto: 'Depende de ti', n: 0, href: '#hoy?bloque=decidir' });
 });
 test('semaforoCuentas: null sin datos de cuentas; color por la cuenta más cargada', () => {
   assert.equal(semaforoCuentas({}), null); assert.equal(semaforoCuentas({ cuentas: [] }), null);
@@ -147,4 +147,12 @@ test('frescura: sin fuente ni updated_at (RPC antigua) no se sabe, nunca rojo po
 test('frescura del plan: N de M al día cuenta solo las que tienen dato', () => {
   const fs = [{ fuente: 'sql' }, manual(), manual({ fecha_hito: '2026-09-10' }), { codigo: 'sin dato' }];
   assert.deepEqual(frescuraPlan(fs, HOY), { m: 3, alDia: 2, vencidas: 1 });
+});
+
+test('badge: con depende_n (misma fuente que Hoy) manda sobre las pendientes; 0 lo oculta', () => {
+  assert.equal(contador({ rol: 'owner', pendientes: [{ id: 1 }, { id: 2 }], depende_n: 3 }).n, 3);
+  assert.equal(contador({ rol: 'owner', pendientes: [{ id: 1 }], depende_n: 0 }).n, 0);
+  assert.equal(dependeN({ cifras: [{ clave: 'decidir', valor: 2 }, { clave: 'pagar', valor: 1 }, { clave: 'web', valor: 9 }] }), 3);
+  assert.equal(dependeN({ decidir: [1], pagar: [2, 3] }), 3);
+  assert.equal(dependeN(null), null);
 });
