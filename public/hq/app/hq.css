@@ -508,6 +508,12 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 .web-bloques{display:grid;grid-template-columns:1fr;gap:8px}
 @media (min-width:1000px){.web-bloques{grid-template-columns:repeat(4,1fr)}}
 .web-bloque{cursor:default}
+.web-mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (min-width:900px){.web-mini-grid{grid-template-columns:repeat(4,1fr)}}
+.web-mini{display:block;text-decoration:none;color:inherit;min-width:0;overflow-wrap:anywhere}
+.web-mini h3{margin:0 0 4px;font-size:13px}
+.web-mini .web-var{font-weight:600;color:var(--c)}
+.web-sitio.destacado{border-color:var(--oro)}
 .web-kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .web-num{font-size:26px;font-weight:700;line-height:1.1}
 .web-var{margin:0;font-size:13px;font-weight:600}.web-var.verde{color:var(--exito)}.web-var.rojo{color:var(--error)}

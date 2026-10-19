@@ -2,6 +2,7 @@
 // Contrato: hq-ventas-diseno.md. Todo lo pintado sale de columnas ven_* (RPC ven_hq, schema-v138) que escriben
 // los agentes; la vista solo resta fechas y cuenta. Sin umbrales, sin tasas, sin datos de correo. Solo lectura.
 import { el } from '../ui.js';
+import { cargarWeb, vistaWeb } from './web.js';
 import { ventasTwentyActivo, renderTwenty } from './ventas-twenty.js';
 
 let carga = async () => (await import('../api.js')).rpc('ven_hq');
@@ -69,8 +70,8 @@ export function agruparPorDia(eventos) {
 
 const urlPagina = slug => 'https://77delta.com/propuestas/' + slug;
 
-const TABS = ['hoy', 'pipeline', 'campanas'];
-const TAB_NOMBRE = { hoy: 'Hoy', pipeline: 'Pipeline', campanas: 'Campañas' };
+const TABS = ['hoy', 'pipeline', 'campanas', 'web'];
+const TAB_NOMBRE = { hoy: 'Hoy', pipeline: 'Pipeline', campanas: 'Campañas', web: 'Web' };
 const ESTADO_ENVIO = { enviado: 'enviado', aprobado: 'en cola', redactado: 'pendiente de OK', redactar: 'por redactar', cancelado: 'cancelado', error: 'error' };
 const irTab = t => { if (typeof location !== 'undefined') location.hash = '#operacion/ventas/' + t; };
 const humana = t => t && t.quien === 'diego';
@@ -118,10 +119,10 @@ export function modeloCampana(c = {}) {
 }
 
 function cabecera(d, tab, ahora) {
-  const ganadas = d.oportunidades.filter(o => o.etapa === 'ganada').length, m = d.meta;
+  const ganadas = d ? d.oportunidades.filter(o => o.etapa === 'ganada').length : 0, m = d && d.meta;
   return el('div', { class: 'vt-cabecera' }, [
     el('div', { class: 'vt-tabs', role: 'tablist' }, TABS.map(t => el('a', { role: 'tab', href: '#operacion/ventas/' + t, 'aria-selected': String(tab === t), text: TAB_NOMBRE[t] }))),
-    el('div', { class: 'vt-meta', text: `Ganadas ${ganadas}${m?.n ? ' de ' + m.n : ''}${m?.fecha ? ' · meta ' + fdia(m.fecha) + '-' + m.fecha.slice(0, 4) : ''} · datos de ${hhmm(ahora.toISOString())}` }),
+    !d ? null : el('div', { class: 'vt-meta', text: `Ganadas ${ganadas}${m?.n ? ' de ' + m.n : ''}${m?.fecha ? ' · meta ' + fdia(m.fecha) + '-' + m.fecha.slice(0, 4) : ''} · datos de ${hhmm(ahora.toISOString())}` }),
   ]);
 }
 
@@ -244,12 +245,19 @@ function pintarCampanas(raiz, d, ahora) {
 }
 
 // main.js llama render(raiz, S, arg, filtros): el 2º parámetro solo cuenta como reloj si es una Date (tests).
-export async function render(raiz, reloj, arg) {
+export async function render(raiz, reloj, arg, filtros = {}) {
   const ahora = reloj instanceof Date ? reloj : new Date();
   const tab = TABS.includes(arg) ? arg : 'hoy';
   raiz.append(el('h1', { text: 'Ventas' }));
   const caja = el('div', { class: 'ventas' });
   raiz.append(caja);
+  if (tab === 'web') {
+    caja.append(cabecera(null, tab, ahora));
+    const zona = el('div', { class: 'ventas-web' }, [el('p', { class: 'cargando', text: 'Cargando Umami...' })]);
+    caja.append(zona);
+    try { const r = await cargarWeb(); zona.innerHTML = ''; vistaWeb(zona, r, filtros, ahora); } catch (e) { zona.innerHTML = ''; zona.append(el('p', { class: 'aviso rojo', role: 'alert', text: 'No se pudo leer Umami (' + (e?.message || 'error') + ').' })); }
+    return;
+  }
   caja.append(el('p', { class: 'cargando', text: 'Cargando el embudo de ventas...' }));
   if (ventasTwentyActivo()) {
     try { await renderTwenty(caja, cargaTwenty, ahora); } catch (e) { caja.innerHTML = ''; caja.append(el('p', { class: 'aviso rojo', role: 'alert', text: 'No se pudo leer el resumen de Twenty (' + (e?.message || 'error') + ').' })); }

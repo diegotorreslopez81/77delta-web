@@ -4,7 +4,7 @@
 // el rojo sale de umbral_decidir_h y umbral_correo_h que devuelve la RPC (hq_parametros).
 import { el, toast, eur, fecha, pedirTexto, modal, confirmar } from '../ui.js';
 import { pintarCaptacion, valorCifra } from './home.js';
-import { bloquesWeb, bloque as bloqueWeb } from './web.js';
+import { rejillaWeb } from './web.js';
 
 let cargadores = {
   hoy: async () => (await import('../api.js')).rpc('hq_hoy'),
@@ -240,9 +240,14 @@ export function modeloWeb7(filas, ahora = new Date()) {
 }
 export function pintarWeb7(filas, ahora = new Date()) {
   if (filas == null) return [vacio('Web: sin datos')];
-  const m = bloquesWeb(filas, ahora);
-  if (!m.length) return [vacio('Web: sin visitas')];
-  return [el('div', { class: 'web-bloques' }, m.map(bloqueWeb))];
+  return [rejillaWeb(filas, ahora)];
+}
+// Bloque fijo (V1, #2584): cuatro tarjetas por sitio, 30 días, datos del resumen de hq_web; no se pliega.
+function bloqueWeb() {
+  const sec = el('section', { class: 'home-bloque home-web', id: 'hoy-web' }, [el('h2', { text: 'Web (30 días)' }), el('p', { class: 'mudo', text: 'Cargando...' })]);
+  Promise.resolve().then(() => cargadores.web()).then(f => sec.replaceChildren(el('h2', { text: 'Web (30 días)' }), ...pintarWeb7(f)))
+    .catch(() => sec.replaceChildren(el('h2', { text: 'Web (30 días)' }), ...pintarWeb7(null)));
+  return sec;
 }
 
 // Aviso y apertura por #hoy/N o ?bloque=: el bloque pedido se abre aunque estuviera plegado.
@@ -326,7 +331,7 @@ export function render(raiz, S, arg, filtros) {
     const abre = id => (destacado && id === 'hoy-decidir') || pedido === id;
     const bloques = [
       acordeon({ id: 'hoy-decidir', titulo: 'Depende de ti', cuenta: dec.n, color: dec.color, vacioTexto: 'Nada depende de ti', abierto: abre('hoy-decidir') || leerAbierto('hoy-decidir'), contenido: () => pintarDecidir(h, repintar, destacado, filtros?.filtro) }),
-      acordeon({ id: 'hoy-web', titulo: 'Web', cuenta: web.n, color: web.color, abierto: abre('hoy-web') || leerAbierto('hoy-web'), contenido: async () => pintarWeb7(await cargadores.web()) }),
+      bloqueWeb(),
       acordeon({ id: 'hoy-captacion', titulo: 'Captación', cuenta: cap.n, color: cap.color, abierto: abre('hoy-captacion') || leerAbierto('hoy-captacion'), contenido: async () => {
         const filas = await cargadores.captacion();
         const caja = el('div', {});
