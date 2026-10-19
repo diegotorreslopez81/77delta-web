@@ -26,12 +26,12 @@ const ICONOS = {
 };
 export const AREAS = [
   { id: 'hoy', nombre: 'Hoy', corto: 'Hoy', icono: ICONOS.hoy, vistas: [{ clave: 'hoy', nombre: 'Hoy' }] },
-  { id: 'licitaciones', nombre: 'Licitaciones', corto: 'Licita', icono: ICONOS.licitaciones, vistas: [{ clave: 'operacion/licitaciones', nombre: 'Licitaciones' }] },
+  { id: 'licitaciones', nombre: 'Licita', corto: 'Licita', icono: ICONOS.licitaciones, vistas: [{ clave: 'operacion/licitaciones', nombre: 'Licitaciones' }] },
   // D91 (Diego, 28-sep): el motor Licita autonomo, vista propia junto a Licitaciones.
   { id: 'licita-engine', nombre: 'Licita Engine', icono: ICONOS.motor, vistas: [{ clave: 'licita-engine', nombre: 'Licita Engine' }] },
   { id: 'expedientes', nombre: 'Expedientes', icono: ICONOS.expedientes, vistas: [{ clave: 'operacion/expedientes', nombre: 'Expedientes' }] },
   { id: 'tablero', nombre: 'Tablero', icono: ICONOS.operacion, vistas: [{ clave: 'operacion/tablero', nombre: 'Tablero' }] },
-  { id: 'ventas', nombre: 'Ventas', corto: 'Ventas', icono: ICONOS.kpis, vistas: [{ clave: 'operacion/ventas', nombre: 'Ventas' }] },
+  { id: 'ventas', nombre: 'Sales', corto: 'Sales', icono: ICONOS.kpis, vistas: [{ clave: 'operacion/ventas', nombre: 'Ventas' }] },
   // Menú de seis (Diego 18-10, menu-hq-2026-10-18.md): Productos abre un resumen hasta que exista hq_v_productos; Proyectos = la antigua En curso.
   { id: 'productos', nombre: 'Productos', corto: 'Productos', icono: ICONOS.motor, vistas: [{ clave: 'productos', nombre: 'Productos' }] },
   { id: 'proyectos', nombre: 'Proyectos', corto: 'Proyectos', icono: ICONOS.operacion, vistas: [{ clave: 'operacion/en-curso', nombre: 'Proyectos' }] },

@@ -1,5 +1,6 @@
 // Acceso a HQ: config, token y RPC. Sin canal realtime (T7-b: main.js recarga por intervalo, no por
 // suscripción); sin estado de negocio (eso está en estado.js).
+import { dependeN } from './estado.js';
 const API = 'https://api.77delta.com';
 // El token entra por el fragmento (#t=...), que no viaja al servidor ni al Referer; ?t= se sigue aceptando
 // por los enlaces antiguos. En ambos casos se borra de la URL en cuanto se guarda.
@@ -129,12 +130,12 @@ async function clavesDatos() {
   } catch { return clavesCache?.claves ?? null; }
 }
 export async function cargar() {
-  const [d, toque, semaforo, claves] = await Promise.all([rpc('omc_hq_v2'), toqueNoDisponible ? null : rpc('omc_licitaciones_toque').catch(() => { toqueNoDisponible = true; return null; }),
-    rpc('omc_semaforo').catch(() => null), clavesDatos()]);
+  const [d, toque, semaforo, claves, hoy] = await Promise.all([rpc('omc_hq_v2'), toqueNoDisponible ? null : rpc('omc_licitaciones_toque').catch(() => { toqueNoDisponible = true; return null; }),
+    rpc('omc_semaforo').catch(() => null), clavesDatos(), rpc('hq_hoy').catch(() => null)]);
   if (d && Array.isArray(d.licitaciones) && Array.isArray(toque)) {
     const m = new Map(toque.map(x => [x.expediente, x.toque]));
     for (const l of d.licitaciones) if (m.has(l.expediente)) l.toque = m.get(l.expediente);
   }
-  if (d && typeof d === 'object') { d.semaforo = semaforo && Array.isArray(semaforo.filas) ? semaforo : null; d.claves_datos = claves; }
+  if (d && typeof d === 'object') { d.semaforo = semaforo && Array.isArray(semaforo.filas) ? semaforo : null; d.claves_datos = claves; d.depende_n = dependeN(hoy); }
   return d;
 }

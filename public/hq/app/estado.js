@@ -130,8 +130,15 @@ export function listaDecisiones(datos) { return [...(datos?.pendientes || []), .
 export function recuentoDecisiones(datos) {
   return { pendientes: (datos?.pendientes || []).length, pospuestas: (datos?.pospuestas || []).length, total: listaDecisiones(datos).length };
 }
+// Misma regla que 'Depende de ti' en Hoy (vistas/hoy-pantalla.js recuento): suma de hq_v_hoy_cifras decidir+pagar y, si faltan, longitud de las listas.
+export function dependeN(h) {
+  if (!h) return null;
+  const c = (h.cifras || []).filter(x => x.clave === 'decidir' || x.clave === 'pagar');
+  return c.length ? c.reduce((a, x) => a + (Number(x.valor) || 0), 0) : (h.decidir || []).length + (h.pagar || []).length;
+}
 export function contador(datos) {
-  if (datos?.rol === 'owner') return { texto: 'Depende de ti', n: recuentoDecisiones(datos).total, href: '#hoy' };
+  // 19-10 (Diego, #2337): la cifra es la de 'Depende de ti' en Hoy (mismo resultado de hq_hoy, guardado en datos.depende_n); toque abre Hoy en ese bloque.
+  if (datos?.rol === 'owner') return { texto: 'Depende de ti', n: Number.isFinite(datos.depende_n) ? datos.depende_n : recuentoDecisiones(datos).pendientes, href: '#hoy?bloque=decidir' };
   return { texto: 'En curso', n: enCurso(datos?.encargos).length, href: '#operacion/tablero' };
 }
 // Latido compartido (2.0.20): el punto verde del organigrama, el "activo ahora" de decidirSesion en
