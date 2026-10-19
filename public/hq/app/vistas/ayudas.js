@@ -11,8 +11,9 @@ const soloHttps = u => /^https:\/\//i.test(String(u || ''));
 
 export const textoAyudas = r => 'Ayudas pedidas: ' + (Number(r && r.pedidas_n) || 0) + ' · ' + euros(r && r.pedidas_importe);
 
-// Fila de la home, bajo el Pipeline: abre la lista.
-export const filaAyudas = r => el('a', { class: 'vt-card hoy-neg ayudas-fila', href: '#operacion/ventas?bloque=ayudas' }, [el('span', { class: 'neg-detalle', text: textoAyudas(r) })]);
+// Línea dentro de la tarjeta Pipeline de la home, bajo propuestas: abre la lista sin activar el enlace de la tarjeta.
+export const lineaAyudas = r => el('span', { class: 'mudo neg-detalle ayudas-linea', role: 'link', tabindex: '0', text: 'Otros / ' + textoAyudas(r).replace(/^Ayudas/, 'ayudas'),
+  onclick: e => { e.preventDefault(); e.stopPropagation(); location.hash = '#operacion/ventas?bloque=ayudas'; } });
 
 export function vistaAyudas(raiz, r) {
   const filas = (r && r.ayudas) || [];
