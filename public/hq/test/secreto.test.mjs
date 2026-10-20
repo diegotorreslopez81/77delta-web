@@ -35,3 +35,8 @@ test('la clave pública sale del repo, no de la BD', () => {
   const src = readFileSync(new URL('../app/vistas/secreto.js', import.meta.url), 'utf8');
   assert.ok(src.includes('/hq/secretos-pubkey.json') && !src.includes('omc_secretos_config'));
 });
+
+test('secretos-pubkey.json: destinos incluyen twenty y regulia (#2079)', () => {
+  const j = JSON.parse(readFileSync(new URL('../secretos-pubkey.json', import.meta.url), 'utf8'));
+  assert.deepEqual(j.destinos, ['hq', 'voyage', 'oportunidades-ia', 'twenty', 'regulia']);
+});
