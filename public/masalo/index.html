@@ -612,7 +612,7 @@ window.initFicha = function(){
     var rows = document.querySelectorAll('.tk[data-tk]');
     if(!rows.length) return;
     var today = todayIso();
-    var done = 0, late = 0, nora = 0;
+    var done = 0, late = 0, cliente = 0;
     for(var i=0;i<rows.length;i++){
       var r = rows[i];
       var st = r.getAttribute('data-st3');
@@ -621,18 +621,18 @@ window.initFicha = function(){
       if(di) di.classList.toggle('late', !!overdue);
       if(st === 'hecha'){ done++; continue; }
       if(overdue) late++;
-      if(r.getAttribute('data-who') === 'cliente') nora++;
+      if(r.getAttribute('data-who') === 'cliente') cliente++;
     }
     var open = rows.length - done;
     document.getElementById('tk-open').textContent = open;
     document.getElementById('tk-done').textContent = done;
     document.getElementById('tk-all').textContent = rows.length;
     document.getElementById('tk-late').textContent = late;
-    document.getElementById('tk-cliente').textContent = nora;
+    document.getElementById('tk-cliente').textContent = cliente;
     document.getElementById('tk-meter').querySelector('i').style.width = pctWidth(done, rows.length);
     document.getElementById('k-open').textContent = open;
     document.getElementById('k-late').textContent = late;
-    document.getElementById('k-cliente').textContent = nora;
+    document.getElementById('k-cliente').textContent = cliente;
   }
 
   /* ---- parte de horas: registro real, incluida la preparación ---- */
@@ -907,7 +907,7 @@ window.initFicha = function(){
   });
   // 10-sep (COO): recalcular tambien AL CARGAR, no solo al tocar algo - sin esto el resumen que ve
   // el cliente es el numero congelado de cuando se genero la ficha, y diverge en cuanto alguien anade
-  // o cierra una tarea sin que nadie interactue con la pagina (caso real: Nora, 24/31 servidos vs 27/37 reales).
+  // o cierra una tarea sin que nadie interactue con la pagina.
   recalcTk();
 })();
 
