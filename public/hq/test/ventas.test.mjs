@@ -37,12 +37,17 @@ const PIPE = [
   { etapa: 'PROPOSAL', orden: 4, tipo_lead: 'twenty-2026-05', n: 15, importe: '112000.00' }, { etapa: 'SCREENING', orden: 2, tipo_lead: 'piloto-carla', n: 168, importe: '0.0' },
   { etapa: 'SCREENING', orden: 2, tipo_lead: 'twenty-2026-05', n: 18, importe: '144000.0' }, { etapa: 'PROPOSAL', orden: 4, tipo_lead: 'piloto-carla', n: 1, importe: '14500' },
   { etapa: 'LOST', orden: 9, tipo_lead: 'piloto-carla', n: 14, importe: '0' },
+  { etapa: 'CUSTOMER', orden: 8, tipo_lead: 'twenty-2026-05', n: 9, importe: '67438' },
 ];
 test('Pipeline: columnas por orden con n e importe sumados y sin "false" suelto', async () => {
-  const m = VP.modeloPipeline(PIPE); assert.deepEqual(m.map(c => c.nombre), ['Cribado', 'Propuesta', 'Perdida']);
+  const m = VP.modeloPipeline(PIPE); assert.deepEqual(m.map(c => c.nombre), ['Cribado', 'Propuesta', 'Cliente', 'Perdida']);
   assert.equal(m[0].n, 186); assert.equal(m[0].importe, 144000); assert.equal(m[1].importe, 126500); assert.equal(m[0].tipos[0].tipo, 'piloto-carla');
   const raiz = crearNodo('main'); VP.usarCargador(async () => PIPE); await V.render(raiz, AHORA, 'pipeline'); const t = raiz.textContent;
   assert.match(t, /Cribado\|186/); assert.match(t, /126\.500 €/); assert.doesNotMatch(t, /false|NaN|undefined|No se pudo leer/);
+});
+test('Pipeline: abiertas = cribado+reunión+propuesta; clientes aparte', async () => {
+  const raiz = crearNodo('main'); VP.usarCargador(async () => PIPE); await V.render(raiz, AHORA, 'pipeline'); const t = raiz.textContent;
+  assert.match(t, /202|Oportunidades abiertas/); assert.match(t, /270\.500 €|Importe en juego/); assert.match(t, /9|Clientes/); assert.match(t, /67\.438 €|Importe clientes/);
 });
 test('Pipeline: acepta {pipeline:[...]}, vacío muestra aviso y un fallo de la RPC un aviso rojo', async () => {
   let raiz = crearNodo('main'); VP.usarCargador(async () => ({ pipeline: PIPE })); await V.render(raiz, AHORA, 'pipeline'); assert.match(raiz.textContent, /Cribado/);
