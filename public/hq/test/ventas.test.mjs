@@ -44,9 +44,20 @@ test('Hoy: tarea vencida de Diego, contadores y raíl; sin correos ni cuentas', 
   assert.match(t, /Necesita a una persona/); assert.match(t, /Vencida/); assert.match(t, /Alcalá/); assert.match(t, /Sale solo hoy/); assert.match(t, /Hoy no se envía|Empieza a las|Enviando|Hecho|Nada aprobado/);
   assert.doesNotMatch(t, /@|Hola Marta/);
 });
-test('Campañas: texto 2 pendiente de OK y sin cuenta de envío', async () => {
-  const raiz = crearNodo('main'); V.usarCargador(async () => D2); await V.render(raiz, AHORA, 'campanas'); const t = raiz.textContent;
-  assert.match(t, /Texto 2 pendiente de OK/); assert.match(t, /Aina/); assert.doesNotMatch(t, /@/);
+// #2661: la pestaña Campañas lee hq_crm_funnel ({campanas:[...]}); el texto 2 pendiente de OK ya no se pinta aquí.
+const VC = await import('../app/vistas/ventas-campanas.js');
+const FILAS = [
+  { nombre: 'Antigua', canal: 'gmail-api', fecha_inicio: '2026-09-01', viva: false, contactados: 10, respondidos: 1, tasa_respuesta_pct: 10 },
+  { nombre: 'Viva', canal: 'whatsapp', fecha_inicio: '2026-10-01', viva: true, contactados: 40, respondidos: 8, reuniones: 2, propuestas_n: 1, propuestas_importe: 12000, clientes_n: 1, tasa_respuesta_pct: 20 },
+];
+test('Campañas: tarjetas del embudo desde hq_crm_funnel, vivas primero y columnas ausentes con guion', async () => {
+  const raiz = crearNodo('main'); VC.usarCargador(async () => ({ campanas: FILAS })); await V.render(raiz, AHORA, 'campanas'); const t = raiz.textContent;
+  assert.ok(t.indexOf('Viva') < t.indexOf('Antigua')); assert.match(t, /Contactados/); assert.match(t, /Clientes/); assert.match(t, /12\.?000 €/); assert.match(t, /Tasa de respuesta 20 %/);
+  assert.match(t, /Reuniones\|[^|]*\|-/); assert.doesNotMatch(t, /No se pudo leer/);
+});
+test('Campañas: sin filas muestra "Sin campañas" y un fallo de la RPC un aviso, sin romper', async () => {
+  let raiz = crearNodo('main'); VC.usarCargador(async () => ({ campanas: [] })); await V.render(raiz, AHORA, 'campanas'); assert.match(raiz.textContent, /Sin campañas/);
+  raiz = crearNodo('main'); VC.usarCargador(async () => { throw new Error('boom'); }); await V.render(raiz, AHORA, 'campanas'); assert.match(raiz.textContent, /No se pudo leer las campañas \(boom\)/);
 });
 test('contadores: respuesta sin contestar y reunión agendada', () => { const k = V.contadores(D2.oportunidades); assert.equal(k.respuestas, 1); assert.equal(k.reuniones, 1); });
 test('estadoRail: texto descriptivo por caso (decisión #462)', () => {
