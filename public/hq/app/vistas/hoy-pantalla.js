@@ -161,16 +161,19 @@ function tarjeta(p, umbral, repintar, { destacada = false, pago = false } = {}) 
   const act = (fn, msg = 'Hecho') => async () => { try { await fn(); toast(msg); repintar(); } catch (e) { toast('No se pudo: ' + e.message); } };
   const posponer = () => {
     const o = opcionesPosponer();
-    const campo = el('input', { type: 'date' });
-    const m = modal({ titulo: 'Posponer', cuerpo: [
-      el('button', { class: 'btn', text: 'Mañana 09:00', onclick: () => { m.cerrar(); act(() => cargadores.posponer(p.id, o.manana))(); } }),
-      el('button', { class: 'btn', text: 'Lunes 09:00', onclick: () => { m.cerrar(); act(() => cargadores.posponer(p.id, o.lunes))(); } }),
-      campo,
-    ], acciones: [
+    const campo = el('input', { type: 'date', class: 'campo', id: 'posponer-fecha', lang: 'es' });
+    const hasta = iso => 'Pospuesta hasta ' + new Intl.DateTimeFormat('es-ES', { timeZone: 'Europe/Madrid', weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }).format(new Date(iso));
+    const opcion = (d, texto, iso) => el('button', { class: 'btn opcion-posponer', onclick: () => { m.cerrar(); act(() => cargadores.posponer(p.id, iso), hasta(iso))(); } }, [ico(d), el('span', { text: texto })]);
+    const m = modal({ titulo: 'Posponer', cuerpo: [el('div', { class: 'posponer-hoja' }, [
+      opcion('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>', 'Mañana 09:00', o.manana),
+      opcion('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>', 'Lunes 09:00', o.lunes),
+      el('label', { class: 'campo-l posponer-fecha' }, [el('span', { text: 'Otra fecha' }), campo]),
+    ])], acciones: [
       el('button', { class: 'btn', text: 'Cancelar', onclick: () => m.cerrar() }),
       el('button', { class: 'btn primario', text: 'Posponer a la fecha', onclick: () => {
         if (!campo.value) return;
-        m.cerrar(); act(() => cargadores.posponer(p.id, new Date(campo.value + 'T09:00:00').toISOString()))();
+        const iso = new Date(campo.value + 'T09:00:00').toISOString();
+        m.cerrar(); act(() => cargadores.posponer(p.id, iso), hasta(iso))();
       } }),
     ] });
   };

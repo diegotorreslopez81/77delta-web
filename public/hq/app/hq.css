@@ -539,4 +539,12 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 .home-botones.compacta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .home-botones.compacta .btn-accion { flex-direction: column; justify-content: center; gap: 0; padding: 0 2px; height: 44px; min-height: 44px; max-height: 48px; min-width: 0; box-sizing: border-box; }
 .home-botones.compacta .btn-accion .ico { width: 22px; height: 22px; }
+@media (min-width: 600px) { .home-botones.compacta { grid-template-columns: repeat(4, minmax(0, 120px)); justify-content: start; } } /* #2628: escritorio, ancho fijo a la izquierda */
 .hoy-item + .hoy-item { margin-top: 16px; }
+/* #2628: hoja de Posponer, una columna con tope de ancho e iconos del mismo estilo que los botones de accion */
+.posponer-hoja { display: flex; flex-direction: column; gap: 10px; max-width: 360px; }
+.posponer-hoja .opcion-posponer { display: flex; align-items: center; justify-content: flex-start; gap: 10px; min-height: 44px; padding: 0 12px; text-align: left; }
+.posponer-hoja .opcion-posponer .ico { width: 22px; height: 22px; flex: none; }
+.posponer-fecha { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.posponer-fecha .campo { min-height: 44px; box-sizing: border-box; width: 100%; }
+@media (min-width: 600px) { .posponer-hoja { max-width: 120px; } .posponer-hoja .opcion-posponer { padding: 0 8px; gap: 6px; white-space: nowrap; font-size: 13px; } }
