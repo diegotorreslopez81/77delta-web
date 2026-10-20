@@ -37,7 +37,7 @@ if (typeof globalThis.localStorage === 'undefined') {
   globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => mem.set(k, String(v)), removeItem: (k) => mem.delete(k) };
 }
 
-const { pintarNegocio, PROVISIONAL } = await import('../app/vistas/hoy-pantalla.js');
+const { pintarNegocio, PROVISIONAL, kEur } = await import('../app/vistas/hoy-pantalla.js');
 const { pintarCaptacion, PROVISIONAL_CAPTACION } = await import('../app/vistas/home.js');
 const { provisional } = await import('../app/ui.js');
 const buscar = (n, f, out = []) => { if (n && n.nodeType === 1) { if (f(n)) out.push(n); n.children.forEach(c => buscar(c, f, out)); } return out; };
@@ -58,4 +58,18 @@ test('Captación: enviados, respuestas y ganados en rojo; visitas, reservar y fo
   const raiz = pintarCaptacion([fila], 7);
   assert.equal(marcados(raiz).length, 3); assert.ok(marcados(raiz).every(x => x.dataset.provisional === '#2673'));
   assert.deepEqual(Object.keys(PROVISIONAL_CAPTACION), ['enviados', 'respuestas', 'ganados']);
+});
+
+test('kEur: 999 €, 433,2 k€, 1,12 M€, sin dato', () => {
+  assert.equal(kEur(999), '999 €'); assert.equal(kEur(433205.86), '433,2 k€'); assert.equal(kEur(1120000), '1,12 M€'); assert.equal(kEur(null), 'sin dato');
+});
+test('Pipeline #2677: total y tres líneas; ayudas sin dato en rojo #2677; tarjeta sin marca #2672', () => {
+  const d = (clave, etiqueta, valor, n, provisional, enlace) => ({ clave, etiqueta, valor, unidad: 'eur', n, provisional, enlace });
+  const raiz = pintarNegocio([{ clave: 'pipeline', etiqueta: 'Pipeline', principal: 559705.86, principal_unidad: 'eur', principal_texto: 'en juego', detalle: [
+    d('licitaciones', 'Licitaciones', 433205.86, 34, false, 'operacion/licitaciones'), d('propuestas', 'Propuestas comerciales', 126500, 16, false, 'operacion/ventas/pipeline'), d('ayudas', 'Ayudas pedidas', null, null, true, '') ] }]);
+  const t = raiz.textContent;
+  assert.match(t, /559,7 k€/); assert.match(t, /Licitaciones: 433,2 k€ \(#34\)/); assert.match(t, /Propuestas comerciales: 126,5 k€ \(#16\)/); assert.match(t, /Ayudas pedidas: sin dato en el CRM/);
+  assert.deepEqual(marcados(raiz).map(x => x.dataset.provisional), ['#2677']);
+  assert.equal(buscar(raiz, x => x.classList && x.classList.contains('neg-linea')).length, 3);
+  assert.doesNotMatch(t, /omc_ayudas|Otros \//);
 });

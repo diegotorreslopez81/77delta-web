@@ -4,7 +4,6 @@
 // el rojo sale de umbral_decidir_h y umbral_correo_h que devuelve la RPC (hq_parametros).
 import { ICONOS_HOY } from '../iconos.js';
 import { el, toast, eur, fecha, pedirTexto, modal, confirmar, provisional } from '../ui.js';
-import { cargarAyudas, lineaAyudas } from './ayudas.js';
 import { pintarCaptacion, valorCifra } from './home.js';
 import { rejillaWeb } from './web.js';
 
@@ -314,6 +313,26 @@ function ingresosVieja(f) {
     detalle: f.detalle.filter((d, j) => j !== i).slice(0, 2).map(d => ({ etiqueta: sinAprox(d.etiqueta), valor: valorNegocio(d.valor, d.unidad) || 'sin dato' })),
   };
 }
+// #2677: importe corto de una línea del desglose de Pipeline: 999 €, 433,2 k€, 1,12 M€.
+export function kEur(v) {
+  const x = Number(v);
+  if (v == null || !Number.isFinite(x)) return 'sin dato';
+  const f = (n, d) => n.toLocaleString('es-ES', { minimumFractionDigits: d, maximumFractionDigits: d });
+  if (Math.abs(x) >= 1e6) return f(x / 1e6, 2) + ' M€';
+  if (Math.abs(x) >= 1000) return f(x / 1e3, 1) + ' k€';
+  return Math.round(x) + ' €';
+}
+// Pipeline (#2677): detalle con clave = tres líneas (licitaciones, propuestas, ayudas); cada una con importe, n y enlace.
+function pipelineNueva(f) {
+  if (f?.clave !== 'pipeline' || !Array.isArray(f.detalle) || !f.detalle.some(d => d && d.clave)) return {};
+  return {
+    principal: kEur(f.principal), principalTexto: f.principal_texto || 'en juego', secundario: '', detalle: [],
+    lineasPipe: f.detalle.filter(d => d && d.clave).map(d => {
+      const sinDato = d.provisional === true || d.valor == null;
+      return { texto: sinDato ? (d.etiqueta || d.clave) + ': sin dato en el CRM' : d.etiqueta + ': ' + kEur(d.valor) + ' (#' + (d.n ?? 0) + ')', enlace: d.enlace ? '#' + String(d.enlace).replace(/^#\/?/, '') : '', provisional: sinDato };
+    }),
+  };
+}
 export function modeloNegocio(filas) {
   return (Array.isArray(filas) ? filas : []).filter(f => f && f.principal != null).map(f => ({
     clave: f.clave, etiqueta: f.etiqueta, color: f.color || '', enlace: '#' + String(f.enlace || 'hoy').replace(/^#\/?/, ''), periodo: f.periodo_texto || '',
@@ -322,6 +341,7 @@ export function modeloNegocio(filas) {
     secundario: [valorNegocio(f.secundario, f.secundario_unidad), f.secundario_texto].filter(Boolean).join(' '),
     detalle: (Array.isArray(f.detalle) ? f.detalle : []).slice(0, 2).map(d => ({ etiqueta: sinAprox(d.etiqueta), valor: valorNegocio(d.valor, d.unidad) || 'sin dato' })),
     ...ingresosVieja(f),
+    ...pipelineNueva(f),
   }));
 }
 // #2676: tarjetas de Negocio que aún leen tablas escritas por agentes; cada PR de migración quita la suya.
@@ -329,15 +349,16 @@ export const PROVISIONAL = { pipeline: '#2672', captacion_7d: '#2673', ingresos:
 export function pintarNegocio(filas) {
   const m = modeloNegocio(filas);
   if (!m.length) return null;
-  return el('div', { class: 'hoy-negocio' }, m.map(x => { const t = el('a', { class: 'vt-card hoy-neg ' + x.color, href: x.enlace }, [
+  return el('div', { class: 'hoy-negocio' }, m.map(x => { const t = el('a', { class: 'vt-card hoy-neg ' + x.color + (x.lineasPipe ? ' pipeline' : ''), href: x.enlace }, [
     el('span', { class: 'mudo neg-etiqueta', text: x.etiqueta || x.clave }),
     x.periodo ? el('span', { class: 'mudo neg-periodo', text: x.periodo }) : null,
     el('span', { class: 'neg-principal' }, [x.principal, x.principalTexto ? el('small', { class: x.principalTexto.length > 20 ? 'bajo' : '', text: ' ' + x.principalTexto }) : null].filter(Boolean)),
     x.secundario ? el('span', { class: 'neg-secundario', text: x.secundario }) : null,
     ...x.detalle.map(d => el('span', { class: 'mudo neg-detalle', text: d.etiqueta + ': ' + d.valor })),
+    ...(x.lineasPipe || []).map(l => { const n = el(l.enlace ? 'a' : 'span', { class: 'mudo neg-detalle neg-linea', ...(l.enlace ? { href: l.enlace } : {}), text: l.texto }); return l.provisional ? provisional(n, '#2677') : n; }),
     x.lineas?.length ? el('span', { class: 'neg-barra', role: 'img', 'aria-label': 'Reparto por línea' }, x.lineas.filter(l => l.pct > 0).map(l => el('i', { class: 'neg-tramo l-' + l.etiqueta.toLowerCase(), style: 'width:' + l.pct + '%' }))) : null,
     x.lineas?.length ? el('span', { class: 'mudo neg-detalle neg-leyenda', text: x.lineas.map(l => l.etiqueta + ' ' + l.pct + ' %').join(' · ') }) : null,
-  ].filter(Boolean)); return PROVISIONAL[x.clave] ? provisional(t, PROVISIONAL[x.clave]) : t; }));
+  ].filter(Boolean)); return PROVISIONAL[x.clave] && !x.lineasPipe ? provisional(t, PROVISIONAL[x.clave]) : t; }));
 }
 
 export function render(raiz, S, arg, filtros) {
@@ -348,8 +369,6 @@ export function render(raiz, S, arg, filtros) {
   const repintar = () => render(Object.assign(raiz, { innerHTML: '' }), S, arg, filtros);
   Promise.all([cargadores.hoy(), Promise.resolve().then(() => cargadores.negocio()).catch(() => null)]).then(([h, filasNeg]) => {
     const neg = pintarNegocio(filasNeg);
-    // Ayudas pedidas bajo el Pipeline (tolera que hq_ayudas no exista o falle: sin fila).
-    if (neg) Promise.resolve().then(() => cargarAyudas()).then(r => { const pip = [...neg.children].find(c => /pipeline/i.test(c.textContent)); if (pip) pip.append(lineaAyudas(r)); }).catch(() => {});
     const cifras = h?.cifras || [];
     const dec = recuento(cifras, ['decidir', 'pagar'], (h?.decidir || []).length + (h?.pagar || []).length);
     const fir = recuento(cifras, ['firmar'], (h?.firmar || []).length);
