@@ -5,6 +5,7 @@ import { el } from '../ui.js';
 import { cargarWeb, vistaWeb } from './web.js';
 import { cargarAyudas, vistaAyudas } from './ayudas.js';
 import { cargarCampanas, vistaCampanas } from './ventas-campanas.js';
+import { cargarPipeline, vistaPipeline } from './ventas-pipeline.js';
 import { ventasTwentyActivo, renderTwenty } from './ventas-twenty.js';
 
 let carga = async () => (await import('../api.js')).rpc('ven_hq');
@@ -265,6 +266,13 @@ export async function render(raiz, reloj, arg, filtros = {}) {
     const zona = el('div', { class: 'ventas-web' }, [el('p', { class: 'cargando', text: 'Cargando Umami...' })]);
     caja.append(zona);
     try { const r = await cargarWeb(); zona.innerHTML = ''; vistaWeb(zona, r, filtros, ahora); } catch (e) { zona.innerHTML = ''; zona.append(el('p', { class: 'aviso rojo', role: 'alert', text: 'No se pudo leer Umami (' + (e?.message || 'error') + ').' })); }
+    return;
+  }
+  if (tab === 'pipeline') {
+    caja.append(cabecera(null, tab, ahora));
+    const zona = el('div', { class: 'ventas-pipeline' }, [el('p', { class: 'cargando', text: 'Cargando pipeline...' })]);
+    caja.append(zona);
+    try { const r = await cargarPipeline(); zona.innerHTML = ''; vistaPipeline(zona, r); } catch (e) { zona.innerHTML = ''; zona.append(el('p', { class: 'aviso rojo', role: 'alert', text: 'No se pudo leer el pipeline (' + (e?.message || 'error') + '). Prueba a recargar.' })); }
     return;
   }
   if (tab === 'campanas') {
