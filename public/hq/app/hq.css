@@ -534,3 +534,8 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 .pastilla.rojo{background:var(--error);color:#fff}.pastilla.ambar{background:var(--oro-suave);color:var(--oro-oscuro)}.pastilla.verde{background:var(--exito-suave);color:var(--exito)}
 .firmar-card{display:flex;gap:10px;align-items:flex-start;border-left:4px solid var(--oro-luz)}.firmar-card.rojo{border-left-color:var(--error)}
 .firmar-card .firmar-datos{min-width:0;flex:1}.firmar-meta{margin:2px 0 0}.firmar-meta strong{font-size:16px}
+
+/* #2625: botones de tarjetas tipo accion, 4 en una fila con icono encima del texto */
+.home-botones.compacta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.home-botones.compacta .btn-accion { flex-direction: column; gap: 2px; padding: 4px 2px; min-height: 44px; min-width: 0; font-size: 12px; white-space: nowrap; }
+.home-botones.compacta .btn-accion .ico { width: 20px; height: 20px; }
