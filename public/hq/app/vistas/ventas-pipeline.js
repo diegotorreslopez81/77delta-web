@@ -39,9 +39,11 @@ function columna(c) {
 export function vistaPipeline(raiz, filas) {
   const cols = modeloPipeline(filas);
   if (!cols.length) { raiz.append(el('p', { class: 'vt-vacio', text: 'Sin oportunidades en el pipeline.' })); return; }
-  const abiertas = cols.filter(c => String(c.etapa).toUpperCase() !== 'LOST');
+  const de = (...e) => cols.filter(c => e.includes(String(c.etapa).toUpperCase()));
+  const abiertas = de('SCREENING', 'MEETING', 'PROPOSAL'), clientes = de('CUSTOMER');
+  const suma = (cs, k) => cs.reduce((s, c) => s + c[k], 0);
   raiz.append(
-    el('div', { class: 'vt-indicadores' }, [['Oportunidades abiertas', String(abiertas.reduce((s, c) => s + c.n, 0))], ['Importe en juego', euros(abiertas.reduce((s, c) => s + c.importe, 0))]]
+    el('div', { class: 'vt-indicadores' }, [['Oportunidades abiertas', String(suma(abiertas, 'n'))], ['Importe en juego', euros(suma(abiertas, 'importe'))], ['Clientes', String(suma(clientes, 'n'))], ['Importe clientes', euros(suma(clientes, 'importe'))]]
       .map(([l, v]) => el('div', { class: 'vt-cont' }, [el('span', { class: 'vt-n', text: v }), el('span', { class: 'vt-l', text: l })]))),
     el('div', { class: 'vt-tablero' }, cols.map(columna)));
 }
