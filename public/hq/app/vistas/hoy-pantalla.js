@@ -158,7 +158,7 @@ function item(titulo, detalle, botones, { roja = false, destacada = false, id = 
 // Tarjeta con Sí / No / Posponer / Comentar.
 function tarjeta(p, umbral, repintar, { destacada = false, pago = false } = {}) {
   const roja = umbral > 0 && n(p.edad_h) > umbral;
-  const act = fn => async () => { try { await fn(); toast('Hecho'); repintar(); } catch (e) { toast('No se pudo: ' + e.message); } };
+  const act = (fn, msg = 'Hecho') => async () => { try { await fn(); toast(msg); repintar(); } catch (e) { toast('No se pudo: ' + e.message); } };
   const posponer = () => {
     const o = opcionesPosponer();
     const campo = el('input', { type: 'date' });
@@ -183,12 +183,26 @@ function tarjeta(p, umbral, repintar, { destacada = false, pago = false } = {}) 
     const quien = p.quien_pide ? ' pedido por ' + p.quien_pide : '';
     if (await confirmar('Aprobar pago', 'Aprobar pago de ' + (p.importe != null ? eur(p.importe) : 'importe sin dato') + ' a ' + (p.titulo || p.concepto) + quien + '?', 'Sí, aprobar pago')) await act(() => cargadores.resolver(p.id, 'aprobada'))();
   };
-  const botones = el('div', { class: 'home-botones' }, [
-    el('button', { class: 'btn primario', text: 'Sí', onclick: pago ? sipago : act(() => cargadores.resolver(p.id, 'aprobada')) }),
-    el('button', { class: 'btn peligro', text: 'No', onclick: act(() => cargadores.resolver(p.id, 'rechazada')) }),
-    el('button', { class: 'btn', text: 'Posponer', onclick: posponer }),
-    el('button', { class: 'btn', text: 'Comentar', onclick: comentar }),
-  ]);
+  // #2625: tarjetas tipo accion = acción de Diego sobre su tarea: Hecho / Descartar / Posponer / Copiar, una fila con icono.
+  const copiar = async () => {
+    try { await navigator.clipboard.writeText('#' + p.id + ' ' + (p.titulo || p.concepto || '') + '\n' + (p.detalle || '')); toast('Copiado: pégalo en el chat del chief'); }
+    catch { toast('No se pudo copiar'); }
+  };
+  const ico = d => el('span', { class: 'ico', html: '<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>' });
+  const bi = (d, etiqueta, onclick, clase = '') => el('button', { class: 'btn btn-accion ' + clase, 'aria-label': etiqueta, title: etiqueta, onclick }, [ico(d)]);
+  const botones = p.tipo === 'accion' && !pago
+    ? el('div', { class: 'home-botones compacta' }, [
+      bi('<path d="M5 12l5 5 9-10"/>', 'Hecho', act(() => cargadores.resolver(p.id, 'aprobada')), 'primario'),
+      bi('<path d="M6 6l12 12M18 6L6 18"/>', 'Descartar', act(() => cargadores.resolver(p.id, 'rechazada'), 'Descartada'), 'peligro'),
+      bi('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', 'Posponer', posponer),
+      bi('<rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4h6v3H9z"/>', 'Copiar al chat', copiar),
+    ])
+    : el('div', { class: 'home-botones' }, [
+      el('button', { class: 'btn primario', text: 'Sí', onclick: pago ? sipago : act(() => cargadores.resolver(p.id, 'aprobada')) }),
+      el('button', { class: 'btn peligro', text: 'No', onclick: act(() => cargadores.resolver(p.id, 'rechazada')) }),
+      el('button', { class: 'btn', text: 'Posponer', onclick: posponer }),
+      el('button', { class: 'btn', text: 'Comentar', onclick: comentar }),
+    ]);
   const detalle = [
     p.recomendacion ? el('p', { class: 'mudo', text: p.recomendacion }) : null,
     el('p', { class: 'mudo', text: [p.importe != null ? eur(p.importe) : null, p.edad_h != null ? hace(p.edad_h) : null, p.quien_pide ? 'pide ' + p.quien_pide : null, p.vence ? 'vence ' + fecha(p.vence) : null].filter(Boolean).join(' · ') }),
