@@ -4,6 +4,7 @@
 import { el } from '../ui.js';
 import { cargarWeb, vistaWeb } from './web.js';
 import { cargarAyudas, vistaAyudas } from './ayudas.js';
+import { cargarCampanas, vistaCampanas } from './ventas-campanas.js';
 import { ventasTwentyActivo, renderTwenty } from './ventas-twenty.js';
 
 let carga = async () => (await import('../api.js')).rpc('ven_hq');
@@ -264,6 +265,13 @@ export async function render(raiz, reloj, arg, filtros = {}) {
     const zona = el('div', { class: 'ventas-web' }, [el('p', { class: 'cargando', text: 'Cargando Umami...' })]);
     caja.append(zona);
     try { const r = await cargarWeb(); zona.innerHTML = ''; vistaWeb(zona, r, filtros, ahora); } catch (e) { zona.innerHTML = ''; zona.append(el('p', { class: 'aviso rojo', role: 'alert', text: 'No se pudo leer Umami (' + (e?.message || 'error') + ').' })); }
+    return;
+  }
+  if (tab === 'campanas') {
+    caja.append(cabecera(null, tab, ahora));
+    const zona = el('div', { class: 'ventas-campanas' }, [el('p', { class: 'cargando', text: 'Cargando campañas...' })]);
+    caja.append(zona);
+    try { const r = await cargarCampanas(); zona.innerHTML = ''; vistaCampanas(zona, r); } catch (e) { zona.innerHTML = ''; zona.append(el('p', { class: 'aviso rojo', role: 'alert', text: 'No se pudo leer las campañas (' + (e?.message || 'error') + '). Prueba a recargar.' })); }
     return;
   }
   caja.append(el('p', { class: 'cargando', text: 'Cargando el embudo de ventas...' }));
