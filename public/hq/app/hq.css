@@ -537,6 +537,6 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 
 /* #2625: botones de tarjetas tipo accion, 4 en una fila con icono encima del texto */
 .home-botones.compacta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.home-botones.compacta .btn-accion { flex-direction: column; gap: 2px; padding: 4px 2px; min-height: 44px; min-width: 0; }
-.home-botones.compacta .btn-accion .ico { width: 24px; height: 24px; }
+.home-botones.compacta .btn-accion { flex-direction: column; justify-content: center; gap: 0; padding: 0 2px; height: 44px; min-height: 44px; max-height: 48px; min-width: 0; box-sizing: border-box; }
+.home-botones.compacta .btn-accion .ico { width: 22px; height: 22px; }
 .hoy-item + .hoy-item { margin-top: 16px; }
