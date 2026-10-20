@@ -84,3 +84,13 @@ test('Contratado #2678: tres líneas con (#n, p %), barra por tipología y ayuda
   assert.equal(buscar(raiz, x => x.classList && x.classList.contains('neg-linea')).length, 3);
   assert.equal(buscar(raiz, x => x.classList && x.classList.contains('neg-tramo')).length, 2);
 });
+test('Contratado #2678: cuatro líneas (con Subvenciones) y tramo l-subvenciones en la barra', () => {
+  const d = (clave, etiqueta, valor, n, pct, provisional) => ({ clave, etiqueta, valor, unidad: 'eur', n, pct_conversion: pct, provisional, enlace: '' });
+  const raiz = pintarNegocio([{ clave: 'contratado', etiqueta: 'Contratado', principal: 100000, principal_unidad: 'eur', principal_texto: 'concedido', detalle: [
+    d('licitaciones', 'Licitaciones', 3438.02, 1, 8, false), d('propuestas', 'Propuestas comerciales', 14500, 1, 50, false), d('ayudas', 'Ayudas', 64000, 8, 100, false), d('subvenciones', 'Subvenciones', 18000, 1, null, false),
+    { clave: 'lineas', etiqueta: 'por línea', lineas: [{ etiqueta: 'Licita', pct: 3 }, { etiqueta: 'Sales', pct: 15 }, { etiqueta: 'Ayudas', pct: 64 }, { etiqueta: 'Subvenciones', pct: 18 }] }] }]);
+  const t = raiz.textContent;
+  assert.equal(buscar(raiz, x => x.classList && x.classList.contains('neg-linea')).length, 4);
+  assert.match(t, /Ayudas: 64,0 k€ \(#8, 100 %\)/); assert.match(t, /Subvenciones: 18,0 k€ \(#1\)/);
+  assert.ok(buscar(raiz, x => x.classList && x.classList.contains('l-subvenciones')).length === 1);
+});
