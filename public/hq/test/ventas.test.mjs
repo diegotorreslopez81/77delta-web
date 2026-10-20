@@ -45,9 +45,9 @@ test('Pipeline: columnas por orden con n e importe sumados y sin "false" suelto'
   const raiz = crearNodo('main'); VP.usarCargador(async () => PIPE); await V.render(raiz, AHORA, 'pipeline'); const t = raiz.textContent;
   assert.match(t, /Cribado\|186/); assert.match(t, /126\.500 €/); assert.doesNotMatch(t, /false|NaN|undefined|No se pudo leer/);
 });
-test('Pipeline: abiertas = cribado+reunión+propuesta; clientes aparte', async () => {
+test('Pipeline: Propuestas enviadas = solo PROPOSAL (16 / 126.500 €); clientes aparte; funnel intacto', async () => {
   const raiz = crearNodo('main'); VP.usarCargador(async () => PIPE); await V.render(raiz, AHORA, 'pipeline'); const t = raiz.textContent;
-  assert.match(t, /202|Oportunidades abiertas/); assert.match(t, /270\.500 €|Importe en juego/); assert.match(t, /9|Clientes/); assert.match(t, /67\.438 €|Importe clientes/);
+  assert.match(t, /Propuestas enviadas/); assert.doesNotMatch(t, /Oportunidades abiertas/); assert.match(t, /Importe en juego/); assert.match(t, /Cribado\|186/); assert.match(t, /9|Clientes/); assert.match(t, /67\.438 €|Importe clientes/);
 });
 test('Pipeline: acepta {pipeline:[...]}, vacío muestra aviso y un fallo de la RPC un aviso rojo', async () => {
   let raiz = crearNodo('main'); VP.usarCargador(async () => ({ pipeline: PIPE })); await V.render(raiz, AHORA, 'pipeline'); assert.match(raiz.textContent, /Cribado/);
