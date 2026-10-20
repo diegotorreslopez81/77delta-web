@@ -324,6 +324,7 @@ export function kEur(v) {
 }
 // Pipeline (#2677) y Contratado (#2678): detalle con clave = tres líneas (licitaciones, propuestas, ayudas); cada una con importe, n y enlace.
 // Contratado añade el porcentaje de conversión "(#n, p %)" y la barra por tipología (elemento "lineas" del detalle).
+const ETIQUETAS_LINEA = { licitaciones: 'Licitaciones', propuestas: 'Propuestas', ayudas: 'Ayudas', subvenciones: 'Subvenciones' };
 function pipelineNueva(f) {
   if (!['pipeline', 'contratado'].includes(f?.clave) || !Array.isArray(f.detalle) || !f.detalle.some(d => d && d.clave)) return {};
   const conPct = f.clave === 'contratado', encargo = conPct ? '#2678' : '#2677';
@@ -334,7 +335,8 @@ function pipelineNueva(f) {
     lineasPipe: f.detalle.filter(d => d && d.clave && d.clave !== 'lineas').map(d => {
       const sinDato = d.provisional === true || d.valor == null;
       const pct = conPct && d.pct_conversion != null ? ', ' + Math.round(Number(d.pct_conversion)) + ' %' : '';
-      return { texto: sinDato ? (d.etiqueta || d.clave) + ': sin dato en el CRM' : d.etiqueta + ': ' + kEur(d.valor) + ' (#' + (d.n ?? 0) + pct + ')', enlace: d.enlace ? '#' + String(d.enlace).replace(/^#\/?/, '') : '', provisional: sinDato };
+      const et = ETIQUETAS_LINEA[d.clave] || d.etiqueta || d.clave;
+      return { texto: sinDato ? et + ': pdte CRM' : et + ': ' + kEur(d.valor) + ' (#' + (d.n ?? 0) + pct + ')', enlace: d.enlace ? '#' + String(d.enlace).replace(/^#\/?/, '') : '', provisional: sinDato };
     }),
   };
 }
