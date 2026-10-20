@@ -84,7 +84,6 @@ test('Contratado #2678: tres líneas con (#n, p %), barra por tipología y ayuda
   assert.equal(buscar(raiz, x => x.classList && x.classList.contains('neg-linea')).length, 3);
   assert.equal(buscar(raiz, x => x.classList && x.classList.contains('neg-tramo')).length, 2);
 });
-<<<<<<< HEAD
 test('Contratado #2678: cuatro líneas (con Subvenciones) y tramo l-subvenciones en la barra', () => {
   const d = (clave, etiqueta, valor, n, pct, provisional) => ({ clave, etiqueta, valor, unidad: 'eur', n, pct_conversion: pct, provisional, enlace: '' });
   const raiz = pintarNegocio([{ clave: 'contratado', etiqueta: 'Contratado', principal: 100000, principal_unidad: 'eur', principal_texto: 'concedido', detalle: [
@@ -94,11 +93,9 @@ test('Contratado #2678: cuatro líneas (con Subvenciones) y tramo l-subvenciones
   assert.equal(buscar(raiz, x => x.classList && x.classList.contains('neg-linea')).length, 4);
   assert.match(t, /Ayudas: 64,0 k€ \(#8, 100 %\)/); assert.match(t, /Subvenciones: 18,0 k€ \(#1\)/);
   assert.ok(buscar(raiz, x => x.classList && x.classList.contains('l-subvenciones')).length === 1);
-=======
 test('Orden #2679: Pipeline, Contratado, Facturado y cobrado (#2645), Captación', () => {
   const f = (clave, etiqueta, principal) => ({ clave, etiqueta, principal, principal_unidad: 'eur', detalle: [] });
   const raiz = pintarNegocio([f('captacion_7d', 'Captación', 5), f('ingresos', 'Ingresos', 15000), f('contratado', 'Contratado', 70900), f('pipeline', 'Pipeline', 559705)]);
   assert.deepEqual(buscar(raiz, x => x.classList && x.classList.contains('neg-etiqueta')).map(x => x.textContent), ['Pipeline', 'Contratado', 'Facturado y cobrado', 'Captación']);
   assert.ok(marcados(raiz).some(x => x.dataset.provisional === '#2645'));
->>>>>>> ab82d0b (feat(hq): orden de casillas de Negocio y Facturado y cobrado con marca #2645 (#2679))
 });
