@@ -539,3 +539,4 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 .home-botones.compacta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .home-botones.compacta .btn-accion { flex-direction: column; gap: 2px; padding: 4px 2px; min-height: 44px; min-width: 0; font-size: 12px; white-space: nowrap; }
 .home-botones.compacta .btn-accion .ico { width: 20px; height: 20px; }
+.hoy-item + .hoy-item { margin-top: 16px; }
