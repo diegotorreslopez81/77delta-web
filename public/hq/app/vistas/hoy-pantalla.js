@@ -189,13 +189,13 @@ function tarjeta(p, umbral, repintar, { destacada = false, pago = false } = {}) 
     catch { toast('No se pudo copiar'); }
   };
   const ico = d => el('span', { class: 'ico', html: '<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>' });
-  const bi = (d, texto, etiqueta, onclick, clase = '') => el('button', { class: 'btn btn-accion ' + clase, 'aria-label': etiqueta, onclick }, [ico(d), el('span', { text: texto })]);
+  const bi = (d, etiqueta, onclick, clase = '') => el('button', { class: 'btn btn-accion ' + clase, 'aria-label': etiqueta, title: etiqueta, onclick }, [ico(d)]);
   const botones = p.tipo === 'accion' && !pago
     ? el('div', { class: 'home-botones compacta' }, [
-      bi('<path d="M5 12l5 5 9-10"/>', 'Hecho', 'Hecho', act(() => cargadores.resolver(p.id, 'aprobada')), 'primario'),
-      bi('<path d="M6 6l12 12M18 6L6 18"/>', 'Descartar', 'Descartar', act(() => cargadores.resolver(p.id, 'rechazada'), 'Descartada'), 'peligro'),
-      bi('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', 'Posponer', 'Posponer', posponer),
-      bi('<rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4h6v3H9z"/>', 'Copiar', 'Copiar al chat', copiar),
+      bi('<path d="M5 12l5 5 9-10"/>', 'Hecho', act(() => cargadores.resolver(p.id, 'aprobada')), 'primario'),
+      bi('<path d="M6 6l12 12M18 6L6 18"/>', 'Descartar', act(() => cargadores.resolver(p.id, 'rechazada'), 'Descartada'), 'peligro'),
+      bi('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', 'Posponer', posponer),
+      bi('<rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4h6v3H9z"/>', 'Copiar al chat', copiar),
     ])
     : el('div', { class: 'home-botones' }, [
       el('button', { class: 'btn primario', text: 'Sí', onclick: pago ? sipago : act(() => cargadores.resolver(p.id, 'aprobada')) }),
