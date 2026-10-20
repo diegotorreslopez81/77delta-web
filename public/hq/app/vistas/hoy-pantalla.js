@@ -322,14 +322,19 @@ export function kEur(v) {
   if (Math.abs(x) >= 1000) return f(x / 1e3, 1) + ' k€';
   return Math.round(x) + ' €';
 }
-// Pipeline (#2677): detalle con clave = tres líneas (licitaciones, propuestas, ayudas); cada una con importe, n y enlace.
+// Pipeline (#2677) y Contratado (#2678): detalle con clave = tres líneas (licitaciones, propuestas, ayudas); cada una con importe, n y enlace.
+// Contratado añade el porcentaje de conversión "(#n, p %)" y la barra por tipología (elemento "lineas" del detalle).
 function pipelineNueva(f) {
-  if (f?.clave !== 'pipeline' || !Array.isArray(f.detalle) || !f.detalle.some(d => d && d.clave)) return {};
+  if (!['pipeline', 'contratado'].includes(f?.clave) || !Array.isArray(f.detalle) || !f.detalle.some(d => d && d.clave)) return {};
+  const conPct = f.clave === 'contratado', encargo = conPct ? '#2678' : '#2677';
+  const barra = f.detalle.find(d => d && d.clave === 'lineas');
   return {
-    principal: kEur(f.principal), principalTexto: f.principal_texto || 'en juego', secundario: '', detalle: [],
-    lineasPipe: f.detalle.filter(d => d && d.clave).map(d => {
+    principal: kEur(f.principal), principalTexto: f.principal_texto || (conPct ? 'concedido' : 'en juego'), secundario: '', detalle: [], encargo,
+    lineas: Array.isArray(barra?.lineas) ? barra.lineas.map(l => ({ etiqueta: l.etiqueta, pct: Number(l.pct) || 0 })) : [],
+    lineasPipe: f.detalle.filter(d => d && d.clave && d.clave !== 'lineas').map(d => {
       const sinDato = d.provisional === true || d.valor == null;
-      return { texto: sinDato ? (d.etiqueta || d.clave) + ': sin dato en el CRM' : d.etiqueta + ': ' + kEur(d.valor) + ' (#' + (d.n ?? 0) + ')', enlace: d.enlace ? '#' + String(d.enlace).replace(/^#\/?/, '') : '', provisional: sinDato };
+      const pct = conPct && d.pct_conversion != null ? ', ' + Math.round(Number(d.pct_conversion)) + ' %' : '';
+      return { texto: sinDato ? (d.etiqueta || d.clave) + ': sin dato en el CRM' : d.etiqueta + ': ' + kEur(d.valor) + ' (#' + (d.n ?? 0) + pct + ')', enlace: d.enlace ? '#' + String(d.enlace).replace(/^#\/?/, '') : '', provisional: sinDato };
     }),
   };
 }
@@ -355,7 +360,7 @@ export function pintarNegocio(filas) {
     el('span', { class: 'neg-principal' }, [x.principal, x.principalTexto ? el('small', { class: x.principalTexto.length > 20 ? 'bajo' : '', text: ' ' + x.principalTexto }) : null].filter(Boolean)),
     x.secundario ? el('span', { class: 'neg-secundario', text: x.secundario }) : null,
     ...x.detalle.map(d => el('span', { class: 'mudo neg-detalle', text: d.etiqueta + ': ' + d.valor })),
-    ...(x.lineasPipe || []).map(l => { const n = el(l.enlace ? 'a' : 'span', { class: 'mudo neg-detalle neg-linea', ...(l.enlace ? { href: l.enlace } : {}), text: l.texto }); return l.provisional ? provisional(n, '#2677') : n; }),
+    ...(x.lineasPipe || []).map(l => { const n = el(l.enlace ? 'a' : 'span', { class: 'mudo neg-detalle neg-linea', ...(l.enlace ? { href: l.enlace } : {}), text: l.texto }); return l.provisional ? provisional(n, x.encargo || '#2677') : n; }),
     x.lineas?.length ? el('span', { class: 'neg-barra', role: 'img', 'aria-label': 'Reparto por línea' }, x.lineas.filter(l => l.pct > 0).map(l => el('i', { class: 'neg-tramo l-' + l.etiqueta.toLowerCase(), style: 'width:' + l.pct + '%' }))) : null,
     x.lineas?.length ? el('span', { class: 'mudo neg-detalle neg-leyenda', text: x.lineas.map(l => l.etiqueta + ' ' + l.pct + ' %').join(' · ') }) : null,
   ].filter(Boolean)); return PROVISIONAL[x.clave] && !x.lineasPipe ? provisional(t, PROVISIONAL[x.clave]) : t; }));
