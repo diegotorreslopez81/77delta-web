@@ -492,12 +492,12 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 .hoy-neg { display: flex; flex-direction: column; gap: 2px; min-height: 120px; padding: 8px; text-decoration: none; color: var(--ink); position: relative; }
 .hoy-neg .neg-etiqueta { font-size: 12px; }
 .hoy-neg .neg-periodo { font-size: 11px; }
-.hoy-neg .neg-principal small { font-size: 14px; font-weight: 400; }
+.hoy-neg .neg-principal small { display: block; font-size: 14px; font-weight: 400; white-space: nowrap; }
 .hoy-neg .neg-principal small.bajo { display: block; font-size: 12px; color: var(--pizarra); }
 .hoy-neg .neg-principal { font-size: 28px; font-weight: 600; line-height: 1.15; }
 .hoy-neg .neg-secundario { font-size: 14px; }
 .hoy-neg .neg-detalle { font-size: 12px; }
-.neg-linea{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}
+.neg-linea{white-space:normal;overflow-wrap:anywhere;font-size:13px}
 .hoy-neg.rojo .neg-principal { color: var(--error); } .hoy-neg.ambar .neg-principal { color: var(--tag-ambar-fg); } .hoy-neg.verde .neg-principal { color: var(--exito); }
 /* D2 (#2584): barra apilada por línea de negocio, solo variables ya definidas */
 .neg-barra { display: flex; height: 6px; border-radius: 3px; overflow: hidden; background: var(--line); margin-top: 4px; }
