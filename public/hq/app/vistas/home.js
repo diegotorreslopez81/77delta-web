@@ -2,7 +2,7 @@
 // Solo pinta columnas de las vistas hq_v_* leídas por RPC con p_token (hq_home, hq_proyectos, hq_web).
 // Sin umbrales ni cálculo propio: el rojo de edad usa umbral_decidir_h que devuelve la RPC (hq_parametros).
 // Cada bloque carga y falla por separado: un bloque caído no tumba la home.
-import { el, toast, eur, fecha } from '../ui.js';
+import { el, toast, eur, fecha, provisional } from '../ui.js';
 import { modeloWeb, separar } from './web.js';
 
 let cargadores = {
@@ -104,6 +104,8 @@ export function modeloCaptacion(filas, periodo) {
     return { producto: f.producto, titulo: rotulo(f.producto), pasos };
   });
 }
+// #2676: columnas de envío que aún leen ven_*; visitas, reservar y formularios salen de Umami (fuente buena).
+export const PROVISIONAL_CAPTACION = { enviados: '#2673', respuestas: '#2673', ganados: '#2673' };
 export function pintarCaptacion(filas, periodo = 7, cambiar = () => {}) {
   if (filas == null) return bloque('Captación', pendiente('Captación: pendiente de datos'));
   const filasP = modeloCaptacion(filas, periodo);
@@ -112,10 +114,10 @@ export function pintarCaptacion(filas, periodo = 7, cambiar = () => {}) {
   if (!filasP.length) return bloque('Captación', [sel, pendiente('Sin datos de captación')]);
   return bloque('Captación', [sel, ...filasP.map(f => el('div', { class: 'captacion-fila' }, [
     el('h3', { text: f.titulo }),
-    el('div', { class: 'home-cifras' }, f.pasos.map(p => el('div', { class: 'vt-card compacta home-cifra' }, [
+    el('div', { class: 'home-cifras' }, f.pasos.map(p => { const c = el('div', { class: 'vt-card compacta home-cifra' }, [
       el('span', { class: 'valor', text: String(p.valor) + (p.pct != null ? ' (' + p.pct + '%)' : '') }),
       el('span', { class: 'mudo', text: p.titulo }),
-    ]))),
+    ]); return PROVISIONAL_CAPTACION[p.clave] ? provisional(c, PROVISIONAL_CAPTACION[p.clave]) : c; })),
   ]))]);
 }
 

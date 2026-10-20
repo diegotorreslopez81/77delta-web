@@ -3,7 +3,7 @@
 // Solo pinta columnas de hq_v_hoy_* leídas por la RPC hq_hoy con p_token. Sin umbrales ni cálculo propio:
 // el rojo sale de umbral_decidir_h y umbral_correo_h que devuelve la RPC (hq_parametros).
 import { ICONOS_HOY } from '../iconos.js';
-import { el, toast, eur, fecha, pedirTexto, modal, confirmar } from '../ui.js';
+import { el, toast, eur, fecha, pedirTexto, modal, confirmar, provisional } from '../ui.js';
 import { cargarAyudas, lineaAyudas } from './ayudas.js';
 import { pintarCaptacion, valorCifra } from './home.js';
 import { rejillaWeb } from './web.js';
@@ -324,10 +324,12 @@ export function modeloNegocio(filas) {
     ...ingresosVieja(f),
   }));
 }
+// #2676: tarjetas de Negocio que aún leen tablas escritas por agentes; cada PR de migración quita la suya.
+export const PROVISIONAL = { pipeline: '#2672', captacion_7d: '#2673', ingresos: 'pendiente de encargo' };
 export function pintarNegocio(filas) {
   const m = modeloNegocio(filas);
   if (!m.length) return null;
-  return el('div', { class: 'hoy-negocio' }, m.map(x => el('a', { class: 'vt-card hoy-neg ' + x.color, href: x.enlace }, [
+  return el('div', { class: 'hoy-negocio' }, m.map(x => { const t = el('a', { class: 'vt-card hoy-neg ' + x.color, href: x.enlace }, [
     el('span', { class: 'mudo neg-etiqueta', text: x.etiqueta || x.clave }),
     x.periodo ? el('span', { class: 'mudo neg-periodo', text: x.periodo }) : null,
     el('span', { class: 'neg-principal' }, [x.principal, x.principalTexto ? el('small', { class: x.principalTexto.length > 20 ? 'bajo' : '', text: ' ' + x.principalTexto }) : null].filter(Boolean)),
@@ -335,7 +337,7 @@ export function pintarNegocio(filas) {
     ...x.detalle.map(d => el('span', { class: 'mudo neg-detalle', text: d.etiqueta + ': ' + d.valor })),
     x.lineas?.length ? el('span', { class: 'neg-barra', role: 'img', 'aria-label': 'Reparto por línea' }, x.lineas.filter(l => l.pct > 0).map(l => el('i', { class: 'neg-tramo l-' + l.etiqueta.toLowerCase(), style: 'width:' + l.pct + '%' }))) : null,
     x.lineas?.length ? el('span', { class: 'mudo neg-detalle neg-leyenda', text: x.lineas.map(l => l.etiqueta + ' ' + l.pct + ' %').join(' · ') }) : null,
-  ].filter(Boolean))));
+  ].filter(Boolean)); return PROVISIONAL[x.clave] ? provisional(t, PROVISIONAL[x.clave]) : t; }));
 }
 
 export function render(raiz, S, arg, filtros) {

@@ -148,3 +148,11 @@ export function enlazar(texto) {
   }
   return out;
 }
+
+// #2676: cifra que aún no sale de la fuente de la verdad. Se quita en el PR que la migra.
+export function provisional(nodo, encargo) {
+  nodo.classList.add('fuente-provisional');
+  nodo.dataset.provisional = encargo;
+  nodo.title = 'Cifra provisional: aún no sale de la fuente de la verdad (' + encargo + ')';
+  return nodo;
+}

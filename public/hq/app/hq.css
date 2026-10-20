@@ -554,3 +554,5 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 .vt-paso-v{min-width:44px;text-align:right;white-space:nowrap}
 .vt-camp-pie{margin:0;font-size:12.5px;color:var(--pizarra)}
 .vt-pipe-imp{margin:0 0 6px;font-weight:600;font-size:13px}
+/* #2676: cifra que aún no sale de la fuente de la verdad (helper provisional() de ui.js). */
+.fuente-provisional,.fuente-provisional .neg-principal,.fuente-provisional .valor,.fuente-provisional .v,.hoy-neg.fuente-provisional .neg-principal,.hoy-neg.fuente-provisional .neg-secundario,.hoy-neg.fuente-provisional .neg-detalle,.hoy-neg.fuente-provisional .neg-leyenda,.home-cifra.fuente-provisional .valor{color:var(--error)}
