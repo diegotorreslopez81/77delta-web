@@ -338,9 +338,13 @@ function pipelineNueva(f) {
     }),
   };
 }
+// #2679: orden fijo de las casillas de Negocio; una clave que no esté va después, en el orden de la vista.
+export const ORDEN_NEGOCIO = ['pipeline', 'contratado', 'ingresos', 'captacion_7d'];
+const ETIQUETAS_NEGOCIO = { ingresos: 'Facturado y cobrado' };
+const posNegocio = c => { const i = ORDEN_NEGOCIO.indexOf(c); return i < 0 ? ORDEN_NEGOCIO.length : i; };
 export function modeloNegocio(filas) {
-  return (Array.isArray(filas) ? filas : []).filter(f => f && f.principal != null).map(f => ({
-    clave: f.clave, etiqueta: f.etiqueta, color: f.color || '', enlace: '#' + String(f.enlace || 'hoy').replace(/^#\/?/, ''), periodo: f.periodo_texto || '',
+  return (Array.isArray(filas) ? filas : []).filter(f => f && f.principal != null).map((f, i) => ({ f, i })).sort((a, b) => posNegocio(a.f.clave) - posNegocio(b.f.clave) || a.i - b.i).map(({ f }) => ({
+    clave: f.clave, etiqueta: ETIQUETAS_NEGOCIO[f.clave] || f.etiqueta, color: f.color || '', enlace: '#' + String(f.enlace || 'hoy').replace(/^#\/?/, ''), periodo: f.periodo_texto || '',
     principal: valorNegocio(f.principal, f.principal_unidad),
     principalTexto: f.principal_texto || '',
     secundario: [valorNegocio(f.secundario, f.secundario_unidad), f.secundario_texto].filter(Boolean).join(' '),
@@ -350,7 +354,7 @@ export function modeloNegocio(filas) {
   }));
 }
 // #2676: tarjetas de Negocio que aún leen tablas escritas por agentes; cada PR de migración quita la suya.
-export const PROVISIONAL = { pipeline: '#2672', captacion_7d: '#2673', ingresos: 'pendiente de encargo' };
+export const PROVISIONAL = { pipeline: '#2672', captacion_7d: '#2673', ingresos: '#2645' };
 export function pintarNegocio(filas) {
   const m = modeloNegocio(filas);
   if (!m.length) return null;
