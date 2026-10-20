@@ -5,8 +5,8 @@ import { el, toast } from './ui.js';
 import { crearRecargador, decidirRecargaAutomatica } from './recargador.js';
 import { fotografiar, restaurar } from './conservar.js';
 import { resolver } from './rutas.js';
-import { listar as listarAvisos, marcarLeido as marcarAvisoLeido } from './avisos.js';
-import { decidirAviso, haceCuanto, hashDeAviso, trazarPagina } from './aviso-pendiente.js';
+import { listar as listarAvisos } from './avisos.js';
+import { decidirAviso, haceCuanto, trazarPagina } from './aviso-pendiente.js';
 import { montarMenu, marcarActiva, pintarBarra, cablearShell, ocultarSoloOwner } from './shell.js';
 import * as hoy from './vistas/hoy.js';
 import * as avisos from './vistas/avisos.js';
@@ -168,9 +168,7 @@ async function revisarAvisos(visita) {
   const origen = hayDestino || (visita === 'arranque' && location.hash) ? 'notificacion' : standalone ? 'icono' : 'pestana';
   trazaPag('pagina_abierta', { visita, origen, entrada: location.pathname + location.hash.slice(0, 60), cache, version: window.HQ_VERSION && HQ_VERSION.v, destinoPendiente: hayDestino, sinLeer: total, avisoN: a ? a.n : null, controlado: !!navigator.serviceWorker.controller }, reg);
   if (!a) return;
-  // 18-10 (Diego): sin banner flotante. Si la app se abrió desde la notificación y iOS no entregó notificationclick, el aviso abre su tarjeta directamente; los pendientes viven en Depende de ti y correos.
-  const h = hashDeAviso(a, location.origin);
-  if (origen === 'notificacion' && h && !hayDestino) { trazaPag('aviso_abierto_directo', { avisoN: a.n, url: a.url }, reg); marcarAvisoLeido(a.n).catch(() => {}); location.hash = h; }
+  // #2624: sin salto automático al aviso más reciente: pisaba el hash tocado y abría siempre la misma tarjeta. El destino lo ruta el Cache hq-destino; los pendientes viven en Depende de ti y correos.
 }
 if ('serviceWorker' in navigator) {
   const habiaControl = !!navigator.serviceWorker.controller;
