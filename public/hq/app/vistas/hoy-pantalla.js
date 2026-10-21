@@ -324,6 +324,13 @@ export function kEur(v) {
 }
 // Pipeline (#2677) y Contratado (#2678): detalle con clave = tres líneas (licitaciones, propuestas, ayudas); cada una con importe, n y enlace.
 // Contratado añade el porcentaje de conversión "(#n, p %)" y la barra por tipología (elemento "lineas" del detalle).
+// #2692: enlace de línea. http(s) tal cual y en pestaña nueva (CRM); resto, hash interno; vacío, sin enlace.
+export function enlaceLinea(e) {
+  const v = String(e ?? '').trim();
+  if (!v) return { enlace: '', externo: false };
+  if (/^https?:\/\//i.test(v)) return { enlace: v, externo: true };
+  return { enlace: '#' + v.replace(/^#\/?/, ''), externo: false };
+}
 const ETIQUETAS_LINEA = { licitaciones: 'Licitaciones', propuestas: 'Propuestas', ayudas: 'Ayudas', subvenciones: 'Subvenciones' };
 function pipelineNueva(f) {
   if (!['pipeline', 'contratado'].includes(f?.clave) || !Array.isArray(f.detalle) || !f.detalle.some(d => d && d.clave)) return {};
@@ -336,7 +343,7 @@ function pipelineNueva(f) {
       const sinDato = d.provisional === true || d.valor == null;
       const pct = conPct && d.pct_conversion != null ? ', ' + Math.round(Number(d.pct_conversion)) + ' %' : '';
       const et = ETIQUETAS_LINEA[d.clave] || d.etiqueta || d.clave;
-      return { texto: sinDato ? et + ': pdte CRM' : et + ': ' + kEur(d.valor) + ' (#' + (d.n ?? 0) + pct + ')', enlace: d.enlace ? '#' + String(d.enlace).replace(/^#\/?/, '') : '', provisional: sinDato };
+      return { texto: sinDato ? et + ': pdte CRM' : et + ': ' + kEur(d.valor) + ' (#' + (d.n ?? 0) + pct + ')', ...enlaceLinea(d.enlace), provisional: sinDato };
     }),
   };
 }
@@ -366,7 +373,7 @@ export function pintarNegocio(filas) {
     el('span', { class: 'neg-principal' }, [x.principal, x.principalTexto ? el('small', { class: x.principalTexto.length > 20 ? 'bajo' : '', text: ' ' + x.principalTexto }) : null].filter(Boolean)),
     x.secundario ? el('span', { class: 'neg-secundario', text: x.secundario }) : null,
     ...x.detalle.map(d => el('span', { class: 'mudo neg-detalle', text: d.etiqueta + ': ' + d.valor })),
-    ...(x.lineasPipe || []).map(l => { const n = el(l.enlace ? 'a' : 'span', { class: 'mudo neg-detalle neg-linea', ...(l.enlace ? { href: l.enlace } : {}), text: l.texto }); return l.provisional ? provisional(n, x.encargo || '#2677') : n; }),
+    ...(x.lineasPipe || []).map(l => { const n = el(l.enlace ? 'a' : 'span', { class: 'mudo neg-detalle neg-linea', ...(l.enlace ? { href: l.enlace } : {}), ...(l.externo ? { target: '_blank', rel: 'noopener' } : {}), text: l.texto }); return l.provisional ? provisional(n, x.encargo || '#2677') : n; }),
     x.lineas?.length ? el('span', { class: 'neg-barra', role: 'img', 'aria-label': 'Reparto por línea' }, x.lineas.filter(l => l.pct > 0).map(l => el('i', { class: 'neg-tramo l-' + l.etiqueta.toLowerCase(), style: 'width:' + l.pct + '%' }))) : null,
     x.lineas?.length ? el('span', { class: 'mudo neg-detalle neg-leyenda', text: x.lineas.map(l => l.etiqueta + ' ' + l.pct + ' %').join(' · ') }) : null,
   ].filter(Boolean)); return PROVISIONAL[x.clave] && !x.lineasPipe ? provisional(t, PROVISIONAL[x.clave]) : t; }));

@@ -100,3 +100,19 @@ test('Orden #2679: Pipeline, Contratado, Facturado y cobrado (#2645), Captación
   assert.deepEqual(buscar(raiz, x => x.classList && x.classList.contains('neg-etiqueta')).map(x => x.textContent), ['Pipeline', 'Contratado', 'Facturado y cobrado', 'Captación']);
   assert.ok(marcados(raiz).some(x => x.dataset.provisional === '#2645'));
 });
+
+test('Líneas #2692: http(s) externo con target _blank y noopener; # y ruta internos; vacío sin enlace; también provisional', async () => {
+  const { enlaceLinea } = await import('../app/vistas/hoy-pantalla.js');
+  assert.deepEqual(enlaceLinea('https://crm.77delta.com/objects/opportunities?view=x'), { enlace: 'https://crm.77delta.com/objects/opportunities?view=x', externo: true });
+  assert.deepEqual(enlaceLinea('#operacion/licitaciones?estado=presentadas'), { enlace: '#operacion/licitaciones?estado=presentadas', externo: false });
+  assert.deepEqual(enlaceLinea('operacion/licitaciones'), { enlace: '#operacion/licitaciones', externo: false });
+  assert.deepEqual(enlaceLinea(null), { enlace: '', externo: false });
+  assert.equal(enlaceLinea('javascript:alert(1)').externo, false);
+  assert.equal(enlaceLinea('javascript:alert(1)').enlace, '#javascript:alert(1)');
+  const d = (clave, valor, provisional, enlace) => ({ clave, etiqueta: clave, valor, unidad: 'eur', n: 1, provisional, enlace });
+  const raiz = pintarNegocio([{ clave: 'pipeline', etiqueta: 'Pipeline', principal: 1000, principal_unidad: 'eur', detalle: [
+    d('licitaciones', 1000, false, '#operacion/licitaciones?estado=presentadas'), d('propuestas', null, true, 'https://crm.77delta.com/objects/opportunities?view=abc'), d('ayudas', null, true, null) ] }]);
+  const ls = buscar(raiz, x => x.classList && x.classList.contains('neg-linea'));
+  assert.equal(ls[1].tag, 'a'); assert.equal(ls[1].getAttribute('target'), '_blank'); assert.equal(ls[1].getAttribute('rel'), 'noopener');
+  assert.equal(ls[0].getAttribute('target'), null); assert.equal(ls[2].tag, 'span');
+});

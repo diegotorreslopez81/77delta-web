@@ -72,6 +72,7 @@ async function pintar(filas, filtrosRuta = {}, opts = {}) {
 
 test('estadoChip: alias de rutas viejas y los 12 estados de H1 tal cual; lo que no reconoce cae vacio', () => {
   assert.equal(estadoChip('activas'), 'Aprobada');
+  assert.equal(estadoChip('adjudicadas'), 'Adjudicada'); // #2692
   assert.equal(estadoChip('criba'), 'Nueva');
   assert.equal(estadoChip('pausadas'), 'Por decidir');
   assert.equal(estadoChip('descartadas'), 'Descartada');
