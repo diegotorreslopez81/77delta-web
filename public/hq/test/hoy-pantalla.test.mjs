@@ -152,8 +152,8 @@ test('formulariosWeb: suma 30 días por sitio, cero visible y "Sin formularios" 
     { sitio: 'docureal.77delta.com', dia: '2026-10-19', envios_docureal: 4 },
     { sitio: 'swarmix.co', dia: '2026-10-19', visitas: 5 },
   ];
-  assert.equal(formulariosWeb(dias, '77delta.com', ahora), 'Reservar 3 · Contacto 2 · Empleo 0');
-  assert.equal(formulariosWeb(dias, 'docureal.77delta.com', ahora), 'Lista de espera 4');
-  assert.equal(formulariosWeb(dias, 'swarmix.co', ahora), 'Sin formularios');
-  assert.equal(formulariosWeb(dias, 'verifix.77delta.com', ahora), 'Sin formularios');
+  assert.equal(formulariosWeb(dias, '77delta.com', ahora), 'Reserv. 3 · Cont. 2 · Empl. 0');
+  assert.equal(formulariosWeb(dias, 'docureal.77delta.com', ahora), 'L. espera 4');
+  assert.equal(formulariosWeb(dias, 'swarmix.co', ahora), 'Sin form.');
+  assert.equal(formulariosWeb(dias, 'verifix.77delta.com', ahora), 'Sin form.');
 });

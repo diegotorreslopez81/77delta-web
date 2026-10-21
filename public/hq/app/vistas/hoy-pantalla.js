@@ -239,33 +239,33 @@ export function modeloWeb7(filas, ahora = new Date()) {
 // #2739 PR 1c+1d: un panel por sitio con la misma tarjeta que Negocio (vt-card hoy-neg): logo y título (enlace a Umami si hq_web trae umami_url y umami_id), visitas 30 d, visitantes y variación, total histórico y formularios/CTA 30 d.
 const nombreCorto = sitio => etiquetaSitio(sitio).replace(/\.(com|co)$/, '');
 const FORMULARIOS = {
-  '77delta.com': [['clics_reservar', 'Reservar'], ['envios_contacto', 'Contacto'], ['envios_empleo', 'Empleo']],
-  'docureal.77delta.com': [['envios_docureal', 'Lista de espera']],
-  'verifix.77delta.com': [['envios_verifix', 'Lista de espera']],
+  '77delta.com': [['clics_reservar', 'Reserv.'], ['envios_contacto', 'Cont.'], ['envios_empleo', 'Empl.']],
+  'docureal.77delta.com': [['envios_docureal', 'L. espera']],
+  'verifix.77delta.com': [['envios_verifix', 'L. espera']],
   'swarmix.co': [['clics_swarmix', 'CTA']],
 };
 export function formulariosWeb(dias, sitio, ahora = new Date()) {
   const desde = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Madrid' }).format(new Date(ahora.getTime() - 29 * 86400000));
   const mios = (dias || []).filter(d => d.sitio === sitio && d.dia >= desde);
   const items = (FORMULARIOS[sitio] || []).filter(([c]) => mios.some(d => d[c] != null)).map(([c, t]) => t + ' ' + mios.reduce((a, d) => a + (Number(d[c]) || 0), 0));
-  return items.length ? items.join(' · ') : 'Sin formularios';
+  return items.length ? items.join(' · ') : 'Sin form.';
 }
 export function panelesWeb(filas, ahora = new Date()) {
-  const es = x => x.toLocaleString('es-ES');
+  const es = x => x >= 100000 ? Math.round(x / 1000).toLocaleString('es-ES') + ' k' : x.toLocaleString('es-ES');
   const { dias, resumen } = separarWeb(filas);
   return bloquesOrdenados(filas, ahora).map(b => {
     const r = (resumen || []).find(q => q.sitio === b.sitio) || {};
-    const umami = r.umami_url && r.umami_id ? String(r.umami_url).replace(/\/$/, '') + '/websites/' + r.umami_id : null;
+    const umami = /^https:\/\//.test(r.umami_url || '') && r.umami_id ? String(r.umami_url).replace(/\/$/, '') + '/websites/' + r.umami_id : null;
     const logo = el('img', { class: 'web-logo', src: '/hq/img/sitios/' + b.sitio + '.png', alt: '', width: 20, height: 20 });
     logo.onerror = () => logo.remove();
     const titulo = el(umami ? 'a' : 'span', { class: 'mudo neg-etiqueta', ...(umami ? { href: umami, target: '_blank', rel: 'noopener', onclick: e => e.stopPropagation() } : {}) }, [logo, ' ' + nombreCorto(b.sitio) + ' 30 d']);
     const color = b.sinDatos || !b.variacion ? '' : b.variacion > 0 ? ' verde' : ' rojo';
     const linea = t => el('span', { class: 'mudo neg-detalle neg-linea', text: t });
     const hijos = [titulo, el('span', { class: 'neg-principal', text: b.sinDatos ? '-' : es(b.visitas) })];
-    if (b.sinDatos) hijos.push(linea('sin datos'));
+    if (b.sinDatos) hijos.push(linea('-'));
     else {
-      hijos.push(linea(es(b.visitantes) + ' visitantes' + (b.variacion ? ' · ' + (b.variacion > 0 ? '+' : '') + b.variacion + ' %' : '')));
-      if (b.visitas_total != null) hijos.push(linea('Total ' + es(b.visitas_total) + ' visitas · ' + es(b.visitantes_total) + ' visitantes'));
+      hijos.push(linea(es(b.visitantes) + ' vis.' + (b.variacion ? ' · ' + (b.variacion > 0 ? '+' : '') + b.variacion + ' %' : '')));
+      if (b.visitas_total != null) hijos.push(linea('Tot. ' + es(b.visitas_total) + ' v. · ' + es(b.visitantes_total) + ' vis.'));
       hijos.push(linea(formulariosWeb(dias, b.sitio, ahora)));
     }
     return el('a', { class: 'vt-card hoy-neg web-sitio' + color, href: '#operacion/ventas/web?sitio=' + anclaSitio(b.sitio), title: b.sitio }, hijos);
