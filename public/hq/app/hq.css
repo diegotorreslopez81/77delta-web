@@ -531,10 +531,6 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 .ayudas-linea{cursor:pointer;text-decoration:none}
 
 .cab-ico{display:inline-flex;flex:none;color:var(--oro-luz)}.cab-ico .ico{width:20px;height:20px}
-.hoy-web-linea{display:flex;align-items:center;gap:8px;margin-bottom:12px;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
-.hoy-web-linea::-webkit-scrollbar{display:none}
-.hoy-web-linea .web-etiqueta{flex:none;font-size:12px}
-.web-chip{flex:none;display:inline-block;padding:6px 10px;border:1px solid var(--borde,#e6dfd0);border-radius:999px;background:var(--card,#faf6ee);color:inherit;text-decoration:none;font-size:13px}
 .pastilla{flex:none;min-width:22px;padding:2px 8px;border-radius:11px;background:var(--surface-3);font-size:13px;font-weight:600;text-align:center}
 .pastilla.rojo{background:var(--error);color:#fff}.pastilla.ambar{background:var(--oro-suave);color:var(--oro-oscuro)}.pastilla.verde{background:var(--exito-suave);color:var(--exito)}
 .firmar-card{display:flex;gap:10px;align-items:flex-start;border-left:4px solid var(--oro-luz)}.firmar-card.rojo{border-left-color:var(--error)}
@@ -561,3 +557,7 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 .vt-pipe-imp{margin:0 0 6px;font-weight:600;font-size:13px}
 /* #2676: cifra que aún no sale de la fuente de la verdad (helper provisional() de ui.js). */
 .fuente-provisional,.fuente-provisional .neg-principal,.fuente-provisional .valor,.fuente-provisional .v,.hoy-neg.fuente-provisional .neg-principal,.hoy-neg.fuente-provisional .neg-secundario,.hoy-neg.fuente-provisional .neg-detalle,.hoy-neg.fuente-provisional .neg-leyenda,.home-cifra.fuente-provisional .valor{color:var(--error)}
+
+.web-sitio{min-width:0}
+.web-logo{width:20px;height:20px;border-radius:3px;vertical-align:-3px}
+.web-sin-datos{grid-column:1 / -1}

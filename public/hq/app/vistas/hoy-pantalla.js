@@ -5,7 +5,7 @@
 import { ICONOS_HOY } from '../iconos.js';
 import { el, toast, eur, fecha, pedirTexto, modal, confirmar, provisional } from '../ui.js';
 import { pintarCaptacion } from './home.js';
-import { bloquesOrdenados, etiquetaSitio, anclaSitio } from './web.js';
+import { bloquesOrdenados, etiquetaSitio, anclaSitio, separar as separarWeb } from './web.js';
 
 let cargadores = {
   hoy: async () => (await import('../api.js')).rpc('hq_hoy'),
@@ -236,18 +236,45 @@ export function modeloWeb7(filas, ahora = new Date()) {
   });
   return Object.values(sitios).map(s => ({ ...s, variacion: s.antes ? Math.round((s.visitas - s.antes) / s.antes * 100) : null }));
 }
-// #2739: Web como una sola línea de chips (sitio + visitas 30 d) justo bajo Negocio; siempre abierta, sin h2 ni fuentes. Scroll horizontal en móvil, nunca dos filas.
+// #2739 PR 1c+1d: un panel por sitio con la misma tarjeta que Negocio (vt-card hoy-neg): logo y título (enlace a Umami si hq_web trae umami_url y umami_id), visitas 30 d, visitantes y variación, total histórico y formularios/CTA 30 d.
 const nombreCorto = sitio => etiquetaSitio(sitio).replace(/\.(com|co)$/, '');
-export function chipsWeb(filas, ahora = new Date()) {
-  return bloquesOrdenados(filas, ahora).map(b => el('a', { class: 'web-chip', href: '#operacion/ventas/web?sitio=' + anclaSitio(b.sitio), title: b.sitio }, [
-    nombreCorto(b.sitio) + ' ', el('b', { text: b.sinDatos ? '-' : b.visitas.toLocaleString('es-ES') })]));
+const FORMULARIOS = {
+  '77delta.com': [['clics_reservar', 'Reservar'], ['envios_contacto', 'Contacto'], ['envios_empleo', 'Empleo']],
+  'docureal.77delta.com': [['envios_docureal', 'Lista de espera']],
+  'verifix.77delta.com': [['envios_verifix', 'Lista de espera']],
+  'swarmix.co': [['clics_swarmix', 'CTA']],
+};
+export function formulariosWeb(dias, sitio, ahora = new Date()) {
+  const desde = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Madrid' }).format(new Date(ahora.getTime() - 29 * 86400000));
+  const mios = (dias || []).filter(d => d.sitio === sitio && d.dia >= desde);
+  const items = (FORMULARIOS[sitio] || []).filter(([c]) => mios.some(d => d[c] != null)).map(([c, t]) => t + ' ' + mios.reduce((a, d) => a + (Number(d[c]) || 0), 0));
+  return items.length ? items.join(' · ') : 'Sin formularios';
 }
-function bloqueWeb() {
-  const sec = el('section', { class: 'hoy-web-linea', id: 'hoy-web' }, [el('span', { class: 'neg-etiqueta web-etiqueta', text: 'Web 30 d' }), el('span', { class: 'mudo', text: 'Cargando...' })]);
-  const pinta = nodos => sec.replaceChildren(el('span', { class: 'neg-etiqueta web-etiqueta', text: 'Web 30 d' }), ...nodos);
-  Promise.resolve().then(() => cargadores.web()).catch(() => cargadores.web()).then(f => pinta(f == null ? [el('span', { class: 'mudo', text: 'sin datos' })] : chipsWeb(f)))
-    .catch(e => { console.error('hq_web', e); pinta([el('span', { class: 'mudo', text: 'sin datos' })]); });
-  return sec;
+export function panelesWeb(filas, ahora = new Date()) {
+  const es = x => x.toLocaleString('es-ES');
+  const { dias, resumen } = separarWeb(filas);
+  return bloquesOrdenados(filas, ahora).map(b => {
+    const r = (resumen || []).find(q => q.sitio === b.sitio) || {};
+    const umami = r.umami_url && r.umami_id ? String(r.umami_url).replace(/\/$/, '') + '/websites/' + r.umami_id : null;
+    const logo = el('img', { class: 'web-logo', src: '/hq/img/sitios/' + b.sitio + '.png', alt: '', width: 20, height: 20 });
+    logo.onerror = () => logo.remove();
+    const titulo = el(umami ? 'a' : 'span', { class: 'mudo neg-etiqueta', ...(umami ? { href: umami, target: '_blank', rel: 'noopener', onclick: e => e.stopPropagation() } : {}) }, [logo, ' ' + nombreCorto(b.sitio) + ' 30 d']);
+    const color = b.sinDatos || !b.variacion ? '' : b.variacion > 0 ? ' verde' : ' rojo';
+    const linea = t => el('span', { class: 'mudo neg-detalle neg-linea', text: t });
+    const hijos = [titulo, el('span', { class: 'neg-principal', text: b.sinDatos ? '-' : es(b.visitas) })];
+    if (b.sinDatos) hijos.push(linea('sin datos'));
+    else {
+      hijos.push(linea(es(b.visitantes) + ' visitantes' + (b.variacion ? ' · ' + (b.variacion > 0 ? '+' : '') + b.variacion + ' %' : '')));
+      if (b.visitas_total != null) hijos.push(linea('Total ' + es(b.visitas_total) + ' visitas · ' + es(b.visitantes_total) + ' visitantes'));
+      hijos.push(linea(formulariosWeb(dias, b.sitio, ahora)));
+    }
+    return el('a', { class: 'vt-card hoy-neg web-sitio' + color, href: '#operacion/ventas/web?sitio=' + anclaSitio(b.sitio), title: b.sitio }, hijos);
+  });
+}
+async function panelesWebCargados() {
+  const sin = () => [el('div', { class: 'vt-card hoy-neg web-sin-datos mudo', text: 'Web: sin datos' })];
+  try { const f = await Promise.resolve().then(() => cargadores.web()).catch(() => cargadores.web()); return f == null ? sin() : panelesWeb(f); }
+  catch (e) { console.error('hq_web', e); return sin(); }
 }
 
 // Aviso y apertura por #hoy/N o ?bloque=: el bloque pedido se abre aunque estuviera plegado.
@@ -423,7 +450,9 @@ export function render(raiz, S, arg, filtros) {
       } }),
       acordeon({ id: 'hoy-firmar', titulo: 'Firmar', icono: ICONOS_HOY.firmar, cuenta: fir.n, color: fir.color, vacioTexto: 'Nada que firmar', abierto: abre('hoy-firmar') || leerAbierto('hoy-firmar'), contenido: () => pintarFirmar(h) }),
     ];
-    cont.replaceChildren(...(neg ? [neg] : []), bloqueWeb(), ...(aviso ? [aviso] : []), ...bloques);
+    const negocio = neg || el('div', { class: 'hoy-negocio' });
+    panelesWebCargados().then(ps => negocio.append(...ps));
+    cont.replaceChildren(negocio, ...(aviso ? [aviso] : []), ...bloques);
     if (pedido) document.getElementById(pedido)?.scrollIntoView?.({ block: 'start' });
     if (destacado) setTimeout(() => cont.querySelector('.hoy-item.destacada')?.classList.remove('destacada'), 4000);
     if (destacado) {
