@@ -9,7 +9,6 @@
 import { el, fecha, urlSegura, toast } from '../ui.js';
 import { embudo, porElegible, porDecidir, vencida, esperandoResolucion, sinPresentarUrgente, ordenCierre, estadoDe, estadoBase, estadoPartido, solvenciaTexto, pipelinePorMes, tipologiaOrgano, tipologia, TIPOLOGIAS, filtrar, enlacesLic, ESTADOS_H1, ETAPAS_LIC, etapaDe, CLAVE_RESUMEN } from '../licitaciones.js';
 import { botonesTransicion, botonClaveSobre, checklistA5, ejecutarTransicion } from '../decision-lic.js';
-import { recargar, render as repintar } from '../main.js';
 import { nombreBloqueo, textoHoras, tableroFases } from './licitaciones-bloqueo.js';
 import { hojaFiltros, pillsActivos } from '../filtros.js';
 import { donut, barras } from '../graficos.js';
@@ -39,6 +38,17 @@ export function colorTextoPlazo(d) { return d == null || d < 0 ? 'neutro' : d <=
 // los tests sustituir la RPC por una funcion propia (misma idea que licitaciones-menores.js).
 let cargador = async filtro => (await import('../api.js')).licitacionesTabla(filtro);
 export function usarCargador(fn) { cargador = fn; }
+// main.js arranca HQ entera al cargarse: solo se importa al recargar o repintar tras una acción del propietario.
+const recargar = async () => (await import('../main.js')).recargar();
+const repintar = async (...a) => (await import('../main.js')).render(...a);
+
+// #2704 (D211): vista de socio (/hq/i4sme/). Mismo módulo en solo lectura: la lista, los chips de fase y la ficha salen de las
+// RPC lic_socio_* (por token de socio, solo su socio y desde Aprobada); sin acciones, tablero interno ni datos de agentes.
+// cfg: { tabla(filtro) -> {total, filas, resumen}, historia(id) -> {presentaciones, cambios} }.
+let socio = null;
+export function usarSocio(cfg) { socio = cfg; cargador = cfg.tabla; }
+const ETAPAS_SOCIO = ['marcha', 'presentadas'];
+const SECCIONES_INTERNAS = ['espera', 'motivo', 'solvencia', 'presencial', 'menor'];
 // Enmienda 5: pestaña ?bloque=firmar = exactamente las filas de hq_v_hoy_firmar (lotes de firma en plan), sin otro filtro.
 // La etiqueta es provisional hasta que Gerard fije el nombre.
 let cargadorFirmar = async () => (await import('../api.js')).rpc('hq_hoy');
@@ -272,7 +282,7 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
     if (historialCargado || !l.id) return;
     historialCargado = true;
     historial.append(el('p', { class: 'mudo', text: 'cargando historial…' }));
-    import('../api.js').then(m => m.licitacionHistoria(l.id)).then(h => {
+    (socio ? socio.historia(l.id) : import('../api.js').then(m => m.licitacionHistoria(l.id))).then(h => {
       historial.innerHTML = '';
       const envios = Array.isArray(h?.presentaciones) ? h.presentaciones.filter(x => x.estado === 'confirmada') : [];
       const tareas = Array.isArray(h?.tareas) ? h.tareas : [];
@@ -283,7 +293,7 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
       };
       lista('Envíos', envios.map(x => el('li', { text: (x.confirmada_en ? fecha(x.confirmada_en) + ' · ' : '') + x.tipo + (x.requerimiento ? ' ' + x.requerimiento : '')
         + (x.n_registro ? ' · reg ' + x.n_registro : '') + (x.plataforma ? ' · ' + x.plataforma : '') + (x.justificante_drive ? '' : ' · sin justificante en Drive') })), 'sin envíos registrados');
-      lista('Tareas', tareas.map(x => el('li', {}, [
+      if (!socio) lista('Tareas', tareas.map(x => el('li', {}, [
         (x.creada_en ? fecha(x.creada_en) + ' · ' : '') + x.fase + ' · ' + x.estado + (x.resultado?.notificacion ? ' · notif ' + x.resultado.notificacion : '') + ' ',
         x.estado !== 'hecha' ? el('span', { class: 'chip bloqueo ' + (x.espera_de === 'proveedor' ? 'proveedor' : ''), text: nombreBloqueo(x.espera_de) + (x.horas_parada != null ? ' · ' + textoHoras(x.horas_parada) : '') }) : '',
       ])), 'sin tareas');
@@ -369,19 +379,19 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
       ...economiaLic(l),
       l.expediente ? el('p', { class: 'sub', text: 'Expediente ' + l.expediente }) : null,
       solv !== 'sin dato' ? el('p', { class: 'sub', text: 'Solvencia: ' + solv }) : null,
-      l.agente ? el('p', { class: 'sub', text: 'Agente: ' + l.agente + (l.tomada_en ? ' · tomada ' + fecha(l.tomada_en) : '') }) : null,
+      l.agente && !socio ? el('p', { class: 'sub', text: 'Agente: ' + l.agente + (l.tomada_en ? ' · tomada ' + fecha(l.tomada_en) : '') }) : null,
       l.motivo_descarte ? el('p', { class: 'sub', text: 'Motivo: ' + l.motivo_descarte + (l.origen_descarte ? ' (' + l.origen_descarte + ')' : '') }) : null,
       l.justificante_drive ? el('p', { class: 'sub' }, [el('a', { class: 'btn-enlace', href: urlSegura(l.justificante_drive), target: '_blank', rel: 'noopener', text: 'Justificante' })]) : null,
-      checklistA5(l),
+      socio ? null : checklistA5(l),
       el('details', { class: 'lic-hist', ontoggle: e => { if (e.currentTarget?.open) cargarHistorial(); } }, [el('summary', { text: 'Historial' }), historial]),
-      el('details', { class: 'lic-hist', ontoggle: e => { if (e.currentTarget?.open) cargarFicha(); } }, [el('summary', { text: 'Extracción y evaluación' }), ficha]),
-      el('details', { class: 'lic-hist', ontoggle: e => { if (e.currentTarget?.open) cargarNotificaciones(); } }, [el('summary', { text: 'Notificaciones' }), notifs]),
+      socio ? null : el('details', { class: 'lic-hist', ontoggle: e => { if (e.currentTarget?.open) cargarFicha(); } }, [el('summary', { text: 'Extracción y evaluación' }), ficha]),
+      socio ? null : el('details', { class: 'lic-hist', ontoggle: e => { if (e.currentTarget?.open) cargarNotificaciones(); } }, [el('summary', { text: 'Notificaciones' }), notifs]),
     ]),
     el('div', { class: 'lic-pie enlaces enlaces-doc' }, [
       ...enlaces.map(([t, u]) => el('a', { class: 'btn-enlace', href: u, target: '_blank', rel: 'noopener', text: t })),
       ...botonesTransicion(l, recargarSinCache, rol, undefined, repintar),
       botonClaveSobre(l, rol),
-      el('button', { class: 'btn', text: 'Copiar para el chat', onclick: () => copiarLic(l) }),
+      socio ? null : el('button', { class: 'btn', text: 'Copiar para el chat', onclick: () => copiarLic(l) }),
     ]),
   ]);
   return art;
@@ -437,7 +447,7 @@ function panelAprobadasAuto(rol) {
 function renderPorExpediente(raiz, S, exp) {
   const mio = ++turno;
   const caja = el('div', { class: 'lic-ficha-unica' }, [el('p', { class: 'mudo', text: 'buscando licitación ' + exp + '…' })]);
-  raiz.append(cabeceraFuentes(S), caja);
+  raiz.append(...(socio ? [] : [cabeceraFuentes(S)]), caja);
   return cargador({ texto: exp, limite: 20 }).then(datos => {
     if (mio !== turno || raiz.isConnected === false) return;
     const l = (Array.isArray(datos?.filas) ? datos.filas : []).find(x => x.expediente === exp);
@@ -455,7 +465,7 @@ function renderPorExpediente(raiz, S, exp) {
 function renderFicha(raiz, S, id, ahora, rol) {
   const mio = ++turno;
   const caja = el('div', { class: 'lic-ficha-unica' }, [el('p', { class: 'mudo', text: 'cargando licitación ' + id + '…' })]);
-  raiz.append(cabeceraFuentes(S), el('div', { class: 'fila enlace-kpis' }, [el('a', { class: 'btn-enlace', href: '#operacion/licitaciones', text: '‹ Licitaciones' })]), caja);
+  raiz.append(...(socio ? [] : [cabeceraFuentes(S)]), el('div', { class: 'fila enlace-kpis' }, [el('a', { class: 'btn-enlace', href: '#operacion/licitaciones', text: '‹ Licitaciones' })]), caja);
   return cargador({ id, limite: 1 }).then(datos => {
     if (mio !== turno || raiz.isConnected === false) return;
     const l = (Array.isArray(datos?.filas) ? datos.filas : []).find(x => Number(x.id) === id);
@@ -474,29 +484,32 @@ function renderFicha(raiz, S, id, ahora, rol) {
 export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
   estadoApp = S;
   const d = S.datos || {};
-  const rol = d.rol || 'agente';
+  const rol = socio ? 'socio' : d.rol || 'agente';
   if (/^\d+$/.test(arg || '')) return renderFicha(raiz, S, Number(arg), ahora, rol);
-  if (filtrosRuta.bloque === 'firmar') return renderFirmar(raiz, ahora);
+  if (!socio && filtrosRuta.bloque === 'firmar') return renderFirmar(raiz, ahora);
   if (filtrosRuta.exp) return renderPorExpediente(raiz, S, filtrosRuta.exp);
-  const estado = estadoChip(filtrosRuta.estado) || 'Por decidir';
+  const estado = estadoChip(filtrosRuta.estado) || (socio ? 'Aprobada' : 'Por decidir');
   const valores = { estado, orden: filtrosRuta.orden === 'importe' ? 'importe' : 'cierre' };
   for (const k of ['tipologia', 'solvencia', 'tipo', 'presencial', 'texto', 'motivo', 'etiqueta']) if (filtrosRuta[k]) valores[k] = filtrosRuta[k];
   if (filtrosRuta.menor === '1') valores.menor = '1';
   if (filtrosRuta.abiertas === '0') valores.abiertas = '0';
   if (filtrosRuta.espera === '1') valores.espera = '1';
 
-  raiz.append(cabeceraFuentes(S));
-  raiz.append(el('div', { class: 'fila enlace-kpis' }, [el('a', { class: 'btn-enlace', href: '#kpis?grupo=licitaciones', text: 'KPIs ›' })]));
+  if (!socio) {
+    raiz.append(cabeceraFuentes(S));
+    raiz.append(el('div', { class: 'fila enlace-kpis' }, [el('a', { class: 'btn-enlace', href: '#kpis?grupo=licitaciones', text: 'KPIs ›' })]));
+  }
   const panelAuto = panelAprobadasAuto(rol);
   if (panelAuto) raiz.append(panelAuto);
 
   // D70 (#2086 spec §2): chips agrupados por etapa, en filas con wrap (nunca scroll horizontal).
   // Contador por fase desde d.lic_resumen vía nFase(); N=0 pinta chip gris, no pulsable, pero presente.
   // Fila 'presentadas' añade el chip agregado "Todas las presentadas N" que filtra las 5 fases a la vez.
-  const resumen = d.lic_resumen || {};
   const etapaActiva = etapaValor(estado);
   const chips = el('div', { class: 'chips-etapas' });
-  for (const et of ETAPAS_LIC) {
+  const pintarChips = resumen => {
+  chips.innerHTML = '';
+  for (const et of ETAPAS_LIC.filter(x => !socio || ETAPAS_SOCIO.includes(x.clave))) {
     const filaChips = el('div', { class: 'chips-fases' });
     for (const e of et.fases) {
       const n = nFase(resumen, e);
@@ -509,12 +522,14 @@ export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
     }
     chips.append(el('div', { class: 'fila-etapa' }, [el('span', { class: 'etapa-titulo', text: et.nombre }), filaChips]));
   }
+  };
+  pintarChips(d.lic_resumen || {});
   const zonaPills = el('div', { class: 'zona-pills' });
   const resumenTxt = el('p', { class: 'mudo' });
   const lista = el('div', { class: (estado === 'Nueva' ? 'lista-criba' : 'lista-rica') + ' con-fab' });
 
   let filas = [];
-  const secciones = [
+  const seccionesTodas = [
     { clave: 'estado', titulo: 'Estado', fija: true, visible: () => false, opciones: ESTADOS_H1.map(e => [e, e]) },
     { clave: 'orden', titulo: 'Orden', defecto: 'cierre', opciones: [['cierre', 'Cierre'], ['importe', 'Importe']] },
     { clave: 'menor', titulo: 'Importe', opciones: [['1', 'Solo Menor (< 20.000 € sin IVA)']] },
@@ -530,6 +545,7 @@ export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
     { clave: 'motivo', titulo: 'Motivo de NO', visible: v => estadoChip(v.estado) === 'Descartada', opciones: [] },
     { clave: 'texto', titulo: 'Buscar', libre: true },
   ];
+  const secciones = socio ? seccionesTodas.filter(x => !SECCIONES_INTERNAS.includes(x.clave)) : seccionesTodas;
 
   const pintarPills = () => {
     zonaPills.innerHTML = '';
@@ -555,7 +571,7 @@ export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
   pintarPills();
   // #2178: tablero por fase con chip de bloqueo (quien espera) y horas paradas; D101 'Esperando proveedor'.
   const tablero = el('div', { class: 'lic-tablero-fases' });
-  import('../api.js').then(m => m.licitacionBloqueos()).then(filas => {
+  if (!socio) import('../api.js').then(m => m.licitacionBloqueos()).then(filas => {
     const fases = tableroFases(filas);
     const prov = (Array.isArray(filas) ? filas : []).filter(x => x.espera_de === 'proveedor');
     tablero.append(...fases.map(f => el('div', { class: 'col-fase' }, [
@@ -566,7 +582,7 @@ export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
       prov.length ? el('div', { class: 'chips-fases' }, prov.map(c => el('span', { class: 'chip bloqueo proveedor', text: c.fase + ' ' + c.n + ' · ' + textoHoras(c.horas_max) }))) : el('p', { class: 'mudo', text: 'ninguna' }),
     ]));
   }).catch(() => {});
-  raiz.append(chips, tablero, zonaPills, resumenTxt, lista, hoja.fab, hoja.hoja);
+  raiz.append(chips, ...(socio ? [] : [tablero]), zonaPills, resumenTxt, lista, hoja.fab, hoja.hoja);
 
   const mio = ++turno;
   const filtro = filtroServidor(valores, ahora);
@@ -574,6 +590,7 @@ export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
   const cache = S.cacheLicTabla;
   const usar = datos => {
     filas = Array.isArray(datos?.filas) ? datos.filas : [];
+    if (socio) pintarChips(datos?.resumen || {});
     const total = Number(datos?.total) || filas.length;
     resumenTxt.textContent = total + (total === 1 ? ' resultado' : ' resultados') + (filas.length < total ? ' (mostrando ' + filas.length + ')' : '');
     const secEtq = secciones.find(s => s.clave === 'etiqueta'), secTipo = secciones.find(s => s.clave === 'tipo'), secMot = secciones.find(s => s.clave === 'motivo');
