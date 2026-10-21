@@ -5,8 +5,7 @@ import { el, toast } from './ui.js';
 import { crearRecargador, decidirRecargaAutomatica } from './recargador.js';
 import { fotografiar, restaurar } from './conservar.js';
 import { resolver } from './rutas.js';
-import { listar as listarAvisos } from './avisos.js';
-import { decidirAviso, haceCuanto, trazarPagina } from './aviso-pendiente.js';
+import { haceCuanto, trazarPagina } from './aviso-pendiente.js';
 import { montarMenu, marcarActiva, pintarBarra, cablearShell, ocultarSoloOwner } from './shell.js';
 import * as hoy from './vistas/hoy.js';
 import * as avisos from './vistas/avisos.js';
@@ -154,20 +153,16 @@ async function aplicarDestinoPendiente() {
   } catch { return false; }
 }
 // C1/C3 (ronda 2, 18-10): fallback que no depende de notificationclick (iOS abre la PWA sin entregarlo). Al
-// arrancar y al volver visible: traza pagina_abierta y, si hay avisos sin leer en IndexedDB, banner fijo arriba con
-// el último (título, hace cuánto, Abrir, cerrar y "y N más" hacia Avisos). Cerrar no borra el aviso.
+// arrancar y al volver visible: traza pagina_abierta. Sin banner (#2694): los avisos viven en la pestaña Avisos.
 const trazaPag = (ev, d, reg) => { let cfg = null; try { cfg = JSON.parse(localStorage.getItem('hq_cfg') || 'null'); } catch {} return trazarPagina(ev, d, { reg, cfg }); };
 async function revisarAvisos(visita) {
-  let reg = null, lista = [], hayDestino = false, cache = null;
+  let reg = null, hayDestino = false, cache = null;
   try { reg = await navigator.serviceWorker.getRegistration('/hq/'); } catch {}
   try { hayDestino = await aplicarDestinoPendiente(); } catch {}
-  try { lista = await listarAvisos(); } catch {}
   try { cache = (await caches.keys()).filter(k => /^hq-v\d+$/.test(k)).join(',') || null; } catch {}
-  const { aviso: a, total } = decidirAviso(lista);
   let standalone = false; try { standalone = navigator.standalone === true || matchMedia('(display-mode: standalone)').matches; } catch {}
   const origen = hayDestino || (visita === 'arranque' && location.hash) ? 'notificacion' : standalone ? 'icono' : 'pestana';
-  trazaPag('pagina_abierta', { visita, origen, entrada: location.pathname + location.hash.slice(0, 60), cache, version: window.HQ_VERSION && HQ_VERSION.v, destinoPendiente: hayDestino, sinLeer: total, avisoN: a ? a.n : null, controlado: !!navigator.serviceWorker.controller }, reg);
-  if (!a) return;
+  trazaPag('pagina_abierta', { visita, origen, entrada: location.pathname + location.hash.slice(0, 60), cache, version: window.HQ_VERSION && HQ_VERSION.v, destinoPendiente: hayDestino, controlado: !!navigator.serviceWorker.controller }, reg);
   // #2624: sin salto automático al aviso más reciente: pisaba el hash tocado y abría siempre la misma tarjeta. El destino lo ruta el Cache hq-destino; los pendientes viven en Depende de ti y correos.
 }
 if ('serviceWorker' in navigator) {
