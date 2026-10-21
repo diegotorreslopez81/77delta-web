@@ -94,7 +94,7 @@ export function plazoConsumido(l, ahora = new Date()) {
 // (?estado=activas, criba, pausadas, nuevas, decidir, aprobadas, redaccion, presentadas, descartadas);
 // 'pausadas' cae en 'Por decidir', el estado vivo mas parecido tras la migracion H1.
 const ALIAS = { activas: 'Aprobada', criba: 'Nueva', pausadas: 'Por decidir', descartadas: 'Descartada',
-  nuevas: 'Nueva', decidir: 'Por decidir', aprobadas: 'Aprobada', redaccion: 'En redacción', presentadas: 'Presentada' };
+  nuevas: 'Nueva', decidir: 'Por decidir', aprobadas: 'Aprobada', redaccion: 'En redacción', presentadas: 'Presentada', adjudicadas: 'Adjudicada' };
 // D70 (#2086 spec §2/§3): 'todas-presentadas' es el valor agregado del chip "Todas las presentadas",
 // pasa intacto (no es una fase de ESTADOS_H1, así que se distingue antes de mirar el catálogo).
 export function estadoChip(valorRuta) {
