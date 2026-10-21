@@ -27,6 +27,10 @@ h1 { font-size:20px; margin:0; }
 .card .obj { margin:2px 0 6px; }
 .tag { display:inline-block; font-size:12px; padding:1px 8px; border-radius:99px; border:1px solid var(--bd); color:var(--mu); margin-right:4px; }
 .tag.rojo { color:var(--rojo); border-color:var(--rojo); font-weight:600; }
+.kpis { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:10px; margin-bottom:16px; }
+.kpi { background:var(--card); border:1px solid var(--bd); border-radius:10px; padding:10px 12px; }
+.kpi b { display:block; font-size:22px; }
+.imp { font-weight:600; }
 .vacio { color:var(--mu); font-size:13px; padding:6px 2px; }
 #msg { padding:24px 0; }
 </style>
@@ -38,6 +42,7 @@ h1 { font-size:20px; margin:0; }
     <span class="mu" id="act"></span>
   </header>
   <div id="msg" class="mu">Cargando...</div>
+  <div class="kpis" id="kpis"></div>
   <div id="firma"></div>
   <div class="cols" id="cols"></div>
 </main>
@@ -59,6 +64,8 @@ h1 { font-size:20px; margin:0; }
     if (conHora) { o.hour = '2-digit'; o.minute = '2-digit'; }
     return new Date(iso).toLocaleString('es-ES', o);
   }
+  function eur(v) { return v == null ? 'sin importe' : Number(v).toLocaleString('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }); }
+  function kpi(t, v, m) { return '<div class="kpi"><span class="mu">' + esc(t) + '</span><b>' + esc(v) + '</b><span class="mu">' + esc(m) + '</span></div>'; }
   function error(t) { $('msg').textContent = t; $('msg').style.display = 'block'; }
   function card(l, roja) {
     return '<div class="card' + (roja ? ' roja' : '') + '">' +
@@ -67,6 +74,7 @@ h1 { font-size:20px; margin:0; }
       '<div class="mu">' + esc(l.organo) + '</div>' +
       '<div style="margin-top:6px"><span class="tag">' + esc(l.estado) + '</span>' +
       (l.firma_pendiente ? '<span class="tag rojo">Firma pendiente</span>' : '') +
+      '<span class="tag imp">' + esc(eur(l.importe_ofertado)) + '</span>' +
       '<span class="tag">Cierre ' + esc(fecha(l.cierre_en, true)) + '</span></div></div>';
   }
   function pintar(d) {
@@ -74,11 +82,14 @@ h1 { font-size:20px; margin:0; }
     var pend = L.filter(function (l) { return l.firma_pendiente; });
     $('msg').style.display = 'none';
     $('act').textContent = 'Actualizado ' + fecha(d.generado_en, true);
+    var P = d.pipeline, LF = d.firma_lotes || [];
+    $('kpis').innerHTML = (P ? kpi('Pipeline en juego', eur(P.total), P.n + ' licitaciones presentadas o en trámite') : '') +
+      LF.map(function (x) { return kpi('Firmas del lote ' + x.lote, eur(x.importe), x.n + ' licitaciones · enviado ' + fecha(x.enviado_en, false)); }).join('');
     $('firma').innerHTML = pend.length
       ? '<div class="firma"><h2>Pendientes de tu firma (' + pend.length + ')</h2>' + pend.map(function (l) {
           return '<div class="fila"><strong>' + esc(l.expediente || ('Licitación ' + l.id)) + '</strong> ' + esc(l.objeto) +
             '<div class="mu">' + esc(l.organo) + ' · Enviado a firma ' + esc(fecha(l.firma_enviada_en, false)) +
-            ' · Plazo: cierre ' + esc(fecha(l.cierre_en, true)) + '</div></div>';
+            ' · ' + esc(eur(l.importe_ofertado)) + ' · Plazo: cierre ' + esc(fecha(l.cierre_en, true)) + '</div></div>';
         }).join('') + '</div>'
       : '<div class="mu" style="margin-bottom:16px">Nada pendiente de tu firma.</div>';
     $('cols').innerHTML = COLS.map(function (c) {
