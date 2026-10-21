@@ -2,7 +2,7 @@
    Supabase ni el payload omc_hq_v2 (van a otro origen, asi que ya quedan fuera del filtro de fetch).
    Push y notificationclick son el mismo comportamiento real que public/hq/v1/sw.js (mismo payload que
    envia hq-push en el servidor: title, body, url, tag, id, lic). */
-var CACHE = 'hq-v82';
+var CACHE = 'hq-v83';
 var SHELL = ['/hq/', '/hq/app/main.js', '/hq/app/api.js', '/hq/app/estado.js', '/hq/app/recargador.js', '/hq/app/rutas.js', '/hq/app/buscador.js', '/hq/app/licitaciones.js', '/hq/app/shell.js', '/hq/app/ui.js', '/hq/app/tarjeta.js', '/hq/app/detalle.js', '/hq/app/dnd.js', '/hq/app/vistas/secreto.js', '/hq/vendor/nacl-fast.min.js', '/hq/app/vistas/hoy.js', '/hq/app/vistas/web.js', '/hq/app/vistas/home.js', '/hq/app/vistas/hoy-pantalla.js', '/hq/app/vistas/objetivo.js', '/hq/app/vistas/tablero.js', '/hq/app/vistas/decisiones.js', '/hq/app/vistas/licitaciones.js', '/hq/app/vistas/licitaciones-menores.js', '/hq/app/vistas/equipo.js', '/hq/app/vistas/motor.js', '/hq/app/vistas/expedientes.js', '/hq/app/vistas/avisos.js', '/hq/app/avisos.js', '/hq/app/aviso-pendiente.js', '/hq/app/tokens.css', '/hq/app/hq.css', '/hq/manifest.webmanifest', '/hq/icon-192.png', '/hq/icon-512.png'];
 
 self.addEventListener('install', function (e) {
@@ -118,11 +118,11 @@ self.addEventListener('push', function (e) {
     }).then(function () { tz.push(traza('push_mostrado', { n: n })); }, function (err) { tz.push(traza('push_mostrar_fallo', { error: msg(err) })); throw err; });
   }).then(function () { return Promise.all(tz); }, function (err) { return Promise.all(tz).then(function () { throw err; }); }));
 });
-// Al tocar: la app abierta recibe siempre {tipo:'ir', url} y aplica el hash ella misma (iOS WebKit no tiene
-// Client.navigate()). La url se pasa a absoluta dentro del scope (openWindow en WebKit la exige). En iPhone
-// openWindow se llama de forma SINCRONA, sin matchAll ni await previos (tras un await WebKit puede perder el
-// permiso de abrir ventana); despues se avisa a las ventanas que ya existian. En el resto: focus() primero y
-// openWindow(url) como caida si no hay ventana de HQ v2 o focus() falla. El aviso se marca leido.
+// Al tocar (#2694): las ventanas de HQ v2 abiertas reciben {tipo:'ir', url} y la app aplica el hash ella misma (iOS WebKit
+// no tiene Client.navigate()); la url se pasa a absoluta dentro del scope. En iPhone openWindow se llama SINCRONO, antes de
+// cualquier await (tras un await WebKit puede perder el permiso con la app cerrada); con la app abierta iOS solo la enfoca
+// y el postMessage mas el Cache hq-destino (main.js, tambien al volver visible) llevan a la tarjeta. En el resto: focus()
+// primero y openWindow(url) si no hay ventana o focus() falla. El aviso se marca leido.
 function urlAbs(url) {
   try { var u = new URL(url || '/hq/#avisos', self.location.origin); if (u.origin === self.location.origin && u.pathname.indexOf('/hq/') === 0) return u.href; } catch (err) {}
   return new URL('/hq/#avisos', self.location.origin).href;
