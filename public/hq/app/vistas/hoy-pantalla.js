@@ -297,7 +297,7 @@ function ingresosNueva(f) {
     periodo: String(anio.etiqueta || '').match(/\d{4}/)?.[0] || '', principal: eurNegocio(anio.valor), principalTexto: 'Facturado ' + (String(anio.etiqueta || '').match(/\d{4}/)?.[0] || ''),
     secundario: (mes ? mes + ' ' : '') + eurNegocio(f.secundario ?? f.principal),
     detalle: [...fila('por_facturar'), ...fila('cobrado_2026')],
-    lineas: Array.isArray(por('lineas_2026')?.lineas) ? por('lineas_2026').lineas.map(l => ({ etiqueta: l.etiqueta, pct: Number(l.pct) || 0 })) : [],
+    lineas: Array.isArray(por('lineas_2026')?.lineas) ? por('lineas_2026').lineas.map(l => ({ clave: String(l.etiqueta).toLowerCase(), etiqueta: l.etiqueta, pct: Number(l.pct) || 0 })) : [],
   };
 }
 function ingresosVieja(f) {
@@ -335,17 +335,32 @@ const ETIQUETAS_LINEA = { licitaciones: 'Licitaciones', propuestas: 'Propuestas'
 function pipelineNueva(f) {
   if (!['pipeline', 'contratado'].includes(f?.clave) || !Array.isArray(f.detalle) || !f.detalle.some(d => d && d.clave)) return {};
   const conPct = f.clave === 'contratado', encargo = conPct ? '#2678' : '#2677';
-  const barra = f.detalle.find(d => d && d.clave === 'lineas');
+  const lineasPipe = f.detalle.filter(d => d && d.clave && d.clave !== 'lineas').map(d => {
+    const sinDato = d.provisional === true || d.valor == null;
+    const pct = conPct && d.pct_conversion != null ? ', ' + Math.round(Number(d.pct_conversion)) + ' %' : '';
+    const et = ETIQUETAS_LINEA[d.clave] || d.etiqueta || d.clave;
+    return { clave: d.clave, valor: sinDato ? 0 : Number(d.valor) || 0, texto: sinDato ? et + ': pdte CRM' : et + ': ' + kEur(d.valor) + ' (#' + (d.n ?? 0) + pct + ')', ...enlaceLinea(d.enlace), provisional: sinDato };
+  });
   return {
     principal: kEur(f.principal), principalTexto: f.principal_texto || (conPct ? 'concedido' : 'en juego'), secundario: '', detalle: [], encargo,
-    lineas: Array.isArray(barra?.lineas) ? barra.lineas.map(l => ({ etiqueta: l.etiqueta, pct: Number(l.pct) || 0 })) : [],
-    lineasPipe: f.detalle.filter(d => d && d.clave && d.clave !== 'lineas').map(d => {
-      const sinDato = d.provisional === true || d.valor == null;
-      const pct = conPct && d.pct_conversion != null ? ', ' + Math.round(Number(d.pct_conversion)) + ' %' : '';
-      const et = ETIQUETAS_LINEA[d.clave] || d.etiqueta || d.clave;
-      return { texto: sinDato ? et + ': pdte CRM' : et + ': ' + kEur(d.valor) + ' (#' + (d.n ?? 0) + pct + ')', ...enlaceLinea(d.enlace), provisional: sinDato };
-    }),
+    lineas: lineasBarra(f.detalle, lineasPipe),
+    lineasPipe,
   };
+}
+// #2695: barra y leyenda de Pipeline y Contratado. Si la vista trae "lineas" se usan; si no, se calculan del valor de las líneas.
+const ETIQUETAS_CORTAS = { licitaciones: 'Licit.', propuestas: 'Prop.', ayudas: 'Ayudas', subvenciones: 'Subv.' };
+const CLAVE_DE_ETIQUETA = { licita: 'licitaciones', licitaciones: 'licitaciones', sales: 'propuestas', propuestas: 'propuestas', ayudas: 'ayudas', subvenciones: 'subvenciones' };
+export function lineasBarra(detalle, lineasPipe) {
+  const barra = (detalle || []).find(d => d && d.clave === 'lineas');
+  let l;
+  if (Array.isArray(barra?.lineas) && barra.lineas.length) {
+    l = barra.lineas.map(x => ({ clave: CLAVE_DE_ETIQUETA[String(x.etiqueta).toLowerCase()] || String(x.etiqueta).toLowerCase(), pct: Number(x.pct) || 0 }));
+  } else {
+    const suma = lineasPipe.reduce((a, x) => a + x.valor, 0);
+    if (suma <= 0) return [];
+    l = lineasPipe.map(x => ({ clave: x.clave, pct: Math.round(x.valor / suma * 100) }));
+  }
+  return l.map(x => ({ ...x, etiqueta: ETIQUETAS_CORTAS[x.clave] || x.clave })).sort((a, b) => b.pct - a.pct);
 }
 // #2679: orden fijo de las casillas de Negocio; una clave que no esté va después, en el orden de la vista.
 export const ORDEN_NEGOCIO = ['pipeline', 'contratado', 'ingresos', 'captacion_7d'];
@@ -374,8 +389,8 @@ export function pintarNegocio(filas) {
     x.secundario ? el('span', { class: 'neg-secundario', text: x.secundario }) : null,
     ...x.detalle.map(d => el('span', { class: 'mudo neg-detalle', text: d.etiqueta + ': ' + d.valor })),
     ...(x.lineasPipe || []).map(l => { const n = el(l.enlace ? 'a' : 'span', { class: 'mudo neg-detalle neg-linea', ...(l.enlace ? { href: l.enlace } : {}), ...(l.externo ? { target: '_blank', rel: 'noopener' } : {}), text: l.texto }); return l.provisional ? provisional(n, x.encargo || '#2677') : n; }),
-    x.lineas?.length ? el('span', { class: 'neg-barra', role: 'img', 'aria-label': 'Reparto por línea' }, x.lineas.filter(l => l.pct > 0).map(l => el('i', { class: 'neg-tramo l-' + l.etiqueta.toLowerCase(), style: 'width:' + l.pct + '%' }))) : null,
-    x.lineas?.length ? el('span', { class: 'mudo neg-detalle neg-leyenda', text: x.lineas.map(l => l.etiqueta + ' ' + l.pct + ' %').join(' · ') }) : null,
+    x.lineas?.length ? el('span', { class: 'neg-barra', role: 'img', 'aria-label': 'Reparto por línea' }, x.lineas.filter(l => l.pct > 0).map(l => el('i', { class: 'neg-tramo l-' + l.clave, style: 'width:' + l.pct + '%' }))) : null,
+    x.lineas?.length ? el('div', { class: 'mudo neg-detalle neg-leyenda' }, x.lineas.map(l => el('span', {}, [el('i', { class: 'neg-punto l-' + l.clave }), l.etiqueta + ' ' + l.pct + ' %']))) : null,
   ].filter(Boolean)); return PROVISIONAL[x.clave] && !x.lineasPipe ? provisional(t, PROVISIONAL[x.clave]) : t; }));
 }
 

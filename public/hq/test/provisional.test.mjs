@@ -92,7 +92,8 @@ test('Contratado #2678: cuatro líneas (con Subvenciones) y tramo l-subvenciones
   const t = raiz.textContent;
   assert.equal(buscar(raiz, x => x.classList && x.classList.contains('neg-linea')).length, 4);
   assert.match(t, /Ayudas: 64,0 k€ \(#8, 100 %\)/); assert.match(t, /Subvenciones: 18,0 k€ \(#1\)/);
-  assert.ok(buscar(raiz, x => x.classList && x.classList.contains('l-subvenciones')).length === 1);
+  assert.ok(buscar(raiz, x => x.classList && x.classList.contains('neg-tramo') && x.classList.contains('l-subvenciones')).length === 1);
+  assert.ok(buscar(raiz, x => x.classList && x.classList.contains('neg-punto') && x.classList.contains('l-subvenciones')).length === 1);
 });
 test('Orden #2679: Pipeline, Contratado, Facturado y cobrado (#2645), Captación', () => {
   const f = (clave, etiqueta, principal) => ({ clave, etiqueta, principal, principal_unidad: 'eur', detalle: [] });
