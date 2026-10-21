@@ -26,6 +26,8 @@ const ICONOS = {
 };
 export const AREAS = [
   { id: 'hoy', nombre: 'Hoy', corto: 'Hoy', icono: ICONOS.hoy, vistas: [{ clave: 'hoy', nombre: 'Hoy' }] },
+  // #2727 punto 1: Avisos informativo (#718), sin badge ni contador; en el menú va primero dentro de Más.
+  { id: 'avisos', nombre: 'Avisos', corto: 'Avisos', icono: ICONOS.avisos, vistas: [{ clave: 'avisos', nombre: 'Avisos' }] },
   { id: 'licitaciones', nombre: 'Licita', corto: 'Licita', icono: ICONOS.licitaciones, vistas: [{ clave: 'operacion/licitaciones', nombre: 'Licitaciones' }] },
   // D91 (Diego, 28-sep): el motor Licita autonomo, vista propia junto a Licitaciones.
   { id: 'licita-engine', nombre: 'Licita Engine', icono: ICONOS.motor, vistas: [{ clave: 'licita-engine', nombre: 'Licita Engine' }] },

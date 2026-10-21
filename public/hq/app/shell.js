@@ -28,7 +28,7 @@ const ICONO_RECARGAR = '<svg class="ico" viewBox="0 0 24 24" stroke="currentColo
 // Menú de seis (Diego 19-10, menu-hq-2026-10-18.md enmienda 2): cinco principales y 'Más' desplegable con el resto, en este orden.
 // Sin interruptor: ?menu5 ya no hace nada.
 export const MENU5 = ['hoy', 'licitaciones', 'ventas', 'productos', 'proyectos'];
-export const MAS = ['equipo', 'secreto', 'licita-engine', 'expedientes', 'tablero', 'colaboradores', 'admin'];
+export const MAS = ['avisos', 'equipo', 'secreto', 'licita-engine', 'expedientes', 'tablero', 'colaboradores', 'admin'];
 export function areasMenu(areas = AREAS) {
   const por = lista => lista.map(id => areas.find(a => a.id === id)).filter(Boolean);
   return [...por(MENU5), ...por(MAS)];
