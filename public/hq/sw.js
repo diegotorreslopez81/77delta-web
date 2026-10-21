@@ -118,9 +118,11 @@ self.addEventListener('push', function (e) {
     }).then(function () { tz.push(traza('push_mostrado', { n: n })); }, function (err) { tz.push(traza('push_mostrar_fallo', { error: msg(err) })); throw err; });
   }).then(function () { return Promise.all(tz); }, function (err) { return Promise.all(tz).then(function () { throw err; }); }));
 });
-// Al tocar (#2694): si hay ventana de HQ v2 (tambien iPhone), focus() y postMessage {tipo:'ir', url}; la app aplica el
-// hash ella misma (iOS WebKit no tiene Client.navigate()) y NO se llama a openWindow. Sin ventana, o si focus() falla,
-// openWindow(url) con la url absoluta dentro del scope. El destino queda ademas en Cache hq-destino. El aviso se marca leido.
+// Al tocar (#2694): las ventanas de HQ v2 abiertas reciben {tipo:'ir', url} y la app aplica el hash ella misma (iOS WebKit
+// no tiene Client.navigate()); la url se pasa a absoluta dentro del scope. En iPhone openWindow se llama SINCRONO, antes de
+// cualquier await (tras un await WebKit puede perder el permiso con la app cerrada); con la app abierta iOS solo la enfoca
+// y el postMessage mas el Cache hq-destino (main.js, tambien al volver visible) llevan a la tarjeta. En el resto: focus()
+// primero y openWindow(url) si no hay ventana o focus() falla. El aviso se marca leido.
 function urlAbs(url) {
   try { var u = new URL(url || '/hq/#avisos', self.location.origin); if (u.origin === self.location.origin && u.pathname.indexOf('/hq/') === 0) return u.href; } catch (err) {}
   return new URL('/hq/#avisos', self.location.origin).href;
@@ -132,7 +134,7 @@ self.addEventListener('notificationclick', function (e) {
   // C3: el endpoint viaja en la propia notificacion (d.ep): la traza ya no depende de getSubscription() ni del
   // arranque en frio del sw. Cada toque deja click_inicio aunque falle todo lo demas.
   var tr = function (ev, dat) { return traza(ev, dat, d.ep ? Promise.resolve(d.ep) : null); };
-  var tz = [tr('click_inicio', { sinData: sinData, url: url, id: d.id || null, tag: e.notification.tag, camino: 'focus-primero' })];
+  var tz = [tr('click_inicio', { sinData: sinData, url: url, id: d.id || null, tag: e.notification.tag, camino: IOS ? 'ios-openWindow-directo' : 'focus-primero' })];
   // C2: destino pendiente en Cache API (nombre fuera de la familia hq-vN, no se borra al activar): si iOS abre
   // la PWA en la home y descarta el hash, la app lo lee al arrancar o al volver y navega a la tarjeta.
   try { tz.push(caches.open('hq-destino').then(function (c) { return c.put('/hq/__destino', new Response(JSON.stringify({ url: url, t: Date.now() }))); }).catch(function () {})); } catch (err) {}
@@ -143,6 +145,7 @@ self.addEventListener('notificationclick', function (e) {
       function (err) { tz.push(tr('click_openWindow_fallo', { motivo: motivo, error: msg(err) })); });
   };
   var trabajo = [marcarLeido(d.n).catch(function () {})];
+  var abierta = IOS ? abrir('ios-directo') : null;
   trabajo.push(clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (ws) {
     var propias = ws.filter(function (w) { return w.url.indexOf('/hq/') >= 0 && w.url.indexOf('/hq/v1/') < 0; });
     tz.push(tr('click_clientes', { total: ws.length, propias: propias.length, urls: ws.map(function (w) { return w.url + ' [' + w.visibilityState + (w.focused ? ',foco' : '') + ']'; }) }));
@@ -151,11 +154,12 @@ self.addEventListener('notificationclick', function (e) {
       if (d.id) { try { w.postMessage({ tipo: 'abrir', id: d.id }); } catch (err) {} }
       if (d.lic) { try { w.postMessage({ tipo: 'abrir-lic', lic: d.lic }); } catch (err) {} }
     });
+    if (IOS) return abierta;
     if (!propias.length) return abrir('sin-ventana');
     var w0 = propias[0], enfoque;
     try { enfoque = w0.focus ? Promise.resolve(w0.focus()) : Promise.reject(new Error('sin focus')); } catch (err) { enfoque = Promise.reject(err); }
     return enfoque.then(function () { tz.push(tr('click_focus_ok', {})); }, function (err) { tz.push(tr('click_focus_fallo', { error: msg(err) })); return abrir('focus-fallo'); });
-  }, function (err) { tz.push(tr('click_matchAll_fallo', { error: msg(err) })); return abrir('matchAll-fallo'); }));
+  }, function (err) { tz.push(tr('click_matchAll_fallo', { error: msg(err) })); return IOS ? abierta : abrir('matchAll-fallo'); }));
   e.waitUntil(Promise.all(trabajo).then(function () { return Promise.all(tz); }));
 });
 
