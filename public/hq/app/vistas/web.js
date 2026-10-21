@@ -127,7 +127,9 @@ export function vistaWeb(raiz, r, filtros = {}, ahora = new Date()) {
     raiz.append(sec);
     if (filtros.sitio === anclaSitio(b.sitio) && sec.scrollIntoView) setTimeout(() => sec.scrollIntoView(), 0);
   });
-  raiz.append(el('p', { class: 'vt-nota', text: 'Eventos (clics y formularios) pendientes de Umami.' }));
+  const ev = el('p', { class: 'vt-nota' + (filtros.bloque === 'formularios' ? ' destacado' : ''), id: 'web-formularios', text: 'Eventos (clics y formularios) pendientes de Umami.' });
+  raiz.append(ev);
+  if (filtros.bloque === 'formularios' && ev.scrollIntoView) setTimeout(() => ev.scrollIntoView(), 0);
 }
 
 export async function render(raiz) {
