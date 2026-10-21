@@ -116,3 +116,10 @@ test('Líneas #2692: http(s) externo con target _blank y noopener; # y ruta inte
   assert.equal(ls[1].tag, 'a'); assert.equal(ls[1].getAttribute('target'), '_blank'); assert.equal(ls[1].getAttribute('rel'), 'noopener');
   assert.equal(ls[0].getAttribute('target'), null); assert.equal(ls[2].tag, 'span');
 });
+
+test('Negocio #2678: si hq_hoy_negocio falla, línea de error con el motivo; sin motivo, "error"', async () => {
+  const { bloqueNegocio } = await import('../app/vistas/hoy-pantalla.js');
+  assert.equal(bloqueNegocio({ errorNegocio: new Error('permission denied') }).textContent, 'No se pudo cargar Negocio (permission denied)');
+  assert.equal(bloqueNegocio({ errorNegocio: {} }).textContent, 'No se pudo cargar Negocio (error)');
+  assert.equal(bloqueNegocio([]), null);
+});

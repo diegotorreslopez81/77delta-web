@@ -379,14 +379,20 @@ export function pintarNegocio(filas) {
   ].filter(Boolean)); return PROVISIONAL[x.clave] && !x.lineasPipe ? provisional(t, PROVISIONAL[x.clave]) : t; }));
 }
 
+// #2678: si hq_hoy_negocio falla, el bloque no desaparece: una línea con el motivo.
+export function bloqueNegocio(filas) {
+  if (filas?.errorNegocio) return el('p', { class: 'error', text: 'No se pudo cargar Negocio (' + (filas.errorNegocio?.message || 'error') + ')' });
+  return pintarNegocio(filas);
+}
+
 export function render(raiz, S, arg, filtros) {
   const cont = el('div', { class: 'home hoy' }, [el('p', { class: 'cargando', text: '...' })]);
   raiz.append(cont);
   const destacado = arg && arg !== 'bandeja' ? arg : null;
   const pedido = filtros?.bloque ? 'hoy-' + filtros.bloque : null;
   const repintar = () => render(Object.assign(raiz, { innerHTML: '' }), S, arg, filtros);
-  Promise.all([cargadores.hoy(), Promise.resolve().then(() => cargadores.negocio()).catch(() => null)]).then(([h, filasNeg]) => {
-    const neg = pintarNegocio(filasNeg);
+  Promise.all([cargadores.hoy(), Promise.resolve().then(() => cargadores.negocio()).catch(e => ({ errorNegocio: e }))]).then(([h, filasNeg]) => {
+    const neg = bloqueNegocio(filasNeg);
     const cifras = h?.cifras || [];
     const dec = recuento(cifras, ['decidir', 'pagar'], (h?.decidir || []).length + (h?.pagar || []).length);
     const fir = recuento(cifras, ['firmar'], (h?.firmar || []).length);
