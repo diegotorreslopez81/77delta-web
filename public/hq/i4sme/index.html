@@ -50,11 +50,14 @@ h1 { font-size:20px; margin:0; }
 (function () {
   var API = 'https://api.77delta.com';
   var COLS = [
+    { id: 'previas', nombre: 'Antes de redactar', estados: ['Criba de pliego', 'Por decidir', 'Aprobada'] },
     { id: 'redaccion', nombre: 'En redacción', estados: ['En redacción'] },
     { id: 'presentar', nombre: 'Por presentar', estados: ['Por presentar'] },
     { id: 'presentada', nombre: 'Presentada', estados: ['Presentada', 'Subsanación', 'Propuesta de adjudicación'] },
-    { id: 'resuelta', nombre: 'Adjudicada / Resuelta', estados: ['Adjudicada', 'No adjudicada'] }
+    { id: 'resuelta', nombre: 'Adjudicada / Resuelta', estados: ['Adjudicada', 'No adjudicada'] },
+    { id: 'cerradas', nombre: 'Descartada / Cerrada sin presentar', estados: ['Descartada', 'Cerrada sin presentar'] }
   ];
+  var MODALIDAD = { ute: 'UTE', solvencia: 'Solvencia (art. 75)' };
   var TOKEN = (new URLSearchParams(location.search).get('t') || '').replace(/[^0-9a-zA-Z]/g, '');
   var $ = function (id) { return document.getElementById(id); };
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -75,7 +78,9 @@ h1 { font-size:20px; margin:0; }
       '<div style="margin-top:6px"><span class="tag">' + esc(l.estado) + '</span>' +
       (l.firma_pendiente ? '<span class="tag rojo">Firma pendiente</span>' : '') +
       '<span class="tag imp">' + esc(eur(l.importe_ofertado)) + '</span>' +
-      '<span class="tag">Cierre ' + esc(fecha(l.cierre_en, true)) + '</span></div></div>';
+      (l.modalidad ? '<span class="tag">' + esc(MODALIDAD[l.modalidad] || l.modalidad) + '</span>' : '') +
+      '<span class="tag">Cierre ' + esc(fecha(l.cierre_en, true)) + '</span></div>' +
+      (l.firmas && l.firmas.length ? '<div class="mu" style="margin-top:6px">' + l.firmas.map(function (f) { return (f.firmado ? 'Firmado' : 'Por firmar') + ' en lote ' + esc(f.lote) + (f.tipo ? ' (' + esc(f.tipo) + ')' : '') + (f.miercoles ? ' · ' + esc(fecha(f.miercoles, false)) : ''); }).join('<br>') + '</div>' : '') + '</div>';
   }
   function pintar(d) {
     var L = d.licitaciones || [];
