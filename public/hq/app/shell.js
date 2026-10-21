@@ -158,7 +158,7 @@ function pintarBadge(n) {
 }
 export function pintarBarra(datos) {
   const c = contador(datos), nodo = $('contador');
-  nodo.textContent = c.texto + ' ' + c.n; nodo.setAttribute('href', c.href); nodo.hidden = !c.n;
+  nodo.textContent = c.texto + ' ' + c.n; nodo.setAttribute('href', c.href); nodo.hidden = datos?.rol === 'owner' || !c.n; // #2727 punto 5: Diego no ve la píldora (la cifra ya está en Depende de ti de Hoy); el badge y la campana siguen
   pintarBadge(c.n);
   // Campana (#1057 tarea 29): mismo recuento que el contador de la barra (pendientes del owner, en
   // curso del agente), pero el destino del click es siempre la bandeja de Hoy.

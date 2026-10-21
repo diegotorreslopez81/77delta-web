@@ -74,7 +74,7 @@ test('marcarActiva marca el enlace y abre su área; la ficha de agente activa Or
 test('pintarBarra: contador con número y href; semáforo oculto sin cuentas y con color si las hay', () => {
   pintarBarra({ rol: 'owner', pendientes: [{ id: 1 }, { id: 2 }] });
   const c = document.getElementById('contador'), s = document.getElementById('semaforo');
-  assert.equal(c.textContent, 'Depende de ti 2'); assert.equal(c.attrs.href, '#hoy?bloque=decidir'); assert.equal(c.hidden, false); assert.equal(s.hidden, true);
+  assert.equal(c.textContent, 'Depende de ti 2'); assert.equal(c.attrs.href, '#hoy?bloque=decidir'); assert.equal(c.hidden, true, '#2727 punto 5: owner nunca ve la píldora'); assert.equal(s.hidden, true);
   pintarBarra({ rol: 'owner', pendientes: [], cuentas: [{ cuenta: 'team@', pct_ventana: 96 }] });
   assert.equal(c.hidden, true, 'a cero se oculta'); assert.equal(s.hidden, false); assert.ok(s.className.includes('rojo')); assert.equal(s.attrs.title, 'team@ al 96 % de la ventana de 5 h');
 });
