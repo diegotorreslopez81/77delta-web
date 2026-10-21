@@ -5,6 +5,7 @@ import { el } from '../ui.js';
 import { cargarWeb, vistaWeb } from './web.js';
 import { cargarAyudas, vistaAyudas } from './ayudas.js';
 import { cargarCampanas, vistaCampanas } from './ventas-campanas.js';
+import { cargarIngresos, vistaIngresos } from './ventas-ingresos.js';
 import { cargarPipeline, vistaPipeline } from './ventas-pipeline.js';
 import { ventasTwentyActivo, renderTwenty } from './ventas-twenty.js';
 
@@ -73,8 +74,8 @@ export function agruparPorDia(eventos) {
 
 const urlPagina = slug => 'https://77delta.com/propuestas/' + slug;
 
-const TABS = ['hoy', 'pipeline', 'campanas', 'web'];
-const TAB_NOMBRE = { hoy: 'Hoy', pipeline: 'Pipeline', campanas: 'Campañas', web: 'Web' };
+const TABS = ['hoy', 'pipeline', 'campanas', 'web', 'ingresos'];
+const TAB_NOMBRE = { hoy: 'Hoy', pipeline: 'Pipeline', campanas: 'Campañas', web: 'Web', ingresos: 'Ingresos' };
 const ESTADO_ENVIO = { enviado: 'enviado', aprobado: 'en cola', redactado: 'pendiente de OK', redactar: 'por redactar', cancelado: 'cancelado', error: 'error' };
 const irTab = t => { if (typeof location !== 'undefined') location.hash = '#operacion/ventas/' + t; };
 const humana = t => t && t.quien === 'diego';
@@ -266,6 +267,13 @@ export async function render(raiz, reloj, arg, filtros = {}) {
     const zona = el('div', { class: 'ventas-web' }, [el('p', { class: 'cargando', text: 'Cargando Umami...' })]);
     caja.append(zona);
     try { const r = await cargarWeb(); zona.innerHTML = ''; vistaWeb(zona, r, filtros, ahora); } catch (e) { zona.innerHTML = ''; zona.append(el('p', { class: 'aviso rojo', role: 'alert', text: 'No se pudo leer Umami (' + (e?.message || 'error') + ').' })); }
+    return;
+  }
+  if (tab === 'ingresos') {
+    caja.append(cabecera(null, tab, ahora));
+    const zona = el('div', { class: 'ventas-ingresos' }, [el('p', { class: 'cargando', text: 'Cargando ingresos...' })]);
+    caja.append(zona);
+    try { const r = await cargarIngresos(); zona.innerHTML = ''; vistaIngresos(zona, r, filtros); } catch (e) { zona.innerHTML = ''; zona.append(el('p', { class: 'aviso rojo', role: 'alert', text: 'No se pudo leer los ingresos (' + (e?.message || 'error') + ').' })); }
     return;
   }
   if (tab === 'pipeline') {
