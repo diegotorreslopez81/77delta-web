@@ -558,7 +558,6 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 /* #2676: cifra que aún no sale de la fuente de la verdad (helper provisional() de ui.js). */
 .fuente-provisional,.fuente-provisional .neg-principal,.fuente-provisional .valor,.fuente-provisional .v,.hoy-neg.fuente-provisional .neg-principal,.hoy-neg.fuente-provisional .neg-secundario,.hoy-neg.fuente-provisional .neg-detalle,.hoy-neg.fuente-provisional .neg-leyenda,.home-cifra.fuente-provisional .valor{color:var(--error)}
 
-.web-sitio{min-width:0;min-height:0;text-decoration:none;color:var(--ink);gap:2px}
-.web-sitio .neg-etiqueta,.web-sitio .neg-principal,.web-sitio small.bajo{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-.web-sitio small.bajo{font-size:12px;color:var(--pizarra)}
+.web-sitio{min-width:0}
+.web-logo{width:20px;height:20px;border-radius:3px;vertical-align:-3px}
 .web-sin-datos{grid-column:1 / -1}

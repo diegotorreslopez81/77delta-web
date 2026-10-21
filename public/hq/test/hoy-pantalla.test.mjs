@@ -141,3 +141,19 @@ test('vuelve: fecha dd-mm en hora de Madrid', () => {
   assert.equal(vuelve('2026-11-10T08:00:00Z'), 'Vuelve el 10-11');
   assert.equal(vuelve('2026-11-09T23:30:00Z'), 'Vuelve el 10-11');
 });
+
+import { formulariosWeb } from '../app/vistas/hoy-pantalla.js';
+test('formulariosWeb: suma 30 días por sitio, cero visible y "Sin formularios" si no hay campos', () => {
+  const ahora = new Date('2026-10-21T12:00:00Z');
+  const dias = [
+    { sitio: '77delta.com', dia: '2026-10-20', clics_reservar: 2, envios_contacto: 1, envios_empleo: 0 },
+    { sitio: '77delta.com', dia: '2026-10-01', clics_reservar: 1, envios_contacto: 1, envios_empleo: 0 },
+    { sitio: '77delta.com', dia: '2026-08-01', clics_reservar: 9, envios_contacto: 9, envios_empleo: 9 },
+    { sitio: 'docureal.77delta.com', dia: '2026-10-19', envios_docureal: 4 },
+    { sitio: 'swarmix.co', dia: '2026-10-19', visitas: 5 },
+  ];
+  assert.equal(formulariosWeb(dias, '77delta.com', ahora), 'Reservar 3 · Contacto 2 · Empleo 0');
+  assert.equal(formulariosWeb(dias, 'docureal.77delta.com', ahora), 'Lista de espera 4');
+  assert.equal(formulariosWeb(dias, 'swarmix.co', ahora), 'Sin formularios');
+  assert.equal(formulariosWeb(dias, 'verifix.77delta.com', ahora), 'Sin formularios');
+});
