@@ -165,9 +165,29 @@ async function supa(ruta, opciones = {}, clave = HQ.anon) {
 const rpc = (fn, args) => supa(`/rest/v1/rpc/${fn}`, { method: 'POST', body: JSON.stringify(args) });
 const TIPO = { gasto: 'Gasto', contacto: 'Contacto', publicacion: 'Publicación', estrategia: 'Estrategia', duda: 'Duda', accion: 'Acción humana', otro: 'Aprobación' };
 
+// #2694 (decisión #718): push solo para acciones de Diego. Lista única en hq_parametros (la usa también hq-notificar.py).
+const WEB_HQ = 'https://77delta.com/hq/';
+async function tiposAccion() {
+  const f = await supa('/rest/v1/hq_parametros?clave=eq.push_tipos_accion&select=texto', {}, HQ.service);
+  return String(f?.[0]?.texto || '').split(',').map((x) => x.trim()).filter(Boolean);
+}
+// Todo lo que entra por /hq/notificar y /hq/notificar-lic queda en la pestaña Avisos, con push o sin él.
+async function registrarAviso(empresa, tipo, texto, url, push) {
+  try {
+    await supa('/rest/v1/omc_avisos', { method: 'POST', body: JSON.stringify({ empresa, tipo, texto: String(texto).slice(0, 400), url, push }) }, HQ.service);
+  } catch (e) { console.error('aviso no registrado', e.message); }
+}
+const SIN_PUSH = (motivo) => ({ push: false, motivo, enviados: 0, fallidos: 0, dispositivos: 0 });
+
 async function notificar(token, id, texto = '') {
   const info = await rpc('omc_token_info', { p_token: token });
   const s = await rpc('omc_estado', { p_token: token, p_id: id });
+  const urlTarjeta = `${WEB_HQ}#hoy/${s.id}`;
+  if (!(await tiposAccion()).includes(s.tipo)) {
+    await registrarAviso(info.empresa, 'tarjeta', `${TIPO[s.tipo] || 'HQ'} · ${s.agente}: ${texto || s.titulo}`, urlTarjeta, false);
+    return SIN_PUSH('informativo');
+  }
+  if (s.notificado_push) return SIN_PUSH('repetido');
   const subs = await supa(`/rest/v1/omc_push?empresa=eq.${encodeURIComponent(info.empresa)}&select=id,endpoint,sub`, {}, HQ.service);
   let importe = s.importe;
   if (importe == null) {
@@ -183,8 +203,9 @@ async function notificar(token, id, texto = '') {
   const carga = JSON.stringify({
     title: texto ? `${s.agente} responde · #${s.id}` : `${TIPO[s.tipo] || 'HQ'} · ${s.agente}`,
     body: texto ? String(texto).slice(0, 300) : s.titulo + (extra ? `\n${extra}` : ''),
-    url: `${HQ.app}?id=${s.id}`,
+    url: urlTarjeta,
     tag: `hq-${s.id}`,
+    renotify: false,
     id: s.id,
   });
   let enviados = 0, fallidos = 0;
@@ -199,22 +220,34 @@ async function notificar(token, id, texto = '') {
       } else console.error('push error', e.statusCode, e.message);
     }
   }
+  if (enviados) {
+    await supa(`/rest/v1/omc_solicitudes?id=eq.${s.id}&empresa=eq.${encodeURIComponent(info.empresa)}`, { method: 'PATCH', body: JSON.stringify({ notificado_push: true }) }, HQ.service).catch((e) => console.error('notificado_push', e.message));
+  }
+  await registrarAviso(info.empresa, 'tarjeta', `${TIPO[s.tipo] || 'HQ'} · ${s.agente}: ${texto || s.titulo}`, urlTarjeta, enviados > 0);
   return { enviados, fallidos, dispositivos: subs.length };
 }
 
 // Mismo patrón que notificar(), pero para el hilo de una licitación (no tiene solicitud asociada): la resuelve por expediente.
-async function notificarLic(token, expediente, texto = '') {
+// #2694: solo hay push con motivo 'adjudicacion' o 'requerimiento_diego'; el resto (plazos, modificaciones, aperturas, envíos incompletos) queda en Avisos.
+const MOTIVOS_LIC = ['adjudicacion', 'requerimiento_diego'];
+async function notificarLic(token, expediente, texto = '', motivo = '') {
   const info = await rpc('omc_token_info', { p_token: token });
   const lics = await supa(`/rest/v1/omc_licitaciones?empresa=eq.${encodeURIComponent(info.empresa)}&expediente=eq.${encodeURIComponent(expediente)}&select=expediente,organo,importe`, {}, HQ.service);
   const l = lics[0];
   if (!l) throw new Error('licitación no encontrada');
+  const urlLic = `${WEB_HQ}#operacion/licitaciones?lic=${encodeURIComponent(l.expediente)}`;
+  if (!MOTIVOS_LIC.includes(motivo)) {
+    await registrarAviso(info.empresa, 'licitacion', `Licitación ${l.expediente}: ${texto || l.organo || 'aviso'}`, urlLic, false);
+    return SIN_PUSH('informativo');
+  }
   const subs = await supa(`/rest/v1/omc_push?empresa=eq.${encodeURIComponent(info.empresa)}&select=id,endpoint,sub`, {}, HQ.service);
   const extra = l.importe != null ? `${Number(l.importe).toLocaleString('es-ES')} €` : '';
   const carga = JSON.stringify({
     title: `Licitación ${l.expediente} responde`,
     body: texto ? String(texto).slice(0, 300) : (l.organo || l.expediente) + (extra ? `\n${extra}` : ''),
-    url: `${HQ.app}?lic=${encodeURIComponent(l.expediente)}`,
+    url: urlLic,
     tag: `hq-lic-${l.expediente}`,
+    renotify: false,
     lic: l.expediente,
   });
   let enviados = 0, fallidos = 0;
@@ -229,6 +262,7 @@ async function notificarLic(token, expediente, texto = '') {
       } else console.error('push error', e.statusCode, e.message);
     }
   }
+  await registrarAviso(info.empresa, 'licitacion', `Licitación ${l.expediente} (${motivo}): ${texto || l.organo || ''}`, urlLic, enviados > 0);
   return { enviados, fallidos, dispositivos: subs.length };
 }
 
@@ -239,13 +273,17 @@ async function notificarLote(token, ids) {
   const info = await rpc('omc_token_info', { p_token: token });
   const subs = await supa(`/rest/v1/omc_push?empresa=eq.${encodeURIComponent(info.empresa)}&select=id,endpoint,sub`, {}, HQ.service);
   const filtro = ids.map((x) => Number(x)).filter(Number.isInteger).join(',');
-  const filas = await supa(`/rest/v1/omc_solicitudes?empresa=eq.${encodeURIComponent(info.empresa)}&id=in.(${filtro})&select=id,tipo,titulo,agente&order=created_at.asc`, {}, HQ.service);
+  const tipos = await tiposAccion();
+  const todas = await supa(`/rest/v1/omc_solicitudes?empresa=eq.${encodeURIComponent(info.empresa)}&id=in.(${filtro})&select=id,tipo,titulo,agente,notificado_push&order=created_at.asc`, {}, HQ.service);
+  const filas = (todas || []).filter((f) => tipos.includes(f.tipo) && !f.notificado_push);
+  if (!filas.length) return { ...SIN_PUSH('informativo'), tarjetas: 0 };
   const resumen = (filas || []).slice(0, 4).map((f) => `${TIPO[f.tipo] || f.tipo} · ${f.agente}: ${f.titulo}`).join('\n');
   const carga = JSON.stringify({
     title: `${filas.length} tarjetas pendientes de tu decisión`,
     body: resumen + (filas.length > 4 ? `\n… y ${filas.length - 4} más` : ''),
-    url: HQ.app,
+    url: `${WEB_HQ}#hoy`,
     tag: 'hq-lote',
+    renotify: false,
   });
   let enviados = 0, fallidos = 0;
   for (const fila of subs) {
@@ -258,6 +296,9 @@ async function notificarLote(token, ids) {
         await supa(`/rest/v1/omc_push?id=eq.${fila.id}`, { method: 'DELETE' }, HQ.service).catch(() => {});
       } else console.error('push error', e.statusCode, e.message);
     }
+  }
+  if (enviados) {
+    await supa(`/rest/v1/omc_solicitudes?empresa=eq.${encodeURIComponent(info.empresa)}&id=in.(${filas.map((f) => f.id).join(',')})`, { method: 'PATCH', body: JSON.stringify({ notificado_push: true }) }, HQ.service).catch((e) => console.error('notificado_push', e.message));
   }
   return { enviados, fallidos, dispositivos: subs.length, tarjetas: filas.length };
 }
@@ -397,7 +438,7 @@ const servidor = http.createServer(async (req, res) => {
     const token = limpiar(cuerpo.token, 120), expediente = limpiar(cuerpo.expediente, 120);
     if (!token || !expediente) return responder(res, 400, { ok: false, error: 'Faltan token o expediente.' });
     try {
-      const r = await notificarLic(token, expediente, String(cuerpo.texto ?? '').trim().slice(0, 300));
+      const r = await notificarLic(token, expediente, String(cuerpo.texto ?? '').trim().slice(0, 300), limpiar(cuerpo.motivo, 40));
       console.log('hq push lic', expediente, JSON.stringify(r));
       return responder(res, 200, { ok: true, ...r });
     } catch (e) {
