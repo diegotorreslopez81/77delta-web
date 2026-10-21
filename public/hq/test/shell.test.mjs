@@ -33,9 +33,9 @@ globalThis.matchMedia = () => ({ matches: false });
 const { montarMenu, marcarActiva, pintarBarra, cablearShell } = await import('../app/shell.js');
 const { AREAS } = await import('../app/rutas.js');
 
-test('montarMenu pinta cinco áreas y Más con las otras siete, un enlace por vista y Cómputo en Recursos', () => {
+test('montarMenu pinta cinco áreas y Más con las otras ocho, un enlace por vista y Cómputo en Recursos', () => {
   const nav = document.createElement('nav'); const m = montarMenu(nav);
-  assert.equal(nav.children.length, 6); assert.equal(m.enlaces.size, 12); // brief B 19-sep + Salud #1121 + Admin O13a (D9) + Licita Engine (D91): catorce áreas (Avisos #2159, Ventas #2236), todas de una sola vista (Equipo ya no agrupa)
+  assert.equal(nav.children.length, 6); assert.equal(m.enlaces.size, 13); // brief B 19-sep + Salud #1121 + Admin O13a (D9) + Licita Engine (D91): catorce áreas (Avisos #2159, Ventas #2236), todas de una sola vista (Equipo ya no agrupa)
   assert.equal(m.enlaces.get('operacion/tablero').attrs.href, '#operacion/tablero');
   // C3 (revision final): data-inicial era codigo muerto (nunca lo leia el CSS ni ningun otro modulo);
   // se retira, y en su lugar se comprueba lo que realmente hace visible el icono en modo plegado.
@@ -234,7 +234,7 @@ test('areasMenu: cinco principales y Más en el orden de la enmienda 2, sin perd
   const { areasMenu, MENU5, MAS } = await import('../app/shell.js');
   const { AREAS } = await import('../app/rutas.js');
   assert.deepEqual(MENU5, ['hoy', 'licitaciones', 'ventas', 'productos', 'proyectos']);
-  assert.deepEqual(MAS, ['equipo', 'secreto', 'licita-engine', 'expedientes', 'tablero', 'colaboradores', 'admin']);
+  assert.deepEqual(MAS, ['avisos', 'equipo', 'secreto', 'licita-engine', 'expedientes', 'tablero', 'colaboradores', 'admin']);
   const a = areasMenu();
   assert.deepEqual(a.map(x => x.id), [...MENU5, ...MAS]);
   assert.deepEqual(a.flatMap(x => x.vistas.map(v => v.clave)).sort(), AREAS.flatMap(x => x.vistas.map(v => v.clave)).sort());
