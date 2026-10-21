@@ -266,11 +266,11 @@ export function pintarWeb7(filas, ahora = new Date()) {
   if (filas == null) return [vacio('Web: sin datos')];
   return [rejillaWeb(filas, ahora)];
 }
-// Bloque fijo (V1, #2584): cuatro tarjetas por sitio, 30 días, datos del resumen de hq_web; no se pliega.
+// Bloque fijo (V1, #2584; #2739 tercera línea bajo Negocio): una casilla por sitio, 30 días, datos del resumen de hq_web; no se pliega.
 function bloqueWeb() {
-  const sec = el('section', { class: 'home-bloque home-web', id: 'hoy-web' }, [el('h2', {}, [el('span', { class: 'cab-ico', html: ICONOS_HOY.web }), 'Web (30 días)']), el('p', { class: 'mudo', text: 'Cargando...' })]);
-  Promise.resolve().then(() => cargadores.web()).catch(() => cargadores.web()).then(f => sec.replaceChildren(el('h2', {}, [el('span', { class: 'cab-ico', html: ICONOS_HOY.web }), 'Web (30 días)']), ...pintarWeb7(f)))
-    .catch(e => { console.error('hq_web', e); sec.replaceChildren(el('h2', {}, [el('span', { class: 'cab-ico', html: ICONOS_HOY.web }), 'Web (30 días)']), el('p', { class: 'mudo', text: 'Web: sin datos' + (e && e.message ? ' (' + String(e.message).slice(0, 80) + ')' : '') })); });
+  const sec = el('section', { class: 'home-bloque home-web', id: 'hoy-web' }, [el('div', { class: 'neg-etiqueta web-etiqueta' }, [el('span', { class: 'cab-ico', html: ICONOS_HOY.web }), 'Web 30 d']), el('p', { class: 'mudo', text: 'Cargando...' })]);
+  Promise.resolve().then(() => cargadores.web()).catch(() => cargadores.web()).then(f => sec.replaceChildren(el('div', { class: 'neg-etiqueta web-etiqueta' }, [el('span', { class: 'cab-ico', html: ICONOS_HOY.web }), 'Web 30 d']), ...pintarWeb7(f)))
+    .catch(e => { console.error('hq_web', e); sec.replaceChildren(el('div', { class: 'neg-etiqueta web-etiqueta' }, [el('span', { class: 'cab-ico', html: ICONOS_HOY.web }), 'Web 30 d']), el('p', { class: 'mudo', text: 'Web: sin datos' + (e && e.message ? ' (' + String(e.message).slice(0, 80) + ')' : '') })); });
   return sec;
 }
 
@@ -437,7 +437,6 @@ export function render(raiz, S, arg, filtros) {
     const abre = id => (destacado && id === 'hoy-decidir') || pedido === id;
     const bloques = [
       acordeon({ id: 'hoy-decidir', titulo: 'Depende de ti', icono: ICONOS_HOY.decidir, cuenta: dec.n, color: dec.color, vacioTexto: 'Nada depende de ti', abierto: abre('hoy-decidir') || leerAbierto('hoy-decidir'), contenido: () => pintarDecidir(h, repintar, destacado, filtros?.filtro) }),
-      bloqueWeb(),
       acordeon({ id: 'hoy-captacion', titulo: 'Captación', icono: ICONOS_HOY.captacion, cuenta: cap.n, color: cap.color, abierto: abre('hoy-captacion') || leerAbierto('hoy-captacion'), contenido: async () => {
         const filas = await cargadores.captacion();
         const caja = el('div', {});
@@ -449,7 +448,7 @@ export function render(raiz, S, arg, filtros) {
     ];
     const pon = x => { const c = cabecera([...cifras.filter(y => y.clave !== 'tareas'), x]); cont.querySelector('.home-cifras')?.replaceWith(c); };
     cargadores.tareas().then(t => pon(cifraTareas(t))).catch(() => {});
-    cont.replaceChildren(...(neg ? [neg] : []), cabecera(cifras), ...(aviso ? [aviso] : []), ...bloques);
+    cont.replaceChildren(...(neg ? [neg] : []), bloqueWeb(), cabecera(cifras), ...(aviso ? [aviso] : []), ...bloques);
     if (pedido) document.getElementById(pedido)?.scrollIntoView?.({ block: 'start' });
     if (destacado) setTimeout(() => cont.querySelector('.hoy-item.destacada')?.classList.remove('destacada'), 4000);
     if (destacado) {
