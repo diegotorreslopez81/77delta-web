@@ -331,7 +331,7 @@ export function enlaceLinea(e) {
   if (/^https?:\/\//i.test(v)) return { enlace: v, externo: true };
   return { enlace: '#' + v.replace(/^#\/?/, ''), externo: false };
 }
-const ETIQUETAS_LINEA = { licitaciones: 'Licitaciones', propuestas: 'Propuestas', ayudas: 'Ayudas', subvenciones: 'Subvenciones' };
+const ETIQUETAS_LINEA = { licitaciones: 'Licitaciones', propuestas: 'Sales', ayudas: 'Ayudas', subvenciones: 'Subvenciones' };
 function pipelineNueva(f) {
   if (!['pipeline', 'contratado'].includes(f?.clave) || !Array.isArray(f.detalle) || !f.detalle.some(d => d && d.clave)) return {};
   const conPct = f.clave === 'contratado', encargo = conPct ? '#2678' : '#2677';
@@ -342,13 +342,16 @@ function pipelineNueva(f) {
     return { clave: d.clave, valor: sinDato ? 0 : Number(d.valor) || 0, texto: sinDato ? et + ': pdte CRM' : et + ': ' + kEur(d.valor) + ' (#' + (d.n ?? 0) + pct + ')', ...enlaceLinea(d.enlace), provisional: sinDato };
   });
   return {
-    principal: kEur(f.principal), principalTexto: f.principal_texto || (conPct ? 'concedido' : 'en juego'), secundario: '', detalle: [], encargo,
+    periodo: '', principal: kEur(f.principal), principalTexto: f.principal_texto || (conPct ? 'concedido' : 'en juego'), secundario: '', detalle: [], encargo,
     lineas: lineasBarra(f.detalle, lineasPipe),
     lineasPipe,
   };
 }
 // #2695: barra y leyenda de Pipeline y Contratado. Si la vista trae "lineas" se usan; si no, se calculan del valor de las líneas.
-const ETIQUETAS_CORTAS = { licitaciones: 'Licit.', propuestas: 'Prop.', ayudas: 'Ayudas', subvenciones: 'Subv.' };
+const ETIQUETAS_CORTAS = { licitaciones: 'Licit.', propuestas: 'Sales', ayudas: 'Ayudas', subvenciones: 'Subv.' };
+// #2707: orden fijo Licit., Sales, Ayudas, Subv. en la leyenda de Pipeline y Contratado.
+const ORDEN_LINEAS = ['licitaciones', 'propuestas', 'ayudas', 'subvenciones'];
+const posLinea = c => { const i = ORDEN_LINEAS.indexOf(c); return i < 0 ? ORDEN_LINEAS.length : i; };
 const CLAVE_DE_ETIQUETA = { licita: 'licitaciones', licitaciones: 'licitaciones', sales: 'propuestas', propuestas: 'propuestas', ayudas: 'ayudas', subvenciones: 'subvenciones' };
 export function lineasBarra(detalle, lineasPipe) {
   const barra = (detalle || []).find(d => d && d.clave === 'lineas');
@@ -360,11 +363,11 @@ export function lineasBarra(detalle, lineasPipe) {
     if (suma <= 0) return [];
     l = lineasPipe.map(x => ({ clave: x.clave, pct: Math.round(x.valor / suma * 100) }));
   }
-  return l.map(x => ({ ...x, etiqueta: ETIQUETAS_CORTAS[x.clave] || x.clave })).sort((a, b) => b.pct - a.pct);
+  return l.map(x => ({ ...x, etiqueta: ETIQUETAS_CORTAS[x.clave] || x.clave })).sort((a, b) => posLinea(a.clave) - posLinea(b.clave));
 }
 // #2679: orden fijo de las casillas de Negocio; una clave que no esté va después, en el orden de la vista.
 export const ORDEN_NEGOCIO = ['pipeline', 'contratado', 'ingresos', 'captacion_7d'];
-const ETIQUETAS_NEGOCIO = { ingresos: 'Facturado y cobrado' };
+const ETIQUETAS_NEGOCIO = { ingresos: 'Factura', captacion_7d: 'Captación' };
 const posNegocio = c => { const i = ORDEN_NEGOCIO.indexOf(c); return i < 0 ? ORDEN_NEGOCIO.length : i; };
 export function modeloNegocio(filas) {
   return (Array.isArray(filas) ? filas : []).filter(f => f && f.principal != null).map((f, i) => ({ f, i })).sort((a, b) => posNegocio(a.f.clave) - posNegocio(b.f.clave) || a.i - b.i).map(({ f }) => ({

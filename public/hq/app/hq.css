@@ -490,8 +490,8 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 /* Spec 9: bloque Negocio (4 tarjetas, 2x2 en móvil, fila de 4 en escritorio) y operativa en fila de 5 con scroll propio. */
 .hoy-negocio { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
 .hoy-neg { display: flex; flex-direction: column; gap: 2px; min-height: 120px; padding: 8px; text-decoration: none; color: var(--ink); position: relative; }
-.hoy-neg .neg-etiqueta { font-size: 12px; }
-.hoy-neg .neg-periodo { font-size: 11px; }
+.hoy-neg .neg-etiqueta { font-size: 12px; white-space: nowrap; }
+.hoy-neg .neg-periodo { font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hoy-neg .neg-principal small { display: block; font-size: 14px; font-weight: 400; white-space: nowrap; }
 .hoy-neg .neg-principal small.bajo { display: block; font-size: 12px; color: var(--pizarra); }
 .hoy-neg .neg-principal { font-size: 28px; font-weight: 600; line-height: 1.15; }
