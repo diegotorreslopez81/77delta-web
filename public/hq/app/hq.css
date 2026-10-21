@@ -505,7 +505,7 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 .neg-punto { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
 .neg-tramo.l-licitaciones, .neg-punto.l-licitaciones { background: var(--tag-indigo-fg); } .neg-tramo.l-propuestas, .neg-punto.l-propuestas { background: var(--tag-teal-fg); } .neg-punto.l-licita { background: var(--tag-indigo-fg); } .neg-punto.l-sales { background: var(--tag-teal-fg); } .neg-punto.l-cupones { background: var(--tag-ambar-fg); } .neg-punto.l-otros { background: var(--tag-gris-fg); } .neg-punto.l-ayudas { background: var(--oro); } .neg-punto.l-subvenciones { background: var(--exito); }
 .neg-tramo.l-licita { background: var(--tag-indigo-fg); } .neg-tramo.l-sales { background: var(--tag-teal-fg); } .neg-tramo.l-cupones { background: var(--tag-ambar-fg); } .neg-tramo.l-otros { background: var(--tag-gris-fg); } .neg-tramo.l-ayudas { background: var(--oro); } .neg-tramo.l-subvenciones { background: var(--exito); }
-@media (min-width: 900px) { .hoy-negocio { max-width: 720px; } }
+@media (min-width: 900px) { .hoy-negocio { grid-template-columns: repeat(4, 1fr); max-width: none; } }
 .hoy .home-cifras { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
 .hoy .home-cifras .home-cifra { min-width: 0; }
 
