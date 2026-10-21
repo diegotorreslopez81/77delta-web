@@ -506,8 +506,6 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 .neg-tramo.l-licitaciones, .neg-punto.l-licitaciones { background: var(--tag-indigo-fg); } .neg-tramo.l-propuestas, .neg-punto.l-propuestas { background: var(--tag-teal-fg); } .neg-punto.l-licita { background: var(--tag-indigo-fg); } .neg-punto.l-sales { background: var(--tag-teal-fg); } .neg-punto.l-cupones { background: var(--tag-ambar-fg); } .neg-punto.l-otros { background: var(--tag-gris-fg); } .neg-punto.l-ayudas { background: var(--oro); } .neg-punto.l-subvenciones { background: var(--exito); }
 .neg-tramo.l-licita { background: var(--tag-indigo-fg); } .neg-tramo.l-sales { background: var(--tag-teal-fg); } .neg-tramo.l-cupones { background: var(--tag-ambar-fg); } .neg-tramo.l-otros { background: var(--tag-gris-fg); } .neg-tramo.l-ayudas { background: var(--oro); } .neg-tramo.l-subvenciones { background: var(--exito); }
 @media (min-width: 900px) { .hoy-negocio { grid-template-columns: repeat(4, 1fr); max-width: none; } }
-.hoy .home-cifras { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-.hoy .home-cifras .home-cifra { min-width: 0; }
 
 .proyecto-fila summary{display:flex;align-items:center;gap:8px}.proyecto-fila .pct-grande{margin-left:auto;font-size:22px;font-weight:700}.proyecto-fila .pct-grande.gris{font-size:14px;color:var(--tinta-suave,#8a8f98)}
 .punto{width:10px;height:10px;border-radius:50%;background:#8a8f98;flex:none}.punto.rojo{background:var(--error)}.punto.ambar{background:var(--oro-luz)}.punto.verde{background:var(--exito)}
@@ -533,8 +531,10 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 .ayudas-linea{cursor:pointer;text-decoration:none}
 
 .cab-ico{display:inline-flex;flex:none;color:var(--oro-luz)}.cab-ico .ico{width:20px;height:20px}
-.home-web{margin-bottom:12px}
-.home-web .web-etiqueta{display:flex;align-items:center;gap:6px;font-size:12px;margin:0 0 4px}
+.hoy-web-linea{display:flex;align-items:center;gap:8px;margin-bottom:12px;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+.hoy-web-linea::-webkit-scrollbar{display:none}
+.hoy-web-linea .web-etiqueta{flex:none;font-size:12px}
+.web-chip{flex:none;display:inline-block;padding:6px 10px;border:1px solid var(--borde,#e6dfd0);border-radius:999px;background:var(--card,#faf6ee);color:inherit;text-decoration:none;font-size:13px}
 .pastilla{flex:none;min-width:22px;padding:2px 8px;border-radius:11px;background:var(--surface-3);font-size:13px;font-weight:600;text-align:center}
 .pastilla.rojo{background:var(--error);color:#fff}.pastilla.ambar{background:var(--oro-suave);color:var(--oro-oscuro)}.pastilla.verde{background:var(--exito-suave);color:var(--exito)}
 .firmar-card{display:flex;gap:10px;align-items:flex-start;border-left:4px solid var(--oro-luz)}.firmar-card.rojo{border-left-color:var(--error)}

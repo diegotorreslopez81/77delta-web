@@ -4,15 +4,14 @@
 // el rojo sale de umbral_decidir_h y umbral_correo_h que devuelve la RPC (hq_parametros).
 import { ICONOS_HOY } from '../iconos.js';
 import { el, toast, eur, fecha, pedirTexto, modal, confirmar, provisional } from '../ui.js';
-import { pintarCaptacion, valorCifra } from './home.js';
-import { rejillaWeb } from './web.js';
+import { pintarCaptacion } from './home.js';
+import { bloquesOrdenados, etiquetaSitio, anclaSitio } from './web.js';
 
 let cargadores = {
   hoy: async () => (await import('../api.js')).rpc('hq_hoy'),
   web: async () => (await import('../api.js')).rpc('hq_web', { p_dias: 30 }),
   captacion: async () => (await import('../api.js')).rpc('hq_captacion'),
   negocio: async () => (await import('../api.js')).rpc('hq_hoy_negocio'),
-  tareas: async () => (await import('../api.js')).leerVivo('/hq/tareas'),
   resolver: async (id, estado) => (await import('../api.js')).rpc('omc_resolver', { p_id: id, p_estado: estado, p_respuesta: '' }),
   posponer: async (id, hasta) => (await import('../api.js')).rpc('omc_posponer', { p_id: id, p_hasta: hasta }),
   comentar: async (id, texto) => (await import('../api.js')).rpc('omc_comentar', { p_id: id, p_texto: texto }),
@@ -36,45 +35,6 @@ export function opcionesPosponer(ahora = new Date()) {
   };
   const hastaLunes = ((8 - dow) % 7) || 7;
   return { manana: a9(sumar(1)), lunes: a9(sumar(hastaLunes)) };
-}
-
-// Tres celdas (#2584, Diego: Correos fuera de la home): decidir (suma decidir y pagar, listas disjuntas en hq_v_hoy_*), firmar y tareas. Decidir abre Depende de ti;
-// firmar abre la pestaña de Licitaciones con las filas de hq_v_hoy_firmar. Tareas y caja, grises hasta que tengan fuente.
-export const CELDAS = ['decidir', 'firmar', 'tareas'];
-export function enlaceCifra(x) {
-  const e = { decidir: '#hoy?bloque=decidir', pagar: '#hoy?bloque=decidir&filtro=pagar', correos: '#hoy?bloque=correos', firmar: '#licitaciones?bloque=firmar', tareas: 'https://tasks.google.com' }[x.clave];
-  return e || (x.enlace ? '#' + String(x.enlace).replace(/^#/, '') : '#hoy');
-}
-// Gris y sin acción: sin dato (tareas, caja) o recuento 0 en pagar.
-export function celdaGris(x) {
-  return x.valor == null || (x.clave === 'pagar' && Number(x.valor) === 0);
-}
-// Celda Tareas (Google Tasks en vivo: GET api.77delta.com/hq/tareas, que ejecuta el script de Windmill): cifra = abiertas totales (#2584); color de urgencia: rojo con vencidas u hoy, ámbar con tareas sin fecha, verde sin nada.
-// Cualquier fallo o respuesta sin recuentos numéricos da valor nulo y la celda sale gris; nunca un número viejo.
-export function cifraTareas(t) {
-  const base = { clave: 'tareas', etiqueta: 'Tareas', valor: null };
-  if (!t || typeof t.abiertas !== 'number') return base;
-  const v = n(t.vencidas), h = n(t.hoy), s = n(t.sin_fecha);
-  return { ...base, valor: t.abiertas, color: v + h > 0 ? 'rojo' : s > 0 ? 'ambar' : 'verde' };
-}
-export function celdasCabecera(cifras) {
-  const por = Object.fromEntries((cifras || []).map(x => [x.clave, x]));
-  if (por.decidir && por.pagar) por.decidir = { ...por.decidir, valor: n(por.decidir.valor) + n(por.pagar.valor), color: n(por.decidir.valor) + n(por.pagar.valor) > 0 ? 'ambar' : por.decidir.color };
-  return CELDAS.map(k => {
-    const x = por[k] || { clave: k, etiqueta: k === 'caja' ? 'Caja' : k === 'tareas' ? 'Tareas' : k, valor: null };
-    return celdaGris(x) ? { ...x, color: 'gris', gris: true } : x;
-  });
-}
-export function cabecera(cifras) {
-  return el('div', { class: 'home-cifras' }, celdasCabecera(cifras).map(x => {
-    const cuerpo = [
-      el('span', { class: 'valor', text: x.valor == null ? 'sin dato' : x.unidad === 'eur' ? valorCifra(x) : String(x.valor) }),
-      el('span', { class: 'mudo', text: x.etiqueta || x.clave }),
-    ];
-    if (x.gris) return el('div', { class: 'vt-card compacta home-cifra gris' }, cuerpo);
-    const ext = x.clave === 'tareas';
-    return el('a', { class: 'vt-card compacta home-cifra ' + (x.color || ''), href: enlaceCifra(x), ...(ext ? { target: '_blank', rel: 'noopener' } : {}) }, cuerpo);
-  }));
 }
 
 const lista = nodos => [].concat(nodos).filter(Boolean);
@@ -262,15 +222,17 @@ export function modeloWeb7(filas, ahora = new Date()) {
   });
   return Object.values(sitios).map(s => ({ ...s, variacion: s.antes ? Math.round((s.visitas - s.antes) / s.antes * 100) : null }));
 }
-export function pintarWeb7(filas, ahora = new Date()) {
-  if (filas == null) return [vacio('Web: sin datos')];
-  return [rejillaWeb(filas, ahora)];
+// #2739: Web como una sola línea de chips (sitio + visitas 30 d) justo bajo Negocio; siempre abierta, sin h2 ni fuentes. Scroll horizontal en móvil, nunca dos filas.
+const nombreCorto = sitio => etiquetaSitio(sitio).replace(/\.(com|co)$/, '');
+export function chipsWeb(filas, ahora = new Date()) {
+  return bloquesOrdenados(filas, ahora).map(b => el('a', { class: 'web-chip', href: '#operacion/ventas/web?sitio=' + anclaSitio(b.sitio), title: b.sitio }, [
+    nombreCorto(b.sitio) + ' ', el('b', { text: b.sinDatos ? '-' : b.visitas.toLocaleString('es-ES') })]));
 }
-// Bloque fijo (V1, #2584; #2739 tercera línea bajo Negocio): una casilla por sitio, 30 días, datos del resumen de hq_web; no se pliega.
 function bloqueWeb() {
-  const sec = el('section', { class: 'home-bloque home-web', id: 'hoy-web' }, [el('div', { class: 'neg-etiqueta web-etiqueta' }, [el('span', { class: 'cab-ico', html: ICONOS_HOY.web }), 'Web 30 d']), el('p', { class: 'mudo', text: 'Cargando...' })]);
-  Promise.resolve().then(() => cargadores.web()).catch(() => cargadores.web()).then(f => sec.replaceChildren(el('div', { class: 'neg-etiqueta web-etiqueta' }, [el('span', { class: 'cab-ico', html: ICONOS_HOY.web }), 'Web 30 d']), ...pintarWeb7(f)))
-    .catch(e => { console.error('hq_web', e); sec.replaceChildren(el('div', { class: 'neg-etiqueta web-etiqueta' }, [el('span', { class: 'cab-ico', html: ICONOS_HOY.web }), 'Web 30 d']), el('p', { class: 'mudo', text: 'Web: sin datos' + (e && e.message ? ' (' + String(e.message).slice(0, 80) + ')' : '') })); });
+  const sec = el('section', { class: 'hoy-web-linea', id: 'hoy-web' }, [el('span', { class: 'neg-etiqueta web-etiqueta', text: 'Web 30 d' }), el('span', { class: 'mudo', text: 'Cargando...' })]);
+  const pinta = nodos => sec.replaceChildren(el('span', { class: 'neg-etiqueta web-etiqueta', text: 'Web 30 d' }), ...nodos);
+  Promise.resolve().then(() => cargadores.web()).catch(() => cargadores.web()).then(f => pinta(f == null ? [el('span', { class: 'mudo', text: 'sin datos' })] : chipsWeb(f)))
+    .catch(e => { console.error('hq_web', e); pinta([el('span', { class: 'mudo', text: 'sin datos' })]); });
   return sec;
 }
 
@@ -446,9 +408,7 @@ export function render(raiz, S, arg, filtros) {
       } }),
       acordeon({ id: 'hoy-firmar', titulo: 'Firmar', icono: ICONOS_HOY.firmar, cuenta: fir.n, color: fir.color, vacioTexto: 'Nada que firmar', abierto: abre('hoy-firmar') || leerAbierto('hoy-firmar'), contenido: () => pintarFirmar(h) }),
     ];
-    const pon = x => { const c = cabecera([...cifras.filter(y => y.clave !== 'tareas'), x]); cont.querySelector('.home-cifras')?.replaceWith(c); };
-    cargadores.tareas().then(t => pon(cifraTareas(t))).catch(() => {});
-    cont.replaceChildren(...(neg ? [neg] : []), bloqueWeb(), cabecera(cifras), ...(aviso ? [aviso] : []), ...bloques);
+    cont.replaceChildren(...(neg ? [neg] : []), bloqueWeb(), ...(aviso ? [aviso] : []), ...bloques);
     if (pedido) document.getElementById(pedido)?.scrollIntoView?.({ block: 'start' });
     if (destacado) setTimeout(() => cont.querySelector('.hoy-item.destacada')?.classList.remove('destacada'), 4000);
     if (destacado) {
