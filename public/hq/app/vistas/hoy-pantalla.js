@@ -222,17 +222,21 @@ export function modeloWeb7(filas, ahora = new Date()) {
   });
   return Object.values(sitios).map(s => ({ ...s, variacion: s.antes ? Math.round((s.visitas - s.antes) / s.antes * 100) : null }));
 }
-// #2739: Web como una sola línea de chips (sitio + visitas 30 d) justo bajo Negocio; siempre abierta, sin h2 ni fuentes. Scroll horizontal en móvil, nunca dos filas.
+// #2739 PR 1b: Web como quinto panel KPI a todo el ancho dentro de .hoy-negocio; rejilla de sitios 4 columnas (2x2 en móvil), sin chips ni overflow-x.
 const nombreCorto = sitio => etiquetaSitio(sitio).replace(/\.(com|co)$/, '');
-export function chipsWeb(filas, ahora = new Date()) {
-  return bloquesOrdenados(filas, ahora).map(b => el('a', { class: 'web-chip', href: '#operacion/ventas/web?sitio=' + anclaSitio(b.sitio), title: b.sitio }, [
-    nombreCorto(b.sitio) + ' ', el('b', { text: b.sinDatos ? '-' : b.visitas.toLocaleString('es-ES') })]));
+export function celdasWeb(filas, ahora = new Date()) {
+  return bloquesOrdenados(filas, ahora).map(b => el('a', { class: 'web-sitio', href: '#operacion/ventas/web?sitio=' + anclaSitio(b.sitio), title: b.sitio }, [
+    el('span', { class: 'neg-etiqueta', text: nombreCorto(b.sitio) }),
+    el('span', { class: 'neg-principal', text: b.sinDatos ? '-' : b.visitas.toLocaleString('es-ES') }),
+    el('small', { class: 'bajo', text: b.sinDatos ? 'sin datos' : b.visitantes.toLocaleString('es-ES') + ' visitantes' })]));
 }
 function bloqueWeb() {
-  const sec = el('section', { class: 'hoy-web-linea', id: 'hoy-web' }, [el('span', { class: 'neg-etiqueta web-etiqueta', text: 'Web 30 d' }), el('span', { class: 'mudo', text: 'Cargando...' })]);
-  const pinta = nodos => sec.replaceChildren(el('span', { class: 'neg-etiqueta web-etiqueta', text: 'Web 30 d' }), ...nodos);
-  Promise.resolve().then(() => cargadores.web()).catch(() => cargadores.web()).then(f => pinta(f == null ? [el('span', { class: 'mudo', text: 'sin datos' })] : chipsWeb(f)))
-    .catch(e => { console.error('hq_web', e); pinta([el('span', { class: 'mudo', text: 'sin datos' })]); });
+  const cuerpo = el('div', { class: 'web-sitios' }, [el('span', { class: 'mudo', text: 'Cargando...' })]);
+  const sec = el('section', { class: 'panel-kpi ancho hoy-neg', id: 'hoy-web' }, [el('h2', { text: 'Web 30 d' }), cuerpo]);
+  const pinta = nodos => cuerpo.replaceChildren(...nodos);
+  const sin = () => pinta([el('span', { class: 'mudo', text: 'Web: sin datos' })]);
+  Promise.resolve().then(() => cargadores.web()).catch(() => cargadores.web()).then(f => f == null ? sin() : pinta(celdasWeb(f)))
+    .catch(e => { console.error('hq_web', e); sin(); });
   return sec;
 }
 
@@ -408,7 +412,9 @@ export function render(raiz, S, arg, filtros) {
       } }),
       acordeon({ id: 'hoy-firmar', titulo: 'Firmar', icono: ICONOS_HOY.firmar, cuenta: fir.n, color: fir.color, vacioTexto: 'Nada que firmar', abierto: abre('hoy-firmar') || leerAbierto('hoy-firmar'), contenido: () => pintarFirmar(h) }),
     ];
-    cont.replaceChildren(...(neg ? [neg] : []), bloqueWeb(), ...(aviso ? [aviso] : []), ...bloques);
+    const negocio = neg || el('div', { class: 'hoy-negocio' });
+    negocio.append(bloqueWeb());
+    cont.replaceChildren(negocio, ...(aviso ? [aviso] : []), ...bloques);
     if (pedido) document.getElementById(pedido)?.scrollIntoView?.({ block: 'start' });
     if (destacado) setTimeout(() => cont.querySelector('.hoy-item.destacada')?.classList.remove('destacada'), 4000);
     if (destacado) {
