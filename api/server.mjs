@@ -228,8 +228,8 @@ async function notificar(token, id, texto = '') {
 }
 
 // Mismo patrón que notificar(), pero para el hilo de una licitación (no tiene solicitud asociada): la resuelve por expediente.
-// #2694: solo hay push con motivo 'adjudicacion' o 'requerimiento'; el resto (plazos, modificaciones, aperturas, envíos incompletos) queda en Avisos.
-const MOTIVOS_LIC = ['adjudicacion', 'requerimiento'];
+// #2694: solo hay push con motivo 'adjudicacion' o 'requerimiento_diego'; el resto (plazos, modificaciones, aperturas, envíos incompletos) queda en Avisos.
+const MOTIVOS_LIC = ['adjudicacion', 'requerimiento_diego'];
 async function notificarLic(token, expediente, texto = '', motivo = '') {
   const info = await rpc('omc_token_info', { p_token: token });
   const lics = await supa(`/rest/v1/omc_licitaciones?empresa=eq.${encodeURIComponent(info.empresa)}&expediente=eq.${encodeURIComponent(expediente)}&select=expediente,organo,importe`, {}, HQ.service);
