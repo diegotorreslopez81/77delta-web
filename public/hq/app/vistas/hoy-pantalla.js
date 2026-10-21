@@ -1,5 +1,5 @@
 // Pantalla Hoy de HQ v2 (spec 5, enmienda 4, 18-10): KPIs siempre visibles y bloques en acordeón, todos plegados por defecto.
-// Orden: KPIs, Depende de ti (decidir y pagar), Correos, Web, Captación, Firmar. Sin proyectos ni productos (tienen pestaña).
+// Orden: KPIs, Depende de ti (decidir y pagar), Pospuestas, Correos, Web, Captación, Firmar. Sin proyectos ni productos (tienen pestaña).
 // Solo pinta columnas de hq_v_hoy_* leídas por la RPC hq_hoy con p_token. Sin umbrales ni cálculo propio:
 // el rojo sale de umbral_decidir_h y umbral_correo_h que devuelve la RPC (hq_parametros).
 import { ICONOS_HOY } from '../iconos.js';
@@ -179,6 +179,20 @@ export function pintarDecidir(h, repintar = () => {}, destacado = null, filtro =
     ...filas.map(p => tarjeta(p, n(h.umbral_decidir_h), repintar, { destacada: String(p.id) === String(destacado) })),
     ...pagos.map(p => tarjeta({ ...p, titulo: p.concepto }, 0, repintar, { pago: true, destacada: String(p.id) === String(destacado) })),
   ];
+}
+
+// #2739 PR 2: pospuestas vigentes (hq_hoy.pospuestas). Mismo ítem que Depende de ti más "Vuelve el dd-mm" y Reactivar (omc_posponer con now()).
+export const vuelve = iso => 'Vuelve el ' + new Intl.DateTimeFormat('es-ES', { timeZone: 'Europe/Madrid', day: '2-digit', month: '2-digit' }).format(new Date(iso)).replace(/\//g, '-');
+export function pintarPospuestas(h, repintar = () => {}) {
+  const act = (id) => async () => { try { await cargadores.posponer(id, new Date().toISOString()); toast('Reactivada'); repintar(); } catch (e) { toast('No se pudo: ' + e.message); } };
+  return (h?.pospuestas || []).slice(0, n(h?.max_filas) || 50).map(p => {
+    const detalle = [
+      p.recomendacion ? el('p', { class: 'mudo', text: p.recomendacion }) : null,
+      el('p', { class: 'mudo', text: [p.importe != null ? eur(p.importe) : null, p.edad_h != null ? hace(p.edad_h) : null, p.vence ? 'vence ' + fecha(p.vence) : null].filter(Boolean).join(' · ') }),
+    ];
+    const botones = el('div', { class: 'home-botones' }, [el('button', { class: 'btn', text: 'Reactivar', onclick: act(p.id) })]);
+    return item((p.titulo || '') + ' · ' + vuelve(p.pospuesta_hasta), detalle, botones, { id: 'hoy-' + p.id });
+  });
 }
 
 export function pintarFirmar(h, ahora = new Date()) {
@@ -399,6 +413,7 @@ export function render(raiz, S, arg, filtros) {
     const abre = id => (destacado && id === 'hoy-decidir') || pedido === id;
     const bloques = [
       acordeon({ id: 'hoy-decidir', titulo: 'Depende de ti', icono: ICONOS_HOY.decidir, cuenta: dec.n, color: dec.color, vacioTexto: 'Nada depende de ti', abierto: abre('hoy-decidir') || leerAbierto('hoy-decidir'), contenido: () => pintarDecidir(h, repintar, destacado, filtros?.filtro) }),
+      acordeon({ id: 'hoy-pospuestas', titulo: 'Pospuestas', icono: ICONOS_HOY.decidir, cuenta: (h?.pospuestas || []).length, color: 'gris', vacioTexto: 'Nada pospuesto', abierto: abre('hoy-pospuestas') || leerAbierto('hoy-pospuestas'), contenido: () => pintarPospuestas(h, repintar) }),
       acordeon({ id: 'hoy-captacion', titulo: 'Captación', icono: ICONOS_HOY.captacion, cuenta: cap.n, color: cap.color, abierto: abre('hoy-captacion') || leerAbierto('hoy-captacion'), contenido: async () => {
         const filas = await cargadores.captacion();
         const caja = el('div', {});
