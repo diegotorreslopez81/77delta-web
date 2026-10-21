@@ -4,6 +4,7 @@ import { el, fecha } from '../ui.js';
 
 let cargadores = {
   config: async () => (await fetch('/hq/secretos-pubkey.json', { cache: 'no-store' })).json(),
+  agentes: async () => (await import('../api.js')).rpc('omc_secreto_config'),
   lista: async () => (await import('../api.js')).rpc('omc_secreto_lista'),
   enviar: async a => (await import('../api.js')).rpc('omc_secreto_enviar', a),
   nacl: () => new Promise((ok, ko) => {
@@ -18,6 +19,17 @@ export function usarCargadores(o) { cargadores = { ...cargadores, ...o }; }
 
 const b64 = u8 => { let s = ''; u8.forEach(b => { s += String.fromCharCode(b); }); return btoa(s); };
 const deB64 = t => Uint8Array.from(atob(t), c => c.charCodeAt(0));
+export const DESTINO_DEFECTO = 'tech-devops'; // Bernat
+
+// Agentes activos por nombre (valor = id) y, al final, los destinos de sistema bajo "Sistema".
+export function pintarDestinos(select, agentes, sistema) {
+  select.replaceChildren();
+  (agentes || []).forEach(a => select.append(el('option', { value: a.id, text: a.nombre })));
+  if (sistema?.length) select.append(el('optgroup', { label: 'Sistema' }, sistema.map(d => el('option', { value: d, text: d }))));
+  const defecto = [...select.options].find(o => o.value === DESTINO_DEFECTO);
+  if (defecto) select.value = DESTINO_DEFECTO;
+}
+
 export const normalizaVariable = v => String(v || '').toUpperCase().replace(/[^A-Z0-9_]/g, '_').replace(/^[^A-Z]+/, '').slice(0, 64);
 
 // NaCl box con par efímero: la privada efímera se descarta al salir; solo la clave del servidor puede descifrar.
@@ -52,7 +64,7 @@ export function render(raiz, S) {
   const huellaP = el('p', { class: 'mudo' });
   const msg = el('p', { class: 'mudo', role: 'status' });
   const listaBox = el('div');
-  const destino = el('select', { 'aria-label': 'Destino', class: 'campo' });
+  const destino = el('select', { 'aria-label': 'Destinatario', class: 'campo' });
   const variable = el('input', { type: 'text', class: 'campo', placeholder: 'VARIABLE', autocapitalize: 'characters', autocomplete: 'off', spellcheck: 'false', 'aria-label': 'Variable' });
   const valor = el('input', { type: 'password', class: 'campo', placeholder: 'Valor', autocomplete: 'off', autocorrect: 'off', spellcheck: 'false', 'aria-label': 'Valor' });
   const nota = el('input', { type: 'text', class: 'campo', placeholder: 'Nota (opcional)', autocomplete: 'off', maxlength: '200', 'aria-label': 'Nota' });
@@ -72,7 +84,9 @@ export function render(raiz, S) {
   let pubkey = null;
   cargadores.config().then(c => {
     pubkey = c?.pubkey || null;
-    (c?.destinos || []).forEach(d => destino.append(el('option', { value: d, text: d })));
+    const sistema = c?.destinos || [];
+    pintarDestinos(destino, [], sistema);
+    cargadores.agentes().then(r => { pintarDestinos(destino, r?.agentes, sistema); actualizar(); }).catch(() => { msg.textContent = 'No se pudo cargar la lista de agentes'; });
     if (!pubkey) msg.textContent = 'No se puede cifrar: falta la clave del servidor, avisa al chief';
     else huella(pubkey).then(h => { huellaP.textContent = 'Huella de la clave: ' + h; });
     actualizar();
@@ -92,7 +106,7 @@ export function render(raiz, S) {
     actualizar();
   });
   cont.append(
-    el('label', {}, ['Destino', destino]), el('label', {}, ['Variable', variable]),
+    el('label', {}, ['Destinatario', destino]), el('label', {}, ['Variable', variable]),
     el('div', { class: 'home-botones' }, [valor, ver, pegar]), el('label', {}, ['Nota', nota]),
     enviar, el('p', { class: 'mudo', text: 'Se cifra en tu móvil; el servidor solo ve el cifrado' }), huellaP, msg,
     el('h3', { text: 'Enviados' }), listaBox);

@@ -287,16 +287,19 @@ const valorNegocio = (v, unidad) => v == null ? '' : unidad === 'eur' ? eurNegoc
 // Ingresos (#2584): cifra grande = facturado del año (detalle "2026 facturado"), debajo el mes en pequeño; sin "(aprox.)" en etiquetas.
 const sinAprox = e => String(e || '').replace(/\s*\(aprox\.?\)/i, '');
 // Formato v181: detalle con clave. Cifra grande = facturado_2026, pequeño = mes en curso; el detalle solo muestra por facturar y cobrado.
+// #2693: enlaces internos por defecto mientras la vista no traiga `enlace` (listado de omc_ingresos en Ventas > Ingresos).
+const mesActual = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Madrid' }).slice(0, 7);
 function ingresosNueva(f) {
   const por = c => f.detalle.find(d => d && d.clave === c);
   const anio = por('facturado_2026');
   if (!anio) return null;
   const mes = String(f.periodo_texto || '');
-  const fila = c => { const d = por(c); return d ? [{ etiqueta: sinAprox(d.etiqueta), valor: valorNegocio(d.valor, d.unidad) || 'sin dato' }] : []; };
+  const fila = (c, defecto) => { const d = por(c); return d ? [{ texto: sinAprox(d.etiqueta) + ': ' + (valorNegocio(d.valor, d.unidad) || 'sin dato'), ...enlaceLinea(d.enlace || defecto) }] : []; };
   return {
     periodo: String(anio.etiqueta || '').match(/\d{4}/)?.[0] || '', principal: eurNegocio(anio.valor), principalTexto: 'Facturado ' + (String(anio.etiqueta || '').match(/\d{4}/)?.[0] || ''),
     secundario: (mes ? mes + ' ' : '') + eurNegocio(f.secundario ?? f.principal),
-    detalle: [...fila('por_facturar'), ...fila('cobrado_2026')],
+    enlacePrincipal: enlaceLinea(anio.enlace || 'operacion/ventas/ingresos'), enlaceSecundario: enlaceLinea(por('facturado_mes')?.enlace || 'operacion/ventas/ingresos?mes=' + mesActual()),
+    detalle: [], encargo: '#2645', lineasEnl: [...fila('por_facturar', ''), ...fila('cobrado_2026', 'operacion/ventas/ingresos?estado=cobrado')],
     lineas: Array.isArray(por('lineas_2026')?.lineas) ? por('lineas_2026').lineas.map(l => ({ clave: String(l.etiqueta).toLowerCase(), etiqueta: l.etiqueta, pct: Number(l.pct) || 0 })) : [],
   };
 }
@@ -331,7 +334,7 @@ export function enlaceLinea(e) {
   if (/^https?:\/\//i.test(v)) return { enlace: v, externo: true };
   return { enlace: '#' + v.replace(/^#\/?/, ''), externo: false };
 }
-const ETIQUETAS_LINEA = { licitaciones: 'Licitaciones', propuestas: 'Propuestas', ayudas: 'Ayudas', subvenciones: 'Subvenciones' };
+const ETIQUETAS_LINEA = { licitaciones: 'Licitaciones', propuestas: 'Sales', ayudas: 'Ayudas', subvenciones: 'Subvenciones' };
 function pipelineNueva(f) {
   if (!['pipeline', 'contratado'].includes(f?.clave) || !Array.isArray(f.detalle) || !f.detalle.some(d => d && d.clave)) return {};
   const conPct = f.clave === 'contratado', encargo = conPct ? '#2678' : '#2677';
@@ -342,13 +345,16 @@ function pipelineNueva(f) {
     return { clave: d.clave, valor: sinDato ? 0 : Number(d.valor) || 0, texto: sinDato ? et + ': pdte CRM' : et + ': ' + kEur(d.valor) + ' (#' + (d.n ?? 0) + pct + ')', ...enlaceLinea(d.enlace), provisional: sinDato };
   });
   return {
-    principal: kEur(f.principal), principalTexto: f.principal_texto || (conPct ? 'concedido' : 'en juego'), secundario: '', detalle: [], encargo,
+    periodo: '', principal: kEur(f.principal), principalTexto: f.principal_texto || (conPct ? 'concedido' : 'en juego'), secundario: '', detalle: [], encargo,
     lineas: lineasBarra(f.detalle, lineasPipe),
     lineasPipe,
   };
 }
 // #2695: barra y leyenda de Pipeline y Contratado. Si la vista trae "lineas" se usan; si no, se calculan del valor de las líneas.
-const ETIQUETAS_CORTAS = { licitaciones: 'Licit.', propuestas: 'Prop.', ayudas: 'Ayudas', subvenciones: 'Subv.' };
+const ETIQUETAS_CORTAS = { licitaciones: 'Licit.', propuestas: 'Sales', ayudas: 'Ayudas', subvenciones: 'Subv.' };
+// #2707: orden fijo Licit., Sales, Ayudas, Subv. en la leyenda de Pipeline y Contratado.
+const ORDEN_LINEAS = ['licitaciones', 'propuestas', 'ayudas', 'subvenciones'];
+const posLinea = c => { const i = ORDEN_LINEAS.indexOf(c); return i < 0 ? ORDEN_LINEAS.length : i; };
 const CLAVE_DE_ETIQUETA = { licita: 'licitaciones', licitaciones: 'licitaciones', sales: 'propuestas', propuestas: 'propuestas', ayudas: 'ayudas', subvenciones: 'subvenciones' };
 export function lineasBarra(detalle, lineasPipe) {
   const barra = (detalle || []).find(d => d && d.clave === 'lineas');
@@ -360,35 +366,48 @@ export function lineasBarra(detalle, lineasPipe) {
     if (suma <= 0) return [];
     l = lineasPipe.map(x => ({ clave: x.clave, pct: Math.round(x.valor / suma * 100) }));
   }
-  return l.map(x => ({ ...x, etiqueta: ETIQUETAS_CORTAS[x.clave] || x.clave })).sort((a, b) => b.pct - a.pct);
+  return l.map(x => ({ ...x, etiqueta: ETIQUETAS_CORTAS[x.clave] || x.clave })).sort((a, b) => posLinea(a.clave) - posLinea(b.clave));
+}
+// #2693: Captación y web 7 días. Detalle con clave: enviados (principal), respuestas (secundario), visitas y formularios; cada una con su enlace.
+const ETIQUETAS_CAPTACION = { enviados: 'Enviados', respuestas: 'Respuestas', visitas: 'Visitas', formularios: 'Formularios' };
+function captacionNueva(f) {
+  if (f?.clave !== 'captacion_7d' || !Array.isArray(f.detalle) || !f.detalle.some(d => d && d.clave)) return {};
+  const por = c => f.detalle.find(d => d && d.clave === c);
+  return {
+    enlacePrincipal: enlaceLinea(por('enviados')?.enlace), enlaceSecundario: enlaceLinea(por('respuestas')?.enlace), detalle: [],
+    lineasEnl: Object.keys(ETIQUETAS_CAPTACION).map(c => por(c)).filter(Boolean).map(d => ({ texto: ETIQUETAS_CAPTACION[d.clave] + ': ' + (d.valor == null ? 'sin dato' : valorNegocio(d.valor, d.unidad)), ...enlaceLinea(d.enlace) })),
+  };
 }
 // #2679: orden fijo de las casillas de Negocio; una clave que no esté va después, en el orden de la vista.
 export const ORDEN_NEGOCIO = ['pipeline', 'contratado', 'ingresos', 'captacion_7d'];
-const ETIQUETAS_NEGOCIO = { ingresos: 'Facturado y cobrado' };
+const ETIQUETAS_NEGOCIO = { ingresos: 'Factura', captacion_7d: 'Captación' };
 const posNegocio = c => { const i = ORDEN_NEGOCIO.indexOf(c); return i < 0 ? ORDEN_NEGOCIO.length : i; };
 export function modeloNegocio(filas) {
   return (Array.isArray(filas) ? filas : []).filter(f => f && f.principal != null).map((f, i) => ({ f, i })).sort((a, b) => posNegocio(a.f.clave) - posNegocio(b.f.clave) || a.i - b.i).map(({ f }) => ({
-    clave: f.clave, etiqueta: ETIQUETAS_NEGOCIO[f.clave] || f.etiqueta, color: f.color || '', enlace: '#' + String(f.enlace || 'hoy').replace(/^#\/?/, ''), periodo: f.periodo_texto || '',
+    clave: f.clave, etiqueta: ETIQUETAS_NEGOCIO[f.clave] || f.etiqueta, color: f.color || '', enlace: '#' + String(f.clave === 'ingresos' && /bloque=ingresos/.test(f.enlace || '') ? 'operacion/ventas/ingresos' : f.enlace || 'hoy').replace(/^#\/?/, ''), periodo: f.periodo_texto || '',
     principal: valorNegocio(f.principal, f.principal_unidad),
     principalTexto: f.principal_texto || '',
     secundario: [valorNegocio(f.secundario, f.secundario_unidad), f.secundario_texto].filter(Boolean).join(' '),
     detalle: (Array.isArray(f.detalle) ? f.detalle : []).slice(0, 2).map(d => ({ etiqueta: sinAprox(d.etiqueta), valor: valorNegocio(d.valor, d.unidad) || 'sin dato' })),
     ...ingresosVieja(f),
+    ...captacionNueva(f),
     ...pipelineNueva(f),
   }));
 }
 // #2676: tarjetas de Negocio que aún leen tablas escritas por agentes; cada PR de migración quita la suya.
 export const PROVISIONAL = { pipeline: '#2672', captacion_7d: '#2673', ingresos: '#2645' };
+// #2693: la cifra se envuelve en `a` si trae enlace (http en pestaña nueva); sin enlace, texto plano.
+const enlazar = (texto, e) => e?.enlace ? el('a', { class: 'neg-cifra', href: e.enlace, ...(e.externo ? { target: '_blank', rel: 'noopener' } : {}), text: texto }) : texto;
 export function pintarNegocio(filas) {
   const m = modeloNegocio(filas);
   if (!m.length) return null;
   return el('div', { class: 'hoy-negocio' }, m.map(x => { const t = el('a', { class: 'vt-card hoy-neg ' + x.color + (x.lineasPipe ? ' pipeline' : ''), href: x.enlace }, [
     el('span', { class: 'mudo neg-etiqueta', text: x.etiqueta || x.clave }),
     x.periodo ? el('span', { class: 'mudo neg-periodo', text: x.periodo }) : null,
-    el('span', { class: 'neg-principal' }, [x.principal, x.principalTexto ? el('small', { class: x.principalTexto.length > 20 ? 'bajo' : '', text: ' ' + x.principalTexto }) : null].filter(Boolean)),
-    x.secundario ? el('span', { class: 'neg-secundario', text: x.secundario }) : null,
+    el('span', { class: 'neg-principal' }, [enlazar(x.principal, x.enlacePrincipal), x.principalTexto ? el('small', { class: x.principalTexto.length > 20 ? 'bajo' : '', text: ' ' + x.principalTexto }) : null].filter(Boolean)),
+    x.secundario ? el('span', { class: 'neg-secundario' }, [enlazar(x.secundario, x.enlaceSecundario)]) : null,
     ...x.detalle.map(d => el('span', { class: 'mudo neg-detalle', text: d.etiqueta + ': ' + d.valor })),
-    ...(x.lineasPipe || []).map(l => { const n = el(l.enlace ? 'a' : 'span', { class: 'mudo neg-detalle neg-linea', ...(l.enlace ? { href: l.enlace } : {}), ...(l.externo ? { target: '_blank', rel: 'noopener' } : {}), text: l.texto }); return l.provisional ? provisional(n, x.encargo || '#2677') : n; }),
+    ...(x.lineasPipe || x.lineasEnl || []).map(l => { const n = el(l.enlace ? 'a' : 'span', { class: 'mudo neg-detalle neg-linea', ...(l.enlace ? { href: l.enlace } : {}), ...(l.externo ? { target: '_blank', rel: 'noopener' } : {}), text: l.texto }); return l.provisional ? provisional(n, x.encargo || '#2677') : n; }),
     x.lineas?.length ? el('span', { class: 'neg-barra', role: 'img', 'aria-label': 'Reparto por línea' }, x.lineas.filter(l => l.pct > 0).map(l => el('i', { class: 'neg-tramo l-' + l.clave, style: 'width:' + l.pct + '%' }))) : null,
     x.lineas?.length ? el('div', { class: 'mudo neg-detalle neg-leyenda' }, x.lineas.map(l => el('span', {}, [el('i', { class: 'neg-punto l-' + l.clave }), l.etiqueta + ' ' + l.pct + ' %']))) : null,
   ].filter(Boolean)); return PROVISIONAL[x.clave] && !x.lineasPipe ? provisional(t, PROVISIONAL[x.clave]) : t; }));

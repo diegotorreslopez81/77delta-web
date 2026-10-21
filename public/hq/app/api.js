@@ -139,3 +139,6 @@ export async function cargar() {
   if (d && typeof d === 'object') { d.semaforo = semaforo && Array.isArray(semaforo.filas) ? semaforo : null; d.claves_datos = claves; d.depende_n = dependeN(hoy); }
   return d;
 }
+// #2694: Avisos de las últimas 24 h (lo informativo, sin push) y marca de leído en el servidor.
+export const avisos24h = () => rpc('omc_avisos_24h');
+export const avisoLeido = id => rpc('omc_aviso_leido', { p_id: id });
