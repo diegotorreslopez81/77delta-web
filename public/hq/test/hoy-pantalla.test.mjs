@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { opcionesPosponer } from '../app/vistas/hoy-pantalla.js';
+import { opcionesPosponer, vuelve } from '../app/vistas/hoy-pantalla.js';
 
 test('opcionesPosponer: mañana y lunes a las 09:00 de Madrid', () => {
   const o = opcionesPosponer(new Date('2026-10-18T12:00:00Z')); // domingo 18-10, CEST
@@ -135,4 +135,9 @@ test('#2693 captación: cuatro líneas con enlace; sin clave no cambia', () => {
   const [v] = modeloNegocio([{ clave: 'captacion_7d', etiqueta: 'Captación', principal: 4, principal_unidad: 'n', detalle: [{ etiqueta: 'visitas', valor: 9, unidad: 'n' }] }]);
   assert.equal(v.lineasEnl, undefined);
   assert.equal(v.detalle.length, 1);
+});
+
+test('vuelve: fecha dd-mm en hora de Madrid', () => {
+  assert.equal(vuelve('2026-11-10T08:00:00Z'), 'Vuelve el 10-11');
+  assert.equal(vuelve('2026-11-09T23:30:00Z'), 'Vuelve el 10-11');
 });
