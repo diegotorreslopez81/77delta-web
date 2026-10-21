@@ -236,18 +236,22 @@ export function modeloWeb7(filas, ahora = new Date()) {
   });
   return Object.values(sitios).map(s => ({ ...s, variacion: s.antes ? Math.round((s.visitas - s.antes) / s.antes * 100) : null }));
 }
-// #2739: Web como una sola línea de chips (sitio + visitas 30 d) justo bajo Negocio; siempre abierta, sin h2 ni fuentes. Scroll horizontal en móvil, nunca dos filas.
+// #2739 PR 1c: un panel KPI por sitio (visitas 30 d, visitantes y variación) en la rejilla .hoy-negocio bajo las casillas de Negocio, sin chips ni overflow-x.
 const nombreCorto = sitio => etiquetaSitio(sitio).replace(/\.(com|co)$/, '');
-export function chipsWeb(filas, ahora = new Date()) {
-  return bloquesOrdenados(filas, ahora).map(b => el('a', { class: 'web-chip', href: '#operacion/ventas/web?sitio=' + anclaSitio(b.sitio), title: b.sitio }, [
-    nombreCorto(b.sitio) + ' ', el('b', { text: b.sinDatos ? '-' : b.visitas.toLocaleString('es-ES') })]));
+export function panelesWeb(filas, ahora = new Date()) {
+  const es = x => x.toLocaleString('es-ES');
+  return bloquesOrdenados(filas, ahora).map(b => {
+    const pie = b.sinDatos ? 'sin datos' : es(b.visitantes) + ' visitantes' + (b.variacion ? ' · ' + (b.variacion > 0 ? '+' : '') + b.variacion + ' %' : '');
+    return el('a', { class: 'panel-kpi hoy-neg web-sitio', href: '#operacion/ventas/web?sitio=' + anclaSitio(b.sitio), title: b.sitio }, [
+      el('span', { class: 'neg-etiqueta', text: nombreCorto(b.sitio) + ' 30 d' }),
+      el('span', { class: 'neg-principal', text: b.sinDatos ? '-' : es(b.visitas) }),
+      el('small', { class: 'bajo', text: pie })]);
+  });
 }
-function bloqueWeb() {
-  const sec = el('section', { class: 'hoy-web-linea', id: 'hoy-web' }, [el('span', { class: 'neg-etiqueta web-etiqueta', text: 'Web 30 d' }), el('span', { class: 'mudo', text: 'Cargando...' })]);
-  const pinta = nodos => sec.replaceChildren(el('span', { class: 'neg-etiqueta web-etiqueta', text: 'Web 30 d' }), ...nodos);
-  Promise.resolve().then(() => cargadores.web()).catch(() => cargadores.web()).then(f => pinta(f == null ? [el('span', { class: 'mudo', text: 'sin datos' })] : chipsWeb(f)))
-    .catch(e => { console.error('hq_web', e); pinta([el('span', { class: 'mudo', text: 'sin datos' })]); });
-  return sec;
+async function panelesWebCargados() {
+  const sin = () => [el('div', { class: 'panel-kpi hoy-neg web-sin-datos mudo', text: 'Web: sin datos' })];
+  try { const f = await Promise.resolve().then(() => cargadores.web()).catch(() => cargadores.web()); return f == null ? sin() : panelesWeb(f); }
+  catch (e) { console.error('hq_web', e); return sin(); }
 }
 
 // Aviso y apertura por #hoy/N o ?bloque=: el bloque pedido se abre aunque estuviera plegado.
@@ -423,7 +427,9 @@ export function render(raiz, S, arg, filtros) {
       } }),
       acordeon({ id: 'hoy-firmar', titulo: 'Firmar', icono: ICONOS_HOY.firmar, cuenta: fir.n, color: fir.color, vacioTexto: 'Nada que firmar', abierto: abre('hoy-firmar') || leerAbierto('hoy-firmar'), contenido: () => pintarFirmar(h) }),
     ];
-    cont.replaceChildren(...(neg ? [neg] : []), bloqueWeb(), ...(aviso ? [aviso] : []), ...bloques);
+    const negocio = neg || el('div', { class: 'hoy-negocio' });
+    panelesWebCargados().then(ps => negocio.append(...ps));
+    cont.replaceChildren(negocio, ...(aviso ? [aviso] : []), ...bloques);
     if (pedido) document.getElementById(pedido)?.scrollIntoView?.({ block: 'start' });
     if (destacado) setTimeout(() => cont.querySelector('.hoy-item.destacada')?.classList.remove('destacada'), 4000);
     if (destacado) {
