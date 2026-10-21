@@ -200,7 +200,7 @@ else {
   configLicita().then(configurarLicita).catch(() => {});
   // D57/Tanda G: unico catalogo de motivos de NO, pedido en vivo a omc_motivos_no() (fuente unica, ver licitaciones.js).
   catalogoDescarte().then(configurarMotivosNo).catch(() => {});
-  // Sin realtime (T7-b): recarga cada 60s y al volver a la pestaña, nunca en segundo plano. Fix ronda 2
+  // Sin realtime (T7-b): recarga al volver a la pestaña (>10 min, #2727), nunca en segundo plano. Fix ronda 2
   // (revision final, D3): el propio tick del intervalo tambien mira document.hidden (antes solo lo
   // miraba el comentario, no el codigo). #1057 tarea 29: al volver a la pestaña solo si ya pasaron 60s
   // desde la última recarga (si el tick de abajo acaba de recargar hace 5s, no hace falta repetir).
@@ -216,8 +216,8 @@ else {
     const { disparar, pendiente } = decidirRecargaAutomatica(escribiendo());
     if (disparar) recargarYMarcar(); else recargaPendiente = pendiente;
   }
-  setInterval(() => { if (!document.hidden) recargaAutomatica(); }, 60000);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - ultimaRecarga > 60000) recargaAutomatica(); });
+  // #2727 punto 3 (Diego 21-10, 'HQ se refresca sola'): sin intervalo; solo al volver a la pestaña tras más de 10 min.
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - ultimaRecarga > 600000) recargaAutomatica(); });
   document.addEventListener('focusout', () => {
     if (!recargaPendiente) return;
     setTimeout(() => { if (recargaPendiente && !escribiendo()) { recargaPendiente = false; recargarYMarcar(); } }, 300);
