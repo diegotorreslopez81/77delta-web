@@ -44,11 +44,11 @@ export const AREAS = [
   { id: 'colaboradores', nombre: 'Colaboradores', icono: ICONOS.colaboradores, vistas: [{ clave: 'equipo/colaboradores', nombre: 'Colaboradores' }] },
 ];
 // Claves que tienen vista. 'equipo/agente' no sale en el menú (es la ficha) pero es una ruta válida.
-export const CLAVES = new Set(['hoy', 'avisos', 'operacion/tablero', 'operacion/expedientes', 'operacion/licitaciones', 'operacion/ventas', 'operacion/admin', 'equipo/organigrama', 'equipo/colaboradores', 'equipo/agente', 'licita-engine', 'operacion/en-curso', 'productos', 'secreto']);
+export const CLAVES = new Set(['hoy', 'avisos', 'operacion/tablero', 'operacion/expedientes', 'operacion/licitaciones', 'operacion/ventas', 'operacion/admin', 'equipo/organigrama', 'equipo/colaboradores', 'equipo/agente', 'licita-engine', 'operacion/en-curso', 'productos', 'secreto', 'recursos/computo']);
 // Rutas de la v2.0 (tabs): se redirigen para que no se rompa ningún enlace ya enviado en tarjetas o push.
 const VIEJAS = { inicio: 'hoy', plan: 'operacion/en-curso', tablero: 'operacion/tablero', equipo: 'equipo/organigrama', expedientes: 'operacion/expedientes', progreso: 'operacion/en-curso', 'en-curso': 'operacion/en-curso', web: 'operacion/ventas/web', kpis: 'operacion/licitaciones', salud: 'equipo/organigrama', organigrama: 'equipo/organigrama', computo: 'hoy', licitaciones: 'operacion/licitaciones' };
 // Rutas de dos segmentos que dejaron de ser pantalla propia (menú de 6, 18-10): ningún enlace viejo da 404.
-const VIEJAS2 = { 'direccion/objetivo': 'operacion/en-curso', 'operacion/salud': 'equipo/organigrama', 'recursos/computo': 'hoy' };
+const VIEJAS2 = { 'direccion/objetivo': 'operacion/en-curso', 'operacion/salud': 'equipo/organigrama' };
 // Área sin vista (o con vista desconocida): a su vista por defecto. Recursos: Cómputo desde el lote 1e (#1054); Dinero llega en la tanda 3.
 // Diego 19-sep: "Licitaciones, Expedientes y Tablero" es el orden, así que '#operacion' a secas cae en
 // Licitaciones. No hay entrada 'equipo': ese prefijo lo intercepta siempre VIEJAS (línea de abajo) antes
