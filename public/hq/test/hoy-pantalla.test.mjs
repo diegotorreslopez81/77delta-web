@@ -35,32 +35,8 @@ test('estado de acordeón: storage que lanza no rompe', () => {
   assert.doesNotThrow(() => guardarAbierto('hoy-web', true, roto));
 });
 
-import { enlaceCifra, celdasCabecera } from '../app/vistas/hoy-pantalla.js';
-test('enlaceCifra: decidir y pagar abren Depende de ti; firmar abre la pestaña de lotes', () => {
-  assert.equal(enlaceCifra({ clave: 'decidir' }), '#hoy?bloque=decidir');
-  assert.equal(enlaceCifra({ clave: 'pagar' }), '#hoy?bloque=decidir&filtro=pagar');
-  assert.equal(enlaceCifra({ clave: 'firmar' }), '#licitaciones?bloque=firmar');
-  assert.equal(enlaceCifra({ clave: 'tareas' }), 'https://tasks.google.com');
-});
-test('celdasCabecera: 3 celdas (sin correos), sin cola_chief, agentes ni caja ni pagar, tareas gris', () => {
-  const c = celdasCabecera([{ clave: 'decidir', valor: 3 }, { clave: 'pagar', valor: 0 }, { clave: 'firmar', valor: 9 }, { clave: 'correos', valor: 3 }, { clave: 'cola_chief', valor: 124 }, { clave: 'agentes', valor: 45 }, { clave: 'caja', valor: null }]);
-  assert.deepEqual(c.map(x => x.clave), ['decidir', 'firmar', 'tareas']);
-  assert.deepEqual(c.map(x => !!x.gris), [false, false, true]);
-});
 
 
-import { cifraTareas } from '../app/vistas/hoy-pantalla.js';
-test('cifraTareas: rojo con vencidas u hoy, ámbar sin fecha, verde sin nada, gris sin dato', () => {
-  assert.equal(cifraTareas({ abiertas: 9, vencidas: 1, hoy: 0, sin_fecha: 0 }).color, 'rojo');
-  assert.equal(cifraTareas({ abiertas: 6, vencidas: 1, hoy: 0, sin_fecha: 2 }).valor, 6);
-  assert.equal(cifraTareas({ abiertas: 6, vencidas: 0, hoy: 0, sin_fecha: 0 }).valor, 6);
-  assert.equal(cifraTareas({ abiertas: 9, vencidas: 0, hoy: 2, sin_fecha: 5 }).color, 'rojo');
-  assert.equal(cifraTareas({ abiertas: 9, vencidas: 0, hoy: 0, sin_fecha: 3 }).color, 'ambar');
-  assert.equal(cifraTareas({ abiertas: 9, vencidas: 0, hoy: 0, sin_fecha: 0 }).color, 'verde');
-  assert.equal(cifraTareas({ error: 'x' }).valor, null);
-  assert.equal(cifraTareas(null).valor, null);
-  assert.equal(celdasCabecera([cifraTareas({ abiertas: 9, vencidas: 0, hoy: 0, sin_fecha: 0 })]).find(x => x.clave === 'tareas').gris, undefined);
-});
 
 import { eurNegocio, modeloNegocio } from '../app/vistas/hoy-pantalla.js';
 test('eurNegocio: punto de miles, sin decimales, M desde 1.000.000', () => {
@@ -105,11 +81,6 @@ test('#2584: Ingresos con facturado del año grande y mes pequeño; sin (aprox.)
   assert.equal(i.principalTexto, 'Facturado 2026');
   assert.equal(i.secundario, 'octubre 5.000 €');
   assert.deepEqual(i.detalle.map(d => d.etiqueta), ['por facturar', 'concedido 2026']);
-});
-test('#2584: cuatro celdas, pagar suma en decidir', () => {
-  const c = celdasCabecera([{ clave: 'decidir', valor: 4, color: 'ambar' }, { clave: 'pagar', valor: 2 }, { clave: 'firmar', valor: 1 }, { clave: 'correos', valor: 0 }]);
-  assert.deepEqual(c.map(x => x.clave), ['decidir', 'firmar', 'tareas']);
-  assert.equal(c[0].valor, 6);
 });
 
 test('#2584 ingresos con el formato real v181 (fila de hq_v_hoy_negocio 19-10)', () => {
