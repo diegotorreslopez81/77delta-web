@@ -126,9 +126,9 @@ test('#2584 ingresos con el formato real v181 (fila de hq_v_hoy_negocio 19-10)',
 
 // #2695: barra y leyenda de Pipeline y Contratado
 import { lineasBarra } from '../app/vistas/hoy-pantalla.js';
-test('lineasBarra calcula del valor, ordena por pct y deja 0 % en la leyenda', () => {
+test('lineasBarra calcula del valor, ordena en orden fijo y deja 0 % en la leyenda', () => {
   const l = lineasBarra([], [{ clave: 'licitaciones', valor: 433000 }, { clave: 'propuestas', valor: 14500 }, { clave: 'ayudas', valor: 0 }, { clave: 'subvenciones', valor: 220000 }]);
-  assert.deepEqual(l.map(x => x.etiqueta + ' ' + x.pct), ['Licit. 65', 'Subv. 33', 'Prop. 2', 'Ayudas 0']);
+  assert.deepEqual(l.map(x => x.etiqueta + ' ' + x.pct), ['Licit. 65', 'Sales 2', 'Ayudas 0', 'Subv. 33']);
   assert.deepEqual(lineasBarra([], [{ clave: 'ayudas', valor: 0 }]), []);
 });
 test('lineasBarra usa las líneas de la vista y las lleva a clave', () => {

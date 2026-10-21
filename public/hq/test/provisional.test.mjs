@@ -68,7 +68,7 @@ test('Pipeline #2677: total y tres líneas; ayudas sin dato en rojo #2677; tarje
   const raiz = pintarNegocio([{ clave: 'pipeline', etiqueta: 'Pipeline', principal: 559705.86, principal_unidad: 'eur', principal_texto: 'en juego', detalle: [
     d('licitaciones', 'Licitaciones', 433205.86, 34, false, 'operacion/licitaciones'), d('propuestas', 'Propuestas comerciales', 126500, 16, false, 'operacion/ventas/pipeline'), d('ayudas', 'Ayudas pedidas', null, null, true, '') ] }]);
   const t = raiz.textContent;
-  assert.match(t, /559,7 k€/); assert.match(t, /Licitaciones: 433,2 k€ \(#34\)/); assert.match(t, /Propuestas: 126,5 k€ \(#16\)/); assert.match(t, /Ayudas: pdte CRM/);
+  assert.match(t, /559,7 k€/); assert.match(t, /Licitaciones: 433,2 k€ \(#34\)/); assert.match(t, /Sales: 126,5 k€ \(#16\)/); assert.match(t, /Ayudas: pdte CRM/);
   assert.deepEqual(marcados(raiz).map(x => x.dataset.provisional), ['#2677']);
   assert.equal(buscar(raiz, x => x.classList && x.classList.contains('neg-linea')).length, 3);
   assert.doesNotMatch(t, /omc_ayudas|Otros \//);
@@ -79,7 +79,7 @@ test('Contratado #2678: tres líneas con (#n, p %), barra por tipología y ayuda
     d('licitaciones', 'Licitaciones', 3438.02, 1, 7, false, 'operacion/licitaciones'), d('propuestas', 'Propuestas comerciales', 64000, 8, 36, false, 'operacion/ventas/pipeline'), d('ayudas', 'Ayudas concedidas', null, null, null, true, ''),
     { clave: 'lineas', etiqueta: 'por línea', lineas: [{ etiqueta: 'Licita', pct: 5 }, { etiqueta: 'Sales', pct: 95 }, { etiqueta: 'Ayudas', pct: 0 }] }] }]);
   const t = raiz.textContent;
-  assert.match(t, /70,9 k€/); assert.match(t, /Licitaciones: 3,4 k€ \(#1, 7 %\)/); assert.match(t, /Propuestas: 64,0 k€ \(#8, 36 %\)/); assert.match(t, /Ayudas: pdte CRM/);
+  assert.match(t, /70,9 k€/); assert.match(t, /Licitaciones: 3,4 k€ \(#1, 7 %\)/); assert.match(t, /Sales: 64,0 k€ \(#8, 36 %\)/); assert.match(t, /Ayudas: pdte CRM/);
   assert.deepEqual(marcados(raiz).map(x => x.dataset.provisional), ['#2678']);
   assert.equal(buscar(raiz, x => x.classList && x.classList.contains('neg-linea')).length, 3);
   assert.equal(buscar(raiz, x => x.classList && x.classList.contains('neg-tramo')).length, 2);
@@ -98,7 +98,7 @@ test('Contratado #2678: cuatro líneas (con Subvenciones) y tramo l-subvenciones
 test('Orden #2679: Pipeline, Contratado, Facturado y cobrado (#2645), Captación', () => {
   const f = (clave, etiqueta, principal) => ({ clave, etiqueta, principal, principal_unidad: 'eur', detalle: [] });
   const raiz = pintarNegocio([f('captacion_7d', 'Captación', 5), f('ingresos', 'Ingresos', 15000), f('contratado', 'Contratado', 70900), f('pipeline', 'Pipeline', 559705)]);
-  assert.deepEqual(buscar(raiz, x => x.classList && x.classList.contains('neg-etiqueta')).map(x => x.textContent), ['Pipeline', 'Contratado', 'Facturado y cobrado', 'Captación']);
+  assert.deepEqual(buscar(raiz, x => x.classList && x.classList.contains('neg-etiqueta')).map(x => x.textContent), ['Pipeline', 'Contratado', 'Factura', 'Captación']);
   assert.ok(marcados(raiz).some(x => x.dataset.provisional === '#2645'));
 });
 
