@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
-import { cifrar, normalizaVariable } from '../app/vistas/secreto.js';
+import { cifrar, normalizaVariable, pintarDestinos, DESTINO_DEFECTO } from '../app/vistas/secreto.js';
 
 // nacl real: el mismo fichero vendorizado que sirve la app.
 const selfObj = { crypto: globalThis.crypto }, mod = { exports: {} };
@@ -39,4 +39,17 @@ test('la clave pública sale del repo, no de la BD', () => {
 test('secretos-pubkey.json: destinos incluyen twenty y regulia (#2079)', () => {
   const j = JSON.parse(readFileSync(new URL('../secretos-pubkey.json', import.meta.url), 'utf8'));
   assert.deepEqual(j.destinos, ['hq', 'voyage', 'oportunidades-ia', 'twenty', 'regulia']);
+});
+
+test('pintarDestinos: agentes por nombre, Sistema al final y Bernat preseleccionado', () => {
+  const nodo = tag => ({ tag, nodeType: 1, children: [], attrs: {}, setAttribute(k, v) { this.attrs[k] = v; }, append(...k) { this.children.push(...k.filter(Boolean)); }, addEventListener() {} });
+  globalThis.document = { createElement: nodo, createTextNode: d => ({ nodeType: 3, data: d }) };
+  const sel = nodo('select');
+  sel.replaceChildren = function () { this.children = []; };
+  Object.defineProperty(sel, 'options', { get() { return this.children.flatMap(c => (c.tag === 'optgroup' ? c.children : [c])).map(o => ({ value: o.attrs.value })); } });
+  pintarDestinos(sel, [{ id: 'tech-devops', nombre: 'Bernat' }, { id: 'operaciones', nombre: 'Pol' }], ['hq', 'voyage']);
+  assert.equal(DESTINO_DEFECTO, 'tech-devops');
+  assert.equal(sel.value, 'tech-devops');
+  assert.deepEqual(sel.options.map(o => o.value), ['tech-devops', 'operaciones', 'hq', 'voyage']);
+  assert.equal(sel.children.at(-1).tag, 'optgroup');
 });
