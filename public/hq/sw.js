@@ -2,7 +2,7 @@
    Supabase ni el payload omc_hq_v2 (van a otro origen, asi que ya quedan fuera del filtro de fetch).
    Push y notificationclick son el mismo comportamiento real que public/hq/v1/sw.js (mismo payload que
    envia hq-push en el servidor: title, body, url, tag, id, lic). */
-var CACHE = 'hq-v82';
+var CACHE = 'hq-v83';
 var SHELL = ['/hq/', '/hq/app/main.js', '/hq/app/api.js', '/hq/app/estado.js', '/hq/app/recargador.js', '/hq/app/rutas.js', '/hq/app/buscador.js', '/hq/app/licitaciones.js', '/hq/app/shell.js', '/hq/app/ui.js', '/hq/app/tarjeta.js', '/hq/app/detalle.js', '/hq/app/dnd.js', '/hq/app/vistas/secreto.js', '/hq/vendor/nacl-fast.min.js', '/hq/app/vistas/hoy.js', '/hq/app/vistas/web.js', '/hq/app/vistas/home.js', '/hq/app/vistas/hoy-pantalla.js', '/hq/app/vistas/objetivo.js', '/hq/app/vistas/tablero.js', '/hq/app/vistas/decisiones.js', '/hq/app/vistas/licitaciones.js', '/hq/app/vistas/licitaciones-menores.js', '/hq/app/vistas/equipo.js', '/hq/app/vistas/motor.js', '/hq/app/vistas/expedientes.js', '/hq/app/vistas/avisos.js', '/hq/app/avisos.js', '/hq/app/aviso-pendiente.js', '/hq/app/tokens.css', '/hq/app/hq.css', '/hq/manifest.webmanifest', '/hq/icon-192.png', '/hq/icon-512.png'];
 
 self.addEventListener('install', function (e) {
@@ -118,11 +118,9 @@ self.addEventListener('push', function (e) {
     }).then(function () { tz.push(traza('push_mostrado', { n: n })); }, function (err) { tz.push(traza('push_mostrar_fallo', { error: msg(err) })); throw err; });
   }).then(function () { return Promise.all(tz); }, function (err) { return Promise.all(tz).then(function () { throw err; }); }));
 });
-// Al tocar: la app abierta recibe siempre {tipo:'ir', url} y aplica el hash ella misma (iOS WebKit no tiene
-// Client.navigate()). La url se pasa a absoluta dentro del scope (openWindow en WebKit la exige). En iPhone
-// openWindow se llama de forma SINCRONA, sin matchAll ni await previos (tras un await WebKit puede perder el
-// permiso de abrir ventana); despues se avisa a las ventanas que ya existian. En el resto: focus() primero y
-// openWindow(url) como caida si no hay ventana de HQ v2 o focus() falla. El aviso se marca leido.
+// Al tocar (#2694): si hay ventana de HQ v2 (tambien iPhone), focus() y postMessage {tipo:'ir', url}; la app aplica el
+// hash ella misma (iOS WebKit no tiene Client.navigate()) y NO se llama a openWindow. Sin ventana, o si focus() falla,
+// openWindow(url) con la url absoluta dentro del scope. El destino queda ademas en Cache hq-destino. El aviso se marca leido.
 function urlAbs(url) {
   try { var u = new URL(url || '/hq/#avisos', self.location.origin); if (u.origin === self.location.origin && u.pathname.indexOf('/hq/') === 0) return u.href; } catch (err) {}
   return new URL('/hq/#avisos', self.location.origin).href;
@@ -134,7 +132,7 @@ self.addEventListener('notificationclick', function (e) {
   // C3: el endpoint viaja en la propia notificacion (d.ep): la traza ya no depende de getSubscription() ni del
   // arranque en frio del sw. Cada toque deja click_inicio aunque falle todo lo demas.
   var tr = function (ev, dat) { return traza(ev, dat, d.ep ? Promise.resolve(d.ep) : null); };
-  var tz = [tr('click_inicio', { sinData: sinData, url: url, id: d.id || null, tag: e.notification.tag, camino: IOS ? 'ios-openWindow-directo' : 'focus-primero' })];
+  var tz = [tr('click_inicio', { sinData: sinData, url: url, id: d.id || null, tag: e.notification.tag, camino: 'focus-primero' })];
   // C2: destino pendiente en Cache API (nombre fuera de la familia hq-vN, no se borra al activar): si iOS abre
   // la PWA en la home y descarta el hash, la app lo lee al arrancar o al volver y navega a la tarjeta.
   try { tz.push(caches.open('hq-destino').then(function (c) { return c.put('/hq/__destino', new Response(JSON.stringify({ url: url, t: Date.now() }))); }).catch(function () {})); } catch (err) {}
@@ -145,7 +143,6 @@ self.addEventListener('notificationclick', function (e) {
       function (err) { tz.push(tr('click_openWindow_fallo', { motivo: motivo, error: msg(err) })); });
   };
   var trabajo = [marcarLeido(d.n).catch(function () {})];
-  var abierta = IOS ? abrir('ios-directo') : null;
   trabajo.push(clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (ws) {
     var propias = ws.filter(function (w) { return w.url.indexOf('/hq/') >= 0 && w.url.indexOf('/hq/v1/') < 0; });
     tz.push(tr('click_clientes', { total: ws.length, propias: propias.length, urls: ws.map(function (w) { return w.url + ' [' + w.visibilityState + (w.focused ? ',foco' : '') + ']'; }) }));
@@ -154,12 +151,11 @@ self.addEventListener('notificationclick', function (e) {
       if (d.id) { try { w.postMessage({ tipo: 'abrir', id: d.id }); } catch (err) {} }
       if (d.lic) { try { w.postMessage({ tipo: 'abrir-lic', lic: d.lic }); } catch (err) {} }
     });
-    if (IOS) return abierta;
     if (!propias.length) return abrir('sin-ventana');
     var w0 = propias[0], enfoque;
     try { enfoque = w0.focus ? Promise.resolve(w0.focus()) : Promise.reject(new Error('sin focus')); } catch (err) { enfoque = Promise.reject(err); }
     return enfoque.then(function () { tz.push(tr('click_focus_ok', {})); }, function (err) { tz.push(tr('click_focus_fallo', { error: msg(err) })); return abrir('focus-fallo'); });
-  }, function (err) { tz.push(tr('click_matchAll_fallo', { error: msg(err) })); return IOS ? abierta : abrir('matchAll-fallo'); }));
+  }, function (err) { tz.push(tr('click_matchAll_fallo', { error: msg(err) })); return abrir('matchAll-fallo'); }));
   e.waitUntil(Promise.all(trabajo).then(function () { return Promise.all(tz); }));
 });
 

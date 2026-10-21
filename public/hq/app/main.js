@@ -140,14 +140,14 @@ function aplicarVersionNueva() {
   document.body.append(b);
 }
 // C2: destino de la notificación guardado por el sw (Cache 'hq-destino'): iOS puede abrir la PWA en la home y
-// perder el hash; se aplica si tiene menos de 2 min y se borra siempre.
+// perder el hash; se aplica si tiene menos de 10 min y se borra siempre. #2694: tambien al volver visible la app.
 async function aplicarDestinoPendiente() {
   try {
     const c = await caches.open('hq-destino'), r = await c.match('/hq/__destino');
     if (!r) return false;
     await c.delete('/hq/__destino');
     const d = await r.json();
-    if (Date.now() - d.t > 120000) return true;
+    if (Date.now() - d.t > 600000) return true;
     const u = new URL(d.url, location.origin);
     if (u.origin === location.origin && u.pathname.startsWith('/hq/') && u.hash) location.hash = u.hash;
     return true;
@@ -174,7 +174,7 @@ if ('serviceWorker' in navigator) {
   const habiaControl = !!navigator.serviceWorker.controller;
   navigator.serviceWorker.addEventListener('controllerchange', () => { if (habiaControl) aplicarVersionNueva(); });
   revisarAvisos('arranque');
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) { revisarAvisos('visible'); navigator.serviceWorker.getRegistration('/hq/').then(r => r && r.update()).catch(() => {}); } });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) { aplicarDestinoPendiente().catch(() => {}); revisarAvisos('visible'); navigator.serviceWorker.getRegistration('/hq/').then(r => r && r.update()).catch(() => {}); } });
   navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => { if (new URL(r.scope).pathname === '/hq/' && !(r.active && r.active.scriptURL.endsWith('/hq/sw.js'))) r.unregister(); }));
   navigator.serviceWorker.register('/hq/sw.js', { updateViaCache: 'none' }).then(reg => {
     reg.addEventListener('updatefound', () => { const nuevo = reg.installing; if (nuevo) nuevo.addEventListener('statechange', () => { if (nuevo.state === 'activated' && navigator.serviceWorker.controller) aplicarVersionNueva(); }); });
