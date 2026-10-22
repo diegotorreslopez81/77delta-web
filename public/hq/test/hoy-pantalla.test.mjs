@@ -143,7 +143,7 @@ test('vuelve: fecha dd-mm en hora de Madrid', () => {
 });
 
 import { formulariosWeb } from '../app/vistas/hoy-pantalla.js';
-test('formulariosWeb: suma 30 días por sitio, cero visible y "Sin formularios" si no hay campos', () => {
+test('formulariosWeb: suma 30 días por sitio, altas y contacto, guion (null) si el sitio no mide el evento', () => {
   const ahora = new Date('2026-10-21T12:00:00Z');
   const dias = [
     { sitio: '77delta.com', dia: '2026-10-20', clics_reservar: 2, envios_contacto: 1, envios_empleo: 0 },
@@ -152,8 +152,8 @@ test('formulariosWeb: suma 30 días por sitio, cero visible y "Sin formularios" 
     { sitio: 'docureal.77delta.com', dia: '2026-10-19', envios_docureal: 4 },
     { sitio: 'swarmix.co', dia: '2026-10-19', visitas: 5 },
   ];
-  assert.equal(formulariosWeb(dias, '77delta.com', ahora), 'Reserv. 3 · Cont. 2 · Empl. 0');
-  assert.equal(formulariosWeb(dias, 'docureal.77delta.com', ahora), 'L. espera 4');
-  assert.equal(formulariosWeb(dias, 'swarmix.co', ahora), 'Sin form.');
-  assert.equal(formulariosWeb(dias, 'verifix.77delta.com', ahora), 'Sin form.');
+  assert.deepEqual(formulariosWeb(dias, '77delta.com', ahora), { altas: null, contacto: 2 });
+  assert.deepEqual(formulariosWeb(dias, 'docureal.77delta.com', ahora), { altas: 4, contacto: null });
+  assert.deepEqual(formulariosWeb(dias, 'swarmix.co', ahora), { altas: null, contacto: null });
+  assert.deepEqual(formulariosWeb(dias, 'verifix.77delta.com', ahora), { altas: 0, contacto: null });
 });
