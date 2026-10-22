@@ -38,7 +38,7 @@ test('la clave pública sale del repo, no de la BD', () => {
 
 test('secretos-pubkey.json: destinos incluyen twenty y regulia (#2079)', () => {
   const j = JSON.parse(readFileSync(new URL('../secretos-pubkey.json', import.meta.url), 'utf8'));
-  assert.deepEqual(j.destinos, ['hq', 'voyage', 'oportunidades-ia', 'twenty', 'regulia', 'resend']);
+  assert.deepEqual(j.destinos, ['hq', 'voyage', 'oportunidades-ia', 'twenty', 'regulia', 'resend', 'swarmix']);
 });
 
 test('pintarDestinos: agentes por nombre, Sistema al final y Bernat preseleccionado', () => {
