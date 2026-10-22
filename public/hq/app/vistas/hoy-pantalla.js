@@ -306,13 +306,20 @@ function ingresosNueva(f) {
   const anio = por('facturado_2026');
   if (!anio) return null;
   const mes = String(f.periodo_texto || '');
-  const fila = (c, defecto) => { const d = por(c); return d ? [{ texto: sinAprox(d.etiqueta) + ': ' + (valorNegocio(d.valor, d.unidad) || 'sin dato'), ...enlaceLinea(d.enlace || defecto) }] : []; };
+  const caja = por('caja');
+  const linea = (texto, enl, extra) => ({ texto, ...enlaceLinea(enl), ...(extra || {}) });
+  const cobrado = por('cobrado_2026');
   return {
     periodo: String(anio.etiqueta || '').match(/\d{4}/)?.[0] || '', principal: eurNegocio(anio.valor), principalTexto: 'Facturado ' + (String(anio.etiqueta || '').match(/\d{4}/)?.[0] || ''),
-    secundario: (mes ? mes + ' ' : '') + eurNegocio(f.secundario ?? f.principal),
-    enlacePrincipal: enlaceLinea(anio.enlace || 'operacion/ventas/ingresos'), enlaceSecundario: enlaceLinea(por('facturado_mes')?.enlace || 'operacion/ventas/ingresos?mes=' + mesActual()),
-    detalle: [], encargo: '#2645', lineasEnl: [...fila('por_facturar', ''), ...fila('cobrado_2026', 'operacion/ventas/ingresos?estado=cobrado')],
-    lineas: Array.isArray(por('lineas_2026')?.lineas) ? por('lineas_2026').lineas.map(l => ({ clave: String(l.etiqueta).toLowerCase(), etiqueta: l.etiqueta, pct: Number(l.pct) || 0 })) : [],
+    secundario: '',
+    enlacePrincipal: enlaceLinea(anio.enlace || 'operacion/ventas/ingresos'), enlaceSecundario: enlaceLinea(''),
+    detalle: [], encargo: '#2779',
+    lineasEnl: [
+      caja && caja.valor != null ? linea('Caja: ' + eurNegocio(caja.valor), caja.enlace || '') : linea('Caja: pdte', '', { pdte: true }),
+      linea((mes ? mes.charAt(0).toUpperCase() + mes.slice(1) : 'Mes') + ': ' + eurNegocio(f.secundario ?? f.principal), por('facturado_mes')?.enlace || 'operacion/ventas/ingresos?mes=' + mesActual()),
+      ...(cobrado ? [linea('Cobrado ' + (String(cobrado.etiqueta || '').match(/\d{4}/)?.[0] || '2026') + ': ' + eurNegocio(cobrado.valor), cobrado.enlace || 'operacion/ventas/ingresos?estado=cobrado')] : []),
+    ],
+    lineas: [],
   };
 }
 function ingresosVieja(f) {
@@ -380,19 +387,29 @@ export function lineasBarra(detalle, lineasPipe) {
   }
   return l.map(x => ({ ...x, etiqueta: ETIQUETAS_CORTAS[x.clave] || x.clave })).sort((a, b) => posLinea(a.clave) - posLinea(b.clave));
 }
-// #2693: Captación y web 7 días. Detalle con clave: enviados (principal), respuestas (secundario), visitas y formularios; cada una con su enlace.
-const ETIQUETAS_CAPTACION = { enviados: 'Enviados', respuestas: 'Respuestas', visitas: 'Visitas', formularios: 'Formularios' };
+// #2779 (decisión #772): Captación solo CRM. Enviados grande ("pdte" hasta que Twenty tenga el campo); debajo Respuestas, Reuniones y Propuestas con % sobre el paso anterior.
+const PASOS_CAPTACION = [['respuestas', 'Respuestas'], ['reuniones', 'Reuniones'], ['propuestas', 'Propuestas']];
 function captacionNueva(f) {
-  if (f?.clave !== 'captacion_7d' || !Array.isArray(f.detalle) || !f.detalle.some(d => d && d.clave)) return {};
+  if (f?.clave !== 'captacion' || !Array.isArray(f.detalle)) return {};
   const por = c => f.detalle.find(d => d && d.clave === c);
+  const num = d => d && d.valor != null && Number.isFinite(Number(d.valor)) ? Number(d.valor) : null;
+  const env = num(por('enviados'));
+  let previo = env;
+  const lineasEnl = PASOS_CAPTACION.map(([c, et]) => {
+    const d = por(c), n = num(d);
+    const pct = n != null && previo ? ' (' + Math.round(n / previo * 100) + ' %)' : '';
+    previo = n;
+    return { texto: et + ' ' + (n == null ? 'pdte' : n) + pct, ...enlaceLinea(d?.enlace) };
+  });
   return {
-    enlacePrincipal: enlaceLinea(por('enviados')?.enlace), enlaceSecundario: enlaceLinea(por('respuestas')?.enlace), detalle: [],
-    lineasEnl: Object.keys(ETIQUETAS_CAPTACION).map(c => por(c)).filter(Boolean).map(d => ({ texto: ETIQUETAS_CAPTACION[d.clave] + ': ' + (d.valor == null ? 'sin dato' : valorNegocio(d.valor, d.unidad)), ...enlaceLinea(d.enlace) })),
+    principal: env == null ? 'pdte' : String(env), principalTexto: 'enviados', secundario: '',
+    color: env == null ? (f.color || '') : env > 0 ? 'verde' : 'rojo',
+    enlacePrincipal: enlaceLinea(por('enviados')?.enlace || f.enlace), enlaceSecundario: enlaceLinea(''), detalle: [], lineasEnl,
   };
 }
 // #2679: orden fijo de las casillas de Negocio; una clave que no esté va después, en el orden de la vista.
-export const ORDEN_NEGOCIO = ['pipeline', 'contratado', 'ingresos', 'captacion_7d'];
-const ETIQUETAS_NEGOCIO = { ingresos: 'Factura', captacion_7d: 'Captación' };
+export const ORDEN_NEGOCIO = ['pipeline', 'contratado', 'ingresos', 'captacion'];
+const ETIQUETAS_NEGOCIO = { ingresos: 'Ingresos', captacion: 'Captación' };
 const posNegocio = c => { const i = ORDEN_NEGOCIO.indexOf(c); return i < 0 ? ORDEN_NEGOCIO.length : i; };
 export function modeloNegocio(filas) {
   return (Array.isArray(filas) ? filas : []).filter(f => f && f.principal != null).map((f, i) => ({ f, i })).sort((a, b) => posNegocio(a.f.clave) - posNegocio(b.f.clave) || a.i - b.i).map(({ f }) => ({
@@ -407,7 +424,7 @@ export function modeloNegocio(filas) {
   }));
 }
 // #2676: tarjetas de Negocio que aún leen tablas escritas por agentes; cada PR de migración quita la suya.
-export const PROVISIONAL = { pipeline: '#2672', captacion_7d: '#2673', ingresos: '#2645' };
+export const PROVISIONAL = { pipeline: '#2672' };
 // #2693: la cifra se envuelve en `a` si trae enlace (http en pestaña nueva); sin enlace, texto plano.
 const enlazar = (texto, e) => e?.enlace ? el('a', { class: 'neg-cifra', href: e.enlace, ...(e.externo ? { target: '_blank', rel: 'noopener noreferrer' } : {}), text: texto }) : texto;
 export function pintarNegocio(filas) {

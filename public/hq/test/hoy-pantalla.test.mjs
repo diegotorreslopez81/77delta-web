@@ -89,16 +89,14 @@ test('#2584 ingresos con el formato real v181 (fila de hq_v_hoy_negocio 19-10)',
   assert.equal(m.periodo, '2026');
   assert.equal(m.principal.replace(/\s/g, ' '), '15.000 €');
   assert.equal(m.principalTexto, 'Facturado 2026');
-  assert.equal(m.secundario.replace(/\s/g, ' '), 'octubre 5.000 €');
-  assert.deepEqual(m.lineasEnl.map(l => l.texto.split(':')[0]), ['por facturar', 'cobrado 2026']);
-  assert.equal(m.lineasEnl[0].texto.replace(/\s/g, ' '), 'por facturar: 27.438 €');
-  // #2693: casilla rota "#ventas?bloque=ingresos" ya no se usa; cifras enlazan al listado interno.
+  assert.equal(m.secundario, '');
+  assert.deepEqual(m.lineasEnl.map(l => l.texto.replace(/\s/g, ' ')), ['Caja: pdte', 'Octubre: 5.000 €', 'Cobrado 2026: 5.000 €']);
   assert.equal(m.enlace, '#operacion/ventas/ingresos');
   assert.equal(m.enlacePrincipal.enlace, '#operacion/ventas/ingresos');
-  assert.match(m.enlaceSecundario.enlace, /^#operacion\/ventas\/ingresos\?mes=\d{4}-\d{2}$/);
   assert.equal(m.lineasEnl[0].enlace, '');
-  assert.equal(m.lineasEnl[1].enlace, '#operacion/ventas/ingresos?estado=cobrado');
-  assert.deepEqual(m.lineas.map(l => l.etiqueta + ' ' + l.pct), ['Licita 0', 'Sales 100', 'Cupones 0', 'Otros 0']);
+  assert.match(m.lineasEnl[1].enlace, /^#operacion\/ventas\/ingresos\?mes=\d{4}-\d{2}$/);
+  assert.equal(m.lineasEnl[2].enlace, '#operacion/ventas/ingresos?estado=cobrado');
+  assert.deepEqual(m.lineas, []);
 });
 
 // #2695: barra y leyenda de Pipeline y Contratado
@@ -113,28 +111,28 @@ test('lineasBarra usa las líneas de la vista y las lleva a clave', () => {
   assert.deepEqual(l.map(x => x.clave + x.pct), ['licitaciones80', 'propuestas20']);
 });
 
-test('#2693 ingresos: enlace de la vista gana (Twenty externo, hash interno)', () => {
-  const fila = { clave: 'ingresos', etiqueta: 'Ingresos', principal: 1, principal_unidad: 'eur', detalle: [
+test('#2779 ingresos: Caja con valor y sin por_facturar', () => {
+  const fila = { clave: 'ingresos', etiqueta: 'Ingresos', principal: 1, principal_unidad: 'eur', periodo_texto: 'octubre', detalle: [
     { clave: 'facturado_2026', valor: 1, unidad: 'eur', etiqueta: '2026 facturado', enlace: 'operacion/ventas/ingresos' },
-    { clave: 'por_facturar', valor: 2, unidad: 'eur', etiqueta: 'por facturar', enlace: 'https://crm.example/objects/cuotas?view=x' }] };
+    { clave: 'caja', valor: 2500, unidad: 'eur', etiqueta: 'caja', enlace: 'https://fs.example/caja' },
+    { clave: 'por_facturar', valor: 2, unidad: 'eur', etiqueta: 'por facturar' }] };
   const [m] = modeloNegocio([fila]);
-  assert.deepEqual(m.lineasEnl[0], { texto: 'por facturar: 2 €', enlace: 'https://crm.example/objects/cuotas?view=x', externo: true });
+  assert.deepEqual(m.lineasEnl.map(l => l.texto.replace(/\s/g, ' ')), ['Caja: 2.500 €', 'Octubre: 1 €']);
+  assert.equal(m.lineasEnl[0].externo, true);
 });
 
-test('#2693 captación: cuatro líneas con enlace; sin clave no cambia', () => {
-  const fila = { clave: 'captacion_7d', etiqueta: 'Captación', principal: 40, principal_unidad: 'n', secundario: 3, secundario_unidad: 'n', detalle: [
-    { clave: 'enviados', valor: 40, unidad: 'n', enlace: 'https://crm.example/p?view=1' },
-    { clave: 'respuestas', valor: 3, unidad: 'n', enlace: 'https://crm.example/p?view=2' },
-    { clave: 'visitas', valor: 900, unidad: 'n', enlace: 'operacion/ventas/web' },
-    { clave: 'formularios', valor: 5, unidad: 'n', enlace: 'operacion/ventas/web?bloque=formularios' }] };
-  const [m] = modeloNegocio([fila]);
-  assert.deepEqual(m.lineasEnl.map(l => l.texto), ['Enviados: 40', 'Respuestas: 3', 'Visitas: 900', 'Formularios: 5']);
-  assert.equal(m.lineasEnl[0].externo, true);
-  assert.equal(m.lineasEnl[3].enlace, '#operacion/ventas/web?bloque=formularios');
-  assert.equal(m.enlacePrincipal.enlace, 'https://crm.example/p?view=1');
-  const [v] = modeloNegocio([{ clave: 'captacion_7d', etiqueta: 'Captación', principal: 4, principal_unidad: 'n', detalle: [{ etiqueta: 'visitas', valor: 9, unidad: 'n' }] }]);
-  assert.equal(v.lineasEnl, undefined);
-  assert.equal(v.detalle.length, 1);
+test('#2779 captación: enviados pdte, % sobre el paso anterior, solo CRM', () => {
+  const det = [{ clave: 'respuestas', valor: 33, enlace: 'https://crm.example/r' }, { clave: 'reuniones', valor: 2 }, { clave: 'propuestas', valor: 1 }, { clave: 'visitas', valor: 900 }];
+  const [p] = modeloNegocio([{ clave: 'captacion', etiqueta: 'Captación', principal: 1905, color: 'rojo', detalle: det }]);
+  assert.equal(p.principal, 'pdte');
+  assert.deepEqual(p.lineasEnl.map(l => l.texto), ['Respuestas 33', 'Reuniones 2 (6 %)', 'Propuestas 1 (50 %)']);
+  assert.equal(p.color, 'rojo');
+  const [c] = modeloNegocio([{ clave: 'captacion', etiqueta: 'Captación', principal: 1, detalle: [{ clave: 'enviados', valor: 166 }, ...det] }]);
+  assert.equal(c.principal, '166');
+  assert.equal(c.color, 'verde');
+  assert.equal(c.lineasEnl[0].texto, 'Respuestas 33 (20 %)');
+  const [z] = modeloNegocio([{ clave: 'captacion', etiqueta: 'Captación', principal: 0, detalle: [{ clave: 'enviados', valor: 0 }] }]);
+  assert.equal(z.color, 'rojo');
 });
 
 test('vuelve: fecha dd-mm en hora de Madrid', () => {
