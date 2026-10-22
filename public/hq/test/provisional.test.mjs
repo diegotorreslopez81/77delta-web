@@ -47,11 +47,11 @@ test('provisional: clase, data-provisional y título con el encargo', () => {
   const n = provisional(crearNodo('div'), '#2672');
   assert.ok(n.classList.contains('fuente-provisional')); assert.equal(n.dataset.provisional, '#2672'); assert.match(n.title, /\(#2672\)/);
 });
-test('Negocio: pipeline, captacion_7d e ingresos en rojo; licitaciones normal', () => {
+test('Negocio: solo pipeline provisional; captacion, ingresos y licitaciones normal', () => {
   const f = clave => ({ clave, etiqueta: clave, principal: 5, principal_unidad: 'n' });
-  const raiz = pintarNegocio(['pipeline', 'captacion_7d', 'ingresos', 'licitaciones'].map(f));
-  assert.deepEqual(marcados(raiz).map(x => x.dataset.provisional), ['#2672', '#2645', '#2673']);
-  assert.deepEqual(Object.keys(PROVISIONAL), ['pipeline', 'captacion_7d', 'ingresos']);
+  const raiz = pintarNegocio(['pipeline', 'captacion', 'ingresos', 'licitaciones'].map(f));
+  assert.deepEqual(marcados(raiz).map(x => x.dataset.provisional), ['#2672']);
+  assert.deepEqual(Object.keys(PROVISIONAL), ['pipeline']);
 });
 test('Captación: enviados, respuestas y ganados en rojo; visitas, reservar y formularios normal', () => {
   const fila = { periodo: 7, producto: 'total', enviados: 902, respuestas: 24, visitas: 100, clics_reservar: 3, formularios: 1, ganados: 2 };
@@ -95,11 +95,10 @@ test('Contratado #2678: cuatro líneas (con Subvenciones) y tramo l-subvenciones
   assert.ok(buscar(raiz, x => x.classList && x.classList.contains('neg-tramo') && x.classList.contains('l-subvenciones')).length === 1);
   assert.ok(buscar(raiz, x => x.classList && x.classList.contains('neg-punto') && x.classList.contains('l-subvenciones')).length === 1);
 });
-test('Orden #2679: Pipeline, Contratado, Facturado y cobrado (#2645), Captación', () => {
+test('Orden #2679: Pipeline, Contratado, Ingresos, Captación', () => {
   const f = (clave, etiqueta, principal) => ({ clave, etiqueta, principal, principal_unidad: 'eur', detalle: [] });
-  const raiz = pintarNegocio([f('captacion_7d', 'Captación', 5), f('ingresos', 'Ingresos', 15000), f('contratado', 'Contratado', 70900), f('pipeline', 'Pipeline', 559705)]);
-  assert.deepEqual(buscar(raiz, x => x.classList && x.classList.contains('neg-etiqueta')).map(x => x.textContent), ['Pipeline', 'Contratado', 'Factura', 'Captación']);
-  assert.ok(marcados(raiz).some(x => x.dataset.provisional === '#2645'));
+  const raiz = pintarNegocio([f('captacion', 'Captación', 5), f('ingresos', 'Ingresos', 15000), f('contratado', 'Contratado', 70900), f('pipeline', 'Pipeline', 559705)]);
+  assert.deepEqual(buscar(raiz, x => x.classList && x.classList.contains('neg-etiqueta')).map(x => x.textContent), ['Pipeline', 'Contratado', 'Ingresos', 'Captación']);
 });
 
 test('Líneas #2692: http(s) externo con target _blank y noopener; # y ruta internos; vacío sin enlace; también provisional', async () => {
