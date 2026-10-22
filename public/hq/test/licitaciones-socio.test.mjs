@@ -56,15 +56,17 @@ const FILA = { id: 7, expediente: 'EXP-7', organo: 'Ayuntamiento X', objeto: 'Se
 const RESUMEN = { aprobadas: { n: 1, eur: 0 }, presentadas: { n: 2, eur: 500 }, adjudicadas: { n: 3, eur: 0 } };
 const textoDe = n => (n.nodeType === 3 ? n.data : n.textContent);
 
-test('socio: lista por RPC de socio, estado por defecto Aprobada, chips solo marcha y presentadas, sin botones ni datos internos', async () => {
+test('socio: lista por RPC de socio, estado por defecto todas (sin filtro de estado ni de cierre), chips marcha, presentadas y cerradas, sin botones ni datos internos', async () => {
   const pedidos = [];
   usarSocio({ tabla: async f => { pedidos.push(f); return { total: 1, resumen: RESUMEN, filas: [FILA] }; }, historia: async () => ({ tareas: [], presentaciones: [], cambios: [] }) });
   const raiz = raizVacia();
   await render(raiz, { datos: { rol: 'socio' } }, undefined, {}, AHORA);
-  assert.deepEqual(pedidos[0].estados, ['Aprobada']);
+  assert.equal(pedidos[0].estados, undefined);
+  assert.equal(pedidos[0].cierre_desde, undefined);
   assert.deepEqual(expedientes(raiz), ['EXP-7']);
   const nombres = chips(raiz).filter(c => !clase(c, 'agregado')).map(c => c.textContent);
   assert.ok(nombres.includes('Aprobada 1') && nombres.includes('Presentada 2'));
   assert.ok(!nombres.some(t => /^(Nueva|Criba|Por decidir)/.test(t)));
+  assert.ok(chips(raiz).some(c => clase(c, 'agregado') && /^Todas 6/.test(c.textContent)));
   assert.equal(buscarNodos(raiz, n => n.tag === 'button' && /Descartar|Aprobar|Copiar/.test(textoDe(n))).length, 0);
 });

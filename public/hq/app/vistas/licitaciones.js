@@ -47,7 +47,7 @@ const repintar = async (...a) => (await import('../main.js')).render(...a);
 // cfg: { tabla(filtro) -> {total, filas, resumen}, historia(id) -> {presentaciones, cambios} }.
 let socio = null;
 export function usarSocio(cfg) { socio = cfg; cargador = cfg.tabla; }
-const ETAPAS_SOCIO = ['marcha', 'presentadas'];
+const ETAPAS_SOCIO = ['marcha', 'presentadas', 'cerradas'];
 const SECCIONES_INTERNAS = ['espera', 'motivo', 'solvencia', 'presencial', 'menor'];
 // Enmienda 5: pestaña ?bloque=firmar = exactamente las filas de hq_v_hoy_firmar (lotes de firma en plan), sin otro filtro.
 // La etiqueta es provisional hasta que Gerard fije el nombre.
@@ -109,7 +109,7 @@ const ALIAS = { activas: 'Aprobada', criba: 'Nueva', pausadas: 'Por decidir', de
 // pasa intacto (no es una fase de ESTADOS_H1, así que se distingue antes de mirar el catálogo).
 export function estadoChip(valorRuta) {
   const v = String(valorRuta || '');
-  if (v === 'todas-presentadas') return v;
+  if (v === 'todas-presentadas' || v === 'todas-socio') return v;
   const k = ALIAS[v] || v;
   return ESTADOS_H1.includes(k) ? k : '';
 }
@@ -127,17 +127,19 @@ export function buscar(rows, texto) { return filtrar(rows, { texto }); }
 // Filtro que viaja al servidor (omc_licitaciones_tabla): estado, importe (Menor = importe_max 20000),
 // etiqueta y cierre (por defecto solo abiertas, cierre >= hoy; 'abiertas=0' las incluye todas). La
 // 'Nueva' pide hasta 1000 filas (cola de criba); el resto, 500.
-export function filtroServidor(v, ahora = new Date()) {
+export function filtroServidor(v, ahora = new Date(), sinCierre = false) {
+  const todasSocio = estadoChip(v.estado) === 'todas-socio';
   const agregado = estadoChip(v.estado) === 'todas-presentadas';
-  const est = agregado ? null : (estadoChip(v.estado) || 'Por decidir');
-  const estados = agregado ? ETAPAS_LIC.find(e => e.clave === 'presentadas').fases : [est];
+  const est = agregado || todasSocio ? null : (estadoChip(v.estado) || 'Por decidir');
+  const estados = todasSocio ? [] : agregado ? ETAPAS_LIC.find(e => e.clave === 'presentadas').fases : [est];
   const etapa = agregado ? 'presentadas' : etapaDe(est);
   const f = { estados, limite: estados.includes('Nueva') ? 1000 : 500 };
+  if (todasSocio) delete f.estados;
   if (v.menor === '1') f.importe_max = 20000;
   if (v.etiqueta) f.etiquetas = [v.etiqueta];
   // D70 (#2086 spec §3, "caso Calp"): cierre_desde=hoy solo decide algo en 'Antes de decidir'/'En
   // marcha'; en 'Presentadas'/'Cerradas sin ir' la fecha límite ya pasó casi siempre y no debe esconder la fila.
-  if ((etapa === 'antes' || etapa === 'marcha') && v.abiertas !== '0') f.cierre_desde = ahora.toISOString().slice(0, 10);
+  if (!sinCierre && (etapa === 'antes' || etapa === 'marcha') && v.abiertas !== '0') f.cierre_desde = ahora.toISOString().slice(0, 10);
   // O13d (D69, tanda E bis): espera_diego = true cuando la licitación tiene una tarea abierta con
   // lic_tareas.espera_de = 'diego' (schema-v57/v58).
   if (v.espera === '1') f.espera_diego = true;
@@ -488,7 +490,7 @@ export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
   if (/^\d+$/.test(arg || '')) return renderFicha(raiz, S, Number(arg), ahora, rol);
   if (!socio && filtrosRuta.bloque === 'firmar') return renderFirmar(raiz, ahora);
   if (filtrosRuta.exp) return renderPorExpediente(raiz, S, filtrosRuta.exp);
-  const estado = estadoChip(filtrosRuta.estado) || (socio ? 'Aprobada' : 'Por decidir');
+  const estado = estadoChip(filtrosRuta.estado) || (socio ? 'todas-socio' : 'Por decidir');
   const valores = { estado, orden: filtrosRuta.orden === 'importe' ? 'importe' : 'cierre' };
   for (const k of ['tipologia', 'solvencia', 'tipo', 'presencial', 'texto', 'motivo', 'etiqueta']) if (filtrosRuta[k]) valores[k] = filtrosRuta[k];
   if (filtrosRuta.menor === '1') valores.menor = '1';
@@ -511,6 +513,10 @@ export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
   chips.innerHTML = '';
   for (const et of ETAPAS_LIC.filter(x => !socio || ETAPAS_SOCIO.includes(x.clave))) {
     const filaChips = el('div', { class: 'chips-fases' });
+    if (socio && et.clave === 'marcha') {
+      const todas = ETAPAS_LIC.filter(x => ETAPAS_SOCIO.includes(x.clave)).flatMap(x => x.fases).reduce((s, e) => s + nFase(resumen, e), 0);
+      filaChips.append(el('a', { class: 'chip agregado' + (estado === 'todas-socio' ? ' activo' : ''), href: construirRuta({ ...valores, estado: 'todas-socio' }), text: 'Todas ' + todas }));
+    }
     for (const e of et.fases) {
       const n = nFase(resumen, e);
       if (!n && e !== estado) { filaChips.append(el('span', { class: 'chip vacio', text: e + ' 0' })); continue; }
@@ -585,7 +591,7 @@ export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) {
   raiz.append(chips, ...(socio ? [] : [tablero]), zonaPills, resumenTxt, lista, hoja.fab, hoja.hoja);
 
   const mio = ++turno;
-  const filtro = filtroServidor(valores, ahora);
+  const filtro = filtroServidor(valores, ahora, !!socio);
   const firma = JSON.stringify(filtro);
   const cache = S.cacheLicTabla;
   const usar = datos => {
