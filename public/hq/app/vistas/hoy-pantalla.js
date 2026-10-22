@@ -258,18 +258,18 @@ export function modeloWeb7(filas, ahora = new Date()) {
 }
 // #2739 PR 1c+1d: un panel por sitio con la misma tarjeta que Negocio (vt-card hoy-neg): logo y título (enlace a Umami si hq_web trae umami_url y umami_id), visitas 30 d, visitantes y variación, total histórico y formularios/CTA 30 d.
 const nombreCorto = sitio => etiquetaSitio(sitio).replace(/\.(com|co)$/, '');
-const FORMULARIOS = {
-  '77delta.com': [['clics_reservar', 'Reservar'], ['envios_contacto', 'Contacto'], ['envios_empleo', 'Empleo']],
-  'docureal.77delta.com': [['envios_docureal', 'Lista de espera']],
-  'verifix.77delta.com': [['envios_verifix', 'Lista de espera']],
-  'swarmix.co': [['clics_swarmix', 'Clics CTA']],
+// Eventos de Umami por tipo y sitio (hq_v_web los devuelve a 0 en todos los sitios, así que "no medido" lo fija este mapa):
+// altas = listas de espera (form-docureal, form-verifix); contacto = form-contacto. Sin evento medido, null (guion).
+const EVENTOS = {
+  '77delta.com': { contacto: 'envios_contacto' },
+  'docureal.77delta.com': { altas: 'envios_docureal' },
+  'verifix.77delta.com': { altas: 'envios_verifix' },
 };
-// #2779: envíos 30 d de todos los formularios y CTA del sitio. null si el sitio no mide ninguno.
 export function formulariosWeb(dias, sitio, ahora = new Date()) {
   const desde = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Madrid' }).format(new Date(ahora.getTime() - 29 * 86400000));
   const mios = (dias || []).filter(d => d.sitio === sitio && d.dia >= desde);
-  const items = (FORMULARIOS[sitio] || []).filter(([c]) => mios.some(d => d[c] != null)).map(([c, t]) => [t, mios.reduce((a, d) => a + (Number(d[c]) || 0), 0)]);
-  return items.length ? { total: items.reduce((a, [, v]) => a + v, 0), desglose: items.map(([t, v]) => t + ' ' + v).join(' · ') } : null;
+  const tipo = col => col ? mios.reduce((a, d) => a + (Number(d[col]) || 0), 0) : null;
+  return { altas: tipo(EVENTOS[sitio]?.altas), contacto: tipo(EVENTOS[sitio]?.contacto) };
 }
 const MAX_LINEA = 24;
 export function panelesWeb(filas, ahora = new Date()) {
@@ -293,7 +293,8 @@ export function panelesWeb(filas, ahora = new Date()) {
       const hist = b.visitas_total != null ? 'Histórico ' + es(b.visitas_total) + ' visitas' : 'Histórico -';
       hijos.push(linea(hist.length > MAX_LINEA ? hist.replace(' visitas', '') : hist));
       const f = formulariosWeb(dias, b.sitio, ahora);
-      hijos.push(f ? linea('Form. (envíos) ' + es(f.total), f.desglose) : linea('Form. (envíos) -'));
+      hijos.push(linea('Altas (lista) ' + (f.altas == null ? '-' : es(f.altas)), 'Altas (newsletter/lista): envíos de alta en 30 días'));
+      hijos.push(linea('Contacto (form.) ' + (f.contacto == null ? '-' : es(f.contacto)), 'Contacto (form.): envíos del formulario de contacto en 30 días'));
     }
     return el('div', { class: 'vt-card hoy-neg web-sitio' + color, title: b.sitio }, hijos);
   });
