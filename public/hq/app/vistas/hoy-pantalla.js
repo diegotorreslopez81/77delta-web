@@ -183,20 +183,24 @@ export function pintarDecidir(h, repintar = () => {}, destacado = null, filtro =
   if (!enc.length) return tarjetas;
   return [
     ...(tarjetas.length ? [el('h3', { class: 'mudo hoy-sub', text: 'Tarjetas' }), ...tarjetas] : []),
-    el('h3', { class: 'mudo hoy-sub', text: 'Encargos que esperan tu respuesta' }), ...enc,
+    el('h3', { class: 'mudo hoy-sub', text: 'Encargos parados por ti' }), ...enc,
   ];
 }
 
 // #2770: encargos bloqueado_diego (hq_hoy.bloqueados). Fila enlace a #en-curso/<id>; rojo si el hito es hoy o pasado; sin hito al final.
-const ddmm = d => String(d).slice(8, 10) + '-' + String(d).slice(5, 7);
+// Título corto: primera frase, 80 caracteres máximo (corta en palabra y añade "…").
+export function tituloCorto(t) {
+  const f = String(t || '').trim().split(/(?<=[.!?:])\s/)[0].replace(/[.:]$/, '');
+  return f.length <= 80 ? f : f.slice(0, 79).replace(/\s+\S*$/, '') + '…';
+}
 export function pintarBloqueados(h, ahora = new Date()) {
   const hoy = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Madrid' }).format(ahora);
   const clave = b => b.fecha_hito ? String(b.fecha_hito).slice(0, 10) : '9999-99-99';
   return (h?.bloqueados || []).slice().sort((a, b) => clave(a).localeCompare(clave(b))).slice(0, n(h?.max_filas) || 50).map(b => {
     const hito = b.fecha_hito ? String(b.fecha_hito).slice(0, 10) : null;
     return el('a', { class: 'vt-card compacta hoy-bloq' + (hito && hito <= hoy ? ' rojo' : ''), href: '#en-curso/' + b.id }, [
-      el('p', { class: 'hoy-bloq-texto', text: b.texto || '' }),
-      el('p', { class: 'mudo', text: (hito ? 'Hito ' + ddmm(hito) : 'Sin hito') + ' · ' + (b.agente || '') }),
+      el('p', { class: 'hoy-bloq-texto', text: tituloCorto(b.texto) }),
+      el('p', { class: 'mudo', text: b.agente || '' }),
     ]);
   });
 }

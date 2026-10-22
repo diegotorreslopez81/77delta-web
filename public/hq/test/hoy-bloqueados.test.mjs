@@ -19,12 +19,21 @@ test('pintarBloqueados: rojo si hito hoy o pasado; texto de hito', () => {
   const f = pintarBloqueados(h, ahora);
   assert.match(f[0].className, /rojo/);
   assert.doesNotMatch(f[1].className, /rojo/);
-  assert.equal(f[1].kids[1].textContent, 'Hito 23-10 · pol');
-  assert.equal(f[2].kids[1].textContent, 'Sin hito · bernat');
+  assert.equal(f[1].kids[1].textContent, 'pol');
+  assert.equal(f[2].kids[1].textContent, 'bernat');
 });
 test('pintarDecidir: sin bloqueados no añade subtítulos; con ellos, subtítulo y filas', () => {
   assert.deepEqual(pintarDecidir({}), []);
   const r = pintarDecidir(h);
-  assert.equal(r[0].textContent, 'Encargos que esperan tu respuesta');
+  assert.equal(r[0].textContent, 'Encargos parados por ti');
   assert.equal(r.length, 4);
+});
+
+import { tituloCorto } from '../app/vistas/hoy-pantalla.js';
+test('tituloCorto: primera frase y 80 caracteres', () => {
+  assert.equal(tituloCorto('Diego 20-10: decide el precio. Luego sigue con el resto.'), 'Diego 20-10');
+  assert.equal(tituloCorto('Aprobar la propuesta. Más texto'), 'Aprobar la propuesta');
+  const t = tituloCorto('palabra '.repeat(30));
+  assert.ok(t.length <= 80 && t.endsWith('…'));
+  assert.equal(tituloCorto(null), '');
 });
