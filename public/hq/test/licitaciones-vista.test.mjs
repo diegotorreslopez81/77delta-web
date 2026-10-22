@@ -103,6 +103,10 @@ test('filtroServidor: Por decidir por defecto, solo abiertas; Menor y etiqueta p
   const abiertas = filtroServidor({ estado: 'Descartada', abiertas: '0' }, AHORA);
   assert.equal(abiertas.cierre_desde, undefined);
   assert.equal(filtroServidor({ estado: 'Nueva' }, AHORA).limite, 1000);
+  const todas = filtroServidor({ estado: 'todas-socio' }, AHORA, true);
+  assert.equal(todas.estados, undefined);
+  assert.equal(todas.cierre_desde, undefined);
+  assert.equal(filtroServidor({ estado: 'En redacción' }, AHORA, true).cierre_desde, undefined);
 });
 
 test('filtroCliente: no incluye motivo (se filtra aparte por motivo_descarte crudo)', () => {
