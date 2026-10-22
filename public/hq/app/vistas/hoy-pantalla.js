@@ -451,8 +451,7 @@ export function render(raiz, S, arg, filtros) {
   Promise.all([cargadores.hoy(), Promise.resolve().then(() => cargadores.negocio()).catch(e => ({ errorNegocio: e }))]).then(([h, filasNeg]) => {
     const neg = bloqueNegocio(filasNeg);
     const cifras = h?.cifras || [];
-    const dec0 = recuento(cifras, ['decidir', 'pagar'], (h?.decidir || []).length + (h?.pagar || []).length);
-    const dec = { ...dec0, n: dec0.n + (h?.bloqueados || []).length };
+    const dec = recuento(cifras, ['decidir', 'pagar'], (h?.decidir || []).length + (h?.pagar || []).length + (h?.bloqueados || []).length);
     const fir = recuento(cifras, ['firmar'], (h?.firmar || []).length);
     const web = recuento(cifras, ['web'], null), cap = recuento(cifras, ['captacion'], null);
     if (window.HQ_DATOS?.rol === 'owner') { window.HQ_DATOS.depende_n = dec.n; window.HQ_PINTAR?.(); }
