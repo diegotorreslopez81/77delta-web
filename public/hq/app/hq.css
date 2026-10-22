@@ -563,6 +563,3 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 .web-logo{width:20px;height:20px;border-radius:3px;vertical-align:-3px}
 .web-sin-datos{grid-column:1 / -1}
 .web-sitio .neg-linea{white-space:nowrap;font-size:11.5px}
-.hoy-sub { margin: 10px 0 4px; font-size: 13px; font-weight: 600; }
-.hoy-bloq { display: block; text-decoration: none; color: inherit; }
-.hoy-bloq-texto { margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
