@@ -259,17 +259,19 @@ export function modeloWeb7(filas, ahora = new Date()) {
 // #2739 PR 1c+1d: un panel por sitio con la misma tarjeta que Negocio (vt-card hoy-neg): logo y título (enlace a Umami si hq_web trae umami_url y umami_id), visitas 30 d, visitantes y variación, total histórico y formularios/CTA 30 d.
 const nombreCorto = sitio => etiquetaSitio(sitio).replace(/\.(com|co)$/, '');
 const FORMULARIOS = {
-  '77delta.com': [['clics_reservar', 'Reserv.'], ['envios_contacto', 'Cont.'], ['envios_empleo', 'Empl.']],
-  'docureal.77delta.com': [['envios_docureal', 'L. espera']],
-  'verifix.77delta.com': [['envios_verifix', 'L. espera']],
-  'swarmix.co': [['clics_swarmix', 'CTA']],
+  '77delta.com': [['clics_reservar', 'Reservar'], ['envios_contacto', 'Contacto'], ['envios_empleo', 'Empleo']],
+  'docureal.77delta.com': [['envios_docureal', 'Lista de espera']],
+  'verifix.77delta.com': [['envios_verifix', 'Lista de espera']],
+  'swarmix.co': [['clics_swarmix', 'Clics CTA']],
 };
+// #2779: envíos 30 d de todos los formularios y CTA del sitio. null si el sitio no mide ninguno.
 export function formulariosWeb(dias, sitio, ahora = new Date()) {
   const desde = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Madrid' }).format(new Date(ahora.getTime() - 29 * 86400000));
   const mios = (dias || []).filter(d => d.sitio === sitio && d.dia >= desde);
-  const items = (FORMULARIOS[sitio] || []).filter(([c]) => mios.some(d => d[c] != null)).map(([c, t]) => t + ' ' + mios.reduce((a, d) => a + (Number(d[c]) || 0), 0));
-  return items.length ? items.join(' · ') : 'Sin form.';
+  const items = (FORMULARIOS[sitio] || []).filter(([c]) => mios.some(d => d[c] != null)).map(([c, t]) => [t, mios.reduce((a, d) => a + (Number(d[c]) || 0), 0)]);
+  return items.length ? { total: items.reduce((a, [, v]) => a + v, 0), desglose: items.map(([t, v]) => t + ' ' + v).join(' · ') } : null;
 }
+const MAX_LINEA = 24;
 export function panelesWeb(filas, ahora = new Date()) {
   const es = x => x >= 100000 ? Math.round(x / 1000).toLocaleString('es-ES') + ' k' : x.toLocaleString('es-ES');
   const { dias, resumen } = separarWeb(filas);
@@ -278,15 +280,20 @@ export function panelesWeb(filas, ahora = new Date()) {
     const umami = /^https:\/\//.test(r.umami_url || '') && r.umami_id ? String(r.umami_url).replace(/\/$/, '') + '/websites/' + r.umami_id : null;
     const logo = el('img', { class: 'web-logo', src: '/hq/img/sitios/' + b.sitio + '.png', alt: '', width: 20, height: 20 });
     logo.onerror = () => logo.remove();
-    const titulo = el(umami ? 'a' : 'span', { class: 'mudo neg-etiqueta', ...(umami ? { href: umami, target: '_blank', rel: 'noopener' } : {}) }, [logo, ' ' + nombreCorto(b.sitio) + ' 30 d']);
     const color = b.sinDatos || !b.variacion ? '' : b.variacion > 0 ? ' verde' : ' rojo';
-    const linea = t => el('span', { class: 'mudo neg-detalle neg-linea', text: t });
-    const hijos = [titulo, el('span', { class: 'neg-principal', text: b.sinDatos ? '-' : es(b.visitas) })];
+    const linea = (t, title) => el('span', { class: 'mudo neg-detalle neg-linea', text: t, ...(title ? { title } : {}) });
+    const vari = b.variacion ? 'Var. ' + (b.variacion > 0 ? '+' : '') + b.variacion + ' %' : null;
+    let unicos = 'Únicos ' + es(b.visitantes) + (vari ? ' · ' + vari : ''), enEtiqueta = '';
+    if (unicos.length > MAX_LINEA) { unicos = 'Únicos ' + es(b.visitantes); enEtiqueta = ' · ' + (b.variacion > 0 ? '+' : '') + b.variacion + ' %'; }
+    const titulo = el(umami ? 'a' : 'span', { class: 'mudo neg-etiqueta', ...(umami ? { href: umami, target: '_blank', rel: 'noopener' } : {}) }, [logo, ' ' + nombreCorto(b.sitio) + ' · 30 d' + enEtiqueta]);
+    const hijos = [titulo, el('span', { class: 'neg-principal' }, [b.sinDatos ? '-' : es(b.visitas), el('small', { class: 'bajo', text: 'visitas (sesiones)' })])];
     if (b.sinDatos) hijos.push(linea('-'));
     else {
-      hijos.push(linea(es(b.visitantes) + ' vis.' + (b.variacion ? ' · ' + (b.variacion > 0 ? '+' : '') + b.variacion + ' %' : '')));
-      if (b.visitas_total != null) hijos.push(linea('Tot. ' + es(b.visitas_total) + ' v. · ' + es(b.visitantes_total) + ' vis.'));
-      hijos.push(linea(formulariosWeb(dias, b.sitio, ahora)));
+      hijos.push(linea(unicos, 'Visitantes únicos · variación de visitas frente a los 30 días anteriores'));
+      const hist = b.visitas_total != null ? 'Histórico ' + es(b.visitas_total) + ' visitas' : 'Histórico -';
+      hijos.push(linea(hist.length > MAX_LINEA ? hist.replace(' visitas', '') : hist));
+      const f = formulariosWeb(dias, b.sitio, ahora);
+      hijos.push(f ? linea('Form. (envíos) ' + es(f.total), f.desglose) : linea('Form. (envíos) -'));
     }
     return el('div', { class: 'vt-card hoy-neg web-sitio' + color, title: b.sitio }, hijos);
   });
