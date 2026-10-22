@@ -175,10 +175,30 @@ function tarjeta(p, umbral, repintar, { destacada = false, pago = false } = {}) 
 export function pintarDecidir(h, repintar = () => {}, destacado = null, filtro = null) {
   const filas = filtro === 'pagar' ? [] : (h?.decidir || []).slice(0, n(h?.max_filas) || 50);
   const pagos = h?.pagar || [];
-  return [
+  const tarjetas = [
     ...filas.map(p => tarjeta(p, n(h.umbral_decidir_h), repintar, { destacada: String(p.id) === String(destacado) })),
     ...pagos.map(p => tarjeta({ ...p, titulo: p.concepto }, 0, repintar, { pago: true, destacada: String(p.id) === String(destacado) })),
   ];
+  const enc = pintarBloqueados(h);
+  if (!enc.length) return tarjetas;
+  return [
+    ...(tarjetas.length ? [el('h3', { class: 'mudo hoy-sub', text: 'Tarjetas' }), ...tarjetas] : []),
+    el('h3', { class: 'mudo hoy-sub', text: 'Encargos que esperan tu respuesta' }), ...enc,
+  ];
+}
+
+// #2770: encargos bloqueado_diego (hq_hoy.bloqueados). Fila enlace a #en-curso/<id>; rojo si el hito es hoy o pasado; sin hito al final.
+const ddmm = d => String(d).slice(8, 10) + '-' + String(d).slice(5, 7);
+export function pintarBloqueados(h, ahora = new Date()) {
+  const hoy = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Madrid' }).format(ahora);
+  const clave = b => b.fecha_hito ? String(b.fecha_hito).slice(0, 10) : '9999-99-99';
+  return (h?.bloqueados || []).slice().sort((a, b) => clave(a).localeCompare(clave(b))).slice(0, n(h?.max_filas) || 50).map(b => {
+    const hito = b.fecha_hito ? String(b.fecha_hito).slice(0, 10) : null;
+    return el('a', { class: 'vt-card compacta hoy-bloq' + (hito && hito <= hoy ? ' rojo' : ''), href: '#en-curso/' + b.id }, [
+      el('p', { class: 'hoy-bloq-texto', text: b.texto || '' }),
+      el('p', { class: 'mudo', text: (hito ? 'Hito ' + ddmm(hito) : 'Sin hito') + ' · ' + (b.agente || '') }),
+    ]);
+  });
 }
 
 // #2739 PR 2: pospuestas vigentes (hq_hoy.pospuestas). Mismo ítem que Depende de ti más "Vuelve el dd-mm" y Reactivar (omc_posponer con now()).
@@ -431,7 +451,8 @@ export function render(raiz, S, arg, filtros) {
   Promise.all([cargadores.hoy(), Promise.resolve().then(() => cargadores.negocio()).catch(e => ({ errorNegocio: e }))]).then(([h, filasNeg]) => {
     const neg = bloqueNegocio(filasNeg);
     const cifras = h?.cifras || [];
-    const dec = recuento(cifras, ['decidir', 'pagar'], (h?.decidir || []).length + (h?.pagar || []).length);
+    const dec0 = recuento(cifras, ['decidir', 'pagar'], (h?.decidir || []).length + (h?.pagar || []).length);
+    const dec = { ...dec0, n: dec0.n + (h?.bloqueados || []).length };
     const fir = recuento(cifras, ['firmar'], (h?.firmar || []).length);
     const web = recuento(cifras, ['web'], null), cap = recuento(cifras, ['captacion'], null);
     if (window.HQ_DATOS?.rol === 'owner') { window.HQ_DATOS.depende_n = dec.n; window.HQ_PINTAR?.(); }
