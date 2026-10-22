@@ -125,7 +125,7 @@ test('ficha de licitacion: enlaces PCAP/PPT/Drive solo si empiezan por http; jav
   const porTexto = t => enlaces.find(a => a.textContent === t);
   assert.equal(porTexto('PPT').attrs.href, 'https://contrataciondelestado.es/exp1/ppt.pdf');
   assert.equal(porTexto('PPT').attrs.target, '_blank');
-  assert.equal(porTexto('PPT').attrs.rel, 'noopener');
+  assert.equal(porTexto('PPT').attrs.rel, 'noopener noreferrer');
   assert.equal(porTexto('Drive').attrs.href, 'https://drive.google.com/drive/folders/exp1');
   assert.ok(!porTexto('PCAP'), 'PCAP no se pinta: la url no empezaba por http');
   const f2 = fichaCon(raiz, 'EXP-2');

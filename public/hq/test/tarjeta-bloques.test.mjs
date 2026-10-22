@@ -49,7 +49,7 @@ test('pintarBloques: tres secciones con titulo, pasos como lista numerada y URLs
   assert.equal(busca(secc[1], n => n.tag === 'li').length, 3);
   const enlaces = busca(raiz, n => n.tag === 'a');
   assert.equal(enlaces.length, 2);
-  assert.ok(enlaces.every(a => a.attrs.href.startsWith('https://') && a.attrs.rel === 'noopener'));
+  assert.ok(enlaces.every(a => a.attrs.href.startsWith('https://') && a.attrs.rel === 'noopener noreferrer'));
 });
 
 test('pintarBloques: sin marcadores devuelve null para que decisiones.js pinte como hoy', () => {

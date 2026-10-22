@@ -204,7 +204,7 @@ export function tarjetaExp(x, S, colorFase = {}) {
       el('span', { class: 'mudo', text: x.estado_economico + ' · paso ' + pe.paso + ' de ' + pe.de + ' hasta cobrado' })]) : null,
     x.resumen_estado ? el('p', { class: 'solv' }, enlazar(x.resumen_estado)) : null,
     el('p', { class: 'solv', text: abiertos(x) + (abiertos(x) === 1 ? ' encargo abierto' : ' encargos abiertos') }),
-    el('div', { class: 'enlaces' }, [el('a', { href: '#operacion/expedientes/' + x.id, text: 'Abrir' }), ...enlaces.map(([t, h]) => el('a', { href: h, target: '_blank', rel: 'noopener', text: t }))]),
+    el('div', { class: 'enlaces' }, [el('a', { href: '#operacion/expedientes/' + x.id, text: 'Abrir' }), ...enlaces.map(([t, h]) => el('a', { href: h, target: '_blank', rel: 'noopener noreferrer', text: t }))]),
   ]);
 }
 
@@ -288,19 +288,19 @@ async function ficha(raiz, S, id, ahora = new Date()) {
       es.estado === 'abierta' && sesionUrl && activoFresco ? el('a', { class: 'btn primario', href: sesionUrl, text: 'Volver a la sesión' }) : null,
       es.estado === 'abierta' && !(sesionUrl && activoFresco) ? el('span', { class: 'pill sesion', text: 'agente inactivo' }) : null,
       es.hay && S.datos.rol === 'owner' ? el('button', { class: 'btn', text: 'Cerrar sesión', onclick: () => cerrarSesion(es.sesion, S) }) : null,
-      fichaUrl ? el('a', { class: 'btn', href: fichaUrl, target: '_blank', rel: 'noopener', text: 'Ficha (Doc)' }) : null,
-      carpetaUrl ? el('a', { class: 'btn', href: carpetaUrl, target: '_blank', rel: 'noopener', text: 'Carpeta' }) : null])]));
+      fichaUrl ? el('a', { class: 'btn', href: fichaUrl, target: '_blank', rel: 'noopener noreferrer', text: 'Ficha (Doc)' }) : null,
+      carpetaUrl ? el('a', { class: 'btn', href: carpetaUrl, target: '_blank', rel: 'noopener noreferrer', text: 'Carpeta' }) : null])]));
   if (x.resumen_estado) raiz.append(el('section', { class: 'seccion' }, [el('h2', { text: 'Estado (' + fecha(x.resumen_fecha, { hora: true }) + ')' }), el('p', {}, enlazar(x.resumen_estado))]));
   // "Encargos (N)" y "Kit del frente (N)" (linea de abajo): .length sobre f.encargos/f.kit, que llegan
   // completos sin LIMIT desde el SQL del expediente (schema-v2.sql, agregacion 'encargos' y 'kit') y se
   // pintan enteros justo debajo. No hace falta fila en omc_datos: el numero no puede desincronizarse de
   // la lista que tiene al lado (encargo #102, punto 3, verificado 22-sep).
   raiz.append(el('section', { class: 'seccion' }, [el('h2', { text: 'Encargos (' + f.encargos.length + ')' }), ...f.encargos.map(e => tarjetaEncargo(e))]));
-  if (x.entregables?.length) raiz.append(el('section', { class: 'seccion' }, [el('h2', { text: 'Entregables' }), ...x.entregables.map(en => { const h = urlSegura(en.url); return el('p', {}, [el('span', { class: 'pill', text: en.estado || 'pendiente' }), ' ', h ? el('a', { href: h, target: '_blank', rel: 'noopener', text: en.nombre }) : en.nombre]); })]));
+  if (x.entregables?.length) raiz.append(el('section', { class: 'seccion' }, [el('h2', { text: 'Entregables' }), ...x.entregables.map(en => { const h = urlSegura(en.url); return el('p', {}, [el('span', { class: 'pill', text: en.estado || 'pendiente' }), ' ', h ? el('a', { href: h, target: '_blank', rel: 'noopener noreferrer', text: en.nombre }) : en.nombre]); })]));
   if (f.contactos?.length) raiz.append(el('section', { class: 'seccion' }, [el('h2', { text: 'Contactos y envíos' }), ...f.contactos.map(c => el('p', { class: 'mudo', text: fecha(c.fecha || c.created_at, { hora: true }) + ' · ' + c.canal + ' · ' + (c.persona || c.destinatario || '') + ' · ' + (c.estado || '') + (c.asunto ? ' · ' + c.asunto : '') }))]));
   if (f.decisiones?.length) raiz.append(el('section', { class: 'seccion' }, [el('h2', { text: 'Decisiones' }), ...f.decisiones.map(d => el('a', { class: 'tarjeta enlace', href: '#hoy/' + d.id }, [el('p', { class: 'titulo', text: '#' + d.id + ' ' + d.titulo }), el('p', { class: 'mudo', text: d.estado })]))]));
   if (f.sesiones?.length) raiz.append(el('section', { class: 'seccion' }, [el('h2', { text: 'Sesiones' }), ...f.sesiones.map(s => el('p', { class: 'mudo', text: fecha(s.abierta || s.created_at, { hora: true }) + ' · ' + s.agente + ' · ' + s.estado + (s.resumen ? ' · ' + s.resumen : '') }))]));
-  if (f.kit?.length) raiz.append(el('details', {}, [el('summary', { text: 'Kit del frente (' + f.kit.length + ')' }), ...f.kit.map(k => { const h = urlSegura(k.url); return h ? el('a', { href: h, target: '_blank', rel: 'noopener', class: 'kit', text: k.titulo }) : el('span', { class: 'kit mudo', text: k.titulo }); })]));
+  if (f.kit?.length) raiz.append(el('details', {}, [el('summary', { text: 'Kit del frente (' + f.kit.length + ')' }), ...f.kit.map(k => { const h = urlSegura(k.url); return h ? el('a', { href: h, target: '_blank', rel: 'noopener noreferrer', class: 'kit', text: k.titulo }) : el('span', { class: 'kit mudo', text: k.titulo }); })]));
 }
 
 export function render(raiz, S, arg, filtrosRuta = {}, ahora = new Date()) { if (arg && /^\d+$/.test(arg)) ficha(raiz, S, Number(arg), ahora); else lista(raiz, S, filtrosRuta, ahora); }

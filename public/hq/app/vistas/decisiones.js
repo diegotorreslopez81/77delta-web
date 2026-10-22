@@ -97,7 +97,7 @@ function tarjeta(p, abierta, hilo, soloComentar) {
     pintarBloques(p.detalle) || el('div', { class: 'detalle' }, enlazar(p.detalle || '')),
     // omc_solicitudes.cuerpo (texto completo del correo o la propuesta): desplegable, abierto en las de tipo accion.
     p.cuerpo ? el('details', { class: 'cuerpo-completo', open: p.tipo === 'accion' }, [el('summary', { text: 'Texto completo' }), el('div', { class: 'detalle cuerpo-texto' }, enlazar(p.cuerpo))]) : null,
-    enlaceSeguro ? el('a', { href: enlaceSeguro, target: '_blank', rel: 'noopener', class: 'btn-enlace', text: 'abrir enlace' }) : null,
+    enlaceSeguro ? el('a', { href: enlaceSeguro, target: '_blank', rel: 'noopener noreferrer', class: 'btn-enlace', text: 'abrir enlace' }) : null,
     el('div', { class: 'hilo' }, (hilo || []).map(mm => el('div', { class: 'avance' }, [el('span', { class: 'mudo', text: fecha(mm.ts, { hora: true }) + ' · ' + mm.autor }), el('p', {}, enlazar(mm.texto))]))),
     campo,
     el('div', { class: 'modal-acciones' }, soloComentar ? [
@@ -135,7 +135,7 @@ function slugElegible(v) {
 function enlacesDoc(l) {
   const ficha = l.expediente ? '#operacion/licitaciones?texto=' + encodeURIComponent(l.expediente) : null;
   const externos = [['PCAP', l.pcap_drive || l.pcap], ['PPT', l.ppt_drive || l.ppt], ['Perfil', l.enlace], ['Drive', l.carpeta]]
-    .map(([etiqueta, valor]) => { const href = urlSegura(valor); return href ? el('a', { class: 'btn-enlace', href, target: '_blank', rel: 'noopener', text: etiqueta }) : null; })
+    .map(([etiqueta, valor]) => { const href = urlSegura(valor); return href ? el('a', { class: 'btn-enlace', href, target: '_blank', rel: 'noopener noreferrer', text: etiqueta }) : null; })
     .filter(Boolean);
   return [...externos, ficha ? el('a', { class: 'btn-enlace', href: ficha, text: 'Ficha' }) : null].filter(Boolean);
 }

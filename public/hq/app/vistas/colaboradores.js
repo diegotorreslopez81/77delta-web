@@ -50,7 +50,7 @@ export function tarjetaColaborador(c) {
     (c.especialidades || []).length ? el('div', { class: 'enlaces' }, c.especialidades.map(e => el('span', { class: 'pill', text: e }))) : null,
     el('p', { class: 'solv', text: [c.disponibilidad, c.ubicacion, (c.idiomas || []).join(', ')].filter(Boolean).join(' · ') || 'disponibilidad sin dato' }),
     colab.length ? el('p', { class: 'solv' }, colab.map((k, i) => [i ? ' · ' : '', k.expediente_id ? el('a', { href: '#operacion/expedientes/' + k.expediente_id, text: k.expediente || '#' + k.expediente_id }) : (k.licitacion_expediente || 'licitación'), k.rol ? ' (' + k.rol + ')' : '']).flat()) : null,
-    enlaces.length ? el('div', { class: 'enlaces' }, enlaces.map(([t, h]) => el('a', { href: h, target: '_blank', rel: 'noopener', text: t }))) : null,
+    enlaces.length ? el('div', { class: 'enlaces' }, enlaces.map(([t, h]) => el('a', { href: h, target: '_blank', rel: 'noopener noreferrer', text: t }))) : null,
   ]);
 }
 

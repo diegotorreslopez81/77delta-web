@@ -50,7 +50,7 @@ test('enlazar convierte URLs en <a> por atributo real (nunca html:) y saltos de 
   assert.ok(link, 'debe crear un nodo <a>');
   assert.equal(link.attrs.href, 'https://evil.example.com/x');
   assert.equal(link.attrs.target, '_blank');
-  assert.equal(link.attrs.rel, 'noopener');
+  assert.equal(link.attrs.rel, 'noopener noreferrer');
   assert.equal(Object.prototype.hasOwnProperty.call(link.attrs, 'onmouseover'), false, 'la comilla no debe crear un segundo atributo');
   assert.equal(nodos.filter(n => n.tag === 'br').length, 1);
   assert.equal(enlazar('').length, 0);

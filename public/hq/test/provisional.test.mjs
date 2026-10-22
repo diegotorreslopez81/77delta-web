@@ -114,7 +114,7 @@ test('Líneas #2692: http(s) externo con target _blank y noopener; # y ruta inte
   const raiz = pintarNegocio([{ clave: 'pipeline', etiqueta: 'Pipeline', principal: 1000, principal_unidad: 'eur', detalle: [
     d('licitaciones', 1000, false, '#operacion/licitaciones?estado=presentadas'), d('propuestas', null, true, 'https://crm.77delta.com/objects/opportunities?view=abc'), d('ayudas', null, true, null) ] }]);
   const ls = buscar(raiz, x => x.classList && x.classList.contains('neg-linea'));
-  assert.equal(ls[1].tag, 'a'); assert.equal(ls[1].getAttribute('target'), '_blank'); assert.equal(ls[1].getAttribute('rel'), 'noopener');
+  assert.equal(ls[1].tag, 'a'); assert.equal(ls[1].getAttribute('target'), '_blank'); assert.equal(ls[1].getAttribute('rel'), 'noopener noreferrer');
   assert.equal(ls[0].getAttribute('target'), null); assert.equal(ls[2].tag, 'span');
 });
 

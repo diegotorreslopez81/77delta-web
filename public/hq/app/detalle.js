@@ -63,9 +63,9 @@ export async function abrirDetalle(id, S, recargar) {
       : el('div', {}, [el('p', {}, enlazar(e.texto)), e.interpretacion ? el('p', { class: 'mudo', text: e.interpretacion }) : null,
         // Fix ronda 2 (revision final, B2): e.enlaces lo escribe quien edita el encargo (agente o chief),
         // sin validar esquema en la BD. Se descarta cualquier enlace que no sea http(s) absoluto.
-        ...(e.enlaces || []).map(u => urlSegura(u)).filter(Boolean).map(h => el('a', { href: h, target: '_blank', rel: 'noopener', text: h }))]),
+        ...(e.enlaces || []).map(u => urlSegura(u)).filter(Boolean).map(h => el('a', { href: h, target: '_blank', rel: 'noopener noreferrer', text: h }))]),
     // Fix ronda 2 (B2): k.url viene del kit del frente (omc_kit_set, sin validar esquema); si no es
     // http(s) se pinta el titulo sin enlace en vez de omitirlo del todo.
-    f.kit?.length ? el('details', {}, [el('summary', { text: 'Kit del frente (' + f.kit.length + ')' }), ...f.kit.map(k => { const h = urlSegura(k.url); return h ? el('a', { href: h, target: '_blank', rel: 'noopener', class: 'kit', text: k.titulo }) : el('span', { class: 'kit mudo', text: k.titulo }); })]) : null,
+    f.kit?.length ? el('details', {}, [el('summary', { text: 'Kit del frente (' + f.kit.length + ')' }), ...f.kit.map(k => { const h = urlSegura(k.url); return h ? el('a', { href: h, target: '_blank', rel: 'noopener noreferrer', class: 'kit', text: k.titulo }) : el('span', { class: 'kit mudo', text: k.titulo }); })]) : null,
     el('h3', { text: 'Hilo' }), hilo, el('div', { class: 'fila' }, [nuevo, el('button', { class: 'btn', text: 'Enviar', onclick: comentar })])] });
 }
