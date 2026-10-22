@@ -301,12 +301,12 @@ const sinAprox = e => String(e || '').replace(/\s*\(aprox\.?\)/i, '');
 // Formato v181: detalle con clave. Cifra grande = facturado_2026, pequeño = mes en curso; el detalle solo muestra por facturar y cobrado.
 // #2693: enlaces internos por defecto mientras la vista no traiga `enlace` (listado de omc_ingresos en Ventas > Ingresos).
 const mesActual = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Madrid' }).slice(0, 7);
-function ingresosNueva(f) {
+function ingresosNueva(f, filaCaja) {
   const por = c => f.detalle.find(d => d && d.clave === c);
   const anio = por('facturado_2026');
   if (!anio) return null;
   const mes = String(f.periodo_texto || '');
-  const caja = por('caja');
+  const caja = filaCaja && filaCaja.principal != null ? { valor: filaCaja.principal, enlace: filaCaja.enlace === '#hoy' ? '' : filaCaja.enlace } : null;
   const linea = (texto, enl, extra) => ({ texto, ...enlaceLinea(enl), ...(extra || {}) });
   const cobrado = por('cobrado_2026');
   return {
@@ -322,9 +322,9 @@ function ingresosNueva(f) {
     lineas: [],
   };
 }
-function ingresosVieja(f) {
+function ingresosVieja(f, filaCaja) {
   if (f?.clave !== 'ingresos' || !Array.isArray(f.detalle)) return {};
-  const nueva = ingresosNueva(f);
+  const nueva = ingresosNueva(f, filaCaja);
   if (nueva) return nueva;
   const i = f.detalle.findIndex(d => d && !d.clave && /^\d{4}\s+facturado/i.test(d.etiqueta || ''));
   if (i < 0) return {};
@@ -393,7 +393,7 @@ function captacionNueva(f) {
   if (f?.clave !== 'captacion' || !Array.isArray(f.detalle)) return {};
   const por = c => f.detalle.find(d => d && d.clave === c);
   const num = d => d && d.valor != null && Number.isFinite(Number(d.valor)) ? Number(d.valor) : null;
-  const env = num(por('enviados'));
+  const env = f.principal != null && Number.isFinite(Number(f.principal)) ? Number(f.principal) : null;
   let previo = env;
   const lineasEnl = PASOS_CAPTACION.map(([c, et]) => {
     const d = por(c), n = num(d);
@@ -404,7 +404,7 @@ function captacionNueva(f) {
   return {
     principal: env == null ? 'pdte' : String(env), principalTexto: 'enviados', secundario: '',
     color: env == null ? (f.color || '') : env > 0 ? 'verde' : 'rojo',
-    enlacePrincipal: enlaceLinea(por('enviados')?.enlace || f.enlace), enlaceSecundario: enlaceLinea(''), detalle: [], lineasEnl,
+    enlacePrincipal: enlaceLinea(f.enlace), enlaceSecundario: enlaceLinea(''), detalle: [], lineasEnl,
   };
 }
 // #2679: orden fijo de las casillas de Negocio; una clave que no esté va después, en el orden de la vista.
@@ -412,13 +412,14 @@ export const ORDEN_NEGOCIO = ['pipeline', 'contratado', 'ingresos', 'captacion']
 const ETIQUETAS_NEGOCIO = { ingresos: 'Ingresos', captacion: 'Captación' };
 const posNegocio = c => { const i = ORDEN_NEGOCIO.indexOf(c); return i < 0 ? ORDEN_NEGOCIO.length : i; };
 export function modeloNegocio(filas) {
-  return (Array.isArray(filas) ? filas : []).filter(f => f && f.principal != null).map((f, i) => ({ f, i })).sort((a, b) => posNegocio(a.f.clave) - posNegocio(b.f.clave) || a.i - b.i).map(({ f }) => ({
+  const todas = Array.isArray(filas) ? filas : [], filaCaja = todas.find(f => f && f.clave === 'caja');
+  return todas.filter(f => f && f.clave !== 'caja' && (f.principal != null || f.clave === 'captacion')).map((f, i) => ({ f, i })).sort((a, b) => posNegocio(a.f.clave) - posNegocio(b.f.clave) || a.i - b.i).map(({ f }) => ({
     clave: f.clave, etiqueta: ETIQUETAS_NEGOCIO[f.clave] || f.etiqueta, color: f.color || '', enlace: '#' + String(f.clave === 'ingresos' && /bloque=ingresos/.test(f.enlace || '') ? 'operacion/ventas/ingresos' : f.enlace || 'hoy').replace(/^#\/?/, ''), periodo: f.periodo_texto || '',
-    principal: valorNegocio(f.principal, f.principal_unidad),
+    principal: f.principal == null ? 'pdte' : valorNegocio(f.principal, f.principal_unidad),
     principalTexto: f.principal_texto || '',
     secundario: [valorNegocio(f.secundario, f.secundario_unidad), f.secundario_texto].filter(Boolean).join(' '),
     detalle: (Array.isArray(f.detalle) ? f.detalle : []).slice(0, 2).map(d => ({ etiqueta: sinAprox(d.etiqueta), valor: valorNegocio(d.valor, d.unidad) || 'sin dato' })),
-    ...ingresosVieja(f),
+    ...ingresosVieja(f, filaCaja),
     ...captacionNueva(f),
     ...pipelineNueva(f),
   }));
