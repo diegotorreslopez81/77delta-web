@@ -5,7 +5,7 @@
 import { ICONOS_HOY } from '../iconos.js';
 import { el, toast, eur, fecha, pedirTexto, modal, confirmar, provisional } from '../ui.js';
 import { pintarCaptacion } from './home.js';
-import { bloquesOrdenados, etiquetaSitio, anclaSitio, separar as separarWeb } from './web.js';
+import { bloquesOrdenados, etiquetaSitio, separar as separarWeb } from './web.js';
 
 let cargadores = {
   hoy: async () => (await import('../api.js')).rpc('hq_hoy'),
@@ -258,7 +258,7 @@ export function panelesWeb(filas, ahora = new Date()) {
     const umami = /^https:\/\//.test(r.umami_url || '') && r.umami_id ? String(r.umami_url).replace(/\/$/, '') + '/websites/' + r.umami_id : null;
     const logo = el('img', { class: 'web-logo', src: '/hq/img/sitios/' + b.sitio + '.png', alt: '', width: 20, height: 20 });
     logo.onerror = () => logo.remove();
-    const titulo = el(umami ? 'a' : 'span', { class: 'mudo neg-etiqueta', ...(umami ? { href: umami, target: '_blank', rel: 'noopener', onclick: e => e.stopPropagation() } : {}) }, [logo, ' ' + nombreCorto(b.sitio) + ' 30 d']);
+    const titulo = el(umami ? 'a' : 'span', { class: 'mudo neg-etiqueta', ...(umami ? { href: umami, target: '_blank', rel: 'noopener' } : {}) }, [logo, ' ' + nombreCorto(b.sitio) + ' 30 d']);
     const color = b.sinDatos || !b.variacion ? '' : b.variacion > 0 ? ' verde' : ' rojo';
     const linea = t => el('span', { class: 'mudo neg-detalle neg-linea', text: t });
     const hijos = [titulo, el('span', { class: 'neg-principal', text: b.sinDatos ? '-' : es(b.visitas) })];
@@ -268,7 +268,7 @@ export function panelesWeb(filas, ahora = new Date()) {
       if (b.visitas_total != null) hijos.push(linea('Tot. ' + es(b.visitas_total) + ' v. · ' + es(b.visitantes_total) + ' vis.'));
       hijos.push(linea(formulariosWeb(dias, b.sitio, ahora)));
     }
-    return el('a', { class: 'vt-card hoy-neg web-sitio' + color, href: '#operacion/ventas/web?sitio=' + anclaSitio(b.sitio), title: b.sitio }, hijos);
+    return el('div', { class: 'vt-card hoy-neg web-sitio' + color, title: b.sitio }, hijos);
   });
 }
 async function panelesWebCargados() {
@@ -404,7 +404,7 @@ const enlazar = (texto, e) => e?.enlace ? el('a', { class: 'neg-cifra', href: e.
 export function pintarNegocio(filas) {
   const m = modeloNegocio(filas);
   if (!m.length) return null;
-  return el('div', { class: 'hoy-negocio' }, m.map(x => { const t = el('a', { class: 'vt-card hoy-neg ' + x.color + (x.lineasPipe ? ' pipeline' : ''), href: x.enlace }, [
+  return el('div', { class: 'hoy-negocio' }, m.map(x => { const t = el('div', { class: 'vt-card hoy-neg ' + x.color + (x.lineasPipe ? ' pipeline' : '') }, [
     el('span', { class: 'mudo neg-etiqueta', text: x.etiqueta || x.clave }),
     x.periodo ? el('span', { class: 'mudo neg-periodo', text: x.periodo }) : null,
     el('span', { class: 'neg-principal' }, [enlazar(x.principal, x.enlacePrincipal), x.principalTexto ? el('small', { class: x.principalTexto.length > 20 ? 'bajo' : '', text: ' ' + x.principalTexto }) : null].filter(Boolean)),
