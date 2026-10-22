@@ -1,6 +1,6 @@
 // Modal de un encargo: ficha, edición, hilo, acciones.
 import { rpc } from './api.js';
-import { el, modal, toast, fecha, pedirTexto, urlSegura, campoTexto } from './ui.js';
+import { el, modal, toast, fecha, pedirTexto, urlSegura, campoTexto, enlazar } from './ui.js';
 import { yo } from './estado.js';
 
 // T5 fix ronda 1: pedirTexto vivia aqui y estaba reimplementado (copiado) en decisiones.js; ahora es
@@ -41,7 +41,7 @@ export async function abrirDetalle(id, S, recargar) {
     prioridad: el('input', { class: 'campo', type: 'number', min: 0, max: 9, value: e.prioridad ?? 0 }), fecha_hito: el('input', { class: 'campo', type: 'date', value: e.fecha_hito || '' }),
     etiquetas: el('input', { class: 'campo', placeholder: 'etiquetas separadas por coma', value: (e.etiquetas || []).join(', ') }), enlaces: campoTexto({ rows: 2, placeholder: 'un enlace por línea', 'data-conservar': 'e' + e.id + ':enlaces' }, [(e.enlaces || []).join('\n')]) };
   const fila = (nombre, c) => el('label', { class: 'campo-l' }, [el('span', { class: 'mudo', text: nombre }), c]);
-  const hilo = el('div', { class: 'hilo' }, (f.avances || []).map(a => el('div', { class: 'avance' }, [el('span', { class: 'mudo', text: fecha(a.ts || a.fecha, { hora: true }) + ' · ' + a.autor + ' · ' + a.tipo }), el('p', { text: a.texto })])));
+  const hilo = el('div', { class: 'hilo' }, (f.avances || []).map(a => el('div', { class: 'avance' }, [el('span', { class: 'mudo', text: fecha(a.ts || a.fecha, { hora: true }) + ' · ' + a.autor + ' · ' + a.tipo }), el('p', {}, enlazar(a.texto))])));
   const nuevo = campoTexto({ rows: 2, placeholder: 'Comentario o avance', 'data-conservar': 'e' + e.id + ':avance' });
   const guardar = async () => {
     const p = { texto: campos.texto.value.trim(), interpretacion: campos.interpretacion.value.trim(), frente: campos.frente.value, responsable: campos.agente.value, prioridad: Number(campos.prioridad.value), fecha_hito: campos.fecha_hito.value || null,
@@ -60,7 +60,7 @@ export async function abrirDetalle(id, S, recargar) {
     el('p', { class: 'mudo', text: [e.origen, 'alta ' + fecha(e.fecha, { hora: true }), e.fecha_avance ? 'último avance ' + fecha(e.fecha_avance, { hora: true }) : null].filter(Boolean).join(' · ') }),
     f.expediente ? el('a', { href: '#operacion/expedientes/' + f.expediente.id, class: 'pill', text: 'expediente: ' + f.expediente.nombre }) : null,
     owner ? el('div', { class: 'form' }, [fila('Texto', campos.texto), fila('Interpretación', campos.interpretacion), el('div', { class: 'dos' }, [fila('Frente', campos.frente), fila('Responsable', campos.agente)]), el('div', { class: 'dos' }, [fila('Prioridad (0 alta, 9 baja)', campos.prioridad), fila('Hito', campos.fecha_hito)]), fila('Etiquetas', campos.etiquetas), fila('Enlaces', campos.enlaces)])
-      : el('div', {}, [el('p', { text: e.texto }), e.interpretacion ? el('p', { class: 'mudo', text: e.interpretacion }) : null,
+      : el('div', {}, [el('p', {}, enlazar(e.texto)), e.interpretacion ? el('p', { class: 'mudo', text: e.interpretacion }) : null,
         // Fix ronda 2 (revision final, B2): e.enlaces lo escribe quien edita el encargo (agente o chief),
         // sin validar esquema en la BD. Se descarta cualquier enlace que no sea http(s) absoluto.
         ...(e.enlaces || []).map(u => urlSegura(u)).filter(Boolean).map(h => el('a', { href: h, target: '_blank', rel: 'noopener', text: h }))]),
