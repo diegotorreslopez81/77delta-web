@@ -1,6 +1,6 @@
 // Avisos (#2694): lo informativo de las últimas 24 h, leído de omc_avisos_24h. Sin push, sin badge ni banner.
 // Cada aviso lleva enlace a su destino; "leído" se guarda en el servidor (omc_aviso_leido).
-import { el, fecha } from '../ui.js';
+import { el, fecha, enlazar } from '../ui.js';
 import { avisos24h, avisoLeido } from '../api.js';
 import { enlaceApp } from '../avisos.js';
 
@@ -27,7 +27,7 @@ function fila(a, marcar) {
       a.leido ? null : el('span', { class: 'pill aviso-nuevo', text: 'nuevo' }),
       el('b', { class: 'aviso-titulo', text: a.tipo }),
       el('span', { class: 'sub aviso-hora', text: Number.isFinite(a.t) ? fecha(new Date(a.t).toISOString(), { hora: true }) : '' })]),
-    a.texto ? el('p', { class: 'aviso-cuerpo', text: a.texto }) : null,
+    a.texto ? el('p', { class: 'aviso-cuerpo' }, enlazar(a.texto)) : null,
     el('a', { class: 'aviso-abrir', href: a.enlace, text: 'Abrir', onclick: () => { if (!a.leido) marcar(a.id); } })]);
 }
 

@@ -139,12 +139,22 @@ export function pedirMotivos(titulo, catalogo) {
 // decisiones.js (T5, fix ronda 1: ese patrón dejaba inyectar atributos via un `"` en el detalle).
 export function enlazar(texto) {
   const out = [];
-  for (const parte of String(texto || '').split(/(https?:\/\/[^\s)]+)/g)) {
-    if (/^https?:\/\//.test(parte)) { out.push(el('a', { href: parte, target: '_blank', rel: 'noopener', text: parte })); continue; }
-    parte.split('\n').forEach((linea, i) => {
-      if (i > 0) out.push(el('br'));
-      if (linea) out.push(document.createTextNode(linea));
-    });
+  const texto_ = (t) => t.split('\n').forEach((linea, i) => {
+    if (i > 0) out.push(el('br'));
+    if (linea) out.push(document.createTextNode(linea));
+  });
+  // #2780: solo https; la puntuación final y el paréntesis de cierre sin pareja quedan fuera del enlace.
+  for (const parte of String(texto || '').split(/(https:\/\/[^\s<>"']+)/gi)) {
+    if (!/^https:\/\//i.test(parte)) { texto_(parte); continue; }
+    let url = parte, resto = '';
+    for (;;) {
+      const m = url.match(/[.,;:!?'")\]]$/);
+      if (!m || (m[0] === ')' && (url.match(/\(/g) || []).length >= (url.match(/\)/g) || []).length)) break;
+      resto = m[0] + resto; url = url.slice(0, -1);
+    }
+    if (url.length <= 'https://'.length) { texto_(parte); continue; }
+    out.push(el('a', { href: url, target: '_blank', rel: 'noopener', text: url }));
+    if (resto) texto_(resto);
   }
   return out;
 }

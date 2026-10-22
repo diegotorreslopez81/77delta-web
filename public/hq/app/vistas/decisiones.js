@@ -98,7 +98,7 @@ function tarjeta(p, abierta, hilo, soloComentar) {
     // omc_solicitudes.cuerpo (texto completo del correo o la propuesta): desplegable, abierto en las de tipo accion.
     p.cuerpo ? el('details', { class: 'cuerpo-completo', open: p.tipo === 'accion' }, [el('summary', { text: 'Texto completo' }), el('div', { class: 'detalle cuerpo-texto' }, enlazar(p.cuerpo))]) : null,
     enlaceSeguro ? el('a', { href: enlaceSeguro, target: '_blank', rel: 'noopener', class: 'btn-enlace', text: 'abrir enlace' }) : null,
-    el('div', { class: 'hilo' }, (hilo || []).map(mm => el('div', { class: 'avance' }, [el('span', { class: 'mudo', text: fecha(mm.ts, { hora: true }) + ' · ' + mm.autor }), el('p', { text: mm.texto })]))),
+    el('div', { class: 'hilo' }, (hilo || []).map(mm => el('div', { class: 'avance' }, [el('span', { class: 'mudo', text: fecha(mm.ts, { hora: true }) + ' · ' + mm.autor }), el('p', {}, enlazar(mm.texto))]))),
     campo,
     el('div', { class: 'modal-acciones' }, soloComentar ? [
       el('button', { class: 'btn', text: 'Copiar para el chat', onclick: () => copiar(p, campo) }),
