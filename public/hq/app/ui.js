@@ -153,7 +153,7 @@ export function enlazar(texto) {
       resto = m[0] + resto; url = url.slice(0, -1);
     }
     if (url.length <= 'https://'.length) { texto_(parte); continue; }
-    out.push(el('a', { href: url, target: '_blank', rel: 'noopener', text: url }));
+    out.push(el('a', { href: url, target: '_blank', rel: 'noopener noreferrer', text: url }));
     if (resto) texto_(resto);
   }
   return out;

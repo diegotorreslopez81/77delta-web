@@ -266,7 +266,7 @@ export function panelesWeb(filas, ahora = new Date()) {
     const vari = b.variacion ? 'Var. ' + (b.variacion > 0 ? '+' : '') + b.variacion + ' %' : null;
     let unicos = 'Únicos ' + es(b.visitantes) + (vari ? ' · ' + vari : ''), enEtiqueta = '';
     if (unicos.length > MAX_LINEA) { unicos = 'Únicos ' + es(b.visitantes); enEtiqueta = ' · ' + (b.variacion > 0 ? '+' : '') + b.variacion + ' %'; }
-    const titulo = el(umami ? 'a' : 'span', { class: 'mudo neg-etiqueta', ...(umami ? { href: umami, target: '_blank', rel: 'noopener' } : {}) }, [logo, ' ' + nombreCorto(b.sitio) + ' · 30 d' + enEtiqueta]);
+    const titulo = el(umami ? 'a' : 'span', { class: 'mudo neg-etiqueta', ...(umami ? { href: umami, target: '_blank', rel: 'noopener noreferrer' } : {}) }, [logo, ' ' + nombreCorto(b.sitio) + ' · 30 d' + enEtiqueta]);
     const hijos = [titulo, el('span', { class: 'neg-principal' }, [b.sinDatos ? '-' : es(b.visitas), el('small', { class: 'bajo', text: 'visitas (sesiones)' })])];
     if (b.sinDatos) hijos.push(linea('-'));
     else {
@@ -409,7 +409,7 @@ export function modeloNegocio(filas) {
 // #2676: tarjetas de Negocio que aún leen tablas escritas por agentes; cada PR de migración quita la suya.
 export const PROVISIONAL = { pipeline: '#2672', captacion_7d: '#2673', ingresos: '#2645' };
 // #2693: la cifra se envuelve en `a` si trae enlace (http en pestaña nueva); sin enlace, texto plano.
-const enlazar = (texto, e) => e?.enlace ? el('a', { class: 'neg-cifra', href: e.enlace, ...(e.externo ? { target: '_blank', rel: 'noopener' } : {}), text: texto }) : texto;
+const enlazar = (texto, e) => e?.enlace ? el('a', { class: 'neg-cifra', href: e.enlace, ...(e.externo ? { target: '_blank', rel: 'noopener noreferrer' } : {}), text: texto }) : texto;
 export function pintarNegocio(filas) {
   const m = modeloNegocio(filas);
   if (!m.length) return null;
@@ -419,7 +419,7 @@ export function pintarNegocio(filas) {
     el('span', { class: 'neg-principal' }, [enlazar(x.principal, x.enlacePrincipal), x.principalTexto ? el('small', { class: x.principalTexto.length > 20 ? 'bajo' : '', text: ' ' + x.principalTexto }) : null].filter(Boolean)),
     x.secundario ? el('span', { class: 'neg-secundario' }, [enlazar(x.secundario, x.enlaceSecundario)]) : null,
     ...x.detalle.map(d => el('span', { class: 'mudo neg-detalle', text: d.etiqueta + ': ' + d.valor })),
-    ...(x.lineasPipe || x.lineasEnl || []).map(l => { const n = el(l.enlace ? 'a' : 'span', { class: 'mudo neg-detalle neg-linea', ...(l.enlace ? { href: l.enlace } : {}), ...(l.externo ? { target: '_blank', rel: 'noopener' } : {}), text: l.texto }); return l.provisional ? provisional(n, x.encargo || '#2677') : n; }),
+    ...(x.lineasPipe || x.lineasEnl || []).map(l => { const n = el(l.enlace ? 'a' : 'span', { class: 'mudo neg-detalle neg-linea', ...(l.enlace ? { href: l.enlace } : {}), ...(l.externo ? { target: '_blank', rel: 'noopener noreferrer' } : {}), text: l.texto }); return l.provisional ? provisional(n, x.encargo || '#2677') : n; }),
     x.lineas?.length ? el('span', { class: 'neg-barra', role: 'img', 'aria-label': 'Reparto por línea' }, x.lineas.filter(l => l.pct > 0).map(l => el('i', { class: 'neg-tramo l-' + l.clave, style: 'width:' + l.pct + '%' }))) : null,
     x.lineas?.length ? el('div', { class: 'mudo neg-detalle neg-leyenda' }, x.lineas.map(l => el('span', {}, [el('i', { class: 'neg-punto l-' + l.clave }), l.etiqueta + ' ' + l.pct + ' %']))) : null,
   ].filter(Boolean)); return PROVISIONAL[x.clave] && !x.lineasPipe ? provisional(t, PROVISIONAL[x.clave]) : t; }));

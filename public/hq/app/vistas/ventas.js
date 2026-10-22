@@ -88,7 +88,7 @@ function ficha(o, cerrar, ahora, ir) {
   const par = (k, v) => { if (v) dl.append(el('dt', { text: k }), el('dd', {}, v)); };
   par('Campaña', o.campana && el('span', { text: o.campana }));
   par('Último movimiento', o.ultima && el('span', { text: `${o.ultima.motivo || 'sin motivo'} · ${fhora(o.ultima.cuando)}` }));
-  par('Página', o.slug && el('a', { href: urlPagina(o.slug), target: '_blank', rel: 'noopener', text: '77delta.com/propuestas/' + o.slug }));
+  par('Página', o.slug && el('a', { href: urlPagina(o.slug), target: '_blank', rel: 'noopener noreferrer', text: '77delta.com/propuestas/' + o.slug }));
   par('Importe', o.importe != null ? el('span', { text: euros(o.importe) }) : el('span', { class: 'mudo', text: 'sin importe' }));
   par('En etapa desde', fEtapa(o) && el('span', { text: fhora(fEtapa(o)) }));
   par('Motivo de cierre', o.motivo_cierre && el('span', { text: o.motivo_cierre }));
@@ -100,7 +100,7 @@ function ficha(o, cerrar, ahora, ir) {
     el('button', { type: 'button', class: 'vt-cerrar', text: 'Cerrar', onclick: cerrar }),
     el('div', { class: 'vt-volver' }, [el('button', { type: 'button', text: 'Volver a Hoy', onclick: () => ir('hoy') }), el('button', { type: 'button', text: 'Volver al Pipeline', onclick: () => ir('pipeline') })]),
     el('h2', { text: o.empresa }), el('div', { class: 'vt-dom', text: `${o.dominio} · ${nombre(o.etapa)}` }), dl,
-    ...(o.carpeta_url ? [el('h3', { text: 'Carpeta del cliente en Drive' }), el('p', {}, [el('a', { class: 'vt-boton', href: o.carpeta_url, target: '_blank', rel: 'noopener', text: 'Abrir carpeta' })])] : []),
+    ...(o.carpeta_url ? [el('h3', { text: 'Carpeta del cliente en Drive' }), el('p', {}, [el('a', { class: 'vt-boton', href: o.carpeta_url, target: '_blank', rel: 'noopener noreferrer', text: 'Abrir carpeta' })])] : []),
     ...(abierta(o) ? [el('h3', { text: 'Siguiente acción' }), el('p', { class: t ? '' : 'mudo', text: t ? `${t.accion}${t.vence ? ' · vence ' + fdia(t.vence) : ''}${t.quien ? ' · ' + t.quien : ''}` : 'Sin tarea asignada' })] : []),
     f.length ? el('h3', { text: 'Recorrido' }) : null,
     f.length ? el('p', { class: 'vt-fechas', text: f.map(([e, v]) => `${nombre(e)} ${fhora(v)}`).join(' · ') }) : null,

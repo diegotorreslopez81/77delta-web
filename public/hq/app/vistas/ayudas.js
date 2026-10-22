@@ -18,7 +18,7 @@ export function vistaAyudas(raiz, r) {
   raiz.append(el('table', { class: 'vt-tabla' }, [
     el('tr', {}, ['Organismo', 'Convocatoria', 'Importe', 'Estado', 'Fecha'].map(h => el('th', { text: h }))),
     ...filas.map(a => el('tr', {}, [
-      el('td', {}, [soloHttps(a.url) ? el('a', { href: a.url, target: '_blank', rel: 'noopener', text: a.organismo }) : String(a.organismo || '')]),
+      el('td', {}, [soloHttps(a.url) ? el('a', { href: a.url, target: '_blank', rel: 'noopener noreferrer', text: a.organismo }) : String(a.organismo || '')]),
       el('td', { text: String(a.convocatoria || '') }), el('td', { text: euros(a.importe_pedido) }),
       el('td', { text: String(a.estado || '') }), el('td', { text: fdia(a.fecha_presentacion) })])),
   ]));

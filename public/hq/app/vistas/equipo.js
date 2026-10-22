@@ -48,7 +48,7 @@ export function avatar(a) {
 function avatarConChat(a) {
   const img = avatar(a);
   const url = urlSegura(a.sesion_url);
-  return url ? el('a', { class: 'avatar-link', href: url, target: '_blank', rel: 'noopener', 'aria-label': 'Abrir chat de ' + (a.nombre || a.id) }, [img]) : img;
+  return url ? el('a', { class: 'avatar-link', href: url, target: '_blank', rel: 'noopener noreferrer', 'aria-label': 'Abrir chat de ' + (a.nombre || a.id) }, [img]) : img;
 }
 function nombreExpedienteSesion(id, agenteId, S) {
   const s = (S.datos.sesiones || []).find(x => x.expediente_id === id && x.agente === agenteId);
@@ -158,7 +158,7 @@ function ficha(raiz, S, a, ahora = new Date()) {
       a.funcion ? el('p', { class: 'funcion', text: a.funcion }) : null,
       lineaAhora(a, ahora),
       chipsAgente(a, S, ahora),
-      sesionUrl ? el('a', { class: 'btn primario', href: sesionUrl, target: '_blank', rel: 'noopener', text: 'Abrir sesión' }) : el('span', { class: 'mudo', text: 'sin sesión publicada' }),
+      sesionUrl ? el('a', { class: 'btn primario', href: sesionUrl, target: '_blank', rel: 'noopener noreferrer', text: 'Abrir sesión' }) : el('span', { class: 'mudo', text: 'sin sesión publicada' }),
     ]),
   ]));
   raiz.append(el('section', { class: 'seccion' }, [

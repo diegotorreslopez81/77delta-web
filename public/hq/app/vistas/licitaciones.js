@@ -344,8 +344,8 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
         el('span', { text: (n.recibido_en ? fecha(n.recibido_en) + ' · ' : '') + n.plataforma + ' · ' + (n.tipo || '?')
           + ' · ' + n.estado + (n.plazo ? ' · plazo ' + fecha(n.plazo) : '') + (n.organo ? ' · ' + n.organo : '')
           + (n.estado === 'error' && n.error ? ' · ' + n.error : '') }),
-        n.documento_drive ? el('a', { class: 'btn-enlace', href: urlSegura(n.documento_drive), target: '_blank', rel: 'noopener', text: 'Documento' }) : null,
-        n.acuse_drive ? el('a', { class: 'btn-enlace', href: urlSegura(n.acuse_drive), target: '_blank', rel: 'noopener', text: 'Acuse' }) : null,
+        n.documento_drive ? el('a', { class: 'btn-enlace', href: urlSegura(n.documento_drive), target: '_blank', rel: 'noopener noreferrer', text: 'Documento' }) : null,
+        n.acuse_drive ? el('a', { class: 'btn-enlace', href: urlSegura(n.acuse_drive), target: '_blank', rel: 'noopener noreferrer', text: 'Acuse' }) : null,
       ]))));
     }).catch(() => { notifs.innerHTML = ''; notifs.append(el('p', { class: 'mudo', text: 'no se pudo cargar' })); });
   };
@@ -383,14 +383,14 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
       solv !== 'sin dato' ? el('p', { class: 'sub', text: 'Solvencia: ' + solv }) : null,
       l.agente && !socio ? el('p', { class: 'sub', text: 'Agente: ' + l.agente + (l.tomada_en ? ' · tomada ' + fecha(l.tomada_en) : '') }) : null,
       l.motivo_descarte ? el('p', { class: 'sub', text: 'Motivo: ' + l.motivo_descarte + (l.origen_descarte ? ' (' + l.origen_descarte + ')' : '') }) : null,
-      l.justificante_drive ? el('p', { class: 'sub' }, [el('a', { class: 'btn-enlace', href: urlSegura(l.justificante_drive), target: '_blank', rel: 'noopener', text: 'Justificante' })]) : null,
+      l.justificante_drive ? el('p', { class: 'sub' }, [el('a', { class: 'btn-enlace', href: urlSegura(l.justificante_drive), target: '_blank', rel: 'noopener noreferrer', text: 'Justificante' })]) : null,
       socio ? null : checklistA5(l),
       el('details', { class: 'lic-hist', ontoggle: e => { if (e.currentTarget?.open) cargarHistorial(); } }, [el('summary', { text: 'Historial' }), historial]),
       socio ? null : el('details', { class: 'lic-hist', ontoggle: e => { if (e.currentTarget?.open) cargarFicha(); } }, [el('summary', { text: 'Extracción y evaluación' }), ficha]),
       socio ? null : el('details', { class: 'lic-hist', ontoggle: e => { if (e.currentTarget?.open) cargarNotificaciones(); } }, [el('summary', { text: 'Notificaciones' }), notifs]),
     ]),
     el('div', { class: 'lic-pie enlaces enlaces-doc' }, [
-      ...enlaces.map(([t, u]) => el('a', { class: 'btn-enlace', href: u, target: '_blank', rel: 'noopener', text: t })),
+      ...enlaces.map(([t, u]) => el('a', { class: 'btn-enlace', href: u, target: '_blank', rel: 'noopener noreferrer', text: t })),
       ...botonesTransicion(l, recargarSinCache, rol, undefined, repintar),
       botonClaveSobre(l, rol),
       socio ? null : el('button', { class: 'btn', text: 'Copiar para el chat', onclick: () => copiarLic(l) }),
@@ -402,7 +402,7 @@ export function tarjetaLic(l, ahora = new Date(), rol = 'agente') {
 function filaCriba(l) {
   const perfil = urlSegura(l.enlace);
   const texto = [l.id != null ? '#' + l.id : null, l.expediente, l.resumen_corto || l.objeto, l.cierre ? 'cierra ' + fecha(l.cierre) : null, l.importe ? eurCorto(l.importe) + ' sin IVA' : null].filter(Boolean).join(' · ');
-  return el('p', {}, [texto, perfil ? el('a', { class: 'btn-enlace', href: perfil, target: '_blank', rel: 'noopener', text: 'Perfil' }) : null]);
+  return el('p', {}, [texto, perfil ? el('a', { class: 'btn-enlace', href: perfil, target: '_blank', rel: 'noopener noreferrer', text: 'Perfil' }) : null]);
 }
 function grupoCriba([nombre, rows], abierto) {
   return el('details', { class: 'grupo-criba', open: abierto }, [el('summary', { text: nombre + ' (' + rows.length + ')' }), ...rows.map(filaCriba)]);
