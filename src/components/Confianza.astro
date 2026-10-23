@@ -1,19 +1,39 @@
 ---
 /** Barra de confianza: instituciones y partners tecnológicos, en negro al 50 % sobre papel. */
 import { instituciones, tecnologia } from '../data/logos';
-import { href } from '../lib/site';
+import { enlaceDe, type Idioma } from '../lib/site';
 
-const todos = [...instituciones, ...tecnologia];
+const idioma: Idioma = Astro.currentLocale === 'ca' || Astro.currentLocale === 'en' ? Astro.currentLocale : 'es';
+const href = enlaceDe(idioma);
+const textos = {
+  es: {
+    eyebrow: 'Confianza demostrada',
+    titulo: 'Instituciones, corporaciones y partners tecnológicos de primer nivel',
+    texto: 'Más de 7 años aplicando IA con criterio en Catalunya, Europa y el mundo.',
+  },
+  ca: {
+    eyebrow: 'Confiança demostrada',
+    titulo: 'Institucions, corporacions i partners tecnològics de primer nivell',
+    texto: 'Més de 7 anys aplicant IA amb criteri a Catalunya, Europa i el món.',
+  },
+  en: {
+    eyebrow: 'Proven trust',
+    titulo: 'Leading institutions, corporations and technology partners',
+    texto: 'Over 7 years applying AI with good judgement in Catalonia, Europe and worldwide.',
+  },
+}[idioma];
+const altEn: Record<string, string> = { 'Futurium, Comisión Europea': 'Futurium, European Commission', 'Gobierno de Dubái': 'Government of Dubai' };
+const todos = [...instituciones, ...tecnologia].map((l) => (idioma === 'en' ? { ...l, alt: altEn[l.alt] ?? l.alt } : l));
 ---
 
 <section class="border-t border-linea bg-papel">
   <div class="wrap py-20 md:py-24">
     <div class="mx-auto max-w-[680px] text-center">
-      <p class="eyebrow">Confianza demostrada</p>
+      <p class="eyebrow">{textos.eyebrow}</p>
       <h2 class="mt-4 font-display text-[clamp(26px,3vw,40px)] font-semibold leading-[1.15] tracking-[-0.02em]">
-        Instituciones, corporaciones y partners tecnológicos de primer nivel
+        {textos.titulo}
       </h2>
-      <p class="mt-4 text-[16px] text-pizarra">Más de 7 años aplicando IA con criterio en Catalunya, Europa y el mundo.</p>
+      <p class="mt-4 text-[16px] text-pizarra">{textos.texto}</p>
     </div>
 
     <ul class="mx-auto mt-12 grid max-w-[1080px] grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-6" role="list">
