@@ -167,4 +167,7 @@ test('modeloNegocio: captación, la cifra grande enlaza a la vista de enviados d
   assert.deepEqual(c.lineasEnl.map(l => l.enlace), ['https://crm.test/r', 'https://crm.test/m', 'https://crm.test/p']);
   const [s] = modeloNegocio([{ clave: 'captacion', principal: 10, enlace: 'operacion/ventas', detalle: det }]);
   assert.equal(s.enlacePrincipal.enlace, '#operacion/ventas');
+  const [k] = modeloNegocio([{ clave: 'captacion', principal: 10, detalle: [...det, { clave: 'campanas_activas', valor: 9, enlace: 'https://crm.test/c' }] }]);
+  const ca = k.lineasEnl.at(-1); assert.equal(ca.texto, 'Campañas activas 9'); assert.equal(ca.enlace, 'https://crm.test/c');
+  assert.ok(!s.lineasEnl.some(l => /Campañas/.test(l.texto)));
 });
