@@ -22,7 +22,7 @@ const otros = productos.filter((p) => p.slug !== producto.slug).slice(0, 3);
 
 <Base
   title={producto.nombre}
-  description={`${producto.nombre}: ${producto.descripcion} ${producto.propio ? 'An own product of 77 Delta' : 'A product from our technology group\'s portfolio'}, ${producto.estado.toLowerCase()}.`}
+  description={`${producto.nombre}: ${producto.descripcion} ${producto.propio ? '77 Delta\'s own product' : 'A product from our technology group\'s portfolio'}, ${producto.estado.toLowerCase()}.`}
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
@@ -82,9 +82,9 @@ const otros = productos.filter((p) => p.slug !== producto.slug).slice(0, 3);
   <section class="hairline">
     <div class="wrap grid gap-12 py-24 md:grid-cols-12 md:py-32">
       <div class="md:col-span-6" data-reveal>
-        <p class="eyebrow">In a project of yours</p>
+        <p class="eyebrow">In your project</p>
         <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
-          We apply proven solutions in your company.
+          We put proven solutions to work in your company.
         </h2>
       </div>
       <div class="space-y-5 text-[17px] text-pizarra md:col-span-6 md:pt-12" data-reveal>
@@ -101,7 +101,7 @@ const otros = productos.filter((p) => p.slug !== producto.slug).slice(0, 3);
           href={href('/casos-de-uso/')}
           class="inline-block font-mono text-[12px] text-oro-oscuro transition-colors hover:text-tinta"
         >
-          See the capabilities we know how to apply →
+          See the capabilities we can deliver →
         </a>
       </div>
     </div>
@@ -130,7 +130,7 @@ const otros = productos.filter((p) => p.slug !== producto.slug).slice(0, 3);
 
   <Cta
     titulo={`Is ${producto.nombre} right for your company?`}
-    texto="The assessment tells you whether this specific solution is right for your case, whether it is worth adapting, or whether your case needs a different solution."
+    texto="The assessment tells you whether this solution suits your case, whether it is worth adapting, or whether you need something different."
     boton="Book a free assessment"
   />
 </Base>

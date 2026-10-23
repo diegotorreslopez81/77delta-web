@@ -18,18 +18,18 @@ const bloques = [
   { n: '01', titulo: 'The starting point', texto: historia.situacion },
   { n: '02', titulo: 'The solution we deployed', texto: historia.solucion },
   { n: '03', titulo: 'How we did it', texto: historia.como },
-  { n: '04', titulo: 'The verified results', texto: historia.resultados },
+  { n: '04', titulo: 'Verified results', texto: historia.resultados },
 ];
 
 const cifra = `${historia.cifra.valor}${historia.cifra.sufijo}`;
 
 // Fotografía del hero por historia y su texto alternativo.
 const fotoHistoria: Record<string, { foto: string; alt: string }> = {
-  'clinicas-dentales-barcelona': { foto: 'clinicas', alt: 'Dental clinic consulting room' },
+  'clinicas-dentales-barcelona': { foto: 'clinicas', alt: 'Treatment room in a dental clinic' },
   'distribuidora-industrial': { foto: 'distribucion', alt: 'Aisle of a logistics warehouse' },
   'despacho-mercantil': { foto: 'despachos', alt: 'Person signing a document' },
 };
-const foto = fotoHistoria[historia.slug] ?? { foto: 'equipo', alt: 'Professional team in a working meeting' };
+const foto = fotoHistoria[historia.slug] ?? { foto: 'equipo', alt: 'Professional team in a meeting' };
 ---
 
 <Base
@@ -40,7 +40,7 @@ const foto = fotoHistoria[historia.slug] ?? { foto: 'equipo', alt: 'Professional
   <section class="wrap py-24 md:py-32">
     <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
       <div class="lg:col-span-7">
-        <p class="eyebrow" data-reveal>{historia.sector} · Real case</p>
+        <p class="eyebrow" data-reveal>{historia.sector} · Case study</p>
         <h1
           class="mt-7 max-w-[16ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
           data-reveal
@@ -96,13 +96,13 @@ const foto = fotoHistoria[historia.slug] ?? { foto: 'equipo', alt: 'Professional
   <section class="hairline">
     <div class="wrap py-12" data-reveal>
       <a href={href('/historias-de-exito/')} class="font-mono text-[12px] text-oro-oscuro hover:text-tinta">
-        ← See all three stories
+        ← All case studies
       </a>
     </div>
   </section>
 
   <Cta
-    titulo="Do you have a similar problem?"
-    texto="Every company is different. The assessment identifies whether a similar solution makes sense in your specific case."
+    titulo="Facing a similar challenge?"
+    texto="Every business is different. The assessment shows whether a similar solution makes sense for you."
   />
 </Base>

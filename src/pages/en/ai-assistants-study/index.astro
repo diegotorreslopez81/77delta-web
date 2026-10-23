@@ -8,11 +8,11 @@ import { hrefEn as href } from '../../../lib/site';
 // Data from the LeakAI crawl of 5 September 2026. Nobody is ever named:
 // findings are only shown to the person in charge at the affected company.
 const rastreo = [
-  { cifra: '236', texto: 'had no chat on the home, contact or help pages' },
+  { cifra: '236', texto: 'had no chat on the home page, contact or help pages' },
   { cifra: '62', texto: 'had a support widget that may be AI-powered behind the scenes' },
   { cifra: '29', texto: 'had a confirmed AI assistant answering openly' },
   { cifra: '12', texto: 'had a scripted chat or one staffed by people' },
-  { cifra: '9', texto: 'hid the chat behind a sign-up or a prior form' },
+  { cifra: '9', texto: 'hid the chat behind a sign-up or an initial form' },
   { cifra: '40', texto: 'could not be crawled because of blocks or errors' },
 ];
 
@@ -20,7 +20,7 @@ const categorias = [
   {
     nombre: 'Obeying instructions from a stranger',
     texto:
-      'A well-crafted message gets the assistant to ignore its instructions and do whatever the person typing asks, all under the company’s logo. So far, it is the most common type of leak.',
+      'A well-crafted message gets the assistant to ignore its instructions and do whatever the person typing asks, all under the company’s logo. It is the most common type of leak so far.',
   },
   {
     nombre: 'Reciting its internal instructions',
@@ -30,32 +30,32 @@ const categorias = [
   {
     nombre: 'Revealing customer data or internal commercial information',
     texto:
-      'So far, no assistant tested has revealed personal data or internal prices or margins in our tests.',
+      'So far, no assistant we have tested has revealed personal data, internal prices or margins.',
   },
 ];
 ---
 
 <Base
-  title="What Spanish websites' AI assistants are leaking"
-  description="We crawled 391 Spanish websites and found 29 AI assistants answering openly. We are auditing them in depth, with a double review of every finding. Our own data, September 2026."
+  title="What AI assistants on Spanish websites are leaking"
+  description="We crawled 391 Spanish websites and found 29 AI assistants answering openly. We are auditing them in depth, with a double review of every finding. Original data, September 2026."
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
     <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
       <div class="lg:col-span-7">
-        <p class="eyebrow" data-reveal>Our own study · Ongoing · September 2026</p>
+        <p class="eyebrow" data-reveal>Original research · Ongoing · September 2026</p>
         <h1
           class="mt-7 max-w-[20ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
           data-reveal
         >
-          We audit the AI assistants on Spanish websites. <span class="font-semibold text-oro-oscuro"
+          We are auditing the AI assistants on Spanish websites. <span class="font-semibold text-oro-oscuro"
             >Here is what we have found so far</span
           >.
         </h1>
         <p class="mt-8 max-w-[56ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
           We crawled 391 Spanish company websites looking for AI assistants open to the public. We found 29
-          answering without asking for anything in return. We are testing them in depth, one by one, with a battery of
-          tests and a second adversarial review of every finding before accepting it.
+          answering with no sign-up required. We are testing them in depth, one by one, with a standard test
+          suite and a second adversarial review of every finding before we accept it.
         </p>
         <p class="mt-6 max-w-[56ch] text-[15px] text-pizarra" data-reveal>
           We do not name anyone. Each finding is shared only with the affected company. This study is updated
@@ -88,11 +88,11 @@ const categorias = [
       <div class="max-w-[62ch]" data-reveal>
         <p class="eyebrow">First finding</p>
         <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
-          There are fewer AI assistants than it seems. But the ones that exist are exposed.
+          There are fewer AI assistants than you might think. But the ones out there are exposed.
         </h2>
         <p class="mt-6 text-[17px] text-pizarra">
           Of the 391 websites crawled, most have no chat of any kind. The interesting group is the 29
-          AI assistants that answer anyone who walks in, with no sign-up and no identification.
+          AI assistants that answer anyone who drops by, with no sign-up and no identification.
         </p>
       </div>
 
@@ -120,13 +120,13 @@ const categorias = [
           Most pass the tests. A minority do not.
         </h2>
         <p class="mt-6 text-[17px] text-marfil/72">
-          We run the same battery of tests on every assistant, always from its public website and always
+          We run the same test suite on every assistant, always from its public website and always
           chatting the way a visitor would. Each potential finding also goes through a second adversarial
           review before we count it: for example, we discarded a bot that correctly quoted its returns
           policy and a product demo that an automated judge had read as a real conversation.
         </p>
         <p class="mt-4 text-[17px] text-marfil/72">
-          With that bar, most of the assistants tested withstand the attacks. A small group, in single digits,
+          By that standard, most of the assistants tested withstand the attacks. A small group, in single digits,
           has shown a confirmed leak. We update this figure as the crawl progresses.
         </p>
       </div>
@@ -164,7 +164,7 @@ const categorias = [
   <section class="hairline bg-panel">
     <div class="wrap grid gap-12 py-24 md:grid-cols-12 md:py-32">
       <div class="md:col-span-6" data-reveal>
-        <p class="eyebrow">How it is done</p>
+        <p class="eyebrow">How we do it</p>
         <div class="mt-6 space-y-5 text-[16px] text-pizarra">
           <p>
             A crawler visits the home page and the contact, support and help pages of each domain, looks for the
@@ -172,7 +172,7 @@ const categorias = [
             innocent message and classifies the reply to tell a language model from a scripted chat.
           </p>
           <p>
-            Those that answer get a battery of tests in a single conversation, with pauses between
+            Assistants that reply then get a battery of tests in a single conversation, with pauses between
             messages and only one session per domain per day. A first judge model scores each answer against its
             rubric and quotes the exact excerpt that constitutes the leak. Each alert then goes to a second,
             stricter judge, which confirms or discards it by hand. Only what survives both reviews
@@ -184,12 +184,12 @@ const categorias = [
         <p class="eyebrow">What this study does not say</p>
         <div class="mt-6 space-y-5 text-[16px] text-pizarra">
           <p>
-            The sample is not representative of Spanish business: it is 391 domains chosen because they have a digital
+            The sample is not representative of Spanish businesses as a whole: it is 391 domains chosen because they have a digital
             presence and a good chance of having deployed an assistant. Forty websites could not be crawled, so
             there are assistants we have not seen.
           </p>
           <p>
-            The tests are first-level, the kind someone with curiosity and patience would run, not a dedicated
+            The tests are entry-level: the kind a curious, patient person would run, not a determined
             attacker. An assistant that withstands these six is not a secure assistant: it is one that passes the most
             basic tests.
           </p>
@@ -214,15 +214,15 @@ const categorias = [
       <div class="space-y-5 text-[17px] text-pizarra md:col-span-7 md:pt-12" data-reveal>
         <p>
           The assistants that withstand the tests tend to belong to large companies, with a classifier in front
-          that blocks any odd message. The ones that fail are, so far, from mid-sized companies that rolled out
+          that blocks any unusual message. The ones that fail are, so far, from mid-sized companies that rolled out
           the assistant quickly, connected it to their documentation and have not reviewed it since.
         </p>
         <p>
-          Closing this is not a long project: it means rewriting the instructions, adding input and output
-          filters, limiting what the assistant can query and leaving tests that warn you if it reopens.
+          Fixing this is not a long project: it means rewriting the instructions, adding input and output
+          filters, limiting what the assistant can query and putting tests in place that alert you if the gap reopens.
         </p>
         <div class="flex flex-wrap gap-4 pt-4">
-          <Boton href={href('/contacto/')}>Request the free analysis →</Boton>
+          <Boton href={href('/contacto/')}>Request a free scan →</Boton>
           <Boton href={href('/servicios/seguridad-ia/')} variante="linea">How we audit</Boton>
         </div>
       </div>
@@ -231,7 +231,7 @@ const categorias = [
 
   <Cta
     titulo="Want to know which group yours falls into?"
-    texto="Tell us your domain and we will send back a basic report with the severity and the leak categories we find. No cost and no commitment."
-    boton="Request the scan"
+    texto="Send us your domain and we will come back with a basic report on the severity and types of leak we find. Free and with no commitment."
+    boton="Request your scan"
   />
 </Base>

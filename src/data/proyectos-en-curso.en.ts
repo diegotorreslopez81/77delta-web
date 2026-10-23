@@ -29,23 +29,23 @@ export const proyectosEnCurso: ProyectoEnCurso[] = [
   {
     cliente: 'Aresa Shipyard',
     anio: '2026',
-    ambito: 'Naval',
+    ambito: 'Shipbuilding',
     queHacemos:
-      'We are analysing the journey of a project from bid to delivery, where hours and materials are lost, and what production and maintenance data exists.',
+      'We are analysing how a project moves from quotation to delivery, where hours and materials are lost, and what production and maintenance data is available.',
   },
   {
     cliente: 'Epic Solutions',
     anio: '2026',
     ambito: 'Technology',
     queHacemos:
-      'We are reviewing the internal management and support tools, and where AI can reduce the manual work of reviewing and classifying.',
+      'We are reviewing the internal management and support tools, and where AI can cut manual review and classification work.',
   },
   {
     cliente: 'Zimeron',
     anio: '2026',
     ambito: 'Industry',
     queHacemos:
-      'We are starting to map the production processes across its different business lines, to identify where AI adds value in planning and quality.',
+      'We are starting to map the production processes across its business lines, to identify where AI adds value in planning and quality.',
   },
   {
     cliente: 'IPAE',
