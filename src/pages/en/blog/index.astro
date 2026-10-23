@@ -1,0 +1,47 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { hrefEn as href } from '../../../lib/site';
+import { entradas, minutosLectura } from '../../../lib/blog';
+
+const lista = await entradas('es');
+const fecha = (d: Date) => d.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+const lead = 'Practical guides to applying artificial intelligence in sales, administration, quality and operations.';
+---
+
+<Base title="Blog" description={lead}>
+  <section class="wrap pb-14 pt-20 md:pb-20 md:pt-28">
+    <p class="eyebrow" data-reveal>Blog</p>
+    <h1
+      class="mt-5 max-w-[20ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+      data-reveal
+    >
+      AI applied to industrial SMEs.
+    </h1>
+    <p class="mt-7 max-w-[58ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>{lead}</p>
+    <p class="mt-4 max-w-[58ch] text-[16px] text-pizarra" data-reveal>
+      Our articles are currently published in Spanish.
+    </p>
+  </section>
+
+  <section class="hairline">
+    <div class="wrap py-16 md:py-24">
+      {lista.length === 0 && <p class="text-pizarra">We will publish our first articles soon.</p>}
+      <ul class="max-w-[68ch]" role="list">
+        {
+          lista.map((e) => (
+            <li class="border-t border-linea py-8 first:border-t-0 first:pt-0">
+              <a href={href(`/blog/${e.id}/`)} hreflang="es" class="group block">
+                <span class="font-mono text-[12px] text-oro-oscuro">
+                  {fecha(e.data.pubDate)} · {minutosLectura(e)} min read
+                </span>
+                <span class="mt-3 block font-display text-[clamp(21px,2.2vw,27px)] font-semibold leading-[1.2] transition-colors group-hover:text-oro-oscuro">
+                  {e.data.title}
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Base>

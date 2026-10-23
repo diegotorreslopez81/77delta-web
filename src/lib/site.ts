@@ -7,10 +7,13 @@ export const site = {
   nombre: '77 Delta',
   claim: 'Aplicamos la IA para ahorrar costes a tu empresa',
   claimCa: 'Apliquem la IA per estalviar costos a la teva empresa',
+  claimEn: 'We apply AI to cut costs in your business',
   descripcion:
     'Consultora tecnológica especializada en pymes. Diagnóstico gratuito, transformación operativa con IA, auditoría de seguridad de asistentes y partner tecnológico. Barcelona.',
   descripcionCa:
     "Consultora tecnològica especialitzada en pimes. Diagnòstic gratuït, transformació operativa amb IA, auditoria de seguretat d'assistents i soci tecnològic. Barcelona.",
+  descripcionEn:
+    'Technology consultancy for small and mid-sized businesses. Free assessment, AI-driven operational transformation, AI assistant security audits and technology partner. Barcelona.',
   ciudad: 'Barcelona',
   // Pendiente: activar el buzón cuando se compre el dominio.
   email: 'hola@77delta.com',
@@ -146,3 +149,141 @@ export const navCa: readonly ItemNav[] = [
 ];
 
 export const ctaCa = { texto: 'Reservar diagnòstic', ruta: '/contacto/' } as const;
+
+/** Idiomas con versión completa de la web. */
+export type Idioma = 'es' | 'ca' | 'en';
+export const hreflangs: Record<Idioma, string> = { es: 'es-ES', ca: 'ca-ES', en: 'en' };
+export const etiquetasIdioma: Record<Idioma, string> = { es: 'Castellano', ca: 'Català', en: 'English' };
+
+/**
+ * Rutas en inglés: slug propio por página, bajo /en/. Clave = ruta canónica en castellano.
+ * Las páginas dinámicas (sectores, historias, productos) comparten slug con el castellano y van por prefijo.
+ */
+export const rutasEn: Record<string, string> = {
+  '/': '/en/',
+  '/servicios/': '/en/services/',
+  '/servicios/director-ia/': '/en/ai-director/',
+  '/servicios/diagnostico/': '/en/services/assessment/',
+  '/servicios/transformacion/': '/en/services/transformation/',
+  '/servicios/seguridad-ia/': '/en/services/ai-security/',
+  '/servicios/partner/': '/en/services/technology-partner/',
+  '/sectores/': '/en/sectors/',
+  '/casos-de-uso/': '/en/use-cases/',
+  '/historias-de-exito/': '/en/success-stories/',
+  '/estudio-asistentes-ia/': '/en/ai-assistants-study/',
+  '/proyectos-en-curso/': '/en/ongoing-projects/',
+  '/productos/': '/en/products/',
+  '/licita/': '/en/licita/',
+  '/sobre-nosotros/': '/en/about/',
+  '/contacto/': '/en/contact/',
+  '/trabaja-con-nosotros/': '/en/work-with-us/',
+  '/aviso-legal/': '/en/legal-notice/',
+  '/politica-privacidad/': '/en/privacy-policy/',
+  '/politica-cookies/': '/en/cookie-policy/',
+  '/blog/': '/en/blog/',
+};
+const prefijosEn: readonly [string, string][] = [
+  ['/sectores/', '/en/sectors/'],
+  ['/historias-de-exito/', '/en/success-stories/'],
+  ['/productos/', '/en/products/'],
+];
+
+/** Quita el `base` de Astro y deja la ruta con barra final (salvo la 404). */
+function sinBase(pathname: string): string {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  let r = base && pathname.startsWith(base) ? pathname.slice(base.length) : pathname;
+  if (!r.startsWith('/')) r = `/${r}`;
+  r = r.split(/[?#]/)[0];
+  if (!r.endsWith('/') && !/\.[a-z0-9]+$/i.test(r)) r += '/';
+  return r;
+}
+
+/** Idioma de una ruta por su prefijo. */
+export function idiomaDeRuta(pathname: string): Idioma {
+  const r = sinBase(pathname);
+  if (/^\/ca(\/|$)/.test(r)) return 'ca';
+  if (/^\/en(\/|$)/.test(r)) return 'en';
+  return 'es';
+}
+
+/** Ruta canónica en castellano de cualquier ruta (es, ca o en). null si no existe equivalente (p. ej. slug inglés desconocido). */
+export function rutaCanonicaEs(pathname: string): string | null {
+  const r = sinBase(pathname);
+  const idioma = idiomaDeRuta(r);
+  if (idioma === 'es') return r;
+  if (idioma === 'ca') {
+    const sinCa = r.replace(/^\/ca(\/|$)/, '/');
+    return sinCa === '' ? '/' : sinCa;
+  }
+  const fija = Object.entries(rutasEn).find(([, en]) => en === r);
+  if (fija) return fija[0];
+  for (const [es, en] of prefijosEn) if (r.startsWith(en)) return es + r.slice(en.length);
+  return null;
+}
+
+/** Ruta en inglés (con base) de una ruta canónica en castellano. null si esa página no tiene versión inglesa. */
+function rutaEnDe(rutaEs: string): string | null {
+  if (rutasEn[rutaEs]) return href(rutasEn[rutaEs]);
+  for (const [es, en] of prefijosEn) if (rutaEs.startsWith(es) && rutaEs.length > es.length) return href(en + rutaEs.slice(es.length));
+  return null;
+}
+
+/**
+ * Ruta equivalente de la página actual en otro idioma, con base. null si no existe
+ * (artículos del blog y ayuntamientos no tienen versión inglesa).
+ */
+export function equivalente(pathname: string, destino: Idioma): string | null {
+  const es = rutaCanonicaEs(pathname);
+  if (es === null) return null;
+  if (destino === 'es') return equivalenteEs(es);
+  if (destino === 'ca') return hrefCa(es);
+  return rutaEnDe(es);
+}
+
+/**
+ * Igual que `href`, para las páginas en inglés: recibe la ruta canónica en castellano
+ * (p. ej. '/servicios/') y devuelve su URL inglesa. Si la página no tiene versión inglesa, enlaza a la castellana.
+ * Los recursos estáticos se sirven sin prefijo de idioma. Usar en todos los enlaces internos de src/pages/en/.
+ */
+export function hrefEn(path: string): string {
+  if (esRecursoEstatico(path) || /^https?:/.test(path) || path.startsWith('#')) return href(path);
+  const [ruta, ancla] = path.split('#');
+  const destino = ruta === '' ? href('/') : (rutaEnDe(sinBase(ruta)) ?? href(ruta));
+  return ancla ? `${destino}#${ancla}` : destino;
+}
+
+/** Función de enlace interno según el idioma de la página. */
+export function enlaceDe(idioma: Idioma): (path: string) => string {
+  return idioma === 'ca' ? hrefCa : idioma === 'en' ? hrefEn : href;
+}
+
+/** Mismas rutas que `nav`, en inglés, para las páginas de /en/ (las rutas son las canónicas en castellano; `hrefEn` las traduce). */
+export const navEn: readonly ItemNav[] = [
+  {
+    texto: 'Services',
+    ruta: '/servicios/',
+    hijos: [
+      { texto: 'External AI director', ruta: '/servicios/director-ia/', nota: 'From 1,200 €/month' },
+      { texto: 'Assessment', ruta: '/servicios/diagnostico/', nota: 'Free' },
+      { texto: 'Operational transformation', ruta: '/servicios/transformacion/' },
+      { texto: 'AI security', ruta: '/servicios/seguridad-ia/' },
+      { texto: 'Technology partner', ruta: '/servicios/partner/' },
+    ],
+  },
+  { texto: 'Sectors', ruta: '/sectores/' },
+  {
+    texto: 'Results',
+    ruta: '/historias-de-exito/',
+    hijos: [
+      { texto: 'Success stories', ruta: '/historias-de-exito/' },
+      { texto: 'Use cases', ruta: '/casos-de-uso/' },
+      { texto: 'Study: AI assistants', ruta: '/estudio-asistentes-ia/' },
+      { texto: 'Ongoing projects', ruta: '/proyectos-en-curso/' },
+    ],
+  },
+  { texto: 'Products', ruta: '/productos/' },
+  { texto: 'Blog', ruta: '/blog/' },
+  { texto: 'About us', ruta: '/sobre-nosotros/' },
+];
+
+export const ctaEn = { texto: 'Book a free assessment', ruta: '/contacto/' } as const;

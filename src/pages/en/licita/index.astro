@@ -1,0 +1,415 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../../layouts/Base.astro';
+import HeroFoto from '../../../components/HeroFoto.astro';
+import { hrefEn as href, hrefCa, site } from '../../../lib/site';
+import panelGeneral from '../../../assets/licita/panel-vista-general.png';
+import panelFiltro from '../../../assets/licita/panel-filtro-cierran-semana.png';
+
+const capacidades = [
+  {
+    titulo: 'Detects',
+    texto:
+      'Tracks tenders published across all 17 Spanish autonomous communities and on European platforms (TED), every day.',
+  },
+  {
+    titulo: 'Filters',
+    texto:
+      'Discards whatever does not fit what your company can do and what it can sign with confidence: solvency, capacity, sector.',
+  },
+  {
+    titulo: 'Summarises the specifications',
+    texto:
+      'Turns each set of tender specifications into a short card: closing date, amount, required solvency and the specific reason to bid or not.',
+  },
+  {
+    titulo: 'Warns of deadlines',
+    texto: 'No deadline is missed because you did not see it in time.',
+  },
+];
+
+const campo =
+  'mt-3 w-full rounded-[8px] border border-tinta/15 bg-panel px-4 py-3 font-sans text-[15px] text-tinta transition-colors placeholder:text-pizarra/60 focus:border-oro';
+const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-pizarra';
+---
+
+<Base
+  title="Licita · the public tender engine"
+  description="Licita tracks public tenders across all 17 Spanish autonomous communities and Europe, filters by what your company can sign and summarises each set of tender specifications in a card with closing date, amount, solvency and the reason to bid or not."
+>
+  <!-- Hero -->
+  <section class="wrap py-24 md:py-32">
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Licita · for companies that bid on public tenders</p>
+        <h1
+          class="mt-7 max-w-[20ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          Stop losing hours <span class="font-semibold text-oro-oscuro">reading tender specifications that are not for your company</span>.
+        </h1>
+        <p class="mt-8 max-w-[58ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          If your company bids on public tenders, you already know the problem: hundreds of new publications every week, and most of them are no use to you. Licita reads them all, keeps the ones you can sign with confidence and tells you, for each one,
+          whether it is worth pursuing before you start writing.
+        </p>
+        <div class="mt-12 flex flex-wrap gap-4" data-reveal>
+          <a
+            href="#solicitar-demo"
+            class="inline-flex items-center gap-2 rounded-[10px] bg-oro px-6 py-3.5 font-sans text-[15px] font-semibold text-marfil shadow-[0_6px_24px_rgba(167,120,27,.30)] transition-[background-color,transform] duration-200 hover:-translate-y-px hover:bg-tinta"
+          >
+            Request a demo →
+          </a>
+          <a href={hrefCa('/licita/')} class="inline-flex items-center gap-2 font-mono text-[12px] text-pizarra hover:text-tinta">
+            Catalan version →
+          </a>
+        </div>
+      </div>
+      <HeroFoto foto="administracion" alt="Panorama of office buildings at dusk" class="lg:col-span-5" />
+    </div>
+  </section>
+
+  <!-- What it does today -->
+  <section class="hairline bg-panel">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">What Licita does today</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          No promises. This is what it does right now.
+        </h2>
+      </div>
+
+      <ol class="mt-16 grid gap-x-12 gap-y-14 md:grid-cols-2" role="list">
+        {
+          capacidades.map((c, i) => (
+            <li class="border-t border-linea pt-6" data-reveal>
+              <span class="font-mono text-[12px] text-oro-oscuro">0{i + 1}</span>
+              <h3 class="mt-2 font-display text-[20px] font-semibold">{c.titulo}</h3>
+              <p class="mt-3 text-[15px] leading-[1.6] text-pizarra">{c.texto}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- The real dashboard -->
+  <section class="hairline">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">The real dashboard</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          This is not a mock-up. It is today's dashboard, with today's data.
+        </h2>
+      </div>
+
+      <div class="mt-14 grid gap-8 md:grid-cols-2">
+        <figure data-reveal>
+          <Image
+            src={panelGeneral}
+            width={1400}
+            format="webp"
+            alt="Licita dashboard: list of tenders with closing date, amount, eligibility, solvency and summary"
+            loading="lazy"
+            class="w-full rounded-[8px] border border-linea"
+          />
+          <figcaption class="mt-3 font-mono text-[11px] uppercase tracking-[0.14em] text-pizarra">
+            Overview: 1,128 tenders tracked, filtered by what fits
+          </figcaption>
+        </figure>
+        <figure data-reveal>
+          <Image
+            src={panelFiltro}
+            width={1400}
+            format="webp"
+            alt="Licita dashboard with the 'Closing this week' filter active, showing real contracting bodies and provinces"
+            loading="lazy"
+            class="w-full rounded-[8px] border border-linea"
+          />
+          <figcaption class="mt-3 font-mono text-[11px] uppercase tracking-[0.14em] text-pizarra">
+            The "Closing this week" preset, with deadline warnings in red
+          </figcaption>
+        </figure>
+      </div>
+      <p class="mt-8 max-w-[60ch] font-mono text-[12px] text-pizarra" data-reveal>
+        Real screenshots of the dashboard, 8 September 2026. In the demo we go through it in full, live.
+      </p>
+    </div>
+  </section>
+
+  <!-- How it works: it tells you whether you can sign it -->
+  <section class="hairline bg-marino text-marfil">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[68ch]" data-reveal>
+        <p class="eyebrow text-pizarra">How it works</p>
+        <h2 class="mt-5 max-w-[24ch] font-display text-[clamp(26px,3.4vw,42px)] font-extralight leading-[1.15] tracking-[-0.03em]">
+          The engine tells you whether you can sign it <span class="font-semibold text-oro">before</span> you spend hours
+          writing it.
+        </h2>
+        <p class="mt-8 text-[17px] leading-[1.7] text-pizarra">
+          A public tender for a data protection audit may look like a fit at first glance on price and
+          scope. Licita flags the file so the full tender specifications get reviewed: if the real requirement is to have on
+          staff a lead data protection consultant and a deputy, both with a law degree and
+          a DPO certification accredited by ENAC, the bid is out whatever happens with the price. Licita
+          catches it before a single line is written.
+        </p>
+        <p class="mt-6 text-[17px] leading-[1.7] text-pizarra">
+          It is a common pattern: technical solvency requirements that rule out the file before anything is drafted.
+          That is exactly the time Licita saves when it works.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- What a card looks like -->
+  <section class="hairline">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">What a card looks like</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          A 70-page set of tender specifications, in a card you can read in a minute.
+        </h2>
+        <p class="mt-6 text-[16px] text-pizarra">
+          Three illustrative cards, in the real dashboard format: two decisions on a specific tender and a
+          sector pattern. Each with the exact reason, not a generic label.
+        </p>
+      </div>
+
+      <div class="mt-14 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+        <div class="overflow-hidden rounded-[8px] border border-linea bg-panel" data-reveal>
+          <div class="flex items-start justify-between gap-4 border-b border-linea px-8 py-5">
+            <div>
+              <p class="font-mono text-[11px] uppercase tracking-[0.14em] text-pizarra">Illustrative example</p>
+              <h3 class="mt-2 font-display text-[19px] font-semibold">Town council in the Vallès Occidental</h3>
+              <p class="mt-1 text-[13px] text-pizarra">Redesign of the municipal website: design, development and training</p>
+            </div>
+            <span class="mt-1 shrink-0 rounded-full bg-oro/15 px-3 py-1 font-mono text-[11px] font-semibold text-oro-oscuro">GO</span>
+          </div>
+          <dl class="grid grid-cols-2 gap-6 px-8 py-8">
+            <div>
+              <dt class="font-mono text-[11px] uppercase tracking-[0.14em] text-pizarra">Closing</dt>
+              <dd class="mt-2 text-[16px] font-semibold text-tinta">10 Sep 2026</dd>
+            </div>
+            <div>
+              <dt class="font-mono text-[11px] uppercase tracking-[0.14em] text-pizarra">Amount</dt>
+              <dd class="mt-2 text-[16px] font-semibold text-tinta">Approx. 15,000 €</dd>
+            </div>
+          </dl>
+          <div class="border-t border-linea px-8 py-6">
+            <p class="font-mono text-[11px] uppercase tracking-[0.14em] text-pizarra">Required solvency</p>
+            <p class="mt-2 text-[14px] italic leading-[1.6] text-pizarra">
+              "No formal solvency: sworn statement + 2 similar projects in 5 years." 100% automatic
+              criteria: price 70%, hours bank 15%, training 8%, deadline 7%.
+            </p>
+            <p class="mt-4 font-mono text-[11px] uppercase tracking-[0.14em] text-pizarra">Reason to bid</p>
+            <p class="mt-2 text-[14px] leading-[1.6] text-tinta">
+              Full fit. Consulting, UX, development and training is exactly what we do, with no
+              impossible certifications.
+            </p>
+          </div>
+        </div>
+
+        <div class="overflow-hidden rounded-[8px] border border-linea bg-panel" data-reveal>
+          <div class="flex items-start justify-between gap-4 border-b border-linea px-8 py-5">
+            <div>
+              <p class="font-mono text-[11px] uppercase tracking-[0.14em] text-pizarra">Illustrative example</p>
+              <h3 class="mt-2 font-display text-[19px] font-semibold">State public body</h3>
+              <p class="mt-1 text-[13px] text-pizarra">Audit, risk analysis and training in data protection</p>
+            </div>
+            <span class="mt-1 shrink-0 rounded-full bg-tinta/10 px-3 py-1 font-mono text-[11px] font-semibold text-tinta">NO&#8209;GO</span>
+          </div>
+          <dl class="grid grid-cols-2 gap-6 px-8 py-8">
+            <div>
+              <dt class="font-mono text-[11px] uppercase tracking-[0.14em] text-pizarra">Closing</dt>
+              <dd class="mt-2 text-[16px] font-semibold text-tinta">24 Sep 2026</dd>
+            </div>
+            <div>
+              <dt class="font-mono text-[11px] uppercase tracking-[0.14em] text-pizarra">Amount</dt>
+              <dd class="mt-2 text-[16px] font-semibold text-tinta">23,891 €</dd>
+            </div>
+          </dl>
+          <div class="border-t border-linea px-8 py-6">
+            <p class="font-mono text-[11px] uppercase tracking-[0.14em] text-pizarra">Required solvency</p>
+            <p class="mt-2 text-[14px] italic leading-[1.6] text-pizarra">
+              "Statement of turnover or, alternatively, professional liability insurance." This alone does not
+              rule it out: the insurance is an available route.
+            </p>
+            <p class="mt-4 font-mono text-[11px] uppercase tracking-[0.14em] text-pizarra">Real reason not to bid</p>
+            <p class="mt-2 text-[14px] leading-[1.6] text-tinta">
+              Staff we do not have: a lead DPO consultant and a deputy, each with a law degree, a DPO certification
+              accredited by ENAC and 3 years of experience. It is not financial solvency that rules it out.
+            </p>
+          </div>
+        </div>
+
+        <div class="overflow-hidden rounded-[8px] border border-linea bg-panel" data-reveal>
+          <div class="flex items-start justify-between gap-4 border-b border-linea px-8 py-5">
+            <div>
+              <p class="font-mono text-[11px] uppercase tracking-[0.14em] text-pizarra">Illustrative pattern</p>
+              <h3 class="mt-2 font-display text-[19px] font-semibold">Professional cleaning and hygiene</h3>
+              <p class="mt-1 text-[13px] text-pizarra">Supply to Catalan public bodies</p>
+            </div>
+            <span class="mt-1 shrink-0 rounded-full bg-oro/15 px-3 py-1 font-mono text-[11px] font-semibold text-oro-oscuro">PATTERN</span>
+          </div>
+          <div class="px-8 py-8">
+            <p class="font-mono text-[11px] uppercase tracking-[0.14em] text-pizarra">What the engine detects</p>
+            <p class="mt-2 text-[14px] leading-[1.6] text-pizarra">
+              Supplying cleaning and hygiene products to Catalan public bodies is an active, repeat market,
+              especially in minor contracts (most below 15,000 €). Diputació de Barcelona,
+              Sabadell Town Council, University of Barcelona, county councils and social services
+              consortia come up again and again.
+            </p>
+          </div>
+          <div class="border-t border-linea px-8 py-6">
+            <p class="mt-4 font-mono text-[11px] uppercase tracking-[0.14em] text-pizarra">Why it matters</p>
+            <p class="mt-2 text-[14px] leading-[1.6] text-tinta">
+              A buyer that repeats several times a year, small amounts, no solvency required: the most accessible
+              opportunity profile for a supplier in this sector.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <p class="mt-8 max-w-[60ch] font-mono text-[12px] text-pizarra" data-reveal>
+        Illustrative cards, in the real dashboard format. In the demo we look at real cases, live.
+      </p>
+    </div>
+  </section>
+
+  <!-- Demo form -->
+  <section id="solicitar-demo" class="hairline bg-panel">
+    <div class="wrap py-24 md:py-32">
+      <div class="grid gap-16 md:grid-cols-12">
+        <div class="md:col-span-5" data-reveal>
+          <p class="eyebrow">See the engine in action</p>
+          <h2 class="mt-5 font-display text-[clamp(26px,3.2vw,38px)] font-extralight leading-[1.15] tracking-[-0.03em]">
+            Twenty minutes. With your sector, not a generic one.
+          </h2>
+          <p class="mt-6 text-[16px] text-pizarra">
+            We show you the real dashboard, with tenders from your own sector and region. No cost, no
+            commitment.
+          </p>
+        </div>
+
+        <div class="md:col-span-7" data-reveal>
+          <form
+            id="form-demo-licita"
+            action={`mailto:${site.email}`}
+            method="post"
+            data-destino={site.email}
+            data-endpoint={site.formulario}
+            class="grid gap-6 sm:grid-cols-2"
+            novalidate
+          >
+            <input type="text" name="web" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+            <input type="hidden" name="sector" value="Solicitud de demo · Licita" />
+
+            <div>
+              <label class={etiqueta} for="nombre">Name</label>
+              <input class={campo} type="text" id="nombre" name="nombre" autocomplete="name" required />
+            </div>
+            <div>
+              <label class={etiqueta} for="empresa">Company</label>
+              <input class={campo} type="text" id="empresa" name="empresa" autocomplete="organization" required />
+            </div>
+            <div>
+              <label class={etiqueta} for="email">Email</label>
+              <input class={campo} type="email" id="email" name="email" autocomplete="email" required />
+            </div>
+            <div>
+              <label class={etiqueta} for="telefono">Phone (optional)</label>
+              <input class={campo} type="tel" id="telefono" name="telefono" autocomplete="tel" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class={etiqueta} for="mensaje">Which sector do you bid in?</label>
+              <textarea class={campo} id="mensaje" name="mensaje" rows="4" placeholder="Sector, region and the kind of contracts you are interested in"></textarea>
+            </div>
+            <div class="sm:col-span-2">
+              <button
+                type="submit"
+                class="inline-flex items-center gap-2 whitespace-nowrap rounded-[10px] bg-oro px-6 py-3.5 font-sans text-[15px] font-semibold text-marfil shadow-[0_6px_24px_rgba(167,120,27,.30)] transition-[background-color,transform] duration-200 hover:-translate-y-px hover:bg-tinta disabled:cursor-wait disabled:opacity-60"
+              >
+                Request demo →
+              </button>
+              <p id="form-estado" class="mt-5 hidden max-w-[52ch] text-[15px] text-tinta" role="status" aria-live="polite"></p>
+              <p class="mt-6 max-w-[52ch] text-[13px] text-pizarra">
+                Data is processed in the European Union in line with the GDPR. More detail in our
+                <a
+                  href={href('/politica-privacidad/')}
+                  class="text-tinta underline decoration-linea underline-offset-4 transition-colors hover:decoration-oro"
+                  >privacy policy</a
+                >.
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const form = document.querySelector<HTMLFormElement>('#form-demo-licita');
+    const estado = document.querySelector<HTMLParagraphElement>('#form-estado');
+    const boton = form?.querySelector<HTMLButtonElement>('button[type=submit]');
+
+    const mostrar = (texto: string) => {
+      if (!estado) return;
+      estado.textContent = texto;
+      estado.classList.remove('hidden');
+    };
+
+    const leerCampos = (f: HTMLFormElement) => {
+      const datos = new FormData(f);
+      const leer = (nombre: string) => String(datos.get(nombre) ?? '').trim();
+      return {
+        nombre: leer('nombre'),
+        empresa: leer('empresa'),
+        email: leer('email'),
+        sector: leer('sector'),
+        mensaje: [leer('telefono') ? `Phone: ${leer('telefono')}` : '', leer('mensaje')].filter(Boolean).join('\n'),
+        web: leer('web'),
+        origen: location.pathname,
+      };
+    };
+
+    const abrirCorreo = (destino: string, c: ReturnType<typeof leerCampos>) => {
+      const asunto = `Demo request · Licita · ${c.empresa}`;
+      const cuerpo = [`Name: ${c.nombre}`, `Company: ${c.empresa}`, `Email: ${c.email}`, '', c.mensaje].join('\n');
+      window.location.href = `mailto:${destino}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+    };
+
+    form?.addEventListener('submit', async (evento) => {
+      evento.preventDefault();
+      const destino = form.dataset.destino ?? '';
+      const endpoint = form.dataset.endpoint ?? '';
+      const campos = leerCampos(form);
+
+      if (!endpoint) return abrirCorreo(destino, campos);
+
+      if (boton) boton.disabled = true;
+      mostrar('Sending…');
+      try {
+        const r = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(campos),
+        });
+        const respuesta = (await r.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+        if (r.ok && respuesta.ok) {
+          form.reset();
+          mostrar('Received. We will get in touch to agree a date for the demo.');
+          return;
+        }
+        if (r.status === 400 || r.status === 429) {
+          mostrar(respuesta.error ?? 'We could not send your message. Please check the fields.');
+          return;
+        }
+        throw new Error(`respuesta ${r.status}`);
+      } catch {
+        mostrar('Direct sending is not available right now: your email app will open with the message ready to send.');
+        abrirCorreo(destino, campos);
+      } finally {
+        if (boton) boton.disabled = false;
+      }
+    });
+  </script>
+</Base>

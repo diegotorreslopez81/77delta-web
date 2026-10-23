@@ -1,11 +1,10 @@
 ---
 /** Pie de página: franja de tinta, como en la web anterior. Mismo orden que el menú: Servicios, Resultados, Productos, Empresa, Legal. */
 import Monograma from './Monograma.astro';
-import { site, href, hrefCa } from '../lib/site';
+import { site, enlaceDe, type Idioma } from '../lib/site';
 
-const { lang } = Astro.props;
-const idioma = Astro.currentLocale === 'ca' ? 'ca' : 'es';
-const enlace = idioma === 'ca' ? hrefCa : href;
+const idioma: Idioma = Astro.currentLocale === 'ca' || Astro.currentLocale === 'en' ? Astro.currentLocale : 'es';
+const enlace = enlaceDe(idioma);
 
 const columnasEs = [
   {
@@ -117,35 +116,80 @@ const columnasCa = [
   },
 ];
 
-const columnas = idioma === 'ca' ? columnasCa : columnasEs;
-// Las páginas en inglés (/en/) cuelgan del pie en castellano: su entrada de empleo apunta a la versión inglesa.
-const empleoEn = { texto: 'Work with us', ruta: '/en/work-with-us/' };
-const empleoEs = columnasEs[3].enlaces.findIndex((e) => e.ruta === '/trabaja-con-nosotros/');
-const columnasFinal =
-  lang === 'en'
-    ? columnas.map((c, i) => (i === 3 ? { ...c, enlaces: c.enlaces.map((e, j) => (j === empleoEs ? empleoEn : e)) } : c))
-    : columnas;
+// Rutas canónicas en castellano también en inglés: `hrefEn` las traduce a /en/... (y al castellano si no hay versión inglesa).
+const columnasEn = [
+  {
+    titulo: 'Services',
+    enlaces: [
+      { texto: 'External AI director', ruta: '/servicios/director-ia/' },
+      { texto: 'Assessment', ruta: '/servicios/diagnostico/' },
+      { texto: 'Operational transformation', ruta: '/servicios/transformacion/' },
+      { texto: 'AI security', ruta: '/servicios/seguridad-ia/' },
+      { texto: 'Technology partner', ruta: '/servicios/partner/' },
+      { texto: 'ACCIÓ accreditation', ruta: '/servicios/#cupo' },
+    ],
+  },
+  {
+    titulo: 'Results',
+    enlaces: [
+      { texto: 'Success stories', ruta: '/historias-de-exito/' },
+      { texto: 'Use cases', ruta: '/casos-de-uso/' },
+      { texto: 'Sectors', ruta: '/sectores/' },
+      { texto: 'Study: AI assistants', ruta: '/estudio-asistentes-ia/' },
+      { texto: 'Ongoing projects', ruta: '/proyectos-en-curso/' },
+    ],
+  },
+  {
+    titulo: 'Products',
+    enlaces: [
+      { texto: 'Licita', ruta: '/licita/' },
+      { texto: 'LeakAI', ruta: '/productos/leakai/' },
+      { texto: 'Regulia', ruta: '/productos/regulia/' },
+      { texto: 'Contestia', ruta: '/productos/contestia/' },
+      { texto: 'InstantExam', ruta: '/productos/instantexam/' },
+      { texto: 'ScoreFlow', ruta: '/productos/scoreflow/' },
+      { texto: 'Contablia', ruta: '/productos/contablia/' },
+      { texto: 'Swarmix', ruta: '/productos/swarmix/' },
+      { texto: 'Corpora', ruta: '/productos/#corpora' },
+    ],
+  },
+  {
+    titulo: 'Company',
+    enlaces: [
+      { texto: 'About us', ruta: '/sobre-nosotros/' },
+      { texto: 'Blog', ruta: '/blog/' },
+      { texto: 'Work with us', ruta: '/trabaja-con-nosotros/' },
+      { texto: 'Contact', ruta: '/contacto/' },
+    ],
+  },
+  {
+    titulo: 'Legal',
+    enlaces: [
+      { texto: 'Legal notice', ruta: '/aviso-legal/' },
+      { texto: 'Privacy', ruta: '/politica-privacidad/' },
+      { texto: 'Cookies', ruta: '/politica-cookies/' },
+    ],
+  },
+];
+
+const columnasFinal = idioma === 'ca' ? columnasCa : idioma === 'en' ? columnasEn : columnasEs;
+const t = {
+  es: { inicio: '77 Delta, inicio', oficina: 'Oficina en ', marca: 'es una marca de', datos: 'Datos procesados en la Unión Europea · RGPD',
+        lema: 'Consultora tecnológica especializada en pymes. Transformamos pymes con inteligencia artificial aplicada con criterio.' },
+  ca: { inicio: '77 Delta, inici', oficina: 'Oficina a ', marca: 'és una marca de', datos: 'Dades processades a la Unió Europea · RGPD',
+        lema: 'Consultora tecnològica especialitzada en pimes. Transformem pimes amb intel·ligència artificial aplicada amb criteri.' },
+  en: { inicio: '77 Delta, home', oficina: 'Office in ', marca: 'is a brand of', datos: 'Data processed in the European Union · GDPR',
+        lema: 'Technology consultancy for small and mid-sized businesses. We transform SMEs with artificial intelligence applied with judgement.' },
+}[idioma];
 ---
 
 <footer class="bg-marino text-marfil/70">
   <div class="wrap grid gap-10 py-20 sm:grid-cols-2 lg:grid-cols-5 xl:grid-cols-[1.4fr_repeat(5,1fr)]">
     <div class="sm:col-span-2 lg:col-span-5 xl:col-span-1">
-      <a href={enlace('/')} class="text-marfil" aria-label={idioma === 'ca' ? '77 Delta, inici' : '77 Delta, inicio'}><Monograma size={30} /></a>
-      {
-        idioma === 'ca' ? (
-          <p class="mt-5 max-w-[28ch] text-[14px] leading-[1.55] text-marfil/60">
-            Consultora tecnològica especialitzada en pimes. Transformem pimes amb intel·ligència artificial
-            aplicada amb criteri.
-          </p>
-        ) : (
-          <p class="mt-5 max-w-[28ch] text-[14px] leading-[1.55] text-marfil/60">
-            Consultora tecnológica especializada en pymes. Transformamos pymes con inteligencia artificial aplicada
-            con criterio.
-          </p>
-        )
-      }
+      <a href={enlace('/')} class="text-marfil" aria-label={t.inicio}><Monograma size={30} /></a>
+      <p class="mt-5 max-w-[28ch] text-[14px] leading-[1.55] text-marfil/60">{t.lema}</p>
       <p class="mt-6 text-[13px] text-marfil/55">
-        {idioma === 'ca' ? 'Oficina a ' : 'Oficina en '}
+        {t.oficina}
         <strong class="font-semibold text-marfil/85">{site.ciudad}</strong>
       </p>
     </div>
@@ -170,21 +214,12 @@ const columnasFinal =
 
   <div class="border-t border-marfil/10">
     <div class="wrap flex flex-col gap-3 py-8 text-[13px] text-marfil/50 md:flex-row md:items-center md:justify-between">
-      {
-        idioma === 'ca' ? (
-          <p>
-            © {site.anio} {site.nombre} és una marca de <strong class="font-semibold text-marfil/80">{site.sociedad}</strong> ·
-            CIF {site.cif} · {site.direccion}
-          </p>
-        ) : (
-          <p>
-            © {site.anio} {site.nombre} es una marca de <strong class="font-semibold text-marfil/80">{site.sociedad}</strong> ·
-            CIF {site.cif} · {site.direccion}
-          </p>
-        )
-      }
+      <p>
+        © {site.anio} {site.nombre} {t.marca} <strong class="font-semibold text-marfil/80">{site.sociedad}</strong> ·
+        CIF {site.cif} · {site.direccion}
+      </p>
       <p class="flex items-center gap-5 whitespace-nowrap">
-        <span>{idioma === 'ca' ? 'Dades processades a la Unió Europea · RGPD' : 'Datos procesados en la Unión Europea · RGPD'}</span>
+        <span>{t.datos}</span>
         <a href={site.linkedin} target="_blank" rel="noopener" class="transition-colors hover:text-marfil">LinkedIn</a>
       </p>
     </div>

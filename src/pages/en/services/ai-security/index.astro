@@ -1,0 +1,284 @@
+---
+import Base from '../../../../layouts/Base.astro';
+import HeroFoto from '../../../../components/HeroFoto.astro';
+import Boton from '../../../../components/Boton.astro';
+import Cta from '../../../../components/Cta.astro';
+import { hrefEn as href } from '../../../../lib/site';
+
+const fugas = [
+  {
+    titulo: 'The internal instructions',
+    texto:
+      'The full system prompt: how the bot has been told to behave, what it must not say and what data it works with. It is the map to everything else.',
+  },
+  {
+    titulo: 'Prices, discounts and margins',
+    texto:
+      'Fee ranges, special terms and negotiation thresholds that sit in the bot’s context because they were included to improve its answers.',
+  },
+  {
+    titulo: 'Customer data',
+    texto:
+      'If the chatbot queries a CRM, an order history or a knowledge base containing real data, it can be asked to talk about it.',
+  },
+  {
+    titulo: 'Off-script behaviour',
+    texto:
+      'With a prompt injection, the bot on your website can end up saying whatever a third party decides. And it does so under your brand.',
+  },
+  {
+    titulo: 'Promises you cannot keep',
+    texto:
+      'Deadlines, guarantees and terms made up on the spot. A chatbot on your domain is your voice, and what it states has weight with the customer.',
+  },
+  {
+    titulo: 'Access to connected tools',
+    texto:
+      'When the agent can book, query or write to your systems, the question stops being what it says and becomes what it does.',
+  },
+];
+
+const pasos = [
+  {
+    titulo: 'Detection',
+    texto:
+      'We crawl your website the way a visitor would and locate the AI assistants that are live, including those that the marketing team published without telling the IT department.',
+  },
+  {
+    titulo: 'Testing',
+    texto:
+      'We run a battery of leak tests on each assistant: instruction extraction, disclosure of commercial terms, personal data, prompt injection and going off script.',
+  },
+  {
+    titulo: 'Report',
+    texto:
+      'A judge model scores each response against its rubric and has to quote the exact passage that constitutes the leak. Without that passage, we do not count it as a finding.',
+  },
+  {
+    titulo: 'Remediation',
+    texto:
+      'We rewrite the system prompt, add guardrails and output filters, limit what the agent can access and leave regression tests in place so the gap does not reopen.',
+  },
+];
+
+const entregables = [
+  {
+    etiqueta: 'Free',
+    titulo: 'Basic report',
+    texto:
+      'Overall severity, the leak categories detected and a couple of redacted examples. Enough to know whether you have a problem and how big it is.',
+  },
+  {
+    etiqueta: 'With remediation',
+    titulo: 'Full report',
+    texto:
+      'The reproducible detail of each finding, with the exact conversation and the technical recommendation. It is delivered when you hire the fix and is not offered separately.',
+  },
+  {
+    etiqueta: 'Optional',
+    titulo: 'Continuous monitoring',
+    texto:
+      'We repeat the scan every month. Changing the system prompt or adding a data source to the assistant can reopen what was closed.',
+  },
+];
+
+const normas = [
+  {
+    norma: 'EU AI Act',
+    texto:
+      'It requires AI system risk to be managed and users to be told that they are talking to a machine. An assistant that goes off script is an unmanaged risk.',
+  },
+  {
+    norma: 'GDPR',
+    texto:
+      'If the assistant can reveal personal data of customers or employees, that is a security breach with a duty to notify.',
+  },
+  {
+    norma: 'NIS2',
+    texto:
+      'For essential and important entities, the chatbot is a publicly exposed surface and falls within digital supply chain risk management.',
+  },
+];
+---
+
+<Base
+  title="AI security"
+  description="We audit the AI chatbots and agents on your website: what information can be extracted from them, how, and how to close the gap. Free basic report and remediation."
+>
+  <!-- Hero -->
+  <section class="wrap py-24 md:py-32">
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>AI security</p>
+        <h1
+          class="mt-7 max-w-[18ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          Your chatbot <span class="font-semibold text-oro-oscuro">reveals more than you think</span>.
+        </h1>
+        <p class="mt-8 max-w-[54ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Putting an AI assistant on your website is quick. Auditing it is rare. We
+          test it the way an attacker would and show you what information leaks out.
+        </p>
+        <div class="mt-12 flex flex-wrap gap-4" data-reveal>
+          <Boton href={href('/contacto/')}>Request the free scan →</Boton>
+          <Boton href={href('/estudio-asistentes-ia/')} variante="linea">Read our study</Boton>
+        </div>
+      </div>
+      <HeroFoto foto="despachos" alt="Person signing a document" class="lg:col-span-5" />
+    </div>
+  </section>
+
+  <!-- El problema -->
+  <section class="hairline bg-panel">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">What can be extracted</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          You do not need to be a sophisticated attacker. Asking the right questions is enough.
+        </h2>
+        <p class="mt-6 text-[17px] text-pizarra">
+          In September 2026 we crawled 391 Spanish websites. Some of the AI assistants we
+          found let something slip when tested in depth, with a second adversarial review of each
+          finding. Nothing was hacked: all it took was typing into the chat. The crawl is still running.
+        </p>
+        <a
+          href={href('/estudio-asistentes-ia/')}
+          class="mt-5 inline-block font-mono text-[12px] text-oro-oscuro transition-colors hover:text-tinta"
+        >
+          See the full study with the data →
+        </a>
+      </div>
+
+      <ul class="mt-16 grid gap-x-12 gap-y-12 md:grid-cols-2 lg:grid-cols-3" role="list">
+        {
+          fugas.map((f, i) => (
+            <li data-reveal>
+              <span class="font-mono text-[11px] tracking-[0.14em] text-oro-oscuro">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <h3 class="mt-4 font-display text-[19px] font-semibold leading-[1.3]">{f.titulo}</h3>
+              <p class="mt-3 text-[15px] text-pizarra">{f.texto}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- How we do it -->
+  <section class="hairline">
+    <div class="wrap py-24 md:py-32">
+      <div class="grid gap-10 md:grid-cols-12">
+        <div class="md:col-span-6" data-reveal>
+          <p class="eyebrow">How we do it</p>
+          <h2
+            class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]"
+          >
+            Four steps, with LeakAI doing the analysis work.
+          </h2>
+        </div>
+        <div class="text-[17px] text-pizarra md:col-span-6 md:pt-12" data-reveal>
+          <p>
+            LeakAI is our audit tool. It detects the published assistants, tests them and scores
+            each finding. We built it ourselves and use it on every project, so the assessment does not
+            depend on any one person's availability.
+          </p>
+        </div>
+      </div>
+
+      <ol class="mt-16 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea md:grid-cols-2" role="list">
+        {
+          pasos.map((p, i) => (
+            <li class="bg-panel p-8 md:p-10" data-reveal>
+              <span class="font-mono text-[11px] tracking-[0.14em] text-oro-oscuro">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <h3 class="mt-4 font-display text-[20px] font-semibold leading-[1.3]">{p.titulo}</h3>
+              <p class="mt-3 text-[15px] text-pizarra">{p.texto}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- What you get -->
+  <section class="hairline bg-marino text-marfil">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow text-oro-luz">What you get</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          The assessment is free. The paid service is fixing the vulnerabilities.
+        </h2>
+      </div>
+
+      <ul class="mt-16 grid gap-10 md:grid-cols-3" role="list">
+        {
+          entregables.map((e) => (
+            <li class="border-t border-marfil/15 pt-8" data-reveal>
+              <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-oro-luz">{e.etiqueta}</span>
+              <h3 class="mt-4 font-display text-[20px] font-semibold leading-[1.3]">{e.titulo}</h3>
+              <p class="mt-3 text-[15px] text-marfil/70">{e.texto}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Normativa -->
+  <section class="hairline">
+    <div class="wrap py-24 md:py-32">
+      <div class="grid gap-10 md:grid-cols-12">
+        <div class="md:col-span-5" data-reveal>
+          <p class="eyebrow">Why regulation affects you</p>
+          <h2
+            class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]"
+          >
+            An unaudited assistant is an unmanaged risk.
+          </h2>
+        </div>
+        <ul class="md:col-span-7 md:pl-6" role="list">
+          {
+            normas.map((n) => (
+              <li class="border-t border-linea py-8 first:border-t-0 first:pt-0 md:first:pt-2" data-reveal>
+                <h3 class="font-display text-[19px] font-semibold">{n.norma}</h3>
+                <p class="mt-3 text-[15px] text-pizarra">{n.texto}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cómo trabajamos esto -->
+  <section class="hairline bg-panel">
+    <div class="wrap grid gap-10 py-24 md:grid-cols-12 md:py-32">
+      <div class="md:col-span-6" data-reveal>
+        <p class="eyebrow">The limits, in writing</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          This is an assessment, not an attack.
+        </h2>
+      </div>
+      <div class="space-y-5 text-[17px] text-pizarra md:col-span-6 md:pt-12" data-reveal>
+        <p>
+          We talk to the assistant the way any visitor would, from the public website and at a
+          limited rate. We do not break into systems, we do not exploit vulnerabilities and we do not touch anything that is not
+          public.
+        </p>
+        <p>
+          Any personal data that appears is not stored in clear text. Findings are shown only to the
+          company's responsible person, never to third parties and never in public.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <Cta
+    titulo="We analyse your assistant at no cost. Then you decide."
+    texto="Tell us your domain and we send back the basic report with the severity and the leak categories we found. No obligation and no cost."
+    boton="Request the scan"
+  />
+</Base>
