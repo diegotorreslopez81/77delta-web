@@ -242,11 +242,10 @@ export function modeloWeb7(filas, ahora = new Date()) {
 // #2739 PR 1c+1d: un panel por sitio con la misma tarjeta que Negocio (vt-card hoy-neg): logo y título (enlace a Umami si hq_web trae umami_url y umami_id), visitas 30 d, visitantes y variación, total histórico y formularios/CTA 30 d.
 const nombreCorto = sitio => etiquetaSitio(sitio).replace(/\.(com|co)$/, '');
 // Eventos de Umami por tipo y sitio (hq_v_web los devuelve a 0 en todos los sitios, así que "no medido" lo fija este mapa):
-// altas = listas de espera (form-docureal, form-verifix); contacto = form-contacto. Sin evento medido, null (guion).
+// altas = listas de espera (form-docureal); contacto = form-contacto. Sin evento medido, null (guion).
 const EVENTOS = {
   '77delta.com': { contacto: 'envios_contacto' },
   'docureal.77delta.com': { altas: 'envios_docureal' },
-  'verifix.77delta.com': { altas: 'envios_verifix' },
 };
 export function formulariosWeb(dias, sitio, ahora = new Date()) {
   const desde = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Madrid' }).format(new Date(ahora.getTime() - 29 * 86400000));
@@ -403,10 +402,14 @@ function captacionNueva(f) {
     previo = n;
     return { texto: et + ' ' + (n == null ? 'pdte' : n) + pct, ...enlaceLinea(d?.enlace) };
   });
+  // Diego 23-10: nº de campañas activas de Twenty, con enlace a su vista de campañas.
+  const camp = por('campanas_activas'), nCamp = num(camp);
+  if (camp) lineasEnl.push({ texto: 'Campañas activas ' + (nCamp == null ? 'pdte' : nCamp), ...enlaceLinea(camp.enlace) });
   return {
     principal: env == null ? 'pdte' : String(env), principalTexto: 'enviados', secundario: '',
     color: env == null ? (f.color || '') : env > 0 ? 'verde' : 'rojo',
-    enlacePrincipal: enlaceLinea(f.enlace), enlaceSecundario: enlaceLinea(''), detalle: [], lineasEnl,
+    // Las URLs de vista de Twenty llegan en el detalle de la RPC (parámetros); sin la de enviados, queda el enlace de la casilla.
+    enlacePrincipal: enlaceLinea(por('enviados')?.enlace || f.enlace), enlaceSecundario: enlaceLinea(''), detalle: [], lineasEnl,
   };
 }
 // #2679: orden fijo de las casillas de Negocio; una clave que no esté va después, en el orden de la vista.
