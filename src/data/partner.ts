@@ -319,7 +319,7 @@ export const ambitosEn: readonly Ambito[] = [
     n: '01',
     titulo: 'Custom software',
     texto:
-      'Web, mobile and desktop applications, APIs and maintenance of legacy software. New development, or a rescue of what you already have.',
+      'Web, mobile and desktop applications, APIs and maintenance of legacy software. New builds, or rescuing what you already have.',
     tecnologias: ['Java', 'Spring', '.NET', 'C#', 'Python', 'Node.js', 'TypeScript', 'PHP', 'iOS and Android', 'REST APIs'],
   },
   {
@@ -332,7 +332,7 @@ export const ambitosEn: readonly Ambito[] = [
   {
     n: '03',
     titulo: 'CRM',
-    texto: 'Choose, implement, integrate and train. So that your sales team actually uses it day to day.',
+    texto: 'Selection, implementation, integration and training, so your sales team actually uses it day to day.',
     tecnologias: ['Dynamics 365', 'HubSpot', 'Salesforce', 'Zoho', 'Odoo CRM', 'Pipedrive'],
   },
   {
@@ -345,7 +345,7 @@ export const ambitosEn: readonly Ambito[] = [
   {
     n: '05',
     titulo: 'Microsoft environment',
-    texto: 'Putting order into the environment you already pay for: licences, identities, devices and automation.',
+    texto: 'Bringing order to the environment you already pay for: licences, identities, devices and automation.',
     tecnologias: [
       'Microsoft 365',
       'Teams',
@@ -362,7 +362,7 @@ export const ambitosEn: readonly Ambito[] = [
     n: '06',
     titulo: 'Cloud and infrastructure',
     texto:
-      'Servers, cloud, backups, networks and continuity. We migrate what makes sense and keep on your premises what does not.',
+      'Servers, cloud, backups, networks and continuity. We migrate what makes sense and keep on-premises what does not.',
     tecnologias: [
       'Azure',
       'AWS',
@@ -415,7 +415,7 @@ export const ambitosEn: readonly Ambito[] = [
   },
   {
     n: '10',
-    titulo: 'Data and Business Intelligence',
+    titulo: 'Data and business intelligence',
     texto: 'Dashboards that management looks at every Monday, built on clean data from a single source.',
     tecnologias: ['Power BI', 'Looker Studio', 'Metabase', 'Data warehouse', 'Automated reports'],
   },
@@ -425,7 +425,7 @@ export const ambitosEn: readonly Ambito[] = [
     texto:
       'Agents, automations, OCR and language models applied to your processes. When AI is the core of what you need, it has its own service.',
     tecnologias: ['AI agents', 'Language models', 'OCR', 'RPA', 'Process automation'],
-    enlace: { texto: 'See External AI director', ruta: '/servicios/director-ia/' },
+    enlace: { texto: 'See Fractional AI director', ruta: '/servicios/director-ia/' },
   },
   {
     n: '12',
@@ -441,7 +441,7 @@ export const modalidadesEn: readonly Modalidad[] = [
     n: '01',
     titulo: 'A single point of contact',
     texto:
-      'We manage the relationship with your suppliers directly, review their offers and contracts, and translate the technical into business decisions.',
+      'We manage the relationship with your suppliers directly, review their offers and contracts, and translate technical questions into business decisions.',
   },
   {
     n: '02',
@@ -453,11 +453,11 @@ export const modalidadesEn: readonly Modalidad[] = [
     n: '03',
     titulo: 'Vendor independence',
     texto:
-      'We choose on technical merit and total cost. Vendor product, cloud or open source: whatever fits your business.',
+      'We choose on technical merit and total cost. Commercial software, cloud or open source: whatever fits your business.',
   },
   {
     n: '04',
     titulo: 'A tailored quote',
-    texto: 'After the free assessment, a proposal with scope, sequence and a fixed budget. No unexpected costs.',
+    texto: 'After the free assessment, a proposal with scope, sequence and a fixed price. No surprises.',
   },
 ];

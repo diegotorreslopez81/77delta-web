@@ -40,7 +40,7 @@ export const productos: Producto[] = [
     url: 'https://regulia.app',
     logo: 'regulia.png',
     queHace:
-      'A platform with three EU compliance modules: accessibility (EN 301 549 standard), cybersecurity (NIS2) and AI governance (EU AI Act). It analyses, generates the mandatory documentation and monitors that compliance keeps being met.',
+      'A platform with three EU compliance modules: accessibility (EN 301 549 standard), cybersecurity (NIS2) and AI governance (EU AI Act). It analyses, generates the mandatory documentation and monitors ongoing compliance.',
     stack: 'Next.js 16, Supabase, Gemini 2.0 Flash, axe-core',
   },
   {
@@ -53,7 +53,7 @@ export const productos: Producto[] = [
     url: 'https://contestia.co',
     logo: 'contestia.png',
     queHace:
-      'A WhatsApp receptionist for clinics: it answers patients, consults the clinic\'s knowledge base, manages appointments against the calendar and escalates to a person when it detects an emergency.',
+      'A WhatsApp receptionist for clinics: it answers patients, draws on the clinic\'s knowledge base, books appointments against the calendar and hands over to a member of staff when it detects an emergency.',
     stack: 'FastAPI, Supabase with pgvector, Gemini 2.0 Flash, Evolution API',
   },
   {
@@ -61,12 +61,12 @@ export const productos: Producto[] = [
     nombre: 'InstantExam',
     estado: 'In production',
     categoria: 'EdTech',
-    descripcion: 'AI exam generator in 30 seconds.',
+    descripcion: 'AI-generated exams in 30 seconds.',
     propio: false,
     url: 'https://instantexam.co',
     logo: 'instantexam.png',
     queHace:
-      'Turns a text, a PDF, a URL or a YouTube video into an exam in seconds. Students join with a link and a password, with no sign-up, and grading and ranking are automatic.',
+      'Turns a text, a PDF, a URL or a YouTube video into an exam in seconds. Students join with a link and a password, without signing up, and marking and rankings are automatic.',
     stack: 'React 19, Express 5, MongoDB, OpenAI',
   },
   {
@@ -78,19 +78,19 @@ export const productos: Producto[] = [
     propio: false,
     logo: 'scoreflow.svg',
     queHace:
-      'Collects telemetry from a team\'s AI coding tools and produces a craft score per team. Banded metrics and aggregates with a minimum of five people, to measure without watching anyone.',
-    stack: 'Next.js 16, Hono, Postgres y ClickHouse, OpenTelemetry',
+      'Collects telemetry from a team\'s AI coding tools and produces a craft score per team. Banded metrics, aggregated over at least five people, so it measures without monitoring individuals.',
+    stack: 'Next.js 16, Hono, Postgres and ClickHouse, OpenTelemetry',
   },
   {
     slug: 'contablia',
     nombre: 'Contablia',
     estado: 'Pre-MVP',
     categoria: 'FinTech',
-    descripcion: 'A virtual team of 5 agents for Spanish freelancers.',
+    descripcion: 'A virtual team of five agents for self-employed professionals in Spain.',
     propio: false,
     logo: 'contablia.png',
     queHace:
-      'Five agents that share out a freelancer\'s admin: quotes and sales follow-up, capture of income and expenses, tax filings, documentation and business alerts. It is managed through conversation.',
+      'Five agents that split a freelancer\'s admin between them: quotes and sales follow-up, recording income and expenses, tax returns, paperwork and business alerts. You run it simply by chatting.',
     stack: 'Next.js, Postgres with pgvector, Drizzle, open banking',
   },
   {
@@ -113,7 +113,7 @@ export const corpora = {
   slug: 'corpora',
   nombre: 'Corpora',
   url: 'https://corpora.cat',
-  claim: 'Health science applied to the everyday life of organisations.',
+  claim: 'Health science applied to everyday working life.',
   descripcion:
     'Health training for professional teams, delivered by a physiotherapist and university lecturer. Evidence-based content applied to the workplace. In person or online, in Spanish and Catalan.',
   ambitos: [
@@ -123,12 +123,12 @@ export const corpora = {
     },
     {
       nombre: 'Women\'s health at work',
-      programas: 'Menopause and hormonal transition · Women\'s health in the company',
+      programas: 'Menopause and hormonal transition · Women\'s health in the workplace',
     },
     {
       nombre: 'Longevity and performance',
       programas: 'Workforces aged 50 and over · Sleep, rest and performance',
     },
   ],
-  financiacion: 'Training eligible for FUNDAE subsidy',
+  financiacion: 'Training eligible for FUNDAE funding',
 } as const;

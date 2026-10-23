@@ -24,7 +24,7 @@ export const resumen = [
   },
   {
     etiqueta: 'Security',
-    titulo: 'AI audit',
+    titulo: 'AI security audit',
     pie: 'Free scan of your assistants',
     ruta: '/servicios/seguridad-ia/',
   },
@@ -68,7 +68,7 @@ export const queIncluye = [
   },
   {
     titulo: 'Training for your team',
-    texto: 'Training for sales, admin and operations staff, with practical cases from your daily work.',
+    texto: 'Training for sales, admin and operations staff, with practical examples from their day-to-day work.',
   },
   {
     titulo: 'Documentation and handover',
@@ -84,7 +84,7 @@ export const fases = [
   {
     n: '01',
     titulo: 'Pilot',
-    texto: 'A minimum working version on a limited process. We test our assumptions before scaling.',
+    texto: 'A minimal working version on a single, contained process. We test our assumptions before scaling.',
   },
   {
     n: '02',
@@ -123,7 +123,7 @@ export const recorrido = [
     n: '04',
     titulo: 'Ongoing support',
     texto:
-      'If you want, we carry on as your Technology partner to scale and maintain the transformation.',
+      'If you want, we carry on as your technology partner to scale and maintain the transformation.',
   },
 ];
 
@@ -131,7 +131,7 @@ export const faq = [
   {
     pregunta: 'Is the assessment really free? Are there any conditions?',
     respuesta:
-      'There are no hidden conditions. It is our entry point. If you decide not to hire us after the assessment, you keep the proposal and the work plan. That is valuable information for you, and a reasonable investment for us compared with a failed project caused by not understanding the case.',
+      'There are no hidden conditions. It is our entry point. If you decide not to hire us after the assessment, you keep the proposal and the work plan. That is valuable information for you, and a reasonable investment for us compared with the cost of a project that fails because nobody understood the problem.',
   },
   {
     pregunta: 'Why don\'t you publish fixed prices for the transformation service?',
@@ -146,11 +146,11 @@ export const faq = [
   {
     pregunta: 'Is my data safe?',
     respuesta:
-      'All our infrastructure is in the European Union (Hetzner Frankfurt and EU providers). We comply with GDPR by default, with no dependence on third countries. If we work with regulated sectors (health, legal, finance), we add the specific measures your sector requires.',
+      'All our infrastructure is in the European Union (Hetzner Frankfurt and EU providers). We comply with GDPR by default, with no dependence on third countries. If you operate in a regulated sector (health, legal, finance), we add the specific measures it requires.',
   },
   {
     pregunta: 'What happens if I want to stop working with you?',
     respuesta:
-      'At the end of any project we hand over the code, access keys, data and documentation. Your company keeps everything that was built. The Technology partner service is reviewed quarterly, and you can adjust or pause it as your business evolves.',
+      'At the end of any project we hand over the code, access keys, data and documentation. Your company keeps everything that was built. The technology partner service is reviewed quarterly, and you can adjust or pause it as your business evolves.',
   },
 ];

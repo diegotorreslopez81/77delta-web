@@ -122,7 +122,7 @@ const ogLocale: Record<Idioma, string> = { es: 'es_ES', ca: 'ca_ES', en: 'en_GB'
           localStorage.setItem('idioma-77delta', codigo);
         }
         // Con elección guardada (manual o detectada) se va siempre a esa versión si existe; sin equivalente, se queda.
-        if (codigo && codigo !== idioma && rutas[codigo]) location.replace(rutas[codigo]);
+        if (codigo && codigo !== idioma && rutas[codigo]) location.replace(rutas[codigo] + location.search + location.hash);
       } catch (e) {}
     </script>}
     {deteccion && <script is:inline define:vars={{ actual: lang ?? idioma, deteccion }}>
@@ -137,7 +137,7 @@ const ogLocale: Record<Idioma, string> = { es: 'es_ES', ca: 'ca_ES', en: 'en_GB'
             if (p === 'ca' || p === 'gl' || p === 'eu') { codigo = p; break; }
           }
           localStorage.setItem('idioma-77delta', codigo);
-          if (codigo !== 'es' && codigo !== actual && deteccion[codigo]) location.replace(deteccion[codigo]);
+          if (codigo !== 'es' && codigo !== actual && deteccion[codigo]) location.replace(deteccion[codigo] + location.search + location.hash);
         }
       } catch (e) {}
     </script>}

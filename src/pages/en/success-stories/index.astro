@@ -7,27 +7,27 @@ import { historias } from '../../../data/historias.en';
 ---
 
 <Base
-  title="Success stories"
-  description="Three real projects with verified results: 38% fewer no-shows at the practice, 2h recovered per sales rep every day, 20h freed up per senior partner every month."
+  title="Case studies"
+  description="Three real projects with verified results: 38% fewer no-shows, 2 hours a day saved per sales rep and 20 hours a month freed up per senior partner."
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
     <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
       <div class="lg:col-span-7">
-        <p class="eyebrow" data-reveal>Real cases</p>
+        <p class="eyebrow" data-reveal>Case studies</p>
         <h1
           class="mt-7 max-w-[16ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
           data-reveal
         >
-          Three projects. <span class="font-semibold text-oro-oscuro">Three verifiable figures.</span>
+          Three projects. <span class="font-semibold text-oro-oscuro">Three verified results.</span>
         </h1>
         <p class="mt-8 max-w-[58ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-          We measure results instead of promising them. Every project starts with a quantified estimate of the return and is tracked
-          with verifiable metrics month by month. These are three real cases from companies that can tell you what has changed
+          We measure results rather than promise them. Every project starts with a costed estimate of the return and is tracked
+          against verifiable metrics month by month. Here are three real clients who can tell you what changed
           after working with us.
         </p>
       </div>
-      <HeroFoto foto="clinicas" alt="Dental clinic consulting room" class="lg:col-span-5" />
+      <HeroFoto foto="clinicas" alt="Treatment room in a dental clinic" class="lg:col-span-5" />
     </div>
   </section>
 
@@ -51,14 +51,14 @@ import { historias } from '../../../data/historias.en';
                 </div>
                 <div class="md:col-span-7">
                   <p class="eyebrow text-pizarra">
-                    Story {i + 1} of {historias.length} · {h.sector}
+                    Case {i + 1} of {historias.length} · {h.sector}
                   </p>
                   <h2 class="mt-4 font-display text-[clamp(22px,2.4vw,30px)] font-semibold leading-[1.2]">
                     {h.cliente}
                   </h2>
                   <p class="mt-5 text-[16px] text-pizarra">{h.resumen}</p>
                   <span class="mt-6 inline-block font-mono text-[12px] text-oro-oscuro group-hover:text-tinta">
-                    Read the full case →
+                    Read the case study →
                   </span>
                 </div>
               </a>
@@ -73,16 +73,16 @@ import { historias } from '../../../data/historias.en';
   <section class="hairline bg-panel">
     <div class="wrap py-16">
       <p class="max-w-[60ch] text-[15px] leading-[1.7] text-pizarra">
-        As well as these three closed cases, we have several <a
+        Alongside these three completed projects, we have several <a
           href={href('/proyectos-en-curso/')}
           class="text-oro-oscuro hover:underline">ongoing projects</a
-        >, still in the assessment phase and without verified results.
+        >, still at the assessment stage and without verified results yet.
       </p>
     </div>
   </section>
 
   <Cta
-    titulo="Would you like to be our next success story?"
-    texto="A 30-minute assessment. You get a tailored proposal with a work plan and budget. No commitment."
+    titulo="Could you be our next case study?"
+    texto="A 30-minute assessment. You get a tailored proposal with a work plan and a quote. No obligation."
   />
 </Base>

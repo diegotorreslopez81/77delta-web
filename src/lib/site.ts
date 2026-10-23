@@ -13,7 +13,7 @@ export const site = {
   descripcionCa:
     "Consultora tecnològica especialitzada en pimes. Diagnòstic gratuït, transformació operativa amb IA, auditoria de seguretat d'assistents i soci tecnològic. Barcelona.",
   descripcionEn:
-    'Technology consultancy for small and mid-sized businesses. Free assessment, AI-driven operational transformation, AI assistant security audits and technology partner. Barcelona.',
+    'Technology consultancy for small and mid-sized businesses. Free assessment, AI-driven operational transformation, AI assistant security audits and technology partnership. Barcelona.',
   ciudad: 'Barcelona',
   // Pendiente: activar el buzón cuando se compre el dominio.
   email: 'hola@77delta.com',
@@ -263,7 +263,7 @@ export const navEn: readonly ItemNav[] = [
     texto: 'Services',
     ruta: '/servicios/',
     hijos: [
-      { texto: 'External AI director', ruta: '/servicios/director-ia/', nota: 'From 1,200 €/month' },
+      { texto: 'Fractional AI director', ruta: '/servicios/director-ia/', nota: 'From €1,200/month' },
       { texto: 'Assessment', ruta: '/servicios/diagnostico/', nota: 'Free' },
       { texto: 'Operational transformation', ruta: '/servicios/transformacion/' },
       { texto: 'AI security', ruta: '/servicios/seguridad-ia/' },
@@ -275,7 +275,7 @@ export const navEn: readonly ItemNav[] = [
     texto: 'Results',
     ruta: '/historias-de-exito/',
     hijos: [
-      { texto: 'Success stories', ruta: '/historias-de-exito/' },
+      { texto: 'Case studies', ruta: '/historias-de-exito/' },
       { texto: 'Use cases', ruta: '/casos-de-uso/' },
       { texto: 'Study: AI assistants', ruta: '/estudio-asistentes-ia/' },
       { texto: 'Ongoing projects', ruta: '/proyectos-en-curso/' },

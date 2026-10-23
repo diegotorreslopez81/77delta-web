@@ -29,9 +29,9 @@ const sufijo = partes ? partes[2] : '';
 const fotoAlt: Record<string, string> = {
   industria: 'Technician reviewing drawings in a workshop',
   despachos: 'Person signing a document',
-  clinicas: 'Consultation room in a dental clinic',
+  clinicas: 'Treatment room in a dental clinic',
   distribucion: 'Aisle of a logistics warehouse',
-  administracion: 'Panorama of office buildings at dusk',
+  administracion: 'Office buildings at dusk',
   formacion: 'Group of students working on laptops',
 };
 ---
@@ -58,9 +58,9 @@ const fotoAlt: Record<string, string> = {
   <section class="hairline">
     <div class="wrap grid gap-10 py-24 md:grid-cols-12 md:py-32">
       <div class="md:col-span-7" data-reveal>
-        <p class="eyebrow">The typical problem in the sector</p>
+        <p class="eyebrow">The typical problem</p>
         <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
-          What we hear when they first come to us
+          What clients tell us at the first meeting
         </h2>
       </div>
       <div class="md:col-span-5 md:pt-12" data-reveal>
@@ -73,12 +73,12 @@ const fotoAlt: Record<string, string> = {
   <section class="hairline bg-panel">
     <div class="wrap py-24 md:py-32">
       <div class="max-w-[62ch]" data-reveal>
-        <p class="eyebrow">Applicable solutions</p>
+        <p class="eyebrow">What we deploy</p>
         <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
-          Lines of transformation with AI
+          Where AI makes the difference
         </h2>
         <p class="mt-6 text-[17px] text-pizarra">
-          Proven deployments that we adapt to your specific case after the assessment.
+          Proven solutions, tailored to your business after the assessment.
         </p>
       </div>
 
@@ -113,7 +113,7 @@ const fotoAlt: Record<string, string> = {
         <p class="mt-3 font-mono text-[12px] uppercase tracking-[0.14em] text-pizarra">{sector.caso.etiqueta}</p>
       </div>
       <div class="md:col-span-7" data-reveal>
-        <p class="eyebrow text-pizarra">Featured case</p>
+        <p class="eyebrow text-pizarra">Featured case study</p>
         <h2 class="mt-4 font-display text-[clamp(22px,2.4vw,30px)] font-semibold leading-[1.2]">
           {sector.caso.titulo}
         </h2>
@@ -125,12 +125,12 @@ const fotoAlt: Record<string, string> = {
                 href={href(`/historias-de-exito/${sector.caso.historia}/`)}
                 class="font-mono text-[12px] text-oro-oscuro hover:text-tinta"
               >
-                Read the full case →
+                Read the case study →
               </a>
             )
           }
           <a href={href('/historias-de-exito/')} class="font-mono text-[12px] text-tinta/70 hover:text-oro-oscuro">
-            See more cases in this sector →
+            See all case studies →
           </a>
         </div>
       </div>
@@ -165,6 +165,6 @@ const fotoAlt: Record<string, string> = {
 
   <Cta
     titulo={sector.ctaTitulo}
-    texto="A 30-minute assessment. We send you a tailored proposal with a baseline, a work plan and a budget. No commitment."
+    texto="A 30-minute assessment. We then send you a tailored proposal with a baseline, a work plan and a quote. No obligation."
   />
 </Base>

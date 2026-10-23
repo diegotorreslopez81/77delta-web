@@ -8,13 +8,13 @@ import { site, hrefEn as href } from '../../lib/site';
 import { casos } from '../../data/casos-de-uso';
 
 const familias = [
-  { slug: 'conversacional', num: '01', titulo: 'Conversational assistants', texto: 'Chatbots and voice assistants for web, WhatsApp and phone, with search over your own information, handover to a person and conversation analytics. Customer service, healthcare, training and internal support.' },
-  { slug: 'agentes', num: '02', titulo: 'Autonomous agents', texto: 'Agents that run real processes: they query internal systems, answer business questions on your data, monitor, test and prospect. Every step is fully traced so it can be audited.' },
-  { slug: 'rag', num: '03', titulo: 'Search and knowledge', texto: 'Semantic search over your intranet, your regulations or your recordings. Role-based access control, mandatory source citation in every answer and incremental indexing.' },
-  { slug: 'workflow', num: '04', titulo: 'Process automation', texto: 'Integration between systems that are not connected, incident management, multichannel communication, automatic reports and technical proposals for tenders.' },
+  { slug: 'conversacional', num: '01', titulo: 'Conversational assistants', texto: 'Chatbots and voice assistants for web, WhatsApp and phone, with search across your own information, handover to a human and conversation analytics. Customer service, healthcare, training and internal support.' },
+  { slug: 'agentes', num: '02', titulo: 'Autonomous agents', texto: 'Agents that run real processes: they query internal systems, answer business questions from your data, monitor, test and prospect. Every step is fully logged so it can be audited.' },
+  { slug: 'rag', num: '03', titulo: 'Search and knowledge', texto: 'Semantic search across your intranet, your regulations or your recordings. Role-based access control, mandatory source citation in every answer and incremental indexing.' },
+  { slug: 'workflow', num: '04', titulo: 'Process automation', texto: 'Integration between disconnected systems, incident management, multichannel communication, automatic reports and technical proposals for tenders.' },
   { slug: 'governance', num: '05', titulo: 'Governance and compliance', texto: 'Governance of AI systems under the EU AI Act, ALTAI audits and multi-framework compliance with GDPR, NIS2 and accessibility standards. The mandatory documentation is generated automatically.' },
-  { slug: 'seguridad', num: '06', titulo: 'AI security', texto: 'Audit and hardening of the assistants you have already published: what information can be extracted, how, and how to fix it. Includes adversarial testing, guardrails and continuous monitoring.' },
-  { slug: 'verticales', num: '07', titulo: 'Vertical platforms and synthetic data', texto: 'AI platforms for a specific sector (insurance, legal, healthcare, business acceleration), digital simulation and privacy-preserving synthetic data generation.' },
+  { slug: 'seguridad', num: '06', titulo: 'AI security', texto: 'Auditing and hardening of the assistants you already have live: what information can be extracted, how, and how to fix it. Includes adversarial testing, guardrails and ongoing monitoring.' },
+  { slug: 'verticales', num: '07', titulo: 'Vertical platforms and synthetic data', texto: 'Industry-specific AI platforms (insurance, legal, healthcare, business acceleration), digital simulation and privacy-preserving synthetic data generation.' },
   { slug: 'modelos', num: '08', titulo: 'Custom models and forecasting', texto: 'Fine-tuning of open models for a vertical, forecasting and anomaly detection, supervised classification, bespoke document recognition and model evaluation.' },
 ];
 ---
@@ -27,8 +27,8 @@ const familias = [
     <div class="grid">
       <div>
         <div class="pill"><span class="badge"></span>Accredited by ACCIÓ</div>
-        <h1>We apply AI to <em>cut your company's costs</em>.</h1>
-        <p class="lead">Technology consultancy for small and mid-sized businesses. Free assessment, operational transformation with AI and a technology partner.</p>
+        <h1>We use AI to <em>cut your company's costs</em>.</h1>
+        <p class="lead">Technology consultancy for SMEs. A free assessment, AI-driven operational transformation and an ongoing technology partner.</p>
         <div class="ctas">
           <a href={href('/contacto/')} class="btn-primary" data-umami-event="reservar" data-umami-event-pagina={Astro.url.pathname} data-umami-event-lugar="hero">Book a free assessment <span>→</span></a>
           <a href={href('/servicios/')} class="btn-ghost">See how we work</a>
@@ -45,7 +45,7 @@ const familias = [
 <!-- PRUEBA SOCIAL -->
 <section class="proof">
   <div class="cont">
-    <p class="proof-txt">Over seven years applying AI with good judgement, with leading institutions and corporations</p>
+    <p class="proof-txt">Over seven years applying AI with sound judgement for leading institutions and corporations</p>
     <div class="proof-logos">
       <a href="https://www.accio.gencat.cat" target="_blank" rel="noopener"><img src="/img/logos/accio.png" alt="ACCIÓ" loading="lazy"></a>
       <a href="https://www.gencat.cat" target="_blank" rel="noopener"><img src="/img/logos/gencat.svg" alt="Generalitat de Catalunya" loading="lazy"></a>
@@ -67,9 +67,9 @@ const familias = [
       </div>
       <div>
         <span class="section-tag">The problem</span>
-        <h2>Artificial intelligence is reshaping your sector. <em>The question is not whether it will affect you, but how to apply it well.</em></h2>
-        <p class="lead">There is plenty of information out there, but telling what truly transforms your business from what is merely eye-catching takes judgement and experience. The change is not only technological. It touches processes, teams and the way decisions get made.</p>
-        <p class="questions">Which repetitive tasks eat up your team's day? Which decisions are made without enough data? Which areas are overloaded? What happens when a key person is away? What does it really cost to start, and how is the return measured?</p>
+        <h2>Artificial intelligence is reshaping your industry. <em>The question is not whether it will affect you, but how to use it well.</em></h2>
+        <p class="lead">There is plenty of information out there, but telling what will genuinely transform your business from what merely looks impressive takes judgement and experience. The change is not only technological. It touches processes, teams and the way decisions get made.</p>
+        <p class="questions">Which repetitive tasks eat up your team's day? Which decisions are taken without enough data? Which areas are overstretched? What happens when a key person is away? What does it really cost to start, and how is the return measured?</p>
       </div>
     </div>
   </div>
@@ -80,8 +80,8 @@ const familias = [
   <div class="cont">
     <div class="section-head">
       <span class="section-tag">How we work</span>
-      <h2>We start with an assessment. Then you decide the route.</h2>
-      <p>Every company is different. The process is linear: first we understand your reality, then we build the transformation and, if you want, we support you in the medium and long term as your technology partner.</p>
+      <h2>We start with an assessment. Then you choose the way forward.</h2>
+      <p>Every company is different. The process is simple: first we understand how your business really works, then we deliver the transformation and, if you wish, we stay on as your technology partner for the medium and long term.</p>
     </div>
 
     <div class="svc-featured">
@@ -90,7 +90,7 @@ const familias = [
         <div class="text-panel">
           <span class="badge">FIRST STEP · FREE · 30 MIN</span>
           <h3>Assessment</h3>
-          <p>A 30-minute structured interview and a form that lets us understand your reality. You receive a tailored proposal with the current state of your company, a work plan and a budget. No obligation.</p>
+          <p>A structured 30-minute interview and a short form so we can understand how your business works. You receive a tailored proposal covering where your company stands today, a work plan and a budget. No obligation.</p>
           <a href={href('/servicios/diagnostico/')} class="arrow-btn">See the assessment <span>→</span></a>
         </div>
       </div>
@@ -100,13 +100,13 @@ const familias = [
       <a href={href('/servicios/transformacion/')} class="svc-card">
         <div class="num">02 · Tailor-made project</div>
         <h3>Operational transformation with AI</h3>
-        <p>After the assessment, we deliver the agreed proposal: rollout, integration with your systems, process automation and training for your team. Everything the transformation needs. The investment is set in the proposal, matched to the scope.</p>
-        <div class="price"><span>Custom quote in the proposal</span><span class="arrow">→</span></div>
+        <p>After the assessment, we deliver the agreed proposal: implementation, integration with your systems, process automation and training for your team. Everything the transformation requires. The investment is set out in the proposal and matched to the scope.</p>
+        <div class="price"><span>Bespoke quote in the proposal</span><span class="arrow">→</span></div>
       </a>
       <a href={href('/servicios/partner/')} class="svc-card">
         <div class="num">03 · Ongoing support</div>
         <h3>Technology partner</h3>
-        <p>A technical partner for all of your company's technology, not just AI: custom software, integration, CRM and ERP, Microsoft, cloud, cybersecurity, hardware and plant, web, data and R&D. A single point of contact who deals with your suppliers on equal terms and decides with you.</p>
+        <p>A technical partner for all of your company's technology, not just AI: bespoke software, integration, CRM and ERP, Microsoft, cloud, cybersecurity, hardware and on-site infrastructure, web, data and R&D. A single point of contact who deals with your suppliers as an equal and makes decisions with you.</p>
         <div class="price"><span>Scope and budget tailored to you</span><span class="arrow">→</span></div>
       </a>
     </div>
@@ -119,18 +119,18 @@ const familias = [
     <div class="director-panel">
       <div class="director-head">
         <span class="section-tag">Main service · Fixed monthly fee</span>
-        <h2>Your external AI director <em>from 1,200 € a month</em>.</h2>
-        <p class="lead">One morning a month at your company with your technician, and the rest of the work done remotely. Every month, one less process done by hand and a report with the hours saved.</p>
+        <h2>Your fractional AI director, <em>from €1,200 a month</em>.</h2>
+        <p class="lead">One morning a month on site with your technical lead, and the rest of the work done remotely. Every month, one fewer manual process and a report on the hours saved.</p>
       </div>
       <ul class="director-paquetes" role="list">
-        <li><span class="nombre">Base</span><span class="precio">1,200 €/month</span><span class="detalle">One morning at your company and 4 hours remote.</span></li>
-        <li><span class="nombre">Advance</span><span class="precio">2,400 €/month</span><span class="detalle">Two mornings at your company and 10 hours remote.</span></li>
-        <li><span class="nombre">Intensive</span><span class="precio">3,600 €/month</span><span class="detalle">One morning every week and 14 hours remote.</span></li>
+        <li><span class="nombre">Base</span><span class="precio">€1,200/month</span><span class="detalle">One morning on site and 4 remote hours.</span></li>
+        <li><span class="nombre">Advance</span><span class="precio">€2,400/month</span><span class="detalle">Two mornings on site and 10 remote hours.</span></li>
+        <li><span class="nombre">Intensive</span><span class="precio">€3,600/month</span><span class="detalle">One morning a week on site and 14 remote hours.</span></li>
       </ul>
       <div class="director-pie">
         <div>
-          <p class="garantia"><strong>Guarantee:</strong> if by the third month the savings do not reach twice the fee, you can end the contract at no cost.</p>
-          <p class="nota">Prices exclude VAT. Annual contract with a fixed monthly fee.</p>
+          <p class="garantia"><strong>Guarantee:</strong> if by the third month the savings are not at least twice the fee, you can cancel the contract at no cost.</p>
+          <p class="nota">Prices exclude VAT. Annual contract, fixed monthly fee.</p>
         </div>
         <a href={href('/servicios/director-ia/')} class="btn-primary">See the service <span>→</span></a>
       </div>
@@ -145,11 +145,11 @@ const familias = [
       <div>
         <span class="section-tag">AI security</span>
         <h2>Your chatbot <em>reveals more than you think.</em></h2>
-        <p>Publishing an AI assistant on your website is quick. Auditing it is rare. We test it the way an attacker would and show you what it leaks: its internal instructions, prices it should not give, the customer data it can reach and what it says when pushed off script.</p>
-        <p class="aisec-nota">We do it with LeakAI, the tool we built for this. With it we scanned 391 Spanish websites in September 2026 and we keep auditing in depth the AI assistants we find. The assessment is free. The paid service is fixing the vulnerabilities found.</p>
+        <p>Putting an AI assistant on your website is quick. Auditing it is rare. We test it the way an attacker would and show you what it gives away: its internal instructions, prices it should not quote, the customer data it can reach and what it says when pushed off script.</p>
+        <p class="aisec-nota">We do it with LeakAI, the tool we built for this. In September 2026 we used it to scan 391 Spanish websites, and we continue to audit in depth the AI assistants we find. The assessment is free. The paid service is fixing the vulnerabilities we uncover.</p>
         <p class="aisec-nota"><a href={href('/estudio-asistentes-ia/')} class="aisec-enlace">See the study with the data &#8594;</a></p>
         <div class="ctas">
-          <a href={href('/servicios/seguridad-ia/')} class="btn-primary">Request the free scan <span>&#8594;</span></a>
+          <a href={href('/servicios/seguridad-ia/')} class="btn-primary">Request a free scan <span>&#8594;</span></a>
           <a href={href('/productos/#leakai')} class="btn-ghost">Discover LeakAI</a>
         </div>
       </div>
@@ -176,9 +176,9 @@ const familias = [
 <section class="sectors" id="sectores">
   <div class="cont">
     <div class="section-head">
-      <span class="section-tag">Sectores</span>
-      <h2>Six sectors. One methodology.</h2>
-      <p>In each one we apply a proven methodology. The technology is the visible part. What changes is how your team works.</p>
+      <span class="section-tag">Industries</span>
+      <h2>Six industries. One methodology.</h2>
+      <p>In each one we apply a proven methodology. The technology is only the visible part. What really changes is how your team works.</p>
     </div>
     <div class="sec-grid">
       <a href={href('/sectores/clinicas/')} class="sec-card">
@@ -195,7 +195,7 @@ const familias = [
         <div class="content">
           <div class="num">Sector 02</div>
           <h3>Industry and workshops</h3>
-          <p>We transform the quoting, maintenance and quality-control cycle of production processes.</p>
+          <p>We transform quoting, maintenance and quality control across your production processes.</p>
           <span class="arrow">See sector cases →</span>
         </div>
       </a>
@@ -204,7 +204,7 @@ const familias = [
         <div class="content">
           <div class="num">Sector 03</div>
           <h3>Distribution and logistics</h3>
-          <p>We rethink how orders are received, how stock is validated and how sales reps work.</p>
+          <p>We rethink how orders come in, how stock is checked and how your sales reps work.</p>
           <span class="arrow">See sector cases →</span>
         </div>
       </a>
@@ -213,7 +213,7 @@ const familias = [
         <div class="content">
           <div class="num">Sector 04</div>
           <h3>Professional firms</h3>
-          <p>We free up senior staff hours by automating repetitive documents and archive searches.</p>
+          <p>We free up senior staff time by automating repetitive documents and archive searches.</p>
           <span class="arrow">See sector cases →</span>
         </div>
       </a>
@@ -222,7 +222,7 @@ const familias = [
         <div class="content">
           <div class="num">Sector 05</div>
           <h3>Public administration</h3>
-          <p>We transform citizen services, document management and the analysis of historical case files.</p>
+          <p>We transform public-facing services, document management and the analysis of historical case files.</p>
           <span class="arrow">See sector cases →</span>
         </div>
       </a>
@@ -231,7 +231,7 @@ const familias = [
         <div class="content">
           <div class="num">Sector 06</div>
           <h3>Training and human resources</h3>
-          <p>We change how people are assessed, how onboarding is done and how learner progress is analysed.</p>
+          <p>We change how people are assessed, how they are onboarded and how learner progress is tracked.</p>
           <span class="arrow">See sector cases →</span>
         </div>
       </a>
@@ -245,8 +245,8 @@ const familias = [
   <div class="cont">
     <div class="section-head">
       <span class="section-tag">What we can do</span>
-      <h2>{casos.length} catalogued capabilities, in eight families.</h2>
-      <p>From conversational assistants to AI security, including agents, search over your documentation, process automation, European compliance and custom models. All of them are in production in real environments. The examples are representative and anonymised.</p>
+      <h2>{casos.length} catalogued capabilities in eight families.</h2>
+      <p>From conversational assistants to AI security, via agents, search across your documentation, process automation, EU compliance and custom models. All of them are running in production in real businesses. The examples are representative and anonymised.</p>
     </div>
     <ul class="caps-grid">
       {
@@ -280,8 +280,8 @@ const familias = [
         <div>
           <span class="section-tag">Case 1 of 5 · Dental clinics · Barcelona</span>
           <h3>Three dental clinics shared the same problem.</h3>
-          <p>A large number of patients missed their appointments without notice. Reception did not have the time for confirmation calls.</p>
-          <p>In four weeks we rolled out Contestia, a virtual receptionist on WhatsApp. The investment paid for itself in under a month.</p>
+          <p>Many patients missed appointments without warning. Reception had no time for confirmation calls.</p>
+          <p>In four weeks we rolled out Contestia, a virtual receptionist on WhatsApp. It paid for itself in under a month.</p>
           <a href={href('/historias-de-exito/clinicas-dentales-barcelona/')} class="arrow-btn">Read the full case <span>→</span></a>
         </div>
       </div></div></div>
@@ -293,12 +293,12 @@ const familias = [
       <div class="content"><div class="cont"><div class="grid">
         <div>
           <div class="big">2<span class="pct">h</span></div>
-          <div class="label">recovered per sales rep / day</div>
+          <div class="label">saved per sales rep per day</div>
         </div>
         <div>
           <span class="section-tag">Case 2 of 5 · Industrial distribution · Catalonia</span>
-          <h3>12 sales reps lost two hours a day on manual orders.</h3>
-          <p>Orders came in by WhatsApp, phone and email. Sales reps spent the first two hours of the day typing them into the ERP.</p>
+          <h3>12 sales reps were losing two hours a day to manual order entry.</h3>
+          <p>Orders came in by WhatsApp, phone and email, and the reps spent the first two hours of every day keying them into the ERP.</p>
           <p>We connected an AI assistant to the main WhatsApp line: it identifies the customer, recognises product references, checks stock and creates the order. The sales rep only steps in for exceptions.</p>
           <a href={href('/historias-de-exito/distribuidora-industrial/')} class="arrow-btn">Read the full case <span>→</span></a>
         </div>
@@ -311,13 +311,13 @@ const familias = [
       <div class="content"><div class="cont"><div class="grid">
         <div>
           <div class="big">20<span class="pct">h</span></div>
-          <div class="label">freed up per senior partner / month</div>
+          <div class="label">freed up per senior partner per month</div>
         </div>
         <div>
           <span class="section-tag">Case 3 of 5 · Commercial law · Madrid</span>
-          <h3>A firm of 18 professionals kept reworking the same five contract templates.</h3>
+          <h3>An 18-strong firm kept reworking the same five contract templates.</h3>
           <p>Each senior partner spent 4 to 6 hours a week drafting and reviewing contracts that were variations of the same templates.</p>
-          <p>We built a contract generator based on their templates. Average response time to clients fell from 3 days to 6 hours.</p>
+          <p>We built a contract generator based on their templates. Average client turnaround fell from 3 days to 6 hours.</p>
           <a href={href('/historias-de-exito/despacho-mercantil/')} class="arrow-btn">Read the full case <span>→</span></a>
         </div>
       </div></div></div>
@@ -334,8 +334,8 @@ const familias = [
         <div>
           <span class="section-tag">Case 4 of 5 · Metalworking industry · Sabadell</span>
           <h3>Every industrial quote took 3 days in the technical office.</h3>
-          <p>The customer sent drawings by email. The technical office worked out materials, labour and margins by hand. A quote took 3 days to go out.</p>
-          <p>We deployed an AI system that reads the drawing, calculates the estimate and proposes margins. The team reviews and approves. Turnaround: 4 hours.</p>
+          <p>Customers sent drawings by email. The technical office worked out materials, labour and margins by hand, and a quote took 3 days to go out.</p>
+          <p>We deployed an AI system that reads the drawing, prices the job and suggests margins. The team reviews and approves. Turnaround: 4 hours.</p>
           <a href={href('/sectores/industria/')} class="arrow-btn">See the sector <span>→</span></a>
         </div>
       </div></div></div>
@@ -351,9 +351,9 @@ const familias = [
         </div>
         <div>
           <span class="section-tag">Case 5 of 5 · Vocational training · Valencia</span>
-          <h3>A vocational training centre had a month-long queue for personal tutoring.</h3>
-          <p>Trainers could not handle every individual question. Students waited up to a month for a tutoring session, which hurt the pass rate.</p>
-          <p>We built a learning assistant trained on their material. It answers questions 24/7 and hands over to a human tutor only in complex cases. The queue disappeared.</p>
+          <h3>A vocational training centre had a month-long waiting list for one-to-one tutoring.</h3>
+          <p>Tutors could not keep up with every individual question. Students waited up to a month for a session, which hurt pass rates.</p>
+          <p>We built a learning assistant trained on their course material. It answers questions 24/7 and only hands over to a human tutor for complex cases. The waiting list disappeared.</p>
           <a href={href('/sectores/formacion/')} class="arrow-btn">See the sector <span>→</span></a>
         </div>
       </div></div></div>
@@ -384,27 +384,27 @@ const familias = [
       <div class="why-item">
         <div class="icon">01</div>
         <h3>Company-wide transformation, not just technology</h3>
-        <p>AI changes processes, teams and the way decisions are made. Installing tools is not enough. We support the full transformation of your organisation.</p>
+        <p>AI changes processes, teams and the way decisions are made. Installing tools is not enough. We guide your organisation through the whole transformation.</p>
       </div>
       <div class="why-item">
         <div class="icon">02</div>
         <h3>AI augments people, it does not replace them</h3>
-        <p>We design every rollout with your team at the centre. Human oversight by default: we free time from repetitive tasks so your team can focus on the work that adds value.</p>
+        <p>We design every rollout around your team. Human oversight by default: we take repetitive tasks off their plate so they can focus on work that adds value.</p>
       </div>
       <div class="why-item">
         <div class="icon">03</div>
         <h3>We build what we deploy</h3>
-        <p>We run our own products in production with real companies. The technology we propose is proven with active clients.</p>
+        <p>Our own products run in production at real companies. The technology we recommend is proven with active clients.</p>
       </div>
       <div class="why-item">
         <div class="icon">04</div>
         <h3>Data in Europe, compliance guaranteed</h3>
-        <p>Our own infrastructure in the EU. GDPR compliant. No dependence on third countries. Support in English, Spanish and Catalan.</p>
+        <p>Our own infrastructure in the EU. GDPR compliant. No reliance on non-EU providers. Support in English, Spanish and Catalan.</p>
       </div>
       <div class="why-item">
         <div class="icon">05</div>
         <h3>Results measured in hours and in sales</h3>
-        <p>Every project starts with a quantified estimate: time recovered, cost reduction, higher output or sales. Monthly follow-up with verifiable metrics.</p>
+        <p>Every project starts with a quantified estimate: time saved, lower costs, higher output or sales. Monthly reporting with verifiable metrics.</p>
       </div>
       <div class="why-item">
         <div class="icon">06</div>
@@ -421,11 +421,11 @@ const familias = [
     <div class="grid">
       <div>
         <span class="section-tag">About us</span>
-        <h2>A consultancy with a track record, <em>born from inside the problem.</em></h2>
-        <p>Over 20 years applying technology to real companies. Accredited by the Government of Catalonia. With clients from Barcelona to Dubai. And one conviction: AI only adds value when it is applied with good judgement.</p>
-        <p>77 Delta grew out of the experience Diego Torres built up over two decades. After supporting more than 500 startups, he noticed a pattern: large companies had strategy consultancies, while SMEs were left disoriented by the pace of technological change. It was created to be that trusted partner for your company.</p>
+        <h2>A consultancy with a track record, <em>built by people who have lived the problem.</em></h2>
+        <p>Over 20 years applying technology in real companies. Accredited by the Government of Catalonia. Clients from Barcelona to Dubai. And one conviction: AI only adds value when it is applied with sound judgement.</p>
+        <p>77 Delta grew out of two decades of experience built up by Diego Torres. After supporting more than 500 startups, he noticed a pattern: large companies had strategy consultancies, while SMEs were left struggling to keep pace with technological change. 77 Delta was created to be that trusted partner for your company.</p>
         <p class="signature"><strong>Diego Torres</strong>, founder</p>
-        <a href={href('/sobre-nosotros/')} class="arrow-btn">Learn about our mission <span>→</span></a>
+        <a href={href('/sobre-nosotros/')} class="arrow-btn">Discover our mission <span>→</span></a>
       </div>
       <div class="photo">
         <img src="/img/fotos/campus-1600.webp" alt="Technology campus" loading="lazy" decoding="async">
@@ -439,7 +439,7 @@ const familias = [
   <img class="bg" src="/img/fotos/oficina-1600.webp" alt="Office with a view" srcset="/img/fotos/oficina-900.webp 900w, /img/fotos/oficina-1600.webp 1600w" sizes="100vw" loading="lazy" decoding="async">
   <div class="cont">
     <h2>30 minutes. <em>No strings attached.</em><br>The decision is yours.</h2>
-    <p>A structured interview about your business. You get a tailored proposal with the current state, a work plan and a budget.</p>
+    <p>A structured interview about your business. You receive a tailored proposal covering where you stand today, a work plan and a budget.</p>
     <a href={href('/contacto/')} class="btn-primary" data-umami-event="reservar" data-umami-event-pagina={Astro.url.pathname} data-umami-event-lugar="cierre">Book a free assessment →</a>
   </div>
 </section>
@@ -450,12 +450,12 @@ const familias = [
     <div class="header">
       <span class="section-tag">Proven trust</span>
       <h2>Leading institutions, corporations and technology partners</h2>
-      <p>Over 7 years applying AI with good judgement in Catalonia, Europe and worldwide.</p>
+      <p>Over seven years applying AI with sound judgement in Catalonia, across Europe and worldwide.</p>
     </div>
     <div class="logos">
       <a class="logo" href="https://www.accio.gencat.cat" target="_blank" rel="noopener"><img src="/img/logos/accio.png" alt="ACCIÓ"></a>
       <a class="logo tall" href="https://barcelonactiva.cat" target="_blank" rel="noopener"><img src="/img/logos/barcelona-activa.png" alt="Barcelona Activa"></a>
-      <a class="logo" href="https://futurium.ec.europa.eu" target="_blank" rel="noopener"><img src="/img/logos/futurium.svg" alt="Futurium European Commission"></a>
+      <a class="logo" href="https://futurium.ec.europa.eu" target="_blank" rel="noopener"><img src="/img/logos/futurium.svg" alt="Futurium, European Commission"></a>
       <a class="logo" href="https://www.gencat.cat" target="_blank" rel="noopener"><img src="/img/logos/gencat.svg" alt="Generalitat de Catalunya"></a>
       <a class="logo" href="https://www.dubai.gov.ae" target="_blank" rel="noopener"><img src="/img/logos/gov-dubai.svg" alt="Government of Dubai"></a>
       <a class="logo wide" href="https://i2cat.net" target="_blank" rel="noopener"><img src="/img/logos/i2cat.svg" alt="i2CAT"></a>

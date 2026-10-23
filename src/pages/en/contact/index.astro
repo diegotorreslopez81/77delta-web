@@ -4,7 +4,7 @@ import HeroFoto from '../../../components/HeroFoto.astro';
 import { site, hrefEn as href } from '../../../lib/site';
 
 const sectores = [
-  'Clinics and health centers',
+  'Clinics and healthcare centres',
   'Industry and workshops',
   'Distribution and logistics',
   'Professional firms',
@@ -24,7 +24,7 @@ const vias = [
   },
   {
     titulo: 'Direct email',
-    texto: 'Write to us directly and we reply within 24 business hours.',
+    texto: 'Write to us directly and we will reply within 24 working hours.',
     enlace: `mailto:${site.email}`,
     etiqueta: `${site.email} →`,
     externo: false,
@@ -45,7 +45,7 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
 
 <Base
   title="Contact"
-  description="Tell us about your situation. We reply within 24 business hours, or book the 30-minute initial conversation directly."
+  description="Tell us about your situation. We reply within 24 working hours, or you can book an initial 30-minute call directly."
 >
   <!-- Hero -->
   <section class="wrap py-24 md:py-32">
@@ -59,7 +59,7 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
           Tell us about your situation.
         </h1>
         <p class="mt-8 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
-          We reply within 24 business hours. If you prefer, book the 30-minute initial conversation
+          We reply within 24 working hours. If you prefer, book an initial 30-minute call
           directly in the calendar.
         </p>
       </div>
@@ -87,14 +87,14 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
           data-src={site.calendarioIncrustado}
         >
           <p class="max-w-[46ch] text-[15px] text-pizarra">
-            The calendar is served by Google. Nothing from Google is loaded until you press the button: when you do,
+            The calendar is served by Google. Nothing from Google is loaded until you click the button. When you do,
             Google may set its own cookies.
           </p>
           <div class="flex flex-wrap items-center justify-center gap-5">
             <button
               type="button"
               id="calendario-boton"
-              class="inline-flex items-center gap-2 whitespace-nowrap rounded-[10px] bg-oro px-6 py-3.5 font-sans text-[15px] font-semibold text-marfil shadow-[0_6px_24px_rgba(167,120,27,.30)] transition-[background-color,transform] duration-200 hover:-translate-y-px hover:bg-tinta"
+              class="inline-flex items-center justify-center gap-2 text-center rounded-[10px] bg-oro px-6 py-3.5 font-sans text-[15px] font-semibold text-marfil shadow-[0_6px_24px_rgba(167,120,27,.30)] transition-[background-color,transform] duration-200 hover:-translate-y-px hover:bg-tinta"
             >
               Show calendar (loads Google Calendar, uses cookies) →
             </button>
@@ -110,7 +110,7 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
         </div>
       </div>
       <p class="mt-5 max-w-[62ch] text-[13px] text-pizarra">
-        By pressing "Show calendar" you accept that Google sets its own cookies to display the calendar.
+        By clicking "Show calendar" you accept that Google sets its own cookies to display the calendar.
         If you prefer not to accept them, use the <a
           href="#form-contacto"
           class="text-tinta underline decoration-linea underline-offset-4 transition-colors hover:decoration-oro"
@@ -154,7 +154,7 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
           Describe your situation in your own words.
         </h2>
         <p class="mt-6 max-w-[48ch] text-[17px] text-pizarra">
-          We reply within 24 business hours.
+          We reply within 24 working hours.
         </p>
 
         <form
@@ -195,7 +195,7 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
               name="sector"
               required
             >
-              <option value="" disabled selected>Choose an industry</option>
+              <option value="" disabled selected>Select your industry</option>
               {sectores.map((s) => <option value={s}>{s}</option>)}
             </select>
           </div>
@@ -209,13 +209,13 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
             <button
               type="submit"
               data-umami-event="form-contacto"
-              class="inline-flex items-center gap-2 whitespace-nowrap rounded-[10px] bg-oro px-6 py-3.5 font-sans text-[15px] font-semibold text-marfil shadow-[0_6px_24px_rgba(167,120,27,.30)] transition-[background-color,transform] duration-200 hover:-translate-y-px hover:bg-tinta disabled:cursor-wait disabled:opacity-60"
+              class="inline-flex items-center justify-center gap-2 text-center rounded-[10px] bg-oro px-6 py-3.5 font-sans text-[15px] font-semibold text-marfil shadow-[0_6px_24px_rgba(167,120,27,.30)] transition-[background-color,transform] duration-200 hover:-translate-y-px hover:bg-tinta disabled:cursor-wait disabled:opacity-60"
             >
               Send message →
             </button>
             <p id="form-estado" class="mt-5 hidden max-w-[52ch] text-[15px] text-tinta" role="status" aria-live="polite"></p>
             <p class="mt-6 max-w-[52ch] text-[13px] text-pizarra">
-              Your data is processed in the European Union in accordance with the GDPR. We do not share it with third parties. More detail in
+              Your data is processed in the European Union in accordance with the GDPR. We do not share it with third parties. Further details in
               our <a
                 href={href('/politica-privacidad/')}
                 class="text-tinta underline decoration-linea underline-offset-4 transition-colors hover:decoration-oro"
@@ -302,16 +302,16 @@ const etiqueta = 'block font-mono text-[11px] uppercase tracking-[0.18em] text-p
         const respuesta = (await r.json().catch(() => ({}))) as { ok?: boolean; error?: string };
         if (r.ok && respuesta.ok) {
           form.reset();
-          mostrar('Received. We will reply within 24 business hours.');
+          mostrar('Thank you, we have received your message. We will reply within 24 working hours.');
           return;
         }
         if (r.status === 400 || r.status === 429) {
-          mostrar(respuesta.error ?? 'We could not send your message. Please check the fields.');
+          mostrar(r.status === 429 ? 'Too many submissions. Please try again in a few minutes.' : 'We could not send your message. Please check the fields.');
           return;
         }
         throw new Error(`respuesta ${r.status}`);
       } catch {
-        mostrar('Direct sending is not available right now: your email app will open with the message ready to send.');
+        mostrar('We cannot send your message from here right now, so your email app will open with it ready to send.');
         abrirCorreo(destino, campos);
       } finally {
         if (boton) boton.disabled = false;
