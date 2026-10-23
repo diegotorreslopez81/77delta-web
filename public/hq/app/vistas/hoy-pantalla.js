@@ -400,6 +400,9 @@ function captacionNueva(f) {
     previo = n;
     return { texto: et + ' ' + (n == null ? 'pdte' : n) + pct, ...enlaceLinea(d?.enlace) };
   });
+  // Diego 23-10: nº de campañas activas de Twenty, con enlace a su vista de campañas.
+  const camp = por('campanas_activas'), nCamp = num(camp);
+  if (camp) lineasEnl.push({ texto: 'Campañas activas ' + (nCamp == null ? 'pdte' : nCamp), ...enlaceLinea(camp.enlace) });
   return {
     principal: env == null ? 'pdte' : String(env), principalTexto: 'enviados', secundario: '',
     color: env == null ? (f.color || '') : env > 0 ? 'verde' : 'rojo',

@@ -499,6 +499,10 @@ body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
 .hoy-neg .neg-secundario { font-size: 14px; }
 .hoy-neg .neg-detalle { font-size: 12px; }
 .neg-linea{white-space:normal;overflow-wrap:anywhere;font-size:13px}
+/* Diego 23-10: cifras y líneas con enlace se ven como enlace (subrayado, color de acento, objetivo táctil >=24px). */
+.hoy-neg a.neg-cifra,.hoy-neg a.neg-linea{color:var(--tag-indigo-fg);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.hoy-neg a.neg-linea{display:block;min-height:24px;line-height:24px}
+.hoy-neg a.neg-cifra:hover,.hoy-neg a.neg-linea:hover{text-decoration-thickness:2px}
 .hoy-neg.rojo .neg-principal { color: var(--error); } .hoy-neg.ambar .neg-principal { color: var(--tag-ambar-fg); } .hoy-neg.verde .neg-principal { color: var(--exito); }
 /* D2 (#2584): barra apilada por línea de negocio, solo variables ya definidas */
 .neg-barra { display: flex; height: 8px; gap: 2px; border-radius: 4px; overflow: hidden; background: var(--line); margin-top: 4px; }
