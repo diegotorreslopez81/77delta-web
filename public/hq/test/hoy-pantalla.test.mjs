@@ -159,5 +159,4 @@ test('formulariosWeb: suma 30 días por sitio, altas y contacto, guion (null) si
   assert.deepEqual(formulariosWeb(dias, '77delta.com', ahora), { altas: null, contacto: 2 });
   assert.deepEqual(formulariosWeb(dias, 'docureal.77delta.com', ahora), { altas: 4, contacto: null });
   assert.deepEqual(formulariosWeb(dias, 'swarmix.co', ahora), { altas: null, contacto: null });
-  assert.deepEqual(formulariosWeb(dias, 'verifix.77delta.com', ahora), { altas: 0, contacto: null });
 });

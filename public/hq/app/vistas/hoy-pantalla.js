@@ -240,11 +240,10 @@ export function modeloWeb7(filas, ahora = new Date()) {
 // #2739 PR 1c+1d: un panel por sitio con la misma tarjeta que Negocio (vt-card hoy-neg): logo y título (enlace a Umami si hq_web trae umami_url y umami_id), visitas 30 d, visitantes y variación, total histórico y formularios/CTA 30 d.
 const nombreCorto = sitio => etiquetaSitio(sitio).replace(/\.(com|co)$/, '');
 // Eventos de Umami por tipo y sitio (hq_v_web los devuelve a 0 en todos los sitios, así que "no medido" lo fija este mapa):
-// altas = listas de espera (form-docureal, form-verifix); contacto = form-contacto. Sin evento medido, null (guion).
+// altas = listas de espera (form-docureal); contacto = form-contacto. Sin evento medido, null (guion).
 const EVENTOS = {
   '77delta.com': { contacto: 'envios_contacto' },
   'docureal.77delta.com': { altas: 'envios_docureal' },
-  'verifix.77delta.com': { altas: 'envios_verifix' },
 };
 export function formulariosWeb(dias, sitio, ahora = new Date()) {
   const desde = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Madrid' }).format(new Date(ahora.getTime() - 29 * 86400000));
