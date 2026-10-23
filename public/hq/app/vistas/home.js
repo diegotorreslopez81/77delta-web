@@ -2,7 +2,7 @@
 // Solo pinta columnas de las vistas hq_v_* leídas por RPC con p_token (hq_home, hq_proyectos, hq_web).
 // Sin umbrales ni cálculo propio: el rojo de edad usa umbral_decidir_h que devuelve la RPC (hq_parametros).
 // Cada bloque carga y falla por separado: un bloque caído no tumba la home.
-import { el, toast, eur, fecha, provisional } from '../ui.js';
+import { el, enlazar, toast, eur, fecha, provisional } from '../ui.js';
 import { modeloWeb, separar } from './web.js';
 
 let cargadores = {
@@ -39,8 +39,8 @@ export function pintarDecidir(h, resolver = cargadores.resolver, repintar = () =
       try { await resolver(p.id, estado); toast('Hecho'); repintar(); } catch (e) { toast('No se pudo: ' + e.message); }
     };
     kids.push(el('div', { class: 'home-decidir' + (roja ? ' rojo' : '') }, [
-      el('p', { class: 'titulo', text: p.titulo }),
-      p.recomendacion ? el('p', { class: 'mudo', text: p.recomendacion }) : null,
+      el('p', { class: 'titulo' }, enlazar(p.titulo)),
+      p.recomendacion ? el('p', { class: 'mudo' }, enlazar(p.recomendacion)) : null,
       el('p', { class: 'mudo', text: [p.importe != null ? eur(p.importe) : null, p.vence ? 'vence ' + fecha(p.vence) : null].filter(Boolean).join(' · ') }),
       el('div', { class: 'home-botones' }, [
         el('button', { class: 'btn primario', text: 'Sí', onclick: () => actuar('aprobada') }),

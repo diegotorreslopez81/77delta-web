@@ -3,7 +3,7 @@
 // Solo pinta columnas de hq_v_hoy_* leídas por la RPC hq_hoy con p_token. Sin umbrales ni cálculo propio:
 // el rojo sale de umbral_decidir_h y umbral_correo_h que devuelve la RPC (hq_parametros).
 import { ICONOS_HOY } from '../iconos.js';
-import { el, toast, eur, fecha, pedirTexto, modal, confirmar, provisional } from '../ui.js';
+import { el, enlazar as enlazarTexto, urlsDe, toast, eur, fecha, pedirTexto, modal, confirmar, provisional } from '../ui.js';
 import { pintarCaptacion } from './home.js';
 import { bloquesOrdenados, etiquetaSitio, separar as separarWeb } from './web.js';
 
@@ -100,7 +100,9 @@ export function acordeon({ id, titulo, icono = '', cuenta, color = '', vacioText
 // Ítem de lista: plegado enseña título y botones; al tocar el título se abre el detalle y se pliega el resto de ítems de su bloque.
 function item(titulo, detalle, botones, { roja = false, destacada = false, id = null, aviso = '' } = {}) {
   const cab = el('button', { type: 'button', class: 'hoy-item-titulo', 'aria-expanded': 'false', text: titulo });
-  const det = el('div', { class: 'hoy-item-detalle', hidden: '' }, lista(detalle));
+  // El título es un botón y no admite enlaces dentro: sus URL pasan al detalle como enlaces clicables.
+  const enlacesTitulo = urlsDe(titulo);
+  const det = el('div', { class: 'hoy-item-detalle', hidden: '' }, [...lista(detalle), ...(enlacesTitulo.length ? [el('p', { class: 'mudo' }, enlazarTexto(enlacesTitulo.join('\n')))] : [])]);
   const raiz = el('div', { class: 'home-decidir hoy-tarjeta hoy-item' + (roja ? ' rojo' : '') + (destacada ? ' destacada' : ''), id, ...(aviso ? { title: aviso } : {}) }, [cab, det, botones]);
   raiz.alternar = abrir => {
     cab.setAttribute('aria-expanded', abrir ? 'true' : 'false');
@@ -166,7 +168,7 @@ function tarjeta(p, umbral, repintar, { destacada = false, pago = false } = {}) 
       el('button', { class: 'btn', text: 'Comentar', onclick: comentar }),
     ]);
   const detalle = [
-    p.recomendacion ? el('p', { class: 'mudo', text: p.recomendacion }) : null,
+    p.recomendacion ? el('p', { class: 'mudo' }, enlazarTexto(p.recomendacion)) : null,
     el('p', { class: 'mudo', text: [p.importe != null ? eur(p.importe) : null, p.edad_h != null ? hace(p.edad_h) : null, p.quien_pide ? 'pide ' + p.quien_pide : null, p.vence ? 'vence ' + fecha(p.vence) : null].filter(Boolean).join(' · ') }),
   ];
   return item(p.titulo || p.concepto, detalle, botones, { roja, destacada, id: 'hoy-' + p.id, aviso: roja ? 'Lleva más de ' + umbral + ' h sin decidir' : '' });
@@ -188,7 +190,7 @@ export function pintarPospuestas(h, repintar = () => {}) {
   const act = (id) => async () => { try { await cargadores.posponer(id, new Date().toISOString()); toast('Reactivada'); repintar(); } catch (e) { toast('No se pudo: ' + e.message); } };
   return (h?.pospuestas || []).slice(0, n(h?.max_filas) || 50).map(p => {
     const detalle = [
-      p.recomendacion ? el('p', { class: 'mudo', text: p.recomendacion }) : null,
+      p.recomendacion ? el('p', { class: 'mudo' }, enlazarTexto(p.recomendacion)) : null,
       el('p', { class: 'mudo', text: [p.importe != null ? eur(p.importe) : null, p.edad_h != null ? hace(p.edad_h) : null, p.vence ? 'vence ' + fecha(p.vence) : null].filter(Boolean).join(' · ') }),
     ];
     const botones = el('div', { class: 'home-botones' }, [el('button', { class: 'btn', text: 'Reactivar', onclick: act(p.id) })]);

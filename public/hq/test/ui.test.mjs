@@ -153,3 +153,12 @@ test('campoTexto con data-conservar: si localStorage lanza (modo privado), no ro
     assert.doesNotThrow(() => c.olvidarBorrador());
   } finally { globalThis.localStorage = original; }
 });
+test('enlazar/urlsDe: URL entre comillas rectas o tipográficas, paréntesis y al final de frase (tarjeta #2294)', async () => {
+  const { urlsDe } = await import('../app/ui.js');
+  const u = 'https://github.com/diegotorreslopez81/77delta-web/pull/133';
+  for (const t of [`Mira "${u}" y sigue`, `Mira “${u}” y sigue`, `Mira ‘${u}’.`, `Mira «${u}»`, `Mira (${u}).`, `Mira '${u}'`, `Acaba así: ${u}.`, `Acaba así: ${u}?`])
+    assert.deepEqual(urlsDe(t), [u], t);
+  assert.deepEqual(enlazar(`Mira “${u}” y sigue`).filter(n => n.tag === 'a').map(n => n.attrs.href), [u]);
+  assert.deepEqual(urlsDe('Wiki https://es.wikipedia.org/wiki/Foo_(bar) fin'), ['https://es.wikipedia.org/wiki/Foo_(bar)']);
+  assert.deepEqual(urlsDe('http://a.com sin url'), []);
+});
