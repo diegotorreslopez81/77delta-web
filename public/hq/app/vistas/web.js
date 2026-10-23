@@ -73,7 +73,9 @@ export function bloquesWeb(r, ahora = new Date()) {
   }).sort((a, b) => b.visitas - a.visitas);
 }
 
-export const SITIOS = ['77delta.com', 'docureal.77delta.com', 'verifix.77delta.com', 'swarmix.co'];
+export const SITIOS = ['77delta.com', 'docureal.77delta.com', 'swarmix.co'];
+// Verifix abandonado (decisión #784): aunque la RPC aún traiga datos, no se pinta.
+const OCULTOS = ['verifix.77delta.com'];
 // Etiqueta corta: los subdominios salen sin el dominio (el nombre completo va en title) para no partir la palabra en la celda.
 export const etiquetaSitio = sitio => String(sitio).replace(/\.77delta\.com$/, '');
 export const anclaSitio = sitio => String(sitio).replace(/\./g, '');
@@ -81,7 +83,7 @@ export const anclaSitio = sitio => String(sitio).replace(/\./g, '');
 // Bloques en orden fijo: los cuatro sitios siempre salen; si la RPC no trae uno (swarmix.co antes de v183) va marcado sinDatos, nunca como 0.
 export function bloquesOrdenados(r, ahora = new Date()) {
   const m = bloquesWeb(r, ahora), por = Object.fromEntries(m.map(b => [b.sitio, b]));
-  const resto = m.filter(b => !SITIOS.includes(b.sitio));
+  const resto = m.filter(b => !SITIOS.includes(b.sitio) && !OCULTOS.includes(b.sitio));
   return [...SITIOS.map(sitio => por[sitio] || { sitio, sinDatos: true, visitas: 0, visitantes: 0, visitas_total: null, visitantes_total: null, variacion: null }), ...resto];
 }
 
