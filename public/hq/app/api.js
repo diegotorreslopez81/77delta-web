@@ -5,8 +5,11 @@ const API = 'https://api.77delta.com';
 // El token entra por el fragmento (#t=...), que no viaja al servidor ni al Referer; ?t= se sigue aceptando
 // por los enlaces antiguos. En ambos casos se borra de la URL en cuanto se guarda.
 const params = new URLSearchParams(location.search);
-const hashP = new URLSearchParams(location.hash.replace(/^#/, ''));
-const tIn = hashP.get('t') || params.get('t');
+// Parseo propio del fragmento: '#operacion/licitaciones/42&t=...' no es una query y URLSearchParams lo reescribía
+// como 'operacion%2Flicitaciones%2F42=', con lo que el deep link se perdía al entrar por enlace con token.
+export const tokenDeHash = h => { const m = /(?:^|[?&])t=([^&]*)/.exec(String(h || '').replace(/^#/, '')); return m ? decodeURIComponent(m[1]) : null; };
+export const hashSinToken = h => String(h || '').replace(/^#/, '').replace(/(^|[?&])t=[^&]*/, '$1').replace(/\?&/, '?').replace(/^&/, '').replace(/[?&]$/, '');
+const tIn = tokenDeHash(location.hash) || params.get('t');
 // El token vive solo en sessionStorage (se borra al cerrar la pestaña); nunca en localStorage. Si no hay
 // sessionStorage (modo privado o tests), queda en memoria. Se purga el que dejaron versiones anteriores.
 const memTok = { v: null };
@@ -38,8 +41,8 @@ export const recordado = !!tIn && discoPrevio === tIn;
 export const otroRecordado = !!tIn && !!discoPrevio && discoPrevio !== tIn;
 if (tIn) {
   tokSet(tIn, recordado);
-  params.delete('t'); hashP.delete('t');
-  const q = params.toString(), h = hashP.toString();
+  params.delete('t');
+  const q = params.toString(), h = hashSinToken(location.hash);
   history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + (h ? '#' + h : ''));
 }
 export let TOKEN = tokGet();

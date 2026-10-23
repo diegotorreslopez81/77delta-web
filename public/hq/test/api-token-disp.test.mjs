@@ -47,3 +47,14 @@ test('enlace con otro token: otroRecordado y hq_t_disp se borra hasta que se pul
   const api = await import('../app/api.js?' + Math.random());
   assert.equal(api.otroRecordado, true); assert.equal(api.recordado, false);
 });
+
+test('hashSinToken conserva la ruta del deep link y quita solo t', async () => {
+  const { hashSinToken, tokenDeHash } = await cargar(almacen(), almacen());
+  assert.equal(hashSinToken('#t=abc'), '');
+  assert.equal(hashSinToken('#operacion/licitaciones/177845&t=abc'), 'operacion/licitaciones/177845');
+  assert.equal(hashSinToken('#operacion/licitaciones/177845?t=abc'), 'operacion/licitaciones/177845');
+  assert.equal(hashSinToken('#operacion/licitaciones/42?t=abc&estado=Aprobada'), 'operacion/licitaciones/42?estado=Aprobada');
+  assert.equal(hashSinToken('#operacion/licitaciones?estado=Aprobada&t=abc'), 'operacion/licitaciones?estado=Aprobada');
+  assert.equal(tokenDeHash('#operacion/licitaciones/177845?t=abc'), 'abc');
+  assert.equal(tokenDeHash('#operacion/licitaciones/177845'), null);
+});
