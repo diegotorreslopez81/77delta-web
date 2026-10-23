@@ -137,24 +137,34 @@ export function pedirMotivos(titulo, catalogo) {
 // datos de la BD: una comilla en el texto no puede escapar del atributo porque no hay parseo de HTML de por
 // medio) y saltos de línea en <br>. Reemplaza el patrón `html:` con reemplazos de string usado antes en
 // decisiones.js (T5, fix ronda 1: ese patrón dejaba inyectar atributos via un `"` en el detalle).
+// Trozos del texto: { texto } o { url, resto }. Solo https; la puntuación final, las comillas y el paréntesis de cierre sin pareja quedan fuera de la URL.
+function trozos(texto) {
+  const out = [];
+  for (const parte of String(texto || '').split(/(https:\/\/[^\s<>"'“”‘’«»]+)/gi)) {
+    if (!/^https:\/\//i.test(parte)) { out.push({ texto: parte }); continue; }
+    let url = parte, resto = '';
+    for (;;) {
+      const m = url.match(/[.,;:!?'")\]}]$/);
+      if (!m || (m[0] === ')' && (url.match(/\(/g) || []).length >= (url.match(/\)/g) || []).length)) break;
+      resto = m[0] + resto; url = url.slice(0, -1);
+    }
+    out.push(url.length <= 'https://'.length ? { texto: parte } : { url, resto });
+  }
+  return out;
+}
+// Las URL https de un texto, para mostrarlas aparte (p. ej. las del título de una tarjeta, que es un botón).
+export const urlsDe = texto => trozos(texto).filter(t => t.url).map(t => t.url);
+
 export function enlazar(texto) {
   const out = [];
   const texto_ = (t) => t.split('\n').forEach((linea, i) => {
     if (i > 0) out.push(el('br'));
     if (linea) out.push(document.createTextNode(linea));
   });
-  // #2780: solo https; la puntuación final y el paréntesis de cierre sin pareja quedan fuera del enlace.
-  for (const parte of String(texto || '').split(/(https:\/\/[^\s<>"']+)/gi)) {
-    if (!/^https:\/\//i.test(parte)) { texto_(parte); continue; }
-    let url = parte, resto = '';
-    for (;;) {
-      const m = url.match(/[.,;:!?'")\]]$/);
-      if (!m || (m[0] === ')' && (url.match(/\(/g) || []).length >= (url.match(/\)/g) || []).length)) break;
-      resto = m[0] + resto; url = url.slice(0, -1);
-    }
-    if (url.length <= 'https://'.length) { texto_(parte); continue; }
-    out.push(el('a', { href: url, target: '_blank', rel: 'noopener noreferrer', text: url }));
-    if (resto) texto_(resto);
+  for (const t of trozos(texto)) {
+    if (!t.url) { texto_(t.texto); continue; }
+    out.push(el('a', { href: t.url, target: '_blank', rel: 'noopener noreferrer', text: t.url }));
+    if (t.resto) texto_(t.resto);
   }
   return out;
 }
