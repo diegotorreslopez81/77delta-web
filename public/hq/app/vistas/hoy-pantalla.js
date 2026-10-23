@@ -403,7 +403,8 @@ function captacionNueva(f) {
   return {
     principal: env == null ? 'pdte' : String(env), principalTexto: 'enviados', secundario: '',
     color: env == null ? (f.color || '') : env > 0 ? 'verde' : 'rojo',
-    enlacePrincipal: enlaceLinea(f.enlace), enlaceSecundario: enlaceLinea(''), detalle: [], lineasEnl,
+    // Las URLs de vista de Twenty llegan en el detalle de la RPC (parámetros); sin la de enviados, queda el enlace de la casilla.
+    enlacePrincipal: enlaceLinea(por('enviados')?.enlace || f.enlace), enlaceSecundario: enlaceLinea(''), detalle: [], lineasEnl,
   };
 }
 // #2679: orden fijo de las casillas de Negocio; una clave que no esté va después, en el orden de la vista.

@@ -160,3 +160,11 @@ test('formulariosWeb: suma 30 días por sitio, altas y contacto, guion (null) si
   assert.deepEqual(formulariosWeb(dias, 'docureal.77delta.com', ahora), { altas: 4, contacto: null });
   assert.deepEqual(formulariosWeb(dias, 'swarmix.co', ahora), { altas: null, contacto: null });
 });
+test('modeloNegocio: captación, la cifra grande enlaza a la vista de enviados de Twenty si la RPC la trae', () => {
+  const det = [{ clave: 'respuestas', valor: 4, enlace: 'https://crm.test/r' }, { clave: 'reuniones', valor: 2, enlace: 'https://crm.test/m' }, { clave: 'propuestas', valor: 1, enlace: 'https://crm.test/p' }];
+  const [c] = modeloNegocio([{ clave: 'captacion', principal: 10, enlace: 'operacion/ventas', detalle: [{ clave: 'enviados', enlace: 'https://crm.test/e' }, ...det] }]);
+  assert.equal(c.enlacePrincipal.enlace, 'https://crm.test/e'); assert.equal(c.enlacePrincipal.externo, true);
+  assert.deepEqual(c.lineasEnl.map(l => l.enlace), ['https://crm.test/r', 'https://crm.test/m', 'https://crm.test/p']);
+  const [s] = modeloNegocio([{ clave: 'captacion', principal: 10, enlace: 'operacion/ventas', detalle: det }]);
+  assert.equal(s.enlacePrincipal.enlace, '#operacion/ventas');
+});
