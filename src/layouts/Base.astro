@@ -110,18 +110,19 @@ const ogLocale: Record<Idioma, string> = { es: 'es_ES', ca: 'ca_ES', en: 'en_GB'
       // Una elección manual guardada manda siempre. Los rastreadores no se redirigen, para que cada versión se indexe sola.
       // Corre lo antes posible (antes de pintar el body) para minimizar el parpadeo de idioma.
       try {
-        var guardado = localStorage.getItem('idioma-77delta');
+        var codigo = localStorage.getItem('idioma-77delta');
         var ua = navigator.userAgent || '';
-        if (!guardado && !navigator.webdriver && !/bot|crawl|spider|slurp|headless|lighthouse|preview/i.test(ua)) {
+        if (!codigo && !navigator.webdriver && !/bot|crawl|spider|slurp|headless|lighthouse|preview/i.test(ua)) {
           var langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
-          var codigo = 'en';
+          codigo = 'en';
           for (var n = 0; n < langs.length; n++) {
             var p = String(langs[n]).toLowerCase().slice(0, 2);
             if (p === 'es' || p === 'ca' || p === 'en') { codigo = p; break; }
           }
           localStorage.setItem('idioma-77delta', codigo);
-          if (codigo !== idioma && rutas[codigo]) location.replace(rutas[codigo]);
         }
+        // Con elección guardada (manual o detectada) se va siempre a esa versión si existe; sin equivalente, se queda.
+        if (codigo && codigo !== idioma && rutas[codigo]) location.replace(rutas[codigo]);
       } catch (e) {}
     </script>}
     {deteccion && <script is:inline define:vars={{ actual: lang ?? idioma, deteccion }}>
