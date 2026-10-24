@@ -1,0 +1,56 @@
+---
+import Base from '../../../layouts/Base.astro';
+import HeroFoto from '../../../components/HeroFoto.astro';
+import Boton from '../../../components/Boton.astro';
+import Cta from '../../../components/Cta.astro';
+import { hrefEn as href } from '../../../lib/site';
+---
+
+<Base
+  title="Tools"
+  description="77 Delta tools: Licita, to find and summarise public tenders, and Corpora, health training for teams. Two in-house tools for your company."
+>
+  <!-- Hero -->
+  <section class="wrap py-24 md:py-32">
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Tools</p>
+        <h1
+          class="mt-7 max-w-[20ch] font-display text-[clamp(32px,4.2vw,54px)] font-extralight leading-[1.06] tracking-[-0.035em]"
+          data-reveal
+        >
+          Two in-house tools, <span class="font-semibold text-oro-oscuro">ready to use</span> from day one.
+        </h1>
+        <p class="mt-8 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Alongside our consulting lines, we have two tools that we use ourselves and make available to your company.
+        </p>
+      </div>
+      <HeroFoto foto="oficina" alt="A team working in an office" class="lg:col-span-5" />
+    </div>
+  </section>
+
+  <!-- Las dos herramientas -->
+  <section class="hairline bg-panel">
+    <div class="wrap grid gap-6 py-24 md:grid-cols-2 md:py-32">
+      <article class="flex flex-col rounded-[4px] border border-linea bg-marfil p-8 md:p-10" data-reveal>
+        <p class="eyebrow">Public tenders</p>
+        <h2 class="mt-5 font-display text-[clamp(26px,3.2vw,38px)] font-semibold leading-[1.1] tracking-[-0.02em]">Licita</h2>
+        <p class="mt-6 flex-1 text-[16px] text-pizarra">It tracks tenders published across all 17 autonomous communities and on the European platforms (TED), every day. It discards what does not fit what your company can do and summarises each tender document in a short sheet: closing date, amount, solvency required and the specific reason to bid or not to bid.</p>
+        <Boton href={href('/licita/')} class="mt-8 self-start">See Licita →</Boton>
+      </article>
+      <article id="corpora" class="flex flex-col scroll-mt-24 rounded-[4px] border border-linea bg-marfil p-8 md:p-10" data-reveal>
+        <p class="eyebrow">Health training for companies</p>
+        <h2 class="mt-5 font-display text-[clamp(26px,3.2vw,38px)] font-semibold leading-[1.1] tracking-[-0.02em]">Corpora</h2>
+        <p class="mt-6 flex-1 text-[16px] text-pizarra">Health training for professional teams, delivered by a physiotherapist and university lecturer. Evidence-based content applied to the workplace. In person or online, in Spanish and Catalan.</p>
+        <p class="mt-6 font-mono text-[12px] uppercase tracking-[0.14em] text-oro-oscuro">Subsidised training through FUNDAE</p>
+        <Boton href="https://corpora.cat" variante="linea" externo class="mt-8 self-start">Visit corpora.cat →</Boton>
+      </article>
+    </div>
+  </section>
+
+  <Cta
+    titulo="Let us talk about which one suits you."
+    texto="30 minutes to understand your situation and tell you whether either of the two fits."
+    boton="Book an assessment"
+  />
+</Base>

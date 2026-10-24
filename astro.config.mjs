@@ -29,7 +29,9 @@ export default defineConfig({
         return (
           !ruta.includes('/propuestas/') &&
           !/^\/(ca\/)?productos\//.test(ruta) &&
+          !/^\/en\/products\//.test(ruta) &&
           !/^\/(ca\/)?servicios\/(seguridad-ia\/)?$/.test(ruta) &&
+          !/^\/en\/services\/(ai-security\/)?$/.test(ruta) &&
           ruta !== '/seguridad-ia/'
         );
       },

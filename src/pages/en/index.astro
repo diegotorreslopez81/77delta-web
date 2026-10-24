@@ -19,7 +19,7 @@ const familias = [
 ];
 ---
 
-<Base title="" description={site.descripcionEn}>
+<Base title="" description="Technology consultancy in Barcelona: AI, cybersecurity, digital identity and data spaces. Free assessment for SMEs.">
 <div class="home">
 <!-- HERO -->
 <section class="hero">
@@ -28,14 +28,15 @@ const familias = [
       <div>
         <div class="pill"><span class="badge"></span>Accredited by ACCIÓ</div>
         <h1>We use AI to <em>cut your company's costs</em>.</h1>
-        <p class="lead">Technology consultancy for SMEs. A free assessment, AI-driven operational transformation and an ongoing technology partner.</p>
+        <p class="lead">Technology consultancy for SMEs. AI to cut costs and, alongside it, cybersecurity, digital identity and data spaces.</p>
+        <p class="tambien">We also work in: <a href={href('/ciberseguridad/')}>Cybersecurity</a> · <a href={href('/identidad-digital/')}>Digital identity</a> · <a href={href('/espacios-de-datos/')}>Data spaces</a></p>
         <div class="ctas">
           <a href={href('/contacto/')} class="btn-primary" data-umami-event="reservar" data-umami-event-pagina={Astro.url.pathname} data-umami-event-lugar="hero">Book a free assessment <span>→</span></a>
-          <a href={href('/servicios/')} class="btn-ghost">See how we work</a>
+          <a href="#lineas" class="btn-ghost">See the four lines</a>
         </div>
       </div>
       <div class="photo">
-        <img src="/img/fotos/equipo-1600.webp" alt="Professional team at work" srcset="/img/fotos/equipo-900.webp 900w, /img/fotos/equipo-1600.webp 1600w" sizes="(min-width: 900px) 50vw, 100vw" fetchpriority="high" decoding="async">
+        <img src="/img/fotos/equipo-1600.webp" alt="Professional team at work" srcset="/img/fotos/equipo-900.webp 900w, /img/fotos/equipo-1600.webp 1600w" sizes="(min-width: 900px) 50vw, 100vw" fetchpriority="high" decoding="async" width="1600" height="1067">
       </div>
     </div>
   </div>
@@ -47,13 +48,13 @@ const familias = [
   <div class="cont">
     <p class="proof-txt">Over seven years applying AI with sound judgement for leading institutions and corporations</p>
     <div class="proof-logos">
-      <a href="https://www.accio.gencat.cat" target="_blank" rel="noopener"><img src="/img/logos/accio.png" alt="ACCIÓ" loading="lazy"></a>
-      <a href="https://www.gencat.cat" target="_blank" rel="noopener"><img src="/img/logos/gencat.svg" alt="Generalitat de Catalunya" loading="lazy"></a>
-      <a href="https://www.bancsabadell.com" target="_blank" rel="noopener"><img src="/img/logos/sabadell.png" alt="Banc Sabadell" loading="lazy"></a>
-      <a href="https://futurium.ec.europa.eu" target="_blank" rel="noopener"><img src="/img/logos/futurium.svg" alt="European Commission" loading="lazy"></a>
-      <a href="https://i2cat.net" target="_blank" rel="noopener"><img src="/img/logos/i2cat.svg" alt="i2CAT" loading="lazy"></a>
-      <a href="https://barcelonactiva.cat" target="_blank" rel="noopener"><img src="/img/logos/barcelona-activa.png" alt="Barcelona Activa" loading="lazy"></a>
-      <a href="https://aws.amazon.com" target="_blank" rel="noopener"><img src="/img/logos/aws.svg" alt="Amazon Web Services" loading="lazy"></a>
+      <a href="https://www.accio.gencat.cat" target="_blank" rel="noopener"><img src="/img/logos/accio.png" alt="ACCIÓ" loading="lazy" width="160" height="45"></a>
+      <a href="https://www.gencat.cat" target="_blank" rel="noopener"><img src="/img/logos/gencat.svg" alt="Generalitat de Catalunya" loading="lazy" width="124" height="33"></a>
+      <a href="https://www.bancsabadell.com" target="_blank" rel="noopener"><img src="/img/logos/sabadell.png" alt="Banc Sabadell" loading="lazy" width="800" height="161"></a>
+      <a href="https://futurium.ec.europa.eu" target="_blank" rel="noopener"><img src="/img/logos/futurium.svg" alt="European Commission" loading="lazy" width="179" height="88"></a>
+      <a href="https://i2cat.net" target="_blank" rel="noopener"><img src="/img/logos/i2cat.svg" alt="i2CAT" loading="lazy" width="99" height="28"></a>
+      <a href="https://barcelonactiva.cat" target="_blank" rel="noopener"><img src="/img/logos/barcelona-activa.png" alt="Barcelona Activa" loading="lazy" width="175" height="50"></a>
+      <a href="https://aws.amazon.com" target="_blank" rel="noopener"><img src="/img/logos/aws.svg" alt="Amazon Web Services" loading="lazy" width="304" height="182"></a>
     </div>
     <a href="#confianza" class="proof-mas">See all organisations <span>&#8594;</span></a>
   </div>
@@ -63,7 +64,7 @@ const familias = [
   <div class="cont">
     <div class="grid">
       <div class="photo">
-        <img src="/img/fotos/gerente-1600.webp" alt="SME manager reviewing reports" srcset="/img/fotos/gerente-900.webp 900w, /img/fotos/gerente-1600.webp 1600w" sizes="(min-width: 900px) 50vw, 100vw" loading="lazy" decoding="async">
+        <img src="/img/fotos/gerente-1600.webp" alt="SME manager reviewing reports" srcset="/img/fotos/gerente-900.webp 900w, /img/fotos/gerente-1600.webp 1600w" sizes="(min-width: 900px) 50vw, 100vw" loading="lazy" decoding="async" width="1600" height="1200">
       </div>
       <div>
         <span class="section-tag">The problem</span>
@@ -75,17 +76,54 @@ const familias = [
   </div>
 </section>
 
+<!-- CUATRO LÍNEAS -->
+<section class="lineas" id="lineas">
+  <div class="cont">
+    <div class="section-head">
+      <span class="section-tag">Four lines of work</span>
+      <h2>Knowledge, consulting and development on four fronts.</h2>
+      <p>AI remains the way in. The other three lines cover what an SME needs to use it safely and with reliable data.</p>
+    </div>
+    <div class="lineas-grid">
+      <a href={href('/inteligencia-artificial/')} class="linea-card principal">
+        <div class="num">01</div>
+        <h3>Artificial intelligence</h3>
+        <p>Cut costs with AI applied to your processes, from the idea to go-live. AI director, assessment, operational transformation and technology partner.</p>
+        <div class="go"><span>See this line</span><span class="arrow">→</span></div>
+      </a>
+      <a href={href('/ciberseguridad/')} class="linea-card">
+        <div class="num">02</div>
+        <h3>Cybersecurity</h3>
+        <p>Find and close your weak points before someone else finds them. Consulting, auditing and secure development.</p>
+        <div class="go"><span>See this line</span><span class="arrow">→</span></div>
+      </a>
+      <a href={href('/identidad-digital/')} class="linea-card">
+        <div class="num">03</div>
+        <h3>Digital identity</h3>
+        <p>Verifiable credentials and the European digital identity wallet. We help you understand the SSI model, decide what suits you and build it.</p>
+        <div class="go"><span>See this line</span><span class="arrow">→</span></div>
+      </a>
+      <a href={href('/espacios-de-datos/')} class="linea-card">
+        <div class="num">04</div>
+        <h3>Data spaces</h3>
+        <p>Share data with customers and suppliers without losing control over it. Knowledge and consulting on Gaia-X and IDSA, and connector development.</p>
+        <div class="go"><span>See this line</span><span class="arrow">→</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- SERVICIOS -->
 <section class="services" id="servicios">
   <div class="cont">
     <div class="section-head">
-      <span class="section-tag">How we work</span>
+      <span class="section-tag">Artificial intelligence · How we work</span>
       <h2>We start with an assessment. Then you choose the way forward.</h2>
       <p>Every company is different. The process is simple: first we understand how your business really works, then we deliver the transformation and, if you wish, we stay on as your technology partner for the medium and long term.</p>
     </div>
 
     <div class="svc-featured">
-      <img src="/img/fotos/diagnostico-1600.webp" alt="Initial assessment" srcset="/img/fotos/diagnostico-900.webp 900w, /img/fotos/diagnostico-1600.webp 1600w" sizes="100vw" loading="lazy" decoding="async">
+      <img src="/img/fotos/diagnostico-1600.webp" alt="Initial assessment" srcset="/img/fotos/diagnostico-900.webp 900w, /img/fotos/diagnostico-1600.webp 1600w" sizes="100vw" loading="lazy" decoding="async" width="1600" height="1200">
       <div class="content">
         <div class="text-panel">
           <span class="badge">FIRST STEP · FREE · 30 MIN</span>
@@ -146,11 +184,10 @@ const familias = [
         <span class="section-tag">AI security</span>
         <h2>Your chatbot <em>reveals more than you think.</em></h2>
         <p>Putting an AI assistant on your website is quick. Auditing it is rare. We test it the way an attacker would and show you what it gives away: its internal instructions, prices it should not quote, the customer data it can reach and what it says when pushed off script.</p>
-        <p class="aisec-nota">We do it with LeakAI, the tool we built for this. In September 2026 we used it to scan 391 Spanish websites, and we continue to audit in depth the AI assistants we find. The assessment is free. The paid service is fixing the vulnerabilities we uncover.</p>
+        <p class="aisec-nota">We review your assistant with real tests and give you a report with every finding and the conversation that proves it. The assessment is free. The paid service is fixing what we find.</p>
         <p class="aisec-nota"><a href={href('/estudio-asistentes-ia/')} class="aisec-enlace">See the study with the data &#8594;</a></p>
         <div class="ctas">
-          <a href={href('/servicios/seguridad-ia/')} class="btn-primary">Request a free scan <span>&#8594;</span></a>
-          <a href={href('/productos/#leakai')} class="btn-ghost">Discover LeakAI</a>
+          <a href={href('/ciberseguridad/#asistentes-ia')} class="btn-primary">Request a free scan <span>&#8594;</span></a>
         </div>
       </div>
 
@@ -182,7 +219,7 @@ const familias = [
     </div>
     <div class="sec-grid">
       <a href={href('/sectores/clinicas/')} class="sec-card">
-        <img src="/img/fotos/clinicas-900.webp" alt="Clinics" loading="lazy" decoding="async">
+        <img src="/img/fotos/clinicas-900.webp" alt="Clinics" loading="lazy" decoding="async" width="900" height="602">
         <div class="content">
           <div class="num">Sector 01</div>
           <h3>Clinics and health centres</h3>
@@ -191,7 +228,7 @@ const familias = [
         </div>
       </a>
       <a href={href('/sectores/industria/')} class="sec-card">
-        <img src="/img/fotos/industria-900.webp" alt="Industry" loading="lazy" decoding="async">
+        <img src="/img/fotos/industria-900.webp" alt="Industry" loading="lazy" decoding="async" width="900" height="600">
         <div class="content">
           <div class="num">Sector 02</div>
           <h3>Industry and workshops</h3>
@@ -200,7 +237,7 @@ const familias = [
         </div>
       </a>
       <a href={href('/sectores/distribucion/')} class="sec-card">
-        <img src="/img/fotos/distribucion-900.webp" alt="Distribution" loading="lazy" decoding="async">
+        <img src="/img/fotos/distribucion-900.webp" alt="Distribution" loading="lazy" decoding="async" width="900" height="1200">
         <div class="content">
           <div class="num">Sector 03</div>
           <h3>Distribution and logistics</h3>
@@ -209,7 +246,7 @@ const familias = [
         </div>
       </a>
       <a href={href('/sectores/despachos/')} class="sec-card">
-        <img src="/img/fotos/despachos-900.webp" alt="Professional firms" loading="lazy" decoding="async">
+        <img src="/img/fotos/despachos-900.webp" alt="Professional firms" loading="lazy" decoding="async" width="900" height="601">
         <div class="content">
           <div class="num">Sector 04</div>
           <h3>Professional firms</h3>
@@ -218,7 +255,7 @@ const familias = [
         </div>
       </a>
       <a href={href('/sectores/administracion/')} class="sec-card">
-        <img src="/img/fotos/administracion-900.webp" alt="Public administration" loading="lazy" decoding="async">
+        <img src="/img/fotos/administracion-900.webp" alt="Public administration" loading="lazy" decoding="async" width="900" height="600">
         <div class="content">
           <div class="num">Sector 05</div>
           <h3>Public administration</h3>
@@ -227,7 +264,7 @@ const familias = [
         </div>
       </a>
       <a href={href('/sectores/formacion/')} class="sec-card">
-        <img src="/img/fotos/formacion-900.webp" alt="Training" loading="lazy" decoding="async">
+        <img src="/img/fotos/formacion-900.webp" alt="Training" loading="lazy" decoding="async" width="900" height="600">
         <div class="content">
           <div class="num">Sector 06</div>
           <h3>Training and human resources</h3>
@@ -246,7 +283,7 @@ const familias = [
     <div class="section-head">
       <span class="section-tag">What we can do</span>
       <h2>{casos.length} catalogued capabilities in eight families.</h2>
-      <p>From conversational assistants to AI security, via agents, search across your documentation, process automation, EU compliance and custom models. All of them are running in production in real businesses. The examples are representative and anonymised.</p>
+      <p>From conversational assistants to AI security, via agents, search across your documentation, process automation, EU compliance and custom models. The examples are representative and anonymised.</p>
     </div>
     <ul class="caps-grid">
       {
@@ -271,7 +308,7 @@ const familias = [
 
     <!-- Slide 1 · Clínicas dentales -->
     <div class="slide active" data-slide="0">
-      <img class="bg" src="/img/fotos/clinicas-1600.webp" alt="Modern clinic" srcset="/img/fotos/clinicas-900.webp 900w, /img/fotos/clinicas-1600.webp 1600w" sizes="100vw" loading="lazy" decoding="async">
+      <img class="bg" src="/img/fotos/clinicas-1600.webp" alt="Modern clinic" srcset="/img/fotos/clinicas-900.webp 900w, /img/fotos/clinicas-1600.webp 1600w" sizes="100vw" loading="lazy" decoding="async" width="1600" height="1070">
       <div class="content"><div class="cont"><div class="grid">
         <div>
           <div class="big">38<span class="pct">%</span></div>
@@ -281,7 +318,7 @@ const familias = [
           <span class="section-tag">Case 1 of 5 · Dental clinics · Barcelona</span>
           <h3>Three dental clinics shared the same problem.</h3>
           <p>Many patients missed appointments without warning. Reception had no time for confirmation calls.</p>
-          <p>In four weeks we rolled out Contestia, a virtual receptionist on WhatsApp. It paid for itself in under a month.</p>
+          <p>In four weeks we rolled out a virtual receptionist on WhatsApp. It paid for itself in under a month.</p>
           <a href={href('/historias-de-exito/clinicas-dentales-barcelona/')} class="arrow-btn">Read the full case <span>→</span></a>
         </div>
       </div></div></div>
@@ -289,7 +326,7 @@ const familias = [
 
     <!-- Slide 2 · Distribuidora industrial -->
     <div class="slide" data-slide="1">
-      <img class="bg" src="/img/fotos/distribucion-1600.webp" alt="Industrial distributor" srcset="/img/fotos/distribucion-900.webp 900w, /img/fotos/distribucion-1600.webp 1600w" sizes="100vw" loading="lazy" decoding="async">
+      <img class="bg" src="/img/fotos/distribucion-1600.webp" alt="Industrial distributor" srcset="/img/fotos/distribucion-900.webp 900w, /img/fotos/distribucion-1600.webp 1600w" sizes="100vw" loading="lazy" decoding="async" width="1600" height="2133">
       <div class="content"><div class="cont"><div class="grid">
         <div>
           <div class="big">2<span class="pct">h</span></div>
@@ -307,7 +344,7 @@ const familias = [
 
     <!-- Slide 3 · Despacho de abogados -->
     <div class="slide" data-slide="2">
-      <img class="bg" src="/img/fotos/despachos-1600.webp" alt="Law firm" srcset="/img/fotos/despachos-900.webp 900w, /img/fotos/despachos-1600.webp 1600w" sizes="100vw" loading="lazy" decoding="async">
+      <img class="bg" src="/img/fotos/despachos-1600.webp" alt="Law firm" srcset="/img/fotos/despachos-900.webp 900w, /img/fotos/despachos-1600.webp 1600w" sizes="100vw" loading="lazy" decoding="async" width="1600" height="1068">
       <div class="content"><div class="cont"><div class="grid">
         <div>
           <div class="big">20<span class="pct">h</span></div>
@@ -325,7 +362,7 @@ const familias = [
 
     <!-- Slide 4 · Taller industrial -->
     <div class="slide" data-slide="3">
-      <img class="bg" src="/img/fotos/industria-1600.webp" alt="Industrial workshop" srcset="/img/fotos/industria-900.webp 900w, /img/fotos/industria-1600.webp 1600w" sizes="100vw" loading="lazy" decoding="async">
+      <img class="bg" src="/img/fotos/industria-1600.webp" alt="Industrial workshop" srcset="/img/fotos/industria-900.webp 900w, /img/fotos/industria-1600.webp 1600w" sizes="100vw" loading="lazy" decoding="async" width="1600" height="1067">
       <div class="content"><div class="cont"><div class="grid">
         <div>
           <div class="big">45<span class="pct">%</span></div>
@@ -343,7 +380,7 @@ const familias = [
 
     <!-- Slide 5 · Centro formación -->
     <div class="slide" data-slide="4">
-      <img class="bg" src="/img/fotos/formacion-1600.webp" alt="Training centre" srcset="/img/fotos/formacion-900.webp 900w, /img/fotos/formacion-1600.webp 1600w" sizes="100vw" loading="lazy" decoding="async">
+      <img class="bg" src="/img/fotos/formacion-1600.webp" alt="Training centre" srcset="/img/fotos/formacion-900.webp 900w, /img/fotos/formacion-1600.webp 1600w" sizes="100vw" loading="lazy" decoding="async" width="1600" height="1067">
       <div class="content"><div class="cont"><div class="grid">
         <div>
           <div class="big">3<span class="pct">x</span></div>
@@ -373,7 +410,7 @@ const familias = [
   </div>
 </section>
 
-<!-- POR QUÉ INFINITE LABS -->
+<!-- POR QUÉ 77 DELTA -->
 <section class="why">
   <div class="cont">
     <div class="section-head">
@@ -393,13 +430,13 @@ const familias = [
       </div>
       <div class="why-item">
         <div class="icon">03</div>
-        <h3>We build what we deploy</h3>
-        <p>Our own products run in production at real companies. The technology we recommend is proven with active clients.</p>
+        <h3>We know what we deploy</h3>
+        <p>We design, build and test every solution with your data and your team before calling it done.</p>
       </div>
       <div class="why-item">
         <div class="icon">04</div>
-        <h3>Data in Europe, compliance guaranteed</h3>
-        <p>Our own infrastructure in the EU. GDPR compliant. No reliance on non-EU providers. Support in English, Spanish and Catalan.</p>
+        <h3>Built for the European framework</h3>
+        <p>We design to GDPR and European regulation. Support in English, Spanish and Catalan.</p>
       </div>
       <div class="why-item">
         <div class="icon">05</div>
@@ -423,12 +460,13 @@ const familias = [
         <span class="section-tag">About us</span>
         <h2>A consultancy with a track record, <em>built by people who have lived the problem.</em></h2>
         <p>Over 20 years applying technology in real companies. Accredited by the Government of Catalonia. Clients from Barcelona to Dubai. And one conviction: AI only adds value when it is applied with sound judgement.</p>
+        <p>Today we work in four lines: AI, cybersecurity, digital identity and data spaces.</p>
         <p>77 Delta grew out of two decades of experience built up by Diego Torres. After supporting more than 500 startups, he noticed a pattern: large companies had strategy consultancies, while SMEs were left struggling to keep pace with technological change. 77 Delta was created to be that trusted partner for your company.</p>
         <p class="signature"><strong>Diego Torres</strong>, founder</p>
         <a href={href('/sobre-nosotros/')} class="arrow-btn">Discover our mission <span>→</span></a>
       </div>
       <div class="photo">
-        <img src="/img/fotos/campus-1600.webp" alt="Technology campus" loading="lazy" decoding="async">
+        <img src="/img/fotos/campus-1600.webp" alt="Technology campus" srcset="/img/fotos/campus-900.webp 900w, /img/fotos/campus-1600.webp 1600w" sizes="(min-width: 900px) 42vw, 100vw" loading="lazy" decoding="async" width="1080" height="1350">
       </div>
     </div>
   </div>
@@ -436,7 +474,7 @@ const familias = [
 
 <!-- CTA CIERRE -->
 <section class="closing" id="contacto">
-  <img class="bg" src="/img/fotos/oficina-1600.webp" alt="Office with a view" srcset="/img/fotos/oficina-900.webp 900w, /img/fotos/oficina-1600.webp 1600w" sizes="100vw" loading="lazy" decoding="async">
+  <img class="bg" src="/img/fotos/oficina-1600.webp" alt="Office with a view" srcset="/img/fotos/oficina-900.webp 900w, /img/fotos/oficina-1600.webp 1600w" sizes="100vw" loading="lazy" decoding="async" width="1600" height="1068">
   <div class="cont">
     <h2>30 minutes. <em>No strings attached.</em><br>The decision is yours.</h2>
     <p>A structured interview about your business. You receive a tailored proposal covering where you stand today, a work plan and a budget.</p>
@@ -453,29 +491,29 @@ const familias = [
       <p>Over seven years applying AI with sound judgement in Catalonia, across Europe and worldwide.</p>
     </div>
     <div class="logos">
-      <a class="logo" href="https://www.accio.gencat.cat" target="_blank" rel="noopener"><img src="/img/logos/accio.png" alt="ACCIÓ"></a>
-      <a class="logo tall" href="https://barcelonactiva.cat" target="_blank" rel="noopener"><img src="/img/logos/barcelona-activa.png" alt="Barcelona Activa"></a>
-      <a class="logo" href="https://futurium.ec.europa.eu" target="_blank" rel="noopener"><img src="/img/logos/futurium.svg" alt="Futurium, European Commission"></a>
-      <a class="logo" href="https://www.gencat.cat" target="_blank" rel="noopener"><img src="/img/logos/gencat.svg" alt="Generalitat de Catalunya"></a>
-      <a class="logo" href="https://www.dubai.gov.ae" target="_blank" rel="noopener"><img src="/img/logos/gov-dubai.svg" alt="Government of Dubai"></a>
-      <a class="logo wide" href="https://i2cat.net" target="_blank" rel="noopener"><img src="/img/logos/i2cat.svg" alt="i2CAT"></a>
-      <a class="logo" href="https://alastria.io" target="_blank" rel="noopener"><img src="/img/logos/alastria.png" alt="Alastria"></a>
-      <a class="logo tall" href="https://alltechishuman.org" target="_blank" rel="noopener"><img src="/img/logos/all-tech-is-human.png" alt="All Tech Is Human"></a>
-      <a class="logo wide" href="https://www.bancsabadell.com" target="_blank" rel="noopener"><img src="/img/logos/sabadell.png" alt="Banc Sabadell"></a>
-      <a class="logo" href="https://www.eba-online.org" target="_blank" rel="noopener"><img src="/img/logos/eba.png" alt="Euro Banking Association"></a>
-      <a class="logo" href="https://interledger.org" target="_blank" rel="noopener"><img src="/img/logos/interledger.svg" alt="Interledger Foundation"></a>
-      <a class="logo" href="https://www.mydata.org" target="_blank" rel="noopener"><img src="/img/logos/mydata.png" alt="MyData Global"></a>
-      <a class="logo" href="https://www.opensocietyfoundations.org" target="_blank" rel="noopener"><img src="/img/logos/open-society.png" alt="Open Society Foundations"></a>
-      <a class="logo wide" href="https://peninsula.es" target="_blank" rel="noopener"><img src="/img/logos/peninsula.png" alt="Peninsula"></a>
-      <a class="logo wide" href="https://aws.amazon.com" target="_blank" rel="noopener"><img src="/img/logos/aws.svg" alt="Amazon Web Services"></a>
-      <a class="logo wide" href="https://www.cloudflare.com" target="_blank" rel="noopener"><img src="/img/logos/cloudflare.svg" alt="Cloudflare"></a>
-      <a class="logo" href="https://www.deepseek.com" target="_blank" rel="noopener"><img src="/img/logos/deepseek.svg" alt="DeepSeek"></a>
-      <a class="logo" href="https://gemini.google.com" target="_blank" rel="noopener"><img src="/img/logos/gemini.svg" alt="Google Gemini"></a>
-      <a class="logo wide" href="https://cloud.google.com" target="_blank" rel="noopener"><img src="/img/logos/googlecloud.svg" alt="Google Cloud"></a>
-      <a class="logo" href="https://www.hetzner.com" target="_blank" rel="noopener"><img src="/img/logos/hetzner.svg" alt="Hetzner Cloud"></a>
-      <a class="logo wide" href="https://huggingface.co" target="_blank" rel="noopener"><img src="/img/logos/huggingface.svg" alt="Hugging Face"></a>
-      <a class="logo wide" href="https://mistral.ai" target="_blank" rel="noopener"><img src="/img/logos/mistral.svg" alt="Mistral AI"></a>
-      <a class="logo wide" href="https://openai.com" target="_blank" rel="noopener"><img src="/img/logos/openai.svg" alt="OpenAI"></a>
+      <a class="logo" href="https://www.accio.gencat.cat" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/accio.png" alt="ACCIÓ" width="160" height="45"></a>
+      <a class="logo tall" href="https://barcelonactiva.cat" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/barcelona-activa.png" alt="Barcelona Activa" width="175" height="50"></a>
+      <a class="logo" href="https://futurium.ec.europa.eu" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/futurium.svg" alt="Futurium, European Commission" width="179" height="88"></a>
+      <a class="logo" href="https://www.gencat.cat" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/gencat.svg" alt="Generalitat de Catalunya" width="124" height="33"></a>
+      <a class="logo" href="https://www.dubai.gov.ae" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/gov-dubai.svg" alt="Government of Dubai" width="3150" height="1140"></a>
+      <a class="logo wide" href="https://i2cat.net" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/i2cat.svg" alt="i2CAT" width="99" height="28"></a>
+      <a class="logo" href="https://alastria.io" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/alastria.png" alt="Alastria" width="800" height="224"></a>
+      <a class="logo tall" href="https://alltechishuman.org" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/all-tech-is-human.png" alt="All Tech Is Human" width="414" height="177"></a>
+      <a class="logo wide" href="https://www.bancsabadell.com" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/sabadell.png" alt="Banc Sabadell" width="800" height="161"></a>
+      <a class="logo" href="https://www.eba-online.org" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/eba.png" alt="Euro Banking Association" width="800" height="262"></a>
+      <a class="logo" href="https://interledger.org" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/interledger.svg" alt="Interledger Foundation" width="1074" height="290"></a>
+      <a class="logo" href="https://www.mydata.org" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/mydata.png" alt="MyData Global" width="431" height="126"></a>
+      <a class="logo" href="https://www.opensocietyfoundations.org" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/open-society.png" alt="Open Society Foundations" width="800" height="236"></a>
+      <a class="logo wide" href="https://peninsula.es" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/peninsula.png" alt="Peninsula" width="300" height="64"></a>
+      <a class="logo wide" href="https://aws.amazon.com" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/aws.svg" alt="Amazon Web Services" width="304" height="182"></a>
+      <a class="logo wide" href="https://www.cloudflare.com" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/cloudflare.svg" alt="Cloudflare" width="24" height="24"></a>
+      <a class="logo" href="https://www.deepseek.com" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/deepseek.svg" alt="DeepSeek" width="195" height="41"></a>
+      <a class="logo" href="https://gemini.google.com" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/gemini.svg" alt="Google Gemini" width="24" height="24"></a>
+      <a class="logo wide" href="https://cloud.google.com" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/googlecloud.svg" alt="Google Cloud" width="24" height="24"></a>
+      <a class="logo" href="https://www.hetzner.com" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/hetzner.svg" alt="Hetzner Cloud" width="24" height="24"></a>
+      <a class="logo wide" href="https://huggingface.co" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/huggingface.svg" alt="Hugging Face" width="24" height="24"></a>
+      <a class="logo wide" href="https://mistral.ai" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/mistral.svg" alt="Mistral AI" width="129" height="91"></a>
+      <a class="logo wide" href="https://openai.com" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="/img/logos/openai.svg" alt="OpenAI" width="1180" height="320"></a>
     </div>
   </div>
 </section>
@@ -622,6 +660,25 @@ const familias = [
   .svc-card .price{font-size:14px;color:var(--ink-2);font-weight:600;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
   .svc-card .price .arrow{color:var(--accent);font-size:18px}
 
+  /* CUATRO LÍNEAS */
+  .lineas{padding:140px 0}
+  .lineas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .linea-card{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--line);border-radius:18px;padding:36px;transition:transform .25s var(--ease),box-shadow .25s var(--ease),border-color .25s var(--ease)}
+  .linea-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(10,22,40,.08);border-color:var(--line-strong)}
+  .linea-card .num{font-family:'Sora',system-ui,sans-serif;font-size:13px;color:var(--accent);font-weight:600;margin-bottom:20px;letter-spacing:.05em}
+  .linea-card h3{font-size:22px;margin-bottom:12px}
+  .linea-card p{color:var(--ink-3);font-size:15px;line-height:1.55;margin-bottom:24px;flex:1}
+  .linea-card .go{font-size:14px;color:var(--ink-2);font-weight:600;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  .linea-card .go .arrow{color:var(--accent);font-size:18px}
+  .linea-card.principal{grid-column:1/-1;background:var(--ink);border-color:var(--ink);padding:44px}
+  .linea-card.principal .num{color:var(--accent-luz)}
+  .linea-card.principal h3{font-size:32px;color:#EDEAE3}
+  .linea-card.principal p{color:rgba(237,234,227,.82);font-size:17px;max-width:62ch}
+  .linea-card.principal .go{color:#EDEAE3;border-top-color:rgba(237,234,227,.2)}
+  .hero .tambien{font-size:14px;color:rgba(237,234,227,.7);margin:-12px 0 28px;line-height:1.6}
+  .hero .tambien a{color:#EDEAE3;font-weight:600;border-bottom:1px solid rgba(237,234,227,.35)}
+  .hero .tambien a:hover{border-bottom-color:var(--accent-luz)}
+
 
   /* DIRECTOR DE IA (servicio principal) */
   .director{padding:0 0 140px}
@@ -687,7 +744,7 @@ const familias = [
   .case .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:all .3s var(--ease);border:none;padding:0}
   .case .dot.active{background:var(--accent);width:32px;border-radius:100px;box-shadow:0 0 12px var(--accent-glow)}
 
-  /* POR QUÉ INFINITE LABS (6 puntos sobrios) */
+  /* POR QUÉ 77 DELTA (6 puntos sobrios) */
   .why{padding:140px 0}
   .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px 24px;margin-top:32px}
   .why-item{padding-top:32px;border-top:2px solid var(--ink)}
@@ -742,6 +799,7 @@ const familias = [
     .caps-grid{grid-template-columns:repeat(2,1fr)}
     .sec-grid{grid-template-columns:repeat(2,1fr)}
     .svc-grid{grid-template-columns:1fr}
+    .lineas-grid{grid-template-columns:1fr}
     .director-paquetes{grid-template-columns:1fr}
     .director-panel{padding:48px 40px}
     .trust .logos{grid-template-columns:repeat(3,1fr);gap:24px 16px}
@@ -778,6 +836,10 @@ const familias = [
     .svc-featured .text-panel{padding:24px}
     .svc-featured h3{font-size:28px}
     .svc-featured p{font-size:15px}
+    .lineas-grid{grid-template-columns:1fr}
+    .linea-card{padding:28px}
+    .linea-card.principal{padding:28px}
+    .linea-card.principal h3{font-size:24px}
     .svc-card{padding:28px}
     .svc-card h3{font-size:20px}
     .director{padding:0 0 80px}

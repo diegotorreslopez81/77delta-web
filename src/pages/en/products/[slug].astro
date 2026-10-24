@@ -1,136 +1,19 @@
 ---
-import Base from '../../../layouts/Base.astro';
-import Boton from '../../../components/Boton.astro';
-import Cta from '../../../components/Cta.astro';
-import { hrefEn as href } from '../../../lib/site';
-import { productos, type Producto } from '../../../data/productos.en';
-
+import Puente from '../../../components/Puente.astro';
+// getStaticPaths se ejecuta aislado: el mapa va dentro y el destino viaja como prop.
 export function getStaticPaths() {
-  return productos.map((producto) => ({
-    params: { slug: producto.slug },
-    props: { producto },
-  }));
+  const destinos: Record<string, string> = {
+    leakai: '/en/cybersecurity/',
+    regulia: '/en/use-cases/',
+    contestia: '/en/use-cases/',
+    instantexam: '/en/use-cases/',
+    scoreflow: '/en/use-cases/',
+    contablia: '/en/use-cases/',
+    swarmix: '/en/use-cases/',
+  };
+  return Object.entries(destinos).map(([slug, destino]) => ({ params: { slug }, props: { destino } }));
 }
-
-interface Props {
-  producto: Producto;
-}
-
-const { producto } = Astro.props;
-const otros = productos.filter((p) => p.slug !== producto.slug).slice(0, 3);
+const { destino } = Astro.props;
 ---
 
-<Base
-  title={producto.nombre}
-  description={`${producto.nombre}: ${producto.descripcion} ${producto.propio ? '77 Delta\'s own product' : 'A product from our technology group\'s portfolio'}, ${producto.estado.toLowerCase()}.`}
->
-  <!-- Hero -->
-  <section class="wrap py-24 md:py-32">
-    <p class="eyebrow" data-reveal>
-      <a href={href('/productos/')} class="transition-colors hover:text-tinta">Products</a> · {producto.categoria}
-    </p>
-
-    <div class="mt-8 flex items-center gap-6" data-reveal>
-      <img
-        src={href(`/img/productos/${producto.logo}`)}
-        alt={`${producto.nombre} logo`}
-        width="256"
-        height="256"
-        class="h-16 w-16 rounded-[12px] object-contain ring-1 ring-linea"
-      />
-      <div>
-        <h1 class="font-display text-[clamp(34px,5vw,60px)] font-semibold leading-[1.05] tracking-[-0.035em]">
-          {producto.nombre}
-        </h1>
-        <p class="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-pizarra">{producto.estado}</p>
-      </div>
-    </div>
-
-    <p class="mt-10 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>{producto.descripcion}</p>
-
-    {
-      producto.url && (
-        <div class="mt-10" data-reveal>
-          <Boton href={producto.url} externo>
-            Visit {producto.nombre} →
-          </Boton>
-        </div>
-      )
-    }
-  </section>
-
-  <!-- Qué hace y con qué -->
-  <section class="hairline bg-panel">
-    <div class="wrap grid gap-12 py-24 md:grid-cols-12 md:py-32">
-      <div class="md:col-span-7" data-reveal>
-        <p class="eyebrow">What it does</p>
-        <p class="mt-6 text-[17px] leading-[1.65] text-tinta/85">{producto.queHace}</p>
-      </div>
-      <div class="md:col-span-5 md:pl-6" data-reveal>
-        <p class="eyebrow">Built with</p>
-        <p class="mt-6 font-mono text-[13px] leading-[1.9] text-pizarra">{producto.stack}</p>
-        <p class="mt-8 border-t border-linea pt-6 text-[15px] text-pizarra">
-          {producto.propio
-            ? 'Infrastructure in the European Union. The client keeps the code, the keys and the data when the project ends.'
-            : 'A product from our technology group\'s portfolio. We integrate it with your brand, your data and your workflows when it fits your case.'}
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Cómo lo usamos en proyectos -->
-  <section class="hairline">
-    <div class="wrap grid gap-12 py-24 md:grid-cols-12 md:py-32">
-      <div class="md:col-span-6" data-reveal>
-        <p class="eyebrow">In your project</p>
-        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
-          We put proven solutions to work in your company.
-        </h2>
-      </div>
-      <div class="space-y-5 text-[17px] text-pizarra md:col-span-6 md:pt-12" data-reveal>
-        <p>
-          {producto.nombre} is one of the products we adapt during transformation projects. If,
-          after the assessment, it fits what you need, we deploy it with your brand, your data and your workflows.
-        </p>
-        <p>
-          {producto.propio
-            ? 'If it does not fit, we build something else from scratch or combine several pieces. We have our own technology, which lets us adapt the solution to your case.'
-            : 'If it does not fit, we build something else from scratch, combine several pieces or turn to our own product, LeakAI, when it adds more value. That way we pick the right piece for your case, whether it is ours or from our group\'s portfolio.'}
-        </p>
-        <a
-          href={href('/casos-de-uso/')}
-          class="inline-block font-mono text-[12px] text-oro-oscuro transition-colors hover:text-tinta"
-        >
-          See the capabilities we can deliver →
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Otros productos -->
-  <section class="hairline bg-panel">
-    <div class="wrap py-20 md:py-24">
-      <p class="eyebrow" data-reveal>Other products</p>
-      <ul class="mt-10 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-3" role="list">
-        {
-          otros.map((o) => (
-            <li class="bg-panel" data-reveal>
-              <a href={href(`/productos/${o.slug}/`)} class="group flex h-full flex-col p-8 transition-colors hover:bg-oro/5">
-                <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-pizarra">{o.categoria}</span>
-                <h3 class="mt-3 font-display text-[20px] font-semibold">{o.nombre}</h3>
-                <p class="mt-2 flex-1 text-[15px] text-pizarra">{o.descripcion}</p>
-                <span class="mt-6 font-mono text-[12px] text-tinta/80 group-hover:text-oro-oscuro">View product page →</span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </section>
-
-  <Cta
-    titulo={`Is ${producto.nombre} right for your company?`}
-    texto="The assessment tells you whether this solution suits your case, whether it is worth adapting, or whether you need something different."
-    boton="Book a free assessment"
-  />
-</Base>
+<Puente destino={destino} idioma="en" />

@@ -14,7 +14,7 @@ interface Props {
   /** Ruta nueva (pathname), p. ej. '/ciberseguridad/'. */
   destino: string;
   /** Idioma del aviso. */
-  idioma?: 'es' | 'ca';
+  idioma?: 'es' | 'ca' | 'en';
 }
 const { destino, idioma = 'es' } = Astro.props;
 const destinoAbs = new URL(href(destino), Astro.site).href;
@@ -23,6 +23,7 @@ const canonicalAbs = destinoAbs.split('#')[0];
 const textos = {
   es: { titulo: 'Página movida', aviso: 'Esta página se ha movido a', enlace: 'Ir a la nueva página' },
   ca: { titulo: 'Pàgina moguda', aviso: "Aquesta pàgina s'ha mogut a", enlace: 'Anar a la pàgina nova' },
+  en: { titulo: 'Page moved', aviso: 'This page has moved to', enlace: 'Go to the new page' },
 }[idioma];
 ---
 

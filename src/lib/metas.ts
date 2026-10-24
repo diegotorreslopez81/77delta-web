@@ -45,4 +45,9 @@ export const metas: Record<string, { title?: string; description?: string }> = {
   "/ca/identitat-digital/": {"title": "Identitat digital i credencials verificables", "description": "Consultoria i desenvolupament en identitat digital: credencials verificables, cartera europea EUDI Wallet i eIDAS 2 per a pimes i administracions."},
   "/ca/espais-de-dades/": {"title": "Espais de dades, Gaia-X i IDSA per a empreses", "description": "Compartim dades entre empreses i amb l'administració sense cedir-les: espais de dades, Gaia-X, IDSA, connectors i Data Act. Diagnòstic a mida."},
   "/ca/eines/": {"title": "Eines: Licita i Corpora", "description": "Les eines que fem servir als nostres projectes: Licita, motor de licitacions públiques, i Corpora, formació en salut per a empreses."},
+  "/en/artificial-intelligence/": {"title": "Artificial intelligence for SMEs", "description": "Fractional AI director, assessment, operational transformation, AI security and technology partner. Applied AI to cut costs in your SME."},
+  "/en/cybersecurity/": {"title": "Cybersecurity for SMEs and public administration", "description": "Assessment, training, NIS2, ENS and GDPR readiness, incident response and secure development. Also for systems with AI. Book an assessment."},
+  "/en/digital-identity/": {"title": "Digital identity and verifiable credentials", "description": "Consulting and development in digital identity: verifiable credentials, the European EUDI Wallet and eIDAS 2 for SMEs and public administrations."},
+  "/en/data-spaces/": {"title": "Data spaces, Gaia-X and IDSA for companies", "description": "Share data between companies and with public administration without handing it over: data spaces, Gaia-X, IDSA, connectors and the Data Act. Tailored assessment."},
+  "/en/tools/": {"title": "Tools: Licita and Corpora", "description": "The tools we use in our projects: Licita, a public tender engine, and Corpora, health training for companies."},
 };
