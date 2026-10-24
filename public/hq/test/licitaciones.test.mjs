@@ -358,14 +358,14 @@ test('filtrar: cada dimension es opcional y se combinan con AND', () => {
 });
 
 // Motivos de NO (encargo #1063): catalogo cerrado, mismo orden que omc_motivos_no() en SQL y
-// MOTIVOS_NO en scripts/hq/hq.py.
-test('MOTIVOS_NO: 10 elementos en el orden exacto del catalogo', () => {
-  assert.deepEqual(MOTIVOS_NO, ['Fuera de España', 'Suministro/hardware', 'No TIC ni formación', 'Solvencia/clasificación',
-    'Presencial', 'Sin pliego', 'Plazo corto', 'Importe bajo', 'Competencia/consorcio', 'Duplicada']);
-  assert.equal(MOTIVOS_NO.length, 10);
+// lic_motivos en la BD (única fuente).
+test('MOTIVOS_NO: sin copia local del catálogo en el código; lo llena configurarMotivosNo desde lic_motivos', async () => {
+  const { readFileSync } = await import('node:fs');
+  assert.doesNotMatch(readFileSync(new URL('../app/licitaciones.js', import.meta.url), 'utf8'), /export const MOTIVOS_NO = \[['"]/);
 });
 
 test('motivosNo: solo devuelve los elementos de l.motivos que estan en el catalogo', () => {
+  configurarMotivosNo(['Sin pliego', 'Plazo corto', 'Presencial']);
   assert.deepEqual(motivosNo({ motivos: ['Sin pliego', 'Plazo corto'] }), ['Sin pliego', 'Plazo corto']);
   // una aprobada/presentada trae motivos de SI (texto libre de Sales), ajenos al catalogo de NO.
   assert.deepEqual(motivosNo({ motivos: ['Buen encaje con el equipo', 'Cliente conocido'] }), []);
@@ -392,6 +392,8 @@ test('configurarMotivosNo: sustituye el catalogo en directo; vacio o invalido no
   }
 });
 
+// catálogo de prueba: en la app lo llena configurarMotivosNo desde lic_motivos
+configurarMotivosNo(['Sin pliego', 'Plazo corto', 'Presencial']);
 test('filtrar con motivo: pasa las filas cuyo motivosNo incluye el motivo pedido', () => {
   const rows = [
     { expediente: 'M1', estado: 'Descartada', motivos: ['Sin pliego'] },

@@ -322,17 +322,15 @@ export function sinSolvencia(l) {
 }
 
 // Catalogo cerrado de motivos de NO (encargo #1063), mismo orden que omc_motivos_no() en SQL y
-// MOTIVOS_NO en scripts/hq/hq.py: es el orden en que Diego los ve, tanto en los chips del modal de
+// el orden de lic_motivos: es el orden en que Diego los ve, tanto en los chips del modal de
 // descarte como en el panel de KPIs.
 // D57/Tanda G (encargo #2051): fuente unica es omc_motivos_no() (SQL), pedido en vivo por
-// api.js/catalogoDescarte(). MOTIVOS_NO nace con este snapshot como valor por defecto (node --test
-// sigue pasando sin red) y configurarMotivosNo(lista) lo sustituye con el catalogo real al arrancar,
+// api.js/catalogoDescarte(). MOTIVOS_NO nace vacío, sin copia local, y configurarMotivosNo(lista) lo sustituye con el catalogo real al arrancar,
 // mismo patron que configurarLicita() muta ESTADOS_H1/TRANSICIONES_5_3 en directo (nunca se reasigna
 // el array, para que quien ya lo importo vea el cambio sin tocar su propio codigo). Antes de esta
 // tanda este array hardcodeado y omc_motivos_no() (via catalogoDescarte()) eran dos catalogos
 // paralelos en el front; ahora hay una unica fuente viva, sincronizada al arrancar (ver main.js).
-export const MOTIVOS_NO = ['Fuera de España', 'Suministro/hardware', 'No TIC ni formación', 'Solvencia/clasificación',
-  'Presencial', 'Sin pliego', 'Plazo corto', 'Importe bajo', 'Competencia/consorcio', 'Duplicada'];
+export const MOTIVOS_NO = [];
 
 export function configurarMotivosNo(lista) {
   if (Array.isArray(lista) && lista.length) { MOTIVOS_NO.length = 0; MOTIVOS_NO.push(...lista); }
