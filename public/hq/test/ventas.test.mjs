@@ -31,9 +31,28 @@ test('tarea vencida se detecta por fecha, sin umbrales', () => {
   assert.equal(V.vencida({ vence: '2026-10-02' }, AHORA), true);
   assert.equal(V.vencida({ vence: '2026-10-03' }, AHORA), false);
 });
-test('Pipeline: embudo acumulado 15 Lista, 6 Contactada y sin "false" suelto', async () => {
-  const raiz = crearNodo('main'); V.usarCargador(async () => DATOS); await V.render(raiz, AHORA, 'pipeline'); const t = raiz.textContent;
-  assert.match(t, /15\|?Lista/); assert.match(t, /6\|?Contactada/); assert.doesNotMatch(t, /false|NaN|undefined/);
+// #2672: la pestaña Pipeline lee hq_crm_pipeline (etapa, orden, tipo_lead, n, importe), no ven_hq.
+const VP = await import('../app/vistas/ventas-pipeline.js');
+const PIPE = [
+  { etapa: 'PROPOSAL', orden: 4, tipo_lead: 'twenty-2026-05', n: 15, importe: '112000.00' }, { etapa: 'SCREENING', orden: 2, tipo_lead: 'piloto-carla', n: 168, importe: '0.0' },
+  { etapa: 'SCREENING', orden: 2, tipo_lead: 'twenty-2026-05', n: 18, importe: '144000.0' }, { etapa: 'PROPOSAL', orden: 4, tipo_lead: 'piloto-carla', n: 1, importe: '14500' },
+  { etapa: 'LOST', orden: 9, tipo_lead: 'piloto-carla', n: 14, importe: '0' },
+  { etapa: 'CUSTOMER', orden: 8, tipo_lead: 'twenty-2026-05', n: 9, importe: '67438' },
+];
+test('Pipeline: columnas por orden con n e importe sumados y sin "false" suelto', async () => {
+  const m = VP.modeloPipeline(PIPE); assert.deepEqual(m.map(c => c.nombre), ['Cribado', 'Propuesta', 'Cliente', 'Perdida']);
+  assert.equal(m[0].n, 186); assert.equal(m[0].importe, 144000); assert.equal(m[1].importe, 126500); assert.equal(m[0].tipos[0].tipo, 'piloto-carla');
+  const raiz = crearNodo('main'); VP.usarCargador(async () => PIPE); await V.render(raiz, AHORA, 'pipeline'); const t = raiz.textContent;
+  assert.match(t, /Cribado\|186/); assert.match(t, /126\.500 €/); assert.doesNotMatch(t, /false|NaN|undefined|No se pudo leer/);
+});
+test('Pipeline: Propuestas enviadas = solo PROPOSAL (16 / 126.500 €); clientes aparte; funnel intacto', async () => {
+  const raiz = crearNodo('main'); VP.usarCargador(async () => PIPE); await V.render(raiz, AHORA, 'pipeline'); const t = raiz.textContent;
+  assert.match(t, /Propuestas enviadas/); assert.doesNotMatch(t, /Oportunidades abiertas/); assert.match(t, /Importe en juego/); assert.match(t, /Cribado\|186/); assert.match(t, /9|Clientes/); assert.match(t, /67\.438 €|Importe clientes/);
+});
+test('Pipeline: acepta {pipeline:[...]}, vacío muestra aviso y un fallo de la RPC un aviso rojo', async () => {
+  let raiz = crearNodo('main'); VP.usarCargador(async () => ({ pipeline: PIPE })); await V.render(raiz, AHORA, 'pipeline'); assert.match(raiz.textContent, /Cribado/);
+  raiz = crearNodo('main'); VP.usarCargador(async () => []); await V.render(raiz, AHORA, 'pipeline'); assert.match(raiz.textContent, /Sin oportunidades en el pipeline/);
+  raiz = crearNodo('main'); VP.usarCargador(async () => { throw new Error('boom'); }); await V.render(raiz, AHORA, 'pipeline'); assert.match(raiz.textContent, /No se pudo leer el pipeline \(boom\)/);
 });
 const OP = { ...ops[10], id: 99, empresa: 'Alcalá', etapa: 'reunion_agendada', campana: 'privado', carpeta_url: 'https://drive.google.com/drive/folders/abc', buzon: 'x@77delta.com',
   envios: [{ de: 'cuenta@77delta.com', toque: 1, estado: 'enviado', enviado_en: '2026-10-02T09:00:00Z', respondido_en: '2026-10-03T08:00:00Z', asunto: 'Hola Marta' }],
@@ -44,9 +63,20 @@ test('Hoy: tarea vencida de Diego, contadores y raíl; sin correos ni cuentas', 
   assert.match(t, /Necesita a una persona/); assert.match(t, /Vencida/); assert.match(t, /Alcalá/); assert.match(t, /Sale solo hoy/); assert.match(t, /Hoy no se envía|Empieza a las|Enviando|Hecho|Nada aprobado/);
   assert.doesNotMatch(t, /@|Hola Marta/);
 });
-test('Campañas: texto 2 pendiente de OK y sin cuenta de envío', async () => {
-  const raiz = crearNodo('main'); V.usarCargador(async () => D2); await V.render(raiz, AHORA, 'campanas'); const t = raiz.textContent;
-  assert.match(t, /Texto 2 pendiente de OK/); assert.match(t, /Aina/); assert.doesNotMatch(t, /@/);
+// #2661: la pestaña Campañas lee hq_crm_funnel ({campanas:[...]}); el texto 2 pendiente de OK ya no se pinta aquí.
+const VC = await import('../app/vistas/ventas-campanas.js');
+const FILAS = [
+  { nombre: 'Antigua', canal: 'gmail-api', fecha_inicio: '2026-09-01', viva: false, contactados: 10, respondidos: 1, tasa_respuesta_pct: 10 },
+  { nombre: 'Viva', canal: 'whatsapp', fecha_inicio: '2026-10-01', viva: true, contactados: 40, respondidos: 8, reuniones: 2, propuestas_n: 1, propuestas_importe: 12000, clientes_n: 1, tasa_respuesta_pct: 20 },
+];
+test('Campañas: tarjetas del embudo desde hq_crm_funnel, vivas primero y columnas ausentes con guion', async () => {
+  const raiz = crearNodo('main'); VC.usarCargador(async () => ({ campanas: FILAS })); await V.render(raiz, AHORA, 'campanas'); const t = raiz.textContent;
+  assert.ok(t.indexOf('Viva') < t.indexOf('Antigua')); assert.match(t, /Contactados/); assert.match(t, /Clientes/); assert.match(t, /12\.?000 €/); assert.match(t, /Tasa de respuesta 20 %/);
+  assert.match(t, /Reuniones\|[^|]*\|-/); assert.doesNotMatch(t, /No se pudo leer/);
+});
+test('Campañas: sin filas muestra "Sin campañas" y un fallo de la RPC un aviso, sin romper', async () => {
+  let raiz = crearNodo('main'); VC.usarCargador(async () => ({ campanas: [] })); await V.render(raiz, AHORA, 'campanas'); assert.match(raiz.textContent, /Sin campañas/);
+  raiz = crearNodo('main'); VC.usarCargador(async () => { throw new Error('boom'); }); await V.render(raiz, AHORA, 'campanas'); assert.match(raiz.textContent, /No se pudo leer las campañas \(boom\)/);
 });
 test('contadores: respuesta sin contestar y reunión agendada', () => { const k = V.contadores(D2.oportunidades); assert.equal(k.respuestas, 1); assert.equal(k.reuniones, 1); });
 test('estadoRail: texto descriptivo por caso (decisión #462)', () => {

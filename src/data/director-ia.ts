@@ -314,15 +314,15 @@ export const contenidos: Record<Idioma, Contenido> = {
   en: {
     etiquetaIdioma: 'English',
     meta: {
-      title: 'External AI director from 1,200 € a month',
+      title: 'Fractional AI director from €1,200 a month',
       description:
-        'An AI director for your company on a fixed monthly fee: one morning a month on site with your technical team and the rest of the work remote, with savings guaranteed by contract. Three plans from 1,200 € a month.',
+        'An AI director for your company on a fixed monthly fee: one morning a month on site with your technical team and the rest of the work remote, with savings guaranteed by contract. Three plans from €1,200 a month.',
     },
     miga: 'Services',
     eyebrow: 'Main service · Fixed monthly fee',
-    h1: ['Your AI director ', 'from 1,200 € a month', '.'],
+    h1: ['Your AI director ', 'from €1,200 a month', '.'],
     lead: 'One morning a month at your company, alongside your technical team, and the rest of the work remote, with one goal: to identify and reduce as far as possible the hours spent on repetitive tasks. The savings are guaranteed by contract and measured with you every month.',
-    precio: 'From 1,200 €/month',
+    precio: 'From €1,200/month',
     precioPie: 'Three plans · fixed fee · savings guaranteed by contract',
     botonWhatsapp: 'Chat on WhatsApp',
     botonSesion: 'First session at no cost',
@@ -361,7 +361,7 @@ export const contenidos: Record<Idioma, Contenido> = {
       lista: [
         {
           nombre: 'Base',
-          precio: '1,200 €/month',
+          precio: '€1,200/month',
           iva: '+ VAT',
           presencia: 'One morning a month at your company',
           remoto: '4 hours a month remote',
@@ -369,7 +369,7 @@ export const contenidos: Record<Idioma, Contenido> = {
         },
         {
           nombre: 'Advance',
-          precio: '2,400 €/month',
+          precio: '€2,400/month',
           iva: '+ VAT',
           presencia: 'Two mornings a month at your company',
           remoto: '10 hours a month remote',
@@ -377,7 +377,7 @@ export const contenidos: Record<Idioma, Contenido> = {
         },
         {
           nombre: 'Intensive',
-          precio: '3,600 €/month',
+          precio: '€3,600/month',
           iva: '+ VAT',
           presencia: 'One morning every week at your company',
           remoto: '14 hours a month remote',

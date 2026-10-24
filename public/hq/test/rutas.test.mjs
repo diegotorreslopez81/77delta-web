@@ -6,12 +6,11 @@ import { AREAS, CLAVES, resolver } from '../app/rutas.js';
 // Expedientes, Tablero (Diego: "así deberían ir ordenados y no al revés"); Equipo ya no agrupa: se
 // reparte en Organigrama y Colaboradores, en la posición que ocupaba Equipo (justo antes de Recursos).
 // O13a (D69, tanda E bis): Admin (panel generico de D9) justo despues de Salud.
-test('AREAS tiene las quince áreas del menú nuevo en orden y cada vista es una clave válida', () => {
-  assert.deepEqual(AREAS.map(a => a.id), ['hoy', 'avisos', 'kpis', 'licitaciones', 'licita-engine', 'expedientes', 'tablero', 'ventas', 'salud', 'progreso', 'admin', 'organigrama', 'colaboradores', 'recursos', 'direccion']);
+test('AREAS tiene las trece áreas (menú de seis) del menú nuevo en orden y cada vista es una clave válida', () => {
+  assert.deepEqual(AREAS.map(a => a.id), ['hoy', 'avisos', 'licitaciones', 'licita-engine', 'expedientes', 'tablero', 'ventas', 'productos', 'proyectos', 'equipo', 'secreto', 'admin', 'colaboradores']);
   for (const a of AREAS) for (const v of a.vistas) assert.ok(CLAVES.has(v.clave), v.clave);
-  assert.deepEqual(AREAS.find(a => a.id === 'organigrama').vistas.map(v => v.clave), ['equipo/organigrama']);
+  assert.deepEqual(AREAS.find(a => a.id === 'equipo').vistas.map(v => v.clave), ['equipo/organigrama']);
   assert.deepEqual(AREAS.find(a => a.id === 'colaboradores').vistas.map(v => v.clave), ['equipo/colaboradores']);
-  assert.deepEqual(AREAS.find(a => a.id === 'recursos').vistas.map(v => v.clave), ['recursos/computo'], 'Recursos: Cómputo desde #1054; Dinero llega en la tanda 3');
 });
 
 const casos = [
@@ -19,36 +18,45 @@ const casos = [
   ['', '', 'hoy', undefined, {}, '#hoy', true],
   ['#hoy', '', 'hoy', undefined, {}, '#hoy', false],
   ['#inicio', '', 'hoy', undefined, {}, '#hoy', true],
-  ['#plan', '', 'direccion/objetivo', undefined, {}, '#direccion/objetivo', true],
-  ['#direccion', '', 'direccion/objetivo', undefined, {}, '#direccion/objetivo', true],
+  ['#plan', '', 'operacion/en-curso', undefined, {}, '#operacion/en-curso', true],
+  ['#kpis', '', 'operacion/licitaciones', undefined, {}, '#operacion/licitaciones', true],
+  ['#avisos', '', 'avisos', undefined, {}, '#avisos', false],
+  ['#recursos/computo', '', 'recursos/computo', undefined, {}, '#recursos/computo', false],
+  ['#direccion/objetivo', '', 'operacion/en-curso', undefined, {}, '#operacion/en-curso', true],
+  ['#direccion', '', 'operacion/en-curso', undefined, {}, '#operacion/en-curso', true],
   ['#tablero', '', 'operacion/tablero', undefined, {}, '#operacion/tablero', true],
   ['#tablero/f/A3', '', 'operacion/tablero', undefined, { frente: 'A3' }, '#operacion/tablero?frente=A3', true],
   ['#tablero/12', '', 'operacion/tablero', '12', {}, '#operacion/tablero/12', true],
   ['#operacion/tablero?frente=A1&agente=sales-motor', '', 'operacion/tablero', undefined, { frente: 'A1', agente: 'sales-motor' }, '#operacion/tablero?frente=A1&agente=sales-motor', false],
   ['#operacion', '', 'operacion/licitaciones', undefined, {}, '#operacion/licitaciones', true],
-  ['#decisiones', '', 'hoy', 'bandeja', {}, '#hoy/bandeja', true],
+  ['#decisiones', '', 'hoy', undefined, {}, '#hoy', true],
   ['#decisiones/77', '', 'hoy', '77', {}, '#hoy/77', true],
   ['#reglas/decisiones/77', '', 'hoy', '77', {}, '#hoy/77', true],
-  ['#hoy/bandeja', '', 'hoy', 'bandeja', {}, '#hoy/bandeja', false],
+  ['#hoy/bandeja', '', 'hoy', undefined, {}, '#hoy', true],
   ['#hoy/12', '', 'hoy', '12', {}, '#hoy/12', false],
-  ['#reglas', '', 'hoy', 'bandeja', {}, '#hoy/bandeja', true],
+  ['#reglas', '', 'hoy', undefined, {}, '#hoy', true],
   ['#equipo', '', 'equipo/organigrama', undefined, {}, '#equipo/organigrama', true],
   ['#equipo/sales-motor', '', 'equipo/agente', 'sales-motor', {}, '#equipo/agente/sales-motor', true],
   ['#equipo/agente/sales-motor', '', 'equipo/agente', 'sales-motor', {}, '#equipo/agente/sales-motor', false],
   ['#expedientes/9', '', 'operacion/expedientes', '9', {}, '#operacion/expedientes/9', true],
   ['#operacion/licitaciones', '', 'operacion/licitaciones', undefined, {}, '#operacion/licitaciones', false],
-  ['#operacion/salud', '', 'operacion/salud', undefined, {}, '#operacion/salud', false],
+  ['#operacion/salud', '', 'equipo/organigrama', undefined, {}, '#equipo/organigrama', true],
+  ['#salud', '', 'equipo/organigrama', undefined, {}, '#equipo/organigrama', true],
+  ['#organigrama', '', 'equipo/organigrama', undefined, {}, '#equipo/organigrama', true],
+  ['#web', '', 'operacion/ventas', 'web', {}, '#operacion/ventas/web', true],
+  ['#computo', '', 'hoy', undefined, {}, '#hoy', true],
   ['#operacion/admin', '', 'operacion/admin', undefined, {}, '#operacion/admin', false],
   ['#operacion/admin/lic_organos', '', 'operacion/admin', 'lic_organos', {}, '#operacion/admin/lic_organos', false],
-  ['#recursos', '', 'recursos/computo', undefined, {}, '#recursos/computo', true],
+  ['#recursos', '', 'hoy', undefined, {}, '#hoy', true],
   ['#recursos/computo', '', 'recursos/computo', undefined, {}, '#recursos/computo', false],
-  ['#recursos/dinero', '', 'recursos/computo', undefined, {}, '#recursos/computo', true],
+  ['#recursos/dinero', '', 'hoy', undefined, {}, '#hoy', true],
   ['#loquesea/x', '', 'hoy', undefined, {}, '#hoy', true],
   ['#tablero', '?id=55', 'hoy', '55', {}, '#hoy/55', true],
   ['#hoy', '?id=abc', 'hoy', undefined, {}, '#hoy', false],
   // #1057 tarea 29: nueva sección KPIs, con paso de grupo por query string igual que cualquier otro filtro.
-  ['#kpis', '', 'kpis', undefined, {}, '#kpis', false],
-  ['#kpis?grupo=licitaciones', '', 'kpis', undefined, { grupo: 'licitaciones' }, '#kpis?grupo=licitaciones', false],
+  ['#kpis', '', 'operacion/licitaciones', undefined, {}, '#operacion/licitaciones', true],
+  ['#kpis?grupo=licitaciones', '', 'operacion/licitaciones', undefined, { grupo: 'licitaciones' }, '#operacion/licitaciones?grupo=licitaciones', true],
+  ['#licitaciones?bloque=firmar', '', 'operacion/licitaciones', undefined, { bloque: 'firmar' }, '#operacion/licitaciones?bloque=firmar', true],
 ];
 for (const [hash, search, clave, arg, filtros, canonico, redirigido] of casos) {
   test('resolver ' + JSON.stringify(hash) + ' ' + JSON.stringify(search), () => {

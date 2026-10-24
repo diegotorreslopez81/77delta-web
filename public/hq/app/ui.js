@@ -137,14 +137,42 @@ export function pedirMotivos(titulo, catalogo) {
 // datos de la BD: una comilla en el texto no puede escapar del atributo porque no hay parseo de HTML de por
 // medio) y saltos de línea en <br>. Reemplaza el patrón `html:` con reemplazos de string usado antes en
 // decisiones.js (T5, fix ronda 1: ese patrón dejaba inyectar atributos via un `"` en el detalle).
-export function enlazar(texto) {
+// Trozos del texto: { texto } o { url, resto }. Solo https; la puntuación final, las comillas y el paréntesis de cierre sin pareja quedan fuera de la URL.
+function trozos(texto) {
   const out = [];
-  for (const parte of String(texto || '').split(/(https?:\/\/[^\s)]+)/g)) {
-    if (/^https?:\/\//.test(parte)) { out.push(el('a', { href: parte, target: '_blank', rel: 'noopener', text: parte })); continue; }
-    parte.split('\n').forEach((linea, i) => {
-      if (i > 0) out.push(el('br'));
-      if (linea) out.push(document.createTextNode(linea));
-    });
+  for (const parte of String(texto || '').split(/(https:\/\/[^\s<>"'“”‘’«»]+)/gi)) {
+    if (!/^https:\/\//i.test(parte)) { out.push({ texto: parte }); continue; }
+    let url = parte, resto = '';
+    for (;;) {
+      const m = url.match(/[.,;:!?'")\]}]$/);
+      if (!m || (m[0] === ')' && (url.match(/\(/g) || []).length >= (url.match(/\)/g) || []).length)) break;
+      resto = m[0] + resto; url = url.slice(0, -1);
+    }
+    out.push(url.length <= 'https://'.length ? { texto: parte } : { url, resto });
   }
   return out;
+}
+// Las URL https de un texto, para mostrarlas aparte (p. ej. las del título de una tarjeta, que es un botón).
+export const urlsDe = texto => trozos(texto).filter(t => t.url).map(t => t.url);
+
+export function enlazar(texto) {
+  const out = [];
+  const texto_ = (t) => t.split('\n').forEach((linea, i) => {
+    if (i > 0) out.push(el('br'));
+    if (linea) out.push(document.createTextNode(linea));
+  });
+  for (const t of trozos(texto)) {
+    if (!t.url) { texto_(t.texto); continue; }
+    out.push(el('a', { href: t.url, target: '_blank', rel: 'noopener noreferrer', text: t.url }));
+    if (t.resto) texto_(t.resto);
+  }
+  return out;
+}
+
+// #2676: cifra que aún no sale de la fuente de la verdad. Se quita en el PR que la migra.
+export function provisional(nodo, encargo) {
+  nodo.classList.add('fuente-provisional');
+  nodo.dataset.provisional = encargo;
+  nodo.title = 'Cifra provisional: aún no sale de la fuente de la verdad (' + encargo + ')';
+  return nodo;
 }

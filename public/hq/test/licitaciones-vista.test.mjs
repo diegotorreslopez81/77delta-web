@@ -72,6 +72,7 @@ async function pintar(filas, filtrosRuta = {}, opts = {}) {
 
 test('estadoChip: alias de rutas viejas y los 12 estados de H1 tal cual; lo que no reconoce cae vacio', () => {
   assert.equal(estadoChip('activas'), 'Aprobada');
+  assert.equal(estadoChip('adjudicadas'), 'Adjudicada'); // #2692
   assert.equal(estadoChip('criba'), 'Nueva');
   assert.equal(estadoChip('pausadas'), 'Por decidir');
   assert.equal(estadoChip('descartadas'), 'Descartada');
@@ -102,6 +103,10 @@ test('filtroServidor: Por decidir por defecto, solo abiertas; Menor y etiqueta p
   const abiertas = filtroServidor({ estado: 'Descartada', abiertas: '0' }, AHORA);
   assert.equal(abiertas.cierre_desde, undefined);
   assert.equal(filtroServidor({ estado: 'Nueva' }, AHORA).limite, 1000);
+  const todas = filtroServidor({ estado: 'todas-socio' }, AHORA, true);
+  assert.equal(todas.estados, undefined);
+  assert.equal(todas.cierre_desde, undefined);
+  assert.equal(filtroServidor({ estado: 'En redacción' }, AHORA, true).cierre_desde, undefined);
 });
 
 test('filtroCliente: no incluye motivo (se filtra aparte por motivo_descarte crudo)', () => {

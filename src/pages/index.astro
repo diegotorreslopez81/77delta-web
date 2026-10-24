@@ -22,7 +22,7 @@ import { casos, familias } from '../data/casos-de-uso';
         <p class="lead">Consultora tecnológica para pymes. IA para ahorrar costes y, junto a ella, ciberseguridad, identidad digital y espacios de datos.</p>
         <p class="tambien">También trabajamos en: <a href="/ciberseguridad/">Ciberseguridad</a> · <a href="/identidad-digital/">Identidad digital</a> · <a href="/espacios-de-datos/">Espacios de datos</a></p>
         <div class="ctas">
-          <a href="/contacto/" class="btn-primary">Reservar diagnóstico <span>→</span></a>
+          <a href="/contacto/" class="btn-primary" data-umami-event="reservar" data-umami-event-pagina={Astro.url.pathname} data-umami-event-lugar="hero">Reservar diagnóstico <span>→</span></a>
           <a href="#lineas" class="btn-ghost">Ver las cuatro líneas</a>
         </div>
       </div>
@@ -469,7 +469,7 @@ import { casos, familias } from '../data/casos-de-uso';
   <div class="cont">
     <h2>30 minutos. <em>Sin compromiso.</em><br>La decisión es tuya.</h2>
     <p>Entrevista estructurada con tu empresa. Te entregamos una propuesta personalizada con estado inicial, plan de trabajo y presupuesto.</p>
-    <a href="/contacto/" class="btn-primary">Reservar diagnóstico gratuito →</a>
+    <a href="/contacto/" class="btn-primary" data-umami-event="reservar" data-umami-event-pagina={Astro.url.pathname} data-umami-event-lugar="cierre">Reservar diagnóstico gratuito →</a>
   </div>
 </section>
 

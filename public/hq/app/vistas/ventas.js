@@ -2,6 +2,11 @@
 // Contrato: hq-ventas-diseno.md. Todo lo pintado sale de columnas ven_* (RPC ven_hq, schema-v138) que escriben
 // los agentes; la vista solo resta fechas y cuenta. Sin umbrales, sin tasas, sin datos de correo. Solo lectura.
 import { el } from '../ui.js';
+import { cargarWeb, vistaWeb } from './web.js';
+import { cargarAyudas, vistaAyudas } from './ayudas.js';
+import { cargarCampanas, vistaCampanas } from './ventas-campanas.js';
+import { cargarIngresos, vistaIngresos } from './ventas-ingresos.js';
+import { cargarPipeline, vistaPipeline } from './ventas-pipeline.js';
 import { ventasTwentyActivo, renderTwenty } from './ventas-twenty.js';
 
 let carga = async () => (await import('../api.js')).rpc('ven_hq');
@@ -69,8 +74,8 @@ export function agruparPorDia(eventos) {
 
 const urlPagina = slug => 'https://77delta.com/propuestas/' + slug;
 
-const TABS = ['hoy', 'pipeline', 'campanas'];
-const TAB_NOMBRE = { hoy: 'Hoy', pipeline: 'Pipeline', campanas: 'Campañas' };
+const TABS = ['hoy', 'pipeline', 'campanas', 'web', 'ingresos'];
+const TAB_NOMBRE = { hoy: 'Hoy', pipeline: 'Pipeline', campanas: 'Campañas', web: 'Web', ingresos: 'Ingresos' };
 const ESTADO_ENVIO = { enviado: 'enviado', aprobado: 'en cola', redactado: 'pendiente de OK', redactar: 'por redactar', cancelado: 'cancelado', error: 'error' };
 const irTab = t => { if (typeof location !== 'undefined') location.hash = '#operacion/ventas/' + t; };
 const humana = t => t && t.quien === 'diego';
@@ -83,7 +88,7 @@ function ficha(o, cerrar, ahora, ir) {
   const par = (k, v) => { if (v) dl.append(el('dt', { text: k }), el('dd', {}, v)); };
   par('Campaña', o.campana && el('span', { text: o.campana }));
   par('Último movimiento', o.ultima && el('span', { text: `${o.ultima.motivo || 'sin motivo'} · ${fhora(o.ultima.cuando)}` }));
-  par('Página', o.slug && el('a', { href: urlPagina(o.slug), target: '_blank', rel: 'noopener', text: '77delta.com/propuestas/' + o.slug }));
+  par('Página', o.slug && el('a', { href: urlPagina(o.slug), target: '_blank', rel: 'noopener noreferrer', text: '77delta.com/propuestas/' + o.slug }));
   par('Importe', o.importe != null ? el('span', { text: euros(o.importe) }) : el('span', { class: 'mudo', text: 'sin importe' }));
   par('En etapa desde', fEtapa(o) && el('span', { text: fhora(fEtapa(o)) }));
   par('Motivo de cierre', o.motivo_cierre && el('span', { text: o.motivo_cierre }));
@@ -95,7 +100,7 @@ function ficha(o, cerrar, ahora, ir) {
     el('button', { type: 'button', class: 'vt-cerrar', text: 'Cerrar', onclick: cerrar }),
     el('div', { class: 'vt-volver' }, [el('button', { type: 'button', text: 'Volver a Hoy', onclick: () => ir('hoy') }), el('button', { type: 'button', text: 'Volver al Pipeline', onclick: () => ir('pipeline') })]),
     el('h2', { text: o.empresa }), el('div', { class: 'vt-dom', text: `${o.dominio} · ${nombre(o.etapa)}` }), dl,
-    ...(o.carpeta_url ? [el('h3', { text: 'Carpeta del cliente en Drive' }), el('p', {}, [el('a', { class: 'vt-boton', href: o.carpeta_url, target: '_blank', rel: 'noopener', text: 'Abrir carpeta' })])] : []),
+    ...(o.carpeta_url ? [el('h3', { text: 'Carpeta del cliente en Drive' }), el('p', {}, [el('a', { class: 'vt-boton', href: o.carpeta_url, target: '_blank', rel: 'noopener noreferrer', text: 'Abrir carpeta' })])] : []),
     ...(abierta(o) ? [el('h3', { text: 'Siguiente acción' }), el('p', { class: t ? '' : 'mudo', text: t ? `${t.accion}${t.vence ? ' · vence ' + fdia(t.vence) : ''}${t.quien ? ' · ' + t.quien : ''}` : 'Sin tarea asignada' })] : []),
     f.length ? el('h3', { text: 'Recorrido' }) : null,
     f.length ? el('p', { class: 'vt-fechas', text: f.map(([e, v]) => `${nombre(e)} ${fhora(v)}`).join(' · ') }) : null,
@@ -118,10 +123,10 @@ export function modeloCampana(c = {}) {
 }
 
 function cabecera(d, tab, ahora) {
-  const ganadas = d.oportunidades.filter(o => o.etapa === 'ganada').length, m = d.meta;
+  const ganadas = d ? d.oportunidades.filter(o => o.etapa === 'ganada').length : 0, m = d && d.meta;
   return el('div', { class: 'vt-cabecera' }, [
     el('div', { class: 'vt-tabs', role: 'tablist' }, TABS.map(t => el('a', { role: 'tab', href: '#operacion/ventas/' + t, 'aria-selected': String(tab === t), text: TAB_NOMBRE[t] }))),
-    el('div', { class: 'vt-meta', text: `Ganadas ${ganadas}${m?.n ? ' de ' + m.n : ''}${m?.fecha ? ' · meta ' + fdia(m.fecha) + '-' + m.fecha.slice(0, 4) : ''} · datos de ${hhmm(ahora.toISOString())}` }),
+    !d ? null : el('div', { class: 'vt-meta', text: `Ganadas ${ganadas}${m?.n ? ' de ' + m.n : ''}${m?.fecha ? ' · meta ' + fdia(m.fecha) + '-' + m.fecha.slice(0, 4) : ''} · datos de ${hhmm(ahora.toISOString())}` }),
   ]);
 }
 
@@ -244,12 +249,47 @@ function pintarCampanas(raiz, d, ahora) {
 }
 
 // main.js llama render(raiz, S, arg, filtros): el 2º parámetro solo cuenta como reloj si es una Date (tests).
-export async function render(raiz, reloj, arg) {
+export async function render(raiz, reloj, arg, filtros = {}) {
   const ahora = reloj instanceof Date ? reloj : new Date();
   const tab = TABS.includes(arg) ? arg : 'hoy';
   raiz.append(el('h1', { text: 'Ventas' }));
   const caja = el('div', { class: 'ventas' });
   raiz.append(caja);
+  if (filtros.bloque === 'ayudas') {
+    caja.append(cabecera(null, tab, ahora));
+    const zona = el('div', { class: 'ventas-ayudas' }, [el('p', { class: 'cargando', text: 'Cargando ayudas...' })]);
+    caja.append(zona);
+    try { const r = await cargarAyudas(); zona.innerHTML = ''; vistaAyudas(zona, r); } catch (e) { zona.innerHTML = ''; zona.append(el('p', { class: 'aviso rojo', role: 'alert', text: 'No se pudo leer las ayudas (' + (e?.message || 'error') + ')' })); }
+    return;
+  }
+  if (tab === 'web') {
+    caja.append(cabecera(null, tab, ahora));
+    const zona = el('div', { class: 'ventas-web' }, [el('p', { class: 'cargando', text: 'Cargando Umami...' })]);
+    caja.append(zona);
+    try { const r = await cargarWeb(); zona.innerHTML = ''; vistaWeb(zona, r, filtros, ahora); } catch (e) { zona.innerHTML = ''; zona.append(el('p', { class: 'aviso rojo', role: 'alert', text: 'No se pudo leer Umami (' + (e?.message || 'error') + ').' })); }
+    return;
+  }
+  if (tab === 'ingresos') {
+    caja.append(cabecera(null, tab, ahora));
+    const zona = el('div', { class: 'ventas-ingresos' }, [el('p', { class: 'cargando', text: 'Cargando ingresos...' })]);
+    caja.append(zona);
+    try { const r = await cargarIngresos(); zona.innerHTML = ''; vistaIngresos(zona, r, filtros); } catch (e) { zona.innerHTML = ''; zona.append(el('p', { class: 'aviso rojo', role: 'alert', text: 'No se pudo leer los ingresos (' + (e?.message || 'error') + ').' })); }
+    return;
+  }
+  if (tab === 'pipeline') {
+    caja.append(cabecera(null, tab, ahora));
+    const zona = el('div', { class: 'ventas-pipeline' }, [el('p', { class: 'cargando', text: 'Cargando pipeline...' })]);
+    caja.append(zona);
+    try { const r = await cargarPipeline(); zona.innerHTML = ''; vistaPipeline(zona, r); } catch (e) { zona.innerHTML = ''; zona.append(el('p', { class: 'aviso rojo', role: 'alert', text: 'No se pudo leer el pipeline (' + (e?.message || 'error') + '). Prueba a recargar.' })); }
+    return;
+  }
+  if (tab === 'campanas') {
+    caja.append(cabecera(null, tab, ahora));
+    const zona = el('div', { class: 'ventas-campanas' }, [el('p', { class: 'cargando', text: 'Cargando campañas...' })]);
+    caja.append(zona);
+    try { const r = await cargarCampanas(); zona.innerHTML = ''; vistaCampanas(zona, r); } catch (e) { zona.innerHTML = ''; zona.append(el('p', { class: 'aviso rojo', role: 'alert', text: 'No se pudo leer las campañas (' + (e?.message || 'error') + '). Prueba a recargar.' })); }
+    return;
+  }
   caja.append(el('p', { class: 'cargando', text: 'Cargando el embudo de ventas...' }));
   if (ventasTwentyActivo()) {
     try { await renderTwenty(caja, cargaTwenty, ahora); } catch (e) { caja.innerHTML = ''; caja.append(el('p', { class: 'aviso rojo', role: 'alert', text: 'No se pudo leer el resumen de Twenty (' + (e?.message || 'error') + ').' })); }

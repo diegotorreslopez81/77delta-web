@@ -6,7 +6,7 @@ import Footer from '../components/Footer.astro';
 import WhatsApp from '../components/WhatsApp.astro';
 import Schema from '../components/Schema.astro';
 import { metas } from '../lib/metas';
-import { site, umami, searchConsole, href, equivalenteCa, equivalenteEs } from '../lib/site';
+import { site, umami, searchConsole, href, equivalente, hreflangs, type Idioma } from '../lib/site';
 
 interface Props {
   /** Título de la página, sin el nombre de la marca. */
@@ -37,16 +37,21 @@ const metaPagina = metas[Astro.url.pathname];
 const title = metaPagina?.title ?? tituloProp;
 const description = metaPagina?.description ?? descripcionProp;
 
-const idioma = Astro.currentLocale === 'ca' ? 'ca' : 'es';
-const claimIdioma = idioma === 'ca' ? site.claimCa : site.claim;
+const idioma: Idioma = Astro.currentLocale === 'ca' || Astro.currentLocale === 'en' ? Astro.currentLocale : 'es';
+const claimIdioma = idioma === 'ca' ? site.claimCa : idioma === 'en' ? site.claimEn : site.claim;
 const tituloCompleto = title ? `${title} · ${site.nombre}` : `${site.nombre} · ${claimIdioma}`;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const og = new URL(href(ogImage), Astro.site).href;
-// Alternativas de idioma para hreflang: la propia página, la equivalente en el otro idioma, y x-default en castellano.
-const rutaEs = idioma === 'ca' ? equivalenteEs(Astro.url.pathname) : Astro.url.pathname;
-const rutaCa = idioma === 'ca' ? Astro.url.pathname : equivalenteCa(Astro.url.pathname);
-const urlEs = new URL(rutaEs, Astro.site).href;
-const urlCa = new URL(rutaCa, Astro.site).href;
+// Alternativas de idioma para hreflang y para la detección: la propia página y sus equivalentes (es, ca, en).
+// x-default apunta al inglés cuando existe (el inglés es el idioma por defecto para quien no habla es ni ca).
+const rutas: Partial<Record<Idioma, string>> = {};
+for (const i of ['es', 'ca', 'en'] as const) {
+  const r = i === idioma ? Astro.url.pathname : equivalente(Astro.url.pathname, i);
+  if (r) rutas[i] = r;
+}
+const alternativas = (Object.keys(rutas) as Idioma[]).map((i) => ({ hreflang: hreflangs[i], href: new URL(rutas[i]!, Astro.site).href }));
+const xDefault = new URL(rutas.en ?? rutas.es ?? Astro.url.pathname, Astro.site).href;
+const ogLocale: Record<Idioma, string> = { es: 'es_ES', ca: 'ca_ES', en: 'en_GB' };
 ---
 
 <!doctype html>
@@ -69,9 +74,10 @@ const urlCa = new URL(rutaCa, Astro.site).href;
     {
       !noindex && !alternates && (
         <>
-          <link rel="alternate" hreflang="es-ES" href={urlEs} />
-          <link rel="alternate" hreflang="ca-ES" href={urlCa} />
-          <link rel="alternate" hreflang="x-default" href={urlEs} />
+          {alternativas.map((a) => (
+            <link rel="alternate" hreflang={a.hreflang} href={a.href} />
+          ))}
+          <link rel="alternate" hreflang="x-default" href={xDefault} />
         </>
       )
     }
@@ -90,31 +96,33 @@ const urlCa = new URL(rutaCa, Astro.site).href;
     <meta property="og:image" content={og} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:locale" content={idioma === 'ca' ? 'ca_ES' : 'es_ES'} />
-    <meta property="og:locale:alternate" content={idioma === 'ca' ? 'es_ES' : 'ca_ES'} />
+    <meta property="og:locale" content={ogLocale[idioma]} />
+    {(Object.keys(rutas) as Idioma[]).filter((i) => i !== idioma).map((i) => (
+      <meta property="og:locale:alternate" content={ogLocale[i]} />
+    ))}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={tituloCompleto} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={og} />
 
-    {!lang && !deteccion && <script is:inline define:vars={{ idioma, rutaCa, rutaEs }}>
-      // Detección de idioma por navegador, con selección recordada y sin pisar una elección manual.
+    {!lang && !deteccion && selectorIdioma && <script is:inline define:vars={{ idioma, rutas }}>
+      // Detección de idioma por navegador (Diego, 23-10-2026): castellano, catalán o, para cualquier otro idioma, inglés.
+      // Una elección manual guardada manda siempre. Los rastreadores no se redirigen, para que cada versión se indexe sola.
       // Corre lo antes posible (antes de pintar el body) para minimizar el parpadeo de idioma.
       try {
-        var guardado = localStorage.getItem('idioma-77delta');
-        if (!guardado) {
-          var prefiereCatalan = (navigator.language || navigator.userLanguage || '').toLowerCase().startsWith('ca');
-          if (prefiereCatalan && idioma !== 'ca') {
-            localStorage.setItem('idioma-77delta', 'ca');
-            location.replace(rutaCa);
-          } else if (!prefiereCatalan && idioma !== 'es') {
-            // Visitante sin catalán en el navegador que llega directo a una página en catalán: no le forzamos nada,
-            // solo dejamos memoria de que su idioma detectado es castellano por si vuelve a la home.
-            localStorage.setItem('idioma-77delta', idioma);
-          } else {
-            localStorage.setItem('idioma-77delta', idioma);
+        var codigo = localStorage.getItem('idioma-77delta');
+        var ua = navigator.userAgent || '';
+        if (!codigo && !navigator.webdriver && !/bot|crawl|spider|slurp|headless|lighthouse|preview/i.test(ua)) {
+          var langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
+          codigo = 'en';
+          for (var n = 0; n < langs.length; n++) {
+            var p = String(langs[n]).toLowerCase().slice(0, 2);
+            if (p === 'es' || p === 'ca' || p === 'en') { codigo = p; break; }
           }
+          localStorage.setItem('idioma-77delta', codigo);
         }
+        // Con elección guardada (manual o detectada) se va siempre a esa versión si existe; sin equivalente, se queda.
+        if (codigo && codigo !== idioma && rutas[codigo]) location.replace(rutas[codigo] + location.search + location.hash);
       } catch (e) {}
     </script>}
     {deteccion && <script is:inline define:vars={{ actual: lang ?? idioma, deteccion }}>
@@ -129,7 +137,7 @@ const urlCa = new URL(rutaCa, Astro.site).href;
             if (p === 'ca' || p === 'gl' || p === 'eu') { codigo = p; break; }
           }
           localStorage.setItem('idioma-77delta', codigo);
-          if (codigo !== 'es' && codigo !== actual && deteccion[codigo]) location.replace(deteccion[codigo]);
+          if (codigo !== 'es' && codigo !== actual && deteccion[codigo]) location.replace(deteccion[codigo] + location.search + location.hash);
         }
       } catch (e) {}
     </script>}

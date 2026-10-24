@@ -41,7 +41,7 @@ const familiesTextCa: Record<string, string> = {
         <p class="lead">Consultora tecnològica per a pimes. IA per estalviar costos i, al costat, ciberseguretat, identitat digital i espais de dades.</p>
         <p class="tambien">També treballem en: <a href="/ca/ciberseguretat/">Ciberseguretat</a> · <a href="/ca/identitat-digital/">Identitat digital</a> · <a href="/ca/espais-de-dades/">Espais de dades</a></p>
         <div class="ctas">
-          <a href="/ca/contacto/" class="btn-primary">Reservar diagnòstic <span>→</span></a>
+          <a href="/ca/contacto/" class="btn-primary" data-umami-event="reservar" data-umami-event-pagina={Astro.url.pathname} data-umami-event-lugar="hero">Reservar diagnòstic <span>→</span></a>
           <a href="#lineas" class="btn-ghost">Veure les quatre línies</a>
         </div>
       </div>
@@ -486,7 +486,7 @@ const familiesTextCa: Record<string, string> = {
   <div class="cont">
     <h2>30 minuts. <em>Sense compromís.</em><br>La decisió és teva.</h2>
     <p>Entrevista estructurada amb la teva empresa. Et lliurem una proposta personalitzada amb estat inicial, pla de treball i pressupost.</p>
-    <a href="/ca/contacto/" class="btn-primary">Reservar diagnòstic gratuït →</a>
+    <a href="/ca/contacto/" class="btn-primary" data-umami-event="reservar" data-umami-event-pagina={Astro.url.pathname} data-umami-event-lugar="cierre">Reservar diagnòstic gratuït →</a>
   </div>
 </section>
 

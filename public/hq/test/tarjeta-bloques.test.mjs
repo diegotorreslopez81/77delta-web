@@ -42,16 +42,23 @@ const busca = (n, f, out = []) => { if (n.nodeType === 1) { if (f(n)) out.push(n
 test('pintarBloques: tres secciones con titulo, pasos como lista numerada y URLs como enlace', () => {
   const raiz = pintarBloques(BUENO);
   const secc = busca(raiz, n => n.tag === 'section');
-  assert.deepEqual(secc.map(s => s.children[0].textContent), ['Resumen', 'Datos', 'Qué tienes que hacer']);
+  assert.deepEqual(secc.map(s => s.children[0].textContent), ['Resumen', 'Datos', 'Pasos']);
   assert.deepEqual(secc.map(s => s.className), ['bloque bloque-resumen', 'bloque bloque-datos', 'bloque bloque-pasos']);
   assert.equal(busca(secc[2], n => n.tag === 'ol').length, 1);
   assert.equal(busca(secc[2], n => n.tag === 'li').length, 2);
   assert.equal(busca(secc[1], n => n.tag === 'li').length, 3);
   const enlaces = busca(raiz, n => n.tag === 'a');
   assert.equal(enlaces.length, 2);
-  assert.ok(enlaces.every(a => a.attrs.href.startsWith('https://') && a.attrs.rel === 'noopener'));
+  assert.ok(enlaces.every(a => a.attrs.href.startsWith('https://') && a.attrs.rel === 'noopener noreferrer'));
 });
 
 test('pintarBloques: sin marcadores devuelve null para que decisiones.js pinte como hoy', () => {
   assert.equal(pintarBloques('- Cambio automático de cuenta\n- Sesión del chief: https://x.y'), null);
+});
+
+test('pintarBloques: plantilla #602 pinta Pasos, Tiempo y Si no', () => {
+  const t = 'Resumen: algo\nPasos:\n1. Abre https://x.y/z\nTiempo: 5 min\nSi no: se queda parado';
+  const raiz = pintarBloques(t);
+  const secc = busca(raiz, n => n.tag === 'section');
+  assert.deepEqual(secc.map(s => s.children[0].textContent), ['Resumen', 'Pasos', 'Tiempo', 'Si no']);
 });

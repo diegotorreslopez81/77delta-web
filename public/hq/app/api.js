@@ -1,18 +1,51 @@
 // Acceso a HQ: config, token y RPC. Sin canal realtime (T7-b: main.js recarga por intervalo, no por
 // suscripción); sin estado de negocio (eso está en estado.js).
+import { dependeN } from './estado.js';
 const API = 'https://api.77delta.com';
 // El token entra por el fragmento (#t=...), que no viaja al servidor ni al Referer; ?t= se sigue aceptando
 // por los enlaces antiguos. En ambos casos se borra de la URL en cuanto se guarda.
 const params = new URLSearchParams(location.search);
-const hashP = new URLSearchParams(location.hash.replace(/^#/, ''));
-const tIn = hashP.get('t') || params.get('t');
+// Parseo propio del fragmento: '#operacion/licitaciones/42&t=...' no es una query y URLSearchParams lo reescribía
+// como 'operacion%2Flicitaciones%2F42=', con lo que el deep link se perdía al entrar por enlace con token.
+export const tokenDeHash = h => { const m = /(?:^|[?&])t=([^&]*)/.exec(String(h || '').replace(/^#/, '')); return m ? decodeURIComponent(m[1]) : null; };
+export const hashSinToken = h => String(h || '').replace(/^#/, '').replace(/(^|[?&])t=[^&]*/, '$1').replace(/\?&/, '?').replace(/^&/, '').replace(/[?&]$/, '');
+const tIn = tokenDeHash(location.hash) || params.get('t');
+// El token vive solo en sessionStorage (se borra al cerrar la pestaña); nunca en localStorage. Si no hay
+// sessionStorage (modo privado o tests), queda en memoria. Se purga el que dejaron versiones anteriores.
+const memTok = { v: null };
+// "Recordar este dispositivo" (opt-in, desmarcado por defecto): solo entonces el token se guarda también en
+// localStorage, con clave propia hq_t_disp. La purga de hq_t (clave antigua) no la toca.
+const tokGet = () => {
+  try { const s = sessionStorage.getItem('hq_t'); if (s) return s; } catch { /* sin sessionStorage */ }
+  try { const d = localStorage.getItem('hq_t_disp'); if (d) return d; } catch { /* sin localStorage */ }
+  return memTok.v;
+};
+const tokSet = (t, recordar) => {
+  memTok.v = t;
+  try { sessionStorage.setItem('hq_t', t); } catch { /* en memoria */ }
+  // Entrar sin casilla borra el token recordado de una entrada anterior (pedido de Pere, revisión de web#40).
+  try { if (recordar) localStorage.setItem('hq_t_disp', t); else localStorage.removeItem('hq_t_disp'); } catch { /* solo esta sesión */ }
+};
+const tokDel = () => {
+  memTok.v = null;
+  try { sessionStorage.removeItem('hq_t'); } catch { /* nada */ }
+  try { localStorage.removeItem('hq_t_disp'); } catch { /* nada */ }
+};
+try { localStorage.removeItem('hq_t'); } catch { /* nada que purgar */ }
+// Spec 8: entrar por enlace no ofrecía recordar. Se anota antes de guardar si el dispositivo ya tenía este token
+// (en ese caso se conserva) o uno distinto (la franja ofrece actualizarlo).
+let discoPrevio = null;
+try { discoPrevio = localStorage.getItem('hq_t_disp'); } catch { /* sin localStorage */ }
+export const entradaPorEnlace = !!tIn;
+export const recordado = !!tIn && discoPrevio === tIn;
+export const otroRecordado = !!tIn && !!discoPrevio && discoPrevio !== tIn;
 if (tIn) {
-  localStorage.setItem('hq_t', tIn);
-  params.delete('t'); hashP.delete('t');
-  const q = params.toString(), h = hashP.toString();
+  tokSet(tIn, recordado);
+  params.delete('t');
+  const q = params.toString(), h = hashSinToken(location.hash);
   history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + (h ? '#' + h : ''));
 }
-export let TOKEN = localStorage.getItem('hq_t');
+export let TOKEN = tokGet();
 let sb = null, CFG = null;
 
 export async function conf() {
@@ -23,13 +56,19 @@ export async function conf() {
   sb = window.supabase.createClient(CFG.url, CFG.anon, { auth: { persistSession: false, autoRefreshToken: false } });
   return CFG;
 }
-export function guardarToken(t) { localStorage.setItem('hq_t', t); TOKEN = t; }
-export function salir() { localStorage.removeItem('hq_t'); TOKEN = null; location.reload(); }
+export function guardarToken(t, recordar) { tokSet(t, !!recordar); TOKEN = t; }
+export function salir() { tokDel(); TOKEN = null; location.reload(); }
 export async function rpc(fn, args = {}) {
   if (!sb) await conf();
   const r = await sb.rpc(fn, { p_token: TOKEN, ...args });
   if (r.error) throw new Error(r.error.message || 'error');
   return r.data;
+}
+// Lectura en vivo del original (regla de Diego 16-10): GET a la API con el token de propietario, sin caché ni volcados.
+export async function leerVivo(ruta) {
+  const r = await fetch(API + ruta, { headers: { Authorization: 'Bearer ' + TOKEN }, cache: 'no-store' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
 }
 // Tanda 4 (LICITA-SPEC.md 5, 6.2, 6.3): unico camino de escritura de estado para toda la HQ. Sustituye a
 // omc_licitacion_cribar/omc_licitacion_decidir usados desde decision-lic.js y a cualquier PATCH directo.
@@ -94,12 +133,15 @@ async function clavesDatos() {
   } catch { return clavesCache?.claves ?? null; }
 }
 export async function cargar() {
-  const [d, toque, semaforo, claves] = await Promise.all([rpc('omc_hq_v2'), toqueNoDisponible ? null : rpc('omc_licitaciones_toque').catch(() => { toqueNoDisponible = true; return null; }),
-    rpc('omc_semaforo').catch(() => null), clavesDatos()]);
+  const [d, toque, semaforo, claves, hoy] = await Promise.all([rpc('omc_hq_v2'), toqueNoDisponible ? null : rpc('omc_licitaciones_toque').catch(() => { toqueNoDisponible = true; return null; }),
+    rpc('omc_semaforo').catch(() => null), clavesDatos(), rpc('hq_hoy').catch(() => null)]);
   if (d && Array.isArray(d.licitaciones) && Array.isArray(toque)) {
     const m = new Map(toque.map(x => [x.expediente, x.toque]));
     for (const l of d.licitaciones) if (m.has(l.expediente)) l.toque = m.get(l.expediente);
   }
-  if (d && typeof d === 'object') { d.semaforo = semaforo && Array.isArray(semaforo.filas) ? semaforo : null; d.claves_datos = claves; }
+  if (d && typeof d === 'object') { d.semaforo = semaforo && Array.isArray(semaforo.filas) ? semaforo : null; d.claves_datos = claves; d.depende_n = dependeN(hoy); }
   return d;
 }
+// #2694: Avisos de las últimas 24 h (lo informativo, sin push) y marca de leído en el servidor.
+export const avisos24h = () => rpc('omc_avisos_24h');
+export const avisoLeido = id => rpc('omc_aviso_leido', { p_id: id });

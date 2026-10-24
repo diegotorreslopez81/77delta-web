@@ -35,8 +35,8 @@ test('estadoDe: cadena vacia o solo espacios cae a Nueva; un estado real se resp
 test('C1: una fila con estado vacio, elegible Probable y decision null es pendiente y cuenta en nueva', () => {
   const fila = { expediente: 'EVACIO', elegible: 'Probable', estado: '', decision: null, cierre: '2026-10-01', importe: '1000' };
   assert.ok(pendiente(fila));
-  assert.ok(porDecidir([fila]).some(l => l.expediente === 'EVACIO'), 'estado vacio debe tratarse como Nueva (abierta) y entrar en la cola pura porDecidir');
-  const e = embudo([fila]);
+  assert.ok(porDecidir([fila], AHORA).some(l => l.expediente === 'EVACIO'), 'estado vacio debe tratarse como Nueva (abierta) y entrar en la cola pura porDecidir');
+  const e = embudo([fila], {}, {}, AHORA);
   // D70 (#2086): el embudo v3 cuenta por estado exacto, no por elegible/decision como porDecidir().
   assert.equal(e.find(f => f.clave === 'nueva').n, 1, 'estado vacio normaliza a Nueva');
 });
@@ -51,7 +51,7 @@ test('pendiente: decision null, vacia o Pendiente; OK y No no son pendientes', (
 });
 
 test('porDecidir: Probable/Nueva y Dudosa/Por decidir pendientes entran, ordenadas por cierre asc con nulls last', () => {
-  const pd = porDecidir(lics);
+  const pd = porDecidir(lics, AHORA);
   assert.deepEqual(pd.map(l => l.expediente), ['E1', 'E2']);
 });
 
@@ -61,12 +61,12 @@ test('enCriba: Revisar/Nueva y No viable/Nueva pendientes entran, no decidibles,
 });
 
 test('Descartada queda fuera de porDecidir y enCriba aunque sea Probable y pendiente', () => {
-  assert.ok(!porDecidir(lics).some(l => l.expediente === 'E5'));
+  assert.ok(!porDecidir(lics, AHORA).some(l => l.expediente === 'E5'));
   assert.ok(!enCriba(lics).some(l => l.expediente === 'E5'));
 });
 
 test('decision OK saca la fila de porDecidir/enCriba aunque sea elegible y este abierta', () => {
-  assert.ok(!porDecidir(lics).some(l => l.expediente === 'E6'));
+  assert.ok(!porDecidir(lics, AHORA).some(l => l.expediente === 'E6'));
   assert.ok(!enCriba(lics).some(l => l.expediente === 'E6'));
 });
 

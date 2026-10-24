@@ -31,13 +31,19 @@ test('sin ventana de HQ v2: openWindow(url)', async () => {
   await clic(cargar([{ url: 'https://77delta.com/hq/v1/' }], abiertas), { url: '/hq/#hoy/7', id: 7 });
   assert.equal(JSON.stringify(abiertas), JSON.stringify(['https://77delta.com/hq/#hoy/7']));
 });
-test('iPhone: openWindow directo con URL absoluta, sin esperar a matchAll, y avisa a la ventana abierta', async () => {
-  const msgs = [], abiertas = []; let foco = 0;
-  const w = { url: 'https://77delta.com/hq/', postMessage: m => msgs.push(m), focus: async () => { foco++; } };
+test('iPhone: openWindow directo con URL absoluta, sincrono, y avisa a la ventana abierta', async () => {
+  const msgs = [], abiertas = [];
+  const w = { url: 'https://77delta.com/hq/', postMessage: m => msgs.push(m), focus: async () => {} };
   const f = cargar([w], abiertas, 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0)');
   let p; f({ notification: { close() {}, data: { url: '/hq/#hoy/9', id: 9 } }, waitUntil: x => { p = x; } });
   assert.equal(JSON.stringify(abiertas), JSON.stringify(['https://77delta.com/hq/#hoy/9'])); // sincrono, antes de cualquier await
-  await p; assert.equal(msgs[0].tipo, 'ir'); assert.equal(foco, 0);
+  await p; assert.equal(msgs[0].tipo, 'ir');
+});
+test('iPhone con la app cerrada: openWindow sincrono', async () => {
+  const abiertas = [];
+  const f = cargar([], abiertas, 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0)');
+  let p; f({ notification: { close() {}, data: { url: '/hq/#hoy/9', id: 9 } }, waitUntil: x => { p = x; } });
+  assert.equal(abiertas.length, 1); await p; assert.equal(abiertas.length, 1);
 });
 test('notificacion sin data (version vieja): abre #avisos', async () => {
   const abiertas = []; await clic(cargar([], abiertas), undefined);

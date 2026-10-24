@@ -6,7 +6,9 @@ const numero = (site as { whatsapp?: string }).whatsapp?.replace(/\D/g, '');
 const mensaje =
   Astro.currentLocale === 'ca'
     ? 'Hola, vinc de 77delta.com i vull parlar sobre IA.'
-    : 'Hola, vengo de 77delta.com y quiero hablar sobre IA.';
+    : Astro.currentLocale === 'en'
+      ? 'Hi, I come from 77delta.com and I would like to talk about AI.'
+      : 'Hola, vengo de 77delta.com y quiero hablar sobre IA.';
 const texto = encodeURIComponent(mensaje);
 ---
 
@@ -16,7 +18,7 @@ const texto = encodeURIComponent(mensaje);
       href={`https://wa.me/${numero}?text=${texto}`}
       target="_blank"
       rel="noopener"
-      aria-label="Escribir por WhatsApp"
+      aria-label={Astro.currentLocale === 'en' ? 'Message us on WhatsApp' : 'Escribir por WhatsApp'}
       class="fixed bottom-6 right-6 z-40 grid h-13 w-13 place-items-center rounded-full bg-tinta text-marfil shadow-[0_16px_40px_-16px_rgba(6,11,20,.6)] transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:bg-oro"
     >
       <svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor" aria-hidden="true">

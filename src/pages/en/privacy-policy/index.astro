@@ -1,0 +1,181 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { site, hrefEn as href } from '../../../lib/site';
+
+const enlace = 'text-tinta underline decoration-oro/50 underline-offset-4 transition-colors hover:text-oro-oscuro';
+const parrafo = 'mt-4 text-[16px] text-pizarra';
+const titulo = 'mt-3 font-display text-[clamp(21px,2.2vw,27px)] font-semibold leading-[1.2]';
+const numero = 'font-mono text-[11px] tracking-[0.14em] text-oro-oscuro';
+const lista = 'mt-4 list-disc space-y-2 pl-5 text-[16px] text-pizarra marker:text-oro-oscuro';
+---
+
+<Base
+  title="Privacy policy"
+  description="All the information you provide to us is processed and stored in the European Union, in accordance with the General Data Protection Regulation (GDPR)."
+>
+  <section class="wrap pb-14 pt-20 md:pb-20 md:pt-28">
+    <p class="eyebrow" data-reveal>Legal</p>
+    <h1
+      class="mt-5 max-w-[16ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+      data-reveal
+    >
+      Your data in Europe. GDPR compliant.
+    </h1>
+    <p class="mt-7 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+      All the information you provide to us is processed and stored in the European Union, in accordance with the
+      GDPR (Regulation (EU) 2016/679) and Spanish Organic Law 3/2018 (LOPDGDD).
+    </p>
+  </section>
+
+  <section class="hairline">
+    <div class="wrap py-16 md:py-24">
+      <article class="max-w-[68ch] space-y-14">
+        <section data-reveal>
+          <p class={numero}>01</p>
+          <h2 class={titulo}>Data controller</h2>
+          <p class={parrafo}>
+            The controller of your personal data is {site.sociedad}, with tax ID (CIF) {site.cif} and
+            registered address at {site.direccion}, a company that trades under the name {site.nombre}.
+          </p>
+          <p class={parrafo}>
+            Contact email for privacy matters: <a href={`mailto:${site.email}`} class={enlace}
+              >{site.email}</a
+            >.
+          </p>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>02</p>
+          <h2 class={titulo}>Data we collect</h2>
+          <p class={parrafo}>
+            We only collect the data you voluntarily provide to us when you fill in forms,
+            book a free assessment or send us an email. This data may include:
+          </p>
+          <ul class={lista}>
+            <li>First name and surname</li>
+            <li>Company and job title</li>
+            <li>Email address</li>
+            <li>Phone number, if you provide it</li>
+            <li>Industry and a description of your situation</li>
+          </ul>
+          <p class={parrafo}>
+            When you submit the form we also record the IP address it is sent from, for the sole
+            purpose of limiting automated submissions. It is kept together with the message and deleted with it.
+          </p>
+          <p class={parrafo}>
+            To measure website usage we use Umami, a cookieless analytics tool that does not
+            identify the visitor or store their IP address: it records, anonymously and in aggregate, page
+            views, country, device type and the source of the visit, on our own server in the European
+            Union. There are no tracking cookies and no profiling for advertising purposes, and we do not combine this data with external
+            sources. You can find the details in the <a href={href('/politica-cookies/')} class={enlace}
+              >cookie policy</a
+            >.
+          </p>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>03</p>
+          <h2 class={titulo}>Purposes of processing</h2>
+          <ul class={lista}>
+            <li>To respond to your contact or assessment request.</li>
+            <li>To send you tailored commercial proposals if you request them.</li>
+            <li>To maintain a contractual relationship if you decide to engage our services.</li>
+            <li>To comply with legal and tax obligations.</li>
+            <li>To improve our services through aggregated analysis.</li>
+          </ul>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>04</p>
+          <h2 class={titulo}>Legal basis for processing</h2>
+          <p class={parrafo}>
+            The legal basis for processing is your explicit consent, given when you fill in our forms and, where
+            applicable, the performance of a contract.
+          </p>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>05</p>
+          <h2 class={titulo}>Data retention</h2>
+          <p class={parrafo}>
+            We keep your data for as long as necessary to fulfil the stated purposes, unless the law
+            requires a different period. For business contacts with no signed contract, the
+            data is kept for a maximum of 24 months from the last contact.
+          </p>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>06</p>
+          <h2 class={titulo}>Location and data transfers</h2>
+          <p class={parrafo}>
+            The pages of this site are static and are served through GitHub Pages, a service of
+            GitHub, Inc., which only records technical access data, such as the IP address, in order to provide
+            the service. GitHub participates in the EU-US Data Privacy Framework.
+          </p>
+          <p class={parrafo}>
+            The contact form is processed by our own server located in Germany. The
+            message is stored there and forwarded from there to our corporate email, hosted on Google Workspace (Google
+            Ireland Ltd.). If you write to us directly or book a call, your message and the appointment are
+            handled through Google Workspace and Google Calendar under the same conditions.
+          </p>
+          <p class={parrafo}>
+            The systems we build for our clients are hosted on infrastructure in the European
+            Union, mainly in Frankfurt, Germany. We do not carry out any other international
+            data transfers without the safeguards required by the GDPR.
+          </p>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>07</p>
+          <h2 class={titulo}>Your rights</h2>
+          <p class={parrafo}>As a data subject you have the right to:</p>
+          <ul class={lista}>
+            <li><span class="text-tinta">Access:</span> find out which of your personal data we process.</li>
+            <li><span class="text-tinta">Rectification:</span> correct inaccurate or incomplete data.</li>
+            <li><span class="text-tinta">Erasure:</span> request the deletion of your data.</li>
+            <li><span class="text-tinta">Objection:</span> object to the processing of your data.</li>
+            <li><span class="text-tinta">Restriction:</span> request the restriction of processing.</li>
+            <li><span class="text-tinta">Portability:</span> receive your data in a structured format.</li>
+            <li>
+              <span class="text-tinta">Complaint:</span> lodge a complaint with the <a
+                href="https://www.aepd.es/"
+                target="_blank"
+                rel="noopener"
+                class={enlace}>Spanish Data Protection Agency (AEPD)</a
+              >.
+            </li>
+          </ul>
+          <p class={parrafo}>
+            To exercise any of these rights, write to <a href={`mailto:${site.email}`} class={enlace}
+              >{site.email}</a
+            > stating who you are and what you are requesting.
+          </p>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>08</p>
+          <h2 class={titulo}>Security</h2>
+          <p class={parrafo}>
+            We apply reasonable technical and organisational measures to protect your data: encryption in transit
+            with HTTPS, restricted access to the corporate email and, in client projects, access
+            control and backups on European infrastructure. Even so, no system is completely
+            invulnerable, and we cannot guarantee absolute security.
+          </p>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>09</p>
+          <h2 class={titulo}>Changes to this policy</h2>
+          <p class={parrafo}>
+            This policy may be updated. The date of the last update appears at the foot of the page. Material
+            changes will be notified by email to active contacts.
+          </p>
+        </section>
+
+        <p class="hairline pt-8 font-mono text-[12px] text-pizarra" data-reveal>
+          Last updated: September 2026
+        </p>
+      </article>
+    </div>
+  </section>
+</Base>

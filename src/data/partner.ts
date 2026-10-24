@@ -313,3 +313,151 @@ export const modalidadesCa: readonly Modalidad[] = [
     texto: 'Després del diagnòstic gratuït, proposta amb abast, ordre i pressupost tancat. Sense costos inesperats.',
   },
 ];
+
+export const ambitosEn: readonly Ambito[] = [
+  {
+    n: '01',
+    titulo: 'Custom software',
+    texto:
+      'Web, mobile and desktop applications, APIs and maintenance of legacy software. New builds, or rescuing what you already have.',
+    tecnologias: ['Java', 'Spring', '.NET', 'C#', 'Python', 'Node.js', 'TypeScript', 'PHP', 'iOS and Android', 'REST APIs'],
+  },
+  {
+    n: '02',
+    titulo: 'Systems and data integration',
+    texto:
+      'ERP, CRM, website, online shop and machines connected to each other, so nobody keys the same data in twice.',
+    tecnologias: ['APIs', 'EDI', 'ETL', 'SQL Server', 'Oracle', 'PostgreSQL', 'MySQL', 'Webhooks', 'Make and n8n'],
+  },
+  {
+    n: '03',
+    titulo: 'CRM',
+    texto: 'Selection, implementation, integration and training, so your sales team actually uses it day to day.',
+    tecnologias: ['Dynamics 365', 'HubSpot', 'Salesforce', 'Zoho', 'Odoo CRM', 'Pipedrive'],
+  },
+  {
+    n: '04',
+    titulo: 'ERP and management',
+    texto:
+      'Selection, implementation, migration and integration with production, warehouse, accounting and e-invoicing.',
+    tecnologias: ['SAP Business One', 'Business Central', 'Odoo', 'Sage', 'A3', 'Holded', 'E-invoicing'],
+  },
+  {
+    n: '05',
+    titulo: 'Microsoft environment',
+    texto: 'Bringing order to the environment you already pay for: licences, identities, devices and automation.',
+    tecnologias: [
+      'Microsoft 365',
+      'Teams',
+      'SharePoint',
+      'Exchange',
+      'Entra ID',
+      'Intune',
+      'Power Apps',
+      'Power Automate',
+      'Power BI',
+    ],
+  },
+  {
+    n: '06',
+    titulo: 'Cloud and infrastructure',
+    texto:
+      'Servers, cloud, backups, networks and continuity. We migrate what makes sense and keep on-premises what does not.',
+    tecnologias: [
+      'Azure',
+      'AWS',
+      'Google Cloud',
+      'VMware',
+      'Proxmox',
+      'Linux and Windows Server',
+      'Backup and recovery',
+      'Networks and VPN',
+      'IP telephony',
+    ],
+  },
+  {
+    n: '07',
+    titulo: 'Cybersecurity',
+    texto: 'Access, backups, patching and continuity. The essentials done properly before any expensive tool.',
+    tecnologias: [
+      'Two-factor authentication',
+      'Identity management',
+      'Immutable backups',
+      'Firewalls',
+      'Endpoint protection',
+      'Security awareness',
+      'GDPR',
+    ],
+  },
+  {
+    n: '08',
+    titulo: 'Hardware, shop floor and IoT',
+    texto:
+      'Physical equipment is technology too: workstations, servers, shop-floor networks, sensors and machine data capture.',
+    tecnologias: [
+      'Workstations and servers',
+      'Industrial Wi-Fi',
+      'PLC and SCADA',
+      'OPC UA',
+      'Modbus',
+      'IoT sensors',
+      'Warehouse terminals',
+      'Barcodes and RFID',
+      'Label printers',
+      'Shop-floor displays',
+    ],
+  },
+  {
+    n: '09',
+    titulo: 'Web, e-commerce and digital marketing',
+    texto: 'Corporate website, online shop, technical SEO and analytics. Connected to your ERP and payment providers.',
+    tecnologias: ['WordPress', 'WooCommerce', 'Shopify', 'PrestaShop', 'Astro', 'Technical SEO', 'Analytics', 'Payment gateways'],
+  },
+  {
+    n: '10',
+    titulo: 'Data and business intelligence',
+    texto: 'Dashboards that management looks at every Monday, built on clean data from a single source.',
+    tecnologias: ['Power BI', 'Looker Studio', 'Metabase', 'Data warehouse', 'Automated reports'],
+  },
+  {
+    n: '11',
+    titulo: 'AI and automation',
+    texto:
+      'Agents, automations, OCR and language models applied to your processes. When AI is the core of what you need, it has its own service.',
+    tecnologias: ['AI agents', 'Language models', 'OCR', 'RPA', 'Process automation'],
+    enlace: { texto: 'See Fractional AI director', ruta: '/servicios/director-ia/' },
+  },
+  {
+    n: '12',
+    titulo: 'R&D and innovation',
+    texto:
+      'Prototypes, proofs of concept and technical reports for R&D projects, including the technical documentation for innovation grants.',
+    tecnologias: ['Prototypes', 'Proofs of concept', 'Technical reports', 'Grant documentation'],
+  },
+];
+
+export const modalidadesEn: readonly Modalidad[] = [
+  {
+    n: '01',
+    titulo: 'A single point of contact',
+    texto:
+      'We manage the relationship with your suppliers directly, review their offers and contracts, and translate technical questions into business decisions.',
+  },
+  {
+    n: '02',
+    titulo: 'Project or ongoing support',
+    texto:
+      'A fixed project with defined scope and delivery, or a technical lead working alongside you on an ongoing basis. Whatever your case calls for.',
+  },
+  {
+    n: '03',
+    titulo: 'Vendor independence',
+    texto:
+      'We choose on technical merit and total cost. Commercial software, cloud or open source: whatever fits your business.',
+  },
+  {
+    n: '04',
+    titulo: 'A tailored quote',
+    texto: 'After the free assessment, a proposal with scope, sequence and a fixed price. No surprises.',
+  },
+];

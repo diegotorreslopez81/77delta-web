@@ -15,10 +15,10 @@ export default defineConfig({
   base,
   trailingSlash: 'always',
   build: { format: 'directory' },
-  // Castellano en la raíz (no rompe URLs ya indexadas), catalán bajo /ca/.
+  // Castellano en la raíz (no rompe URLs ya indexadas), catalán bajo /ca/ e inglés bajo /en/ (rutas en inglés, mapa en lib/site.ts).
   i18n: {
     defaultLocale: 'es',
-    locales: ['es', 'ca'],
+    locales: ['es', 'ca', 'en'],
     routing: { prefixDefaultLocale: false },
   },
   integrations: [
@@ -40,7 +40,7 @@ export default defineConfig({
       },
       i18n: {
         defaultLocale: 'es',
-        locales: { es: 'es-ES', ca: 'ca-ES' },
+        locales: { es: 'es-ES', ca: 'ca-ES', en: 'en' },
       },
     }),
     // GitHub Pages no admite redirecciones: /sitemap.xml sirve una copia del índice.

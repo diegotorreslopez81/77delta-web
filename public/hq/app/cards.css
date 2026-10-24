@@ -93,7 +93,7 @@
    tema oscuro sale solo porque todo son tokens; las dos guardas de tokens.css ya los redefinen. */
 [hidden]{display:none !important}
 
-.fab-filtros{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:19;
+.fab-filtros{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:var(--z-fab);
   width:52px;height:52px;border-radius:50%;border:1px solid var(--oro);background:var(--oro);color:var(--marino);
   display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;
   box-shadow:0 8px 24px rgba(6,16,31,.28);transition:transform .18s var(--ease),box-shadow .18s var(--ease)}
@@ -103,7 +103,7 @@
 /* El FAB no puede tapar los botones de la ultima tarjeta ni el pie de la hoja */
 .con-fab{padding-bottom:88px}
 
-.hoja-fondo{display:none;position:fixed;inset:0;z-index:22;background:rgba(0,0,0,.45);align-items:flex-end;justify-content:center}
+.hoja-fondo{display:none;position:fixed;inset:0;z-index:var(--z-hoja);background:rgba(0,0,0,.45);align-items:flex-end;justify-content:center}
 .hoja-fondo.abierta{display:flex}
 .hoja{display:flex;flex-direction:column;width:100%;max-height:85dvh;box-sizing:border-box;
   background:var(--papel);color:var(--tinta);border-radius:16px 16px 0 0;

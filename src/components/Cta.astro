@@ -1,18 +1,32 @@
 ---
 /** Cierre de página: franja de tinta con foto al fondo y el botón de diagnóstico, como en la web anterior. */
-import { href as hrefEs, hrefCa } from '../lib/site';
+import { enlaceDe, type Idioma } from '../lib/site';
 
 interface Props {
   titulo?: string;
   texto?: string;
   boton?: string;
 }
-const {
-  titulo = '30 minutos. Sin compromiso. La decisión es tuya.',
-  texto = 'Entrevista estructurada con tu empresa. Te entregamos una propuesta personalizada con estado inicial, plan de trabajo y presupuesto.',
-  boton = 'Reservar diagnóstico gratuito',
-} = Astro.props;
-const href = Astro.currentLocale === 'ca' ? hrefCa : hrefEs;
+const idioma: Idioma = Astro.currentLocale === 'ca' || Astro.currentLocale === 'en' ? Astro.currentLocale : 'es';
+const porDefecto = {
+  es: {
+    titulo: '30 minutos. Sin compromiso. La decisión es tuya.',
+    texto: 'Entrevista estructurada con tu empresa. Te entregamos una propuesta personalizada con estado inicial, plan de trabajo y presupuesto.',
+    boton: 'Reservar diagnóstico gratuito',
+  },
+  ca: {
+    titulo: '30 minuts. Sense compromís. La decisió és teva.',
+    texto: "Entrevista estructurada amb la teva empresa. Et lliurem una proposta personalitzada amb estat inicial, pla de treball i pressupost.",
+    boton: 'Reservar diagnòstic gratuït',
+  },
+  en: {
+    titulo: '30 minutes. No strings attached. The decision is yours.',
+    texto: 'A structured interview about your business. You get a tailored proposal covering where you stand today, a work plan and a quote.',
+    boton: 'Book a free assessment',
+  },
+}[idioma];
+const { titulo = porDefecto.titulo, texto = porDefecto.texto, boton = porDefecto.boton } = Astro.props;
+const href = enlaceDe(idioma);
 ---
 
 <section class="relative isolate overflow-hidden bg-marino text-marfil">
@@ -35,6 +49,9 @@ const href = Astro.currentLocale === 'ca' ? hrefCa : hrefEs;
     <p class="mx-auto mt-6 max-w-[56ch] text-[clamp(16px,1.3vw,19px)] text-marfil/78">{texto}</p>
     <a
       href={href('/contacto/')}
+      data-umami-event="reservar"
+      data-umami-event-pagina={Astro.url.pathname}
+      data-umami-event-lugar="cta"
       class="mt-10 inline-flex items-center gap-2 rounded-[10px] bg-oro px-8 py-4 text-[16px] font-bold text-marfil shadow-[0_12px_40px_rgba(167,120,27,.35)] transition-[background-color,color,transform] duration-200 hover:-translate-y-0.5 hover:bg-marfil hover:text-tinta"
     >
       {boton} →

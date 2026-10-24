@@ -48,13 +48,21 @@ test('enlazar convierte URLs en <a> por atributo real (nunca html:) y saltos de 
   const nodos = enlazar(payload);
   const link = nodos.find(n => n.tag === 'a');
   assert.ok(link, 'debe crear un nodo <a>');
-  assert.equal(link.attrs.href, 'https://evil.example.com/x"onmouseover="document.location=1;a=1');
+  assert.equal(link.attrs.href, 'https://evil.example.com/x');
   assert.equal(link.attrs.target, '_blank');
-  assert.equal(link.attrs.rel, 'noopener');
+  assert.equal(link.attrs.rel, 'noopener noreferrer');
   assert.equal(Object.prototype.hasOwnProperty.call(link.attrs, 'onmouseover'), false, 'la comilla no debe crear un segundo atributo');
   assert.equal(nodos.filter(n => n.tag === 'br').length, 1);
   assert.equal(enlazar('').length, 0);
   assert.equal(enlazar(null).length, 0);
+});
+test('enlazar (#2780): solo https, sin puntuación final y con paréntesis equilibrado', () => {
+  const hrefs = (t) => enlazar(t).filter(n => n.tag === 'a').map(n => n.attrs.href);
+  assert.deepEqual(hrefs('http://a.com/x javascript:alert(1) ftp://b.com'), []);
+  assert.deepEqual(hrefs('Mira https://a.com/x, y https://b.com/y.'), ['https://a.com/x', 'https://b.com/y']);
+  assert.deepEqual(hrefs('(ver https://a.com/x)'), ['https://a.com/x']);
+  assert.deepEqual(hrefs('https://es.wikipedia.org/wiki/A_(b)'), ['https://es.wikipedia.org/wiki/A_(b)']);
+  assert.deepEqual(hrefs('https://'), []);
 });
 test('campoTexto crea un textarea con los atributos de teclado que iOS necesita para no ofrecer autofill de contacto (2.0.19, fix 7)', () => {
   const c = campoTexto({ rows: 3, placeholder: 'Comentario o avance' });
@@ -144,4 +152,13 @@ test('campoTexto con data-conservar: si localStorage lanza (modo privado), no ro
     assert.doesNotThrow(() => { c.value = 'x'; c.listeners.input[0](); });
     assert.doesNotThrow(() => c.olvidarBorrador());
   } finally { globalThis.localStorage = original; }
+});
+test('enlazar/urlsDe: URL entre comillas rectas o tipográficas, paréntesis y al final de frase (tarjeta #2294)', async () => {
+  const { urlsDe } = await import('../app/ui.js');
+  const u = 'https://github.com/diegotorreslopez81/77delta-web/pull/133';
+  for (const t of [`Mira "${u}" y sigue`, `Mira “${u}” y sigue`, `Mira ‘${u}’.`, `Mira «${u}»`, `Mira (${u}).`, `Mira '${u}'`, `Acaba así: ${u}.`, `Acaba así: ${u}?`])
+    assert.deepEqual(urlsDe(t), [u], t);
+  assert.deepEqual(enlazar(`Mira “${u}” y sigue`).filter(n => n.tag === 'a').map(n => n.attrs.href), [u]);
+  assert.deepEqual(urlsDe('Wiki https://es.wikipedia.org/wiki/Foo_(bar) fin'), ['https://es.wikipedia.org/wiki/Foo_(bar)']);
+  assert.deepEqual(urlsDe('http://a.com sin url'), []);
 });

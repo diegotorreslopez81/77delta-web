@@ -7,7 +7,7 @@ on:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -39,5 +39,14 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Solo despliega el ultimo main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          head=$(gh api "repos/${{ github.repository }}/commits/main" --jq .sha)
+          if [ "$head" != "${{ github.sha }}" ]; then
+            echo "Run de ${{ github.sha }} obsoleto (main = $head): no despliega."
+            exit 1
+          fi
       - id: deployment
         uses: actions/deploy-pages@v4

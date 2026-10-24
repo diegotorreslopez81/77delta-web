@@ -1,0 +1,144 @@
+---
+import Base from '../../../../layouts/Base.astro';
+import HeroFoto from '../../../../components/HeroFoto.astro';
+import Boton from '../../../../components/Boton.astro';
+import Cta from '../../../../components/Cta.astro';
+import { hrefEn as href } from '../../../../lib/site';
+import { resumen } from '../../../../data/servicios.en';
+import { ambitosEn as ambitos, modalidadesEn as modalidades } from '../../../../data/partner';
+
+const otros = resumen.filter((r) => r.titulo !== 'Technology partner');
+---
+
+<Base
+  title="Technology partner"
+  description="A technical partner for all of your company's technology: custom software, integration, CRM and ERP, Microsoft, cloud, cybersecurity, hardware and shop floor, web, data, AI and R&D. One point of contact, no vendors imposed on you."
+>
+  <!-- Hero -->
+  <section class="wrap py-24 md:py-32">
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>
+          <a href={href('/servicios/')} class="transition-colors hover:text-tinta">Services</a> · 03 · Ongoing support
+        </p>
+        <h1
+          class="mt-7 max-w-[19ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          All your company's technology, <span class="font-semibold text-oro-oscuro">with a single point of contact</span>.
+        </h1>
+        <p class="mt-8 max-w-[56ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Custom software, integration, CRM and ERP, Microsoft, cloud, cybersecurity, hardware and shop floor, web, data, AI and
+          R&D. A technical partner who understands everything around you and explains it clearly.
+        </p>
+
+        <div class="mt-14 flex flex-wrap items-center gap-8" data-reveal>
+          <p class="font-mono text-[12px] leading-[1.6] tracking-[0.04em] text-pizarra">
+            Twelve areas · One point of contact · No vendor tie-ins
+          </p>
+          <Boton href={href('/contacto/')}>Tell us about your case →</Boton>
+        </div>
+      </div>
+      <HeroFoto foto="oficina" alt="Corridor in a modern office" class="lg:col-span-5" />
+    </div>
+  </section>
+
+  <!-- Para quién -->
+  <section class="hairline bg-panel">
+    <div class="wrap grid gap-12 py-24 md:grid-cols-12 md:py-32">
+      <div class="md:col-span-5" data-reveal>
+        <p class="eyebrow">Who it is for</p>
+        <h2 class="mt-5 font-display text-[clamp(26px,3.2vw,38px)] font-extralight leading-[1.15] tracking-[-0.03em]">
+          For businesses with no in-house technology director.
+        </h2>
+      </div>
+      <div class="md:col-span-7 md:pl-6" data-reveal>
+        <p class="text-[17px] text-pizarra">
+          For businesses whose technology comes from several suppliers with no internal owner to coordinate it: one supplier's ERP, another's CRM,
+          a website from an agency, machines with their own software. We give you a technical lead
+          who knows every one of those pieces. If all you need is AI, the service is the
+          <a href={href('/servicios/director-ia/')} class="font-medium text-tinta underline decoration-oro/60 underline-offset-4 transition-colors hover:text-oro-oscuro">Fractional AI director</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- What we cover -->
+  <section class="hairline">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">What we cover</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          From the shop floor to the cloud: twelve areas and the technologies in each.
+        </h2>
+      </div>
+      <ul class="mt-14 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-2 lg:grid-cols-3" role="list">
+        {
+          ambitos.map((a) => (
+            <li class="flex flex-col bg-panel p-8 md:p-10" data-reveal>
+              <span class="font-mono text-[11px] tracking-[0.14em] text-pizarra">{a.n}</span>
+              <h3 class="mt-3 font-display text-[20px] font-semibold leading-[1.3]">{a.titulo}</h3>
+              <p class="mt-3 text-[15px] text-pizarra">{a.texto}</p>
+              <ul class="mt-5 flex flex-1 flex-wrap content-start gap-2" role="list">
+                {a.tecnologias.map((t) => (
+                  <li class="rounded-[3px] border border-linea bg-papel px-2.5 py-1 font-mono text-[11px] text-tinta/80">{t}</li>
+                ))}
+              </ul>
+              {a.enlace && (
+                <a href={href(a.enlace.ruta)} class="mt-6 font-mono text-[12px] text-tinta/80 transition-colors hover:text-oro-oscuro">
+                  {a.enlace.texto} →
+                </a>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- How we work -->
+  <section class="hairline bg-marino text-marfil">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow text-oro-luz">How we work</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          What you can expect from us, whatever the technology.
+        </h2>
+      </div>
+      <ol class="mt-14 grid gap-8 md:grid-cols-4" role="list">
+        {
+          modalidades.map((m) => (
+            <li class="border-t border-marfil/15 pt-6" data-reveal>
+              <span class="font-mono text-[11px] tracking-[0.14em] text-oro-luz">{m.n}</span>
+              <h3 class="mt-3 font-display text-[18px] font-semibold leading-[1.3]">{m.titulo}</h3>
+              <p class="mt-2 text-[14px] text-marfil/65">{m.texto}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Otros servicios -->
+  <section class="hairline bg-panel">
+    <div class="wrap py-20 md:py-24">
+      <p class="eyebrow" data-reveal>Other ways to work together</p>
+      <ul class="mt-10 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-3" role="list">
+        {
+          otros.map((o) => (
+            <li class="bg-panel" data-reveal>
+              <a href={href(o.ruta)} class="group flex h-full flex-col p-8 transition-colors hover:bg-oro/5">
+                <span class="eyebrow text-pizarra">{o.etiqueta}</span>
+                <h3 class="mt-3 font-display text-[20px] font-semibold">{o.titulo}</h3>
+                <p class="mt-2 flex-1 text-[15px] text-pizarra">{o.pie}</p>
+                <span class="mt-6 font-mono text-[12px] text-tinta/80 group-hover:text-oro-oscuro">See the details →</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <Cta />
+</Base>

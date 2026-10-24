@@ -111,7 +111,7 @@ export function hojaFiltros({ titulo = 'Filtros', secciones = [], valores = {}, 
     prov = { ...fijos };
     buscador.value = fijos[claveTexto] || '';
     recontar(); pintarCuerpo(); pintarPie();
-    hoja.classList.add('abierta');
+    hoja.classList.add('abierta'); document.body.classList.add('con-modal');
     fab.setAttribute('aria-expanded', 'true');
     document.body.classList.add('con-hoja');
     escuchando = ev => { if (ev.key === 'Escape') cerrar(); };
@@ -119,7 +119,7 @@ export function hojaFiltros({ titulo = 'Filtros', secciones = [], valores = {}, 
     setTimeout(() => buscador.focus && buscador.focus(), 60);
   }
   function cerrar() {
-    hoja.classList.remove('abierta');
+    hoja.classList.remove('abierta'); document.body.classList.remove('con-modal');
     fab.setAttribute('aria-expanded', 'false');
     document.body.classList.remove('con-hoja');
     if (escuchando) { document.removeEventListener('keydown', escuchando); escuchando = null; }

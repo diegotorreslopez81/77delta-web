@@ -1,0 +1,156 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { site, hrefEn as href } from '../../../lib/site';
+
+const enlace = 'text-tinta underline decoration-oro/50 underline-offset-4 transition-colors hover:text-oro-oscuro';
+const parrafo = 'mt-4 text-[16px] text-pizarra';
+const titulo = 'mt-3 font-display text-[clamp(21px,2.2vw,27px)] font-semibold leading-[1.2]';
+const numero = 'font-mono text-[11px] tracking-[0.14em] text-oro-oscuro';
+const lista = 'mt-4 list-disc space-y-2 pl-5 text-[16px] text-pizarra marker:text-oro-oscuro';
+---
+
+<Base
+  title="Legal notice"
+  description={`Corporate information on ${site.sociedad}, holder of the trade name ${site.nombre}, and the terms of use of this website.`}
+>
+  <section class="wrap pb-14 pt-20 md:pb-20 md:pt-28">
+    <p class="eyebrow" data-reveal>Legal</p>
+    <h1
+      class="mt-5 max-w-[16ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+      data-reveal
+    >
+      Corporate information.
+    </h1>
+    <p class="mt-7 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+      Details of the company that operates under the trade name {site.nombre} and the terms of use of this website.
+    </p>
+  </section>
+
+  <section class="hairline">
+    <div class="wrap py-16 md:py-24">
+      <article class="max-w-[68ch] space-y-14">
+        <section data-reveal>
+          <p class={numero}>01</p>
+          <h2 class={titulo}>Website ownership</h2>
+          <p class={parrafo}>
+            This website is owned by {site.sociedad}, a Spanish company that carries out its business
+            under the trade name {site.nombre}. {site.nombre} is a trade name, not a separate
+            corporate name: it is not a legal entity independent of {site.sociedad}.
+            All contracting, invoicing and legal liability arising from the services offered
+            rest with this company.
+          </p>
+
+          <dl class="mt-8 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-2">
+            <div class="bg-panel p-6">
+              <dt class="eyebrow text-pizarra">Registered name</dt>
+              <dd class="mt-2 text-[15px] text-tinta">{site.sociedad}</dd>
+            </div>
+            <div class="bg-panel p-6">
+              <dt class="eyebrow text-pizarra">Tax ID (CIF)</dt>
+              <dd class="mt-2 font-mono text-[15px] text-tinta">{site.cif}</dd>
+            </div>
+            <div class="bg-panel p-6">
+              <dt class="eyebrow text-pizarra">Registered address</dt>
+              <dd class="mt-2 text-[15px] text-tinta">{site.direccion}</dd>
+            </div>
+            <div class="bg-panel p-6">
+              <dt class="eyebrow text-pizarra">Registration details</dt>
+              <dd class="mt-2 text-[15px] text-tinta">Registered with the Barcelona Commercial Register (Registro Mercantil de Barcelona), volume 48697, folio 168, section 8, sheet B-592950, entry 1</dd>
+            </div>
+            <div class="bg-panel p-6 sm:col-span-2">
+              <dt class="eyebrow text-pizarra">Contact email</dt>
+              <dd class="mt-2 text-[15px]">
+                <a href={`mailto:${site.email}`} class={enlace}>{site.email}</a>
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>02</p>
+          <h2 class={titulo}>Purpose of the website</h2>
+          <p class={parrafo}>
+            The purpose of this website is to provide information about the services and products of {site.nombre},
+            to allow visitors to book free assessments and initial calls, and to facilitate
+            business enquiries.
+          </p>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>03</p>
+          <h2 class={titulo}>Terms of use</h2>
+          <p class={parrafo}>
+            Access to this website is free and open. Users undertake to make lawful use of the
+            content and not to carry out any activity that could damage the site or prevent it from
+            working properly.
+          </p>
+          <ul class={lista}>
+            <li>Reproduction of the content, in whole or in part, without express authorisation is prohibited.</li>
+            <li>
+              The logos and trademarks shown are the property of their respective owners and are
+              used with permission or as permitted under the applicable laws on lawful use.
+            </li>
+            <li>
+              {site.sociedad} reserves the right to modify or suspend the website without prior notice.
+            </li>
+          </ul>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>04</p>
+          <h2 class={titulo}>Intellectual property</h2>
+          <p class={parrafo}>
+            The texts, images, code, designs, trademarks and other content published on
+            this site are the property of {site.sociedad} or are used under licence. Their reproduction,
+            distribution or modification without express authorisation is prohibited.
+          </p>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>05</p>
+          <h2 class={titulo}>Disclaimer</h2>
+          <p class={parrafo}>
+            {site.sociedad} accepts no liability for any damage arising from the use of the information published
+            on this website. The information is provided for guidance only and does not constitute binding
+            professional advice until a signed contract is in place.
+          </p>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>06</p>
+          <h2 class={titulo}>Governing law and jurisdiction</h2>
+          <p class={parrafo}>
+            The services provided, and any dispute arising from the use of this website, are governed by Spanish law
+            and subject to the jurisdiction of the courts of Barcelona, unless the specific contract signed with the
+            client provides for a different jurisdiction.
+          </p>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>07</p>
+          <h2 class={titulo}>ACCIÓ accreditation</h2>
+          <p class={parrafo}>
+            {site.sociedad} is a provider accredited by ACCIÓ, the Generalitat de Catalunya's agency for
+            business competitiveness. The accreditation allows us to carry out projects under its public
+            digitalisation programmes.
+          </p>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>08</p>
+          <h2 class={titulo}>Contact</h2>
+          <p class={parrafo}>
+            For any question about this legal notice, write to <a
+              href={`mailto:${site.email}`}
+              class={enlace}>{site.email}</a
+            > or use the <a href={href('/contacto/')} class={enlace}>contact form</a>.
+          </p>
+        </section>
+
+        <p class="hairline pt-8 font-mono text-[12px] text-pizarra" data-reveal>
+          Last updated: 28 September 2026
+        </p>
+      </article>
+    </div>
+  </section>
+</Base>

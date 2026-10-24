@@ -2,30 +2,45 @@
 /** Cabecera en tinta con el monograma en marfil; botón de acción en ocre. Las entradas con `hijos` despliegan un submenú. */
 import Monograma from './Monograma.astro';
 import SelectorIdiomas, { type IdiomaOpcion } from './SelectorIdiomas.astro';
-import { nav, navCa, cta, ctaCa, href, hrefCa, equivalenteCa, equivalenteEs, type ItemNav } from '../lib/site';
+import { nav, navCa, navEn, cta, ctaCa, ctaEn, enlaceDe, equivalente, hreflangs, etiquetasIdioma, type ItemNav, type Idioma } from '../lib/site';
 
 interface Props {
-  /** Oculta el selector de idioma en páginas sin versión en catalán (p. ej. /propuestas/). */
+  /** Oculta el selector de idioma en páginas sin otras versiones (p. ej. /propuestas/). */
   selectorIdioma?: boolean;
-  /** Si llega, se pinta el selector de píldoras (ES CA GL EU) en lugar del enlace es/ca. */
+  /** Si llega, se pinta este selector de píldoras (ES CA GL EU) en lugar del estándar ES CA EN. */
   idiomas?: IdiomaOpcion[];
 }
 const { selectorIdioma = true, idiomas } = Astro.props;
-const idioma = Astro.currentLocale === 'ca' ? 'ca' : 'es';
-const enlace = idioma === 'ca' ? hrefCa : href;
-const items = idioma === 'ca' ? navCa : nav;
-const boton = idioma === 'ca' ? ctaCa : cta;
+const idioma: Idioma = Astro.currentLocale === 'ca' || Astro.currentLocale === 'en' ? Astro.currentLocale : 'es';
+const enlace = enlaceDe(idioma);
+const items = idioma === 'ca' ? navCa : idioma === 'en' ? navEn : nav;
+const boton = idioma === 'ca' ? ctaCa : idioma === 'en' ? ctaEn : cta;
 const actual = Astro.url.pathname;
+const textos = {
+  es: { inicio: '77 Delta, inicio', reservar: 'Reservar', abrir: 'Abrir menú', cerrar: 'Cerrar menú' },
+  ca: { inicio: '77 Delta, inici', reservar: 'Reservar', abrir: 'Obrir menú', cerrar: 'Tancar menú' },
+  en: { inicio: '77 Delta, home', reservar: 'Book', abrir: 'Open menu', cerrar: 'Close menu' },
+}[idioma];
+// Selector estándar ES CA EN: cada píldora lleva a la página equivalente; si no existe (blog), a la portada de ese idioma.
+const pildoras: IdiomaOpcion[] | undefined =
+  idiomas ??
+  (selectorIdioma
+    ? (['es', 'ca', 'en'] as const).map((c) => ({
+        codigo: c,
+        etiqueta: etiquetasIdioma[c],
+        ruta: equivalente(actual, c) ?? equivalente('/', c)!,
+        hreflang: hreflangs[c],
+        activo: c === idioma,
+      }))
+    : undefined);
 const activoRuta = (ruta: string) => actual.startsWith(enlace(ruta));
 /** Una entrada está activa si lo está su ruta o la de cualquiera de sus hijos. */
 const activo = (n: ItemNav) => activoRuta(n.ruta) || (n.hijos ?? []).some((h) => activoRuta(h.ruta));
-const otroIdioma = idioma === 'ca' ? 'es' : 'ca';
-const enlaceOtroIdioma = idioma === 'ca' ? equivalenteEs(actual) : equivalenteCa(actual);
 ---
 
 <header class="sticky top-0 z-50 border-b border-marfil/10 bg-marino/95 text-marfil backdrop-blur-xl">
   <div class="wrap flex h-[72px] items-center justify-between gap-6">
-    <a href={enlace('/')} class="text-marfil" aria-label="77 Delta, inicio">
+    <a href={enlace('/')} class="text-marfil" aria-label={textos.inicio}>
       <Monograma size={26} />
     </a>
 
@@ -90,31 +105,25 @@ const enlaceOtroIdioma = idioma === 'ca' ? equivalenteEs(actual) : equivalenteCa
     </nav>
 
     <div class="flex items-center gap-3">
-      {idiomas && <SelectorIdiomas idiomas={idiomas} globo class="hidden sm:flex" />}
-      {!idiomas && selectorIdioma && (
-        <a
-          href={enlaceOtroIdioma}
-          data-selector-idioma
-          data-idioma-destino={otroIdioma}
-          class="hidden shrink-0 rounded-[6px] border border-marfil/25 px-2.5 py-1.5 font-mono text-[12px] font-semibold uppercase tracking-[0.04em] text-marfil/80 transition-colors duration-200 hover:border-marfil/60 hover:text-marfil sm:inline-flex"
-          aria-label={idioma === 'ca' ? 'Canviar a castellà' : 'Cambiar a català'}
-        >
-          {otroIdioma}
-        </a>
-      )}
+      {pildoras && <SelectorIdiomas idiomas={pildoras} globo={!!idiomas} class="hidden sm:flex" />}
       <a
         href={enlace(boton.ruta)}
+        data-umami-event="reservar"
+        data-umami-event-pagina={Astro.url.pathname}
+        data-umami-event-lugar="nav"
         class="inline-flex items-center whitespace-nowrap rounded-[8px] bg-oro px-4 py-2.5 text-[13px] font-semibold text-marfil transition-[background-color,color,box-shadow] duration-200 hover:bg-marfil hover:text-tinta hover:shadow-[0_6px_20px_rgba(0,0,0,.3)] sm:px-5"
       >
-        <span class="hidden sm:inline">{boton.texto}</span><span class="sm:hidden">{idioma === 'ca' ? 'Reservar' : 'Reservar'}</span>
+        <span class="hidden sm:inline">{boton.texto}</span><span class="sm:hidden">{textos.reservar}</span>
       </a>
       <button
         type="button"
         class="grid h-10 w-10 place-items-center text-marfil lg:hidden"
-        aria-label="Abrir menú"
+        aria-label={textos.abrir}
         aria-expanded="false"
         aria-controls="menu-movil"
         data-burger
+        data-abrir={textos.abrir}
+        data-cerrar={textos.cerrar}
       >
         <span class="block h-0.5 w-5 rounded bg-current"></span>
         <span class="mt-[5px] block h-0.5 w-5 rounded bg-current"></span>
@@ -124,7 +133,7 @@ const enlaceOtroIdioma = idioma === 'ca' ? equivalenteEs(actual) : equivalenteCa
 
   <div id="menu-movil" class="absolute inset-x-0 top-full hidden h-[calc(100dvh-72px)] overflow-y-auto overscroll-contain border-t border-marfil/10 bg-marino shadow-[0_16px_40px_rgba(0,0,0,.35)] lg:hidden" data-menu>
     <nav aria-label="Principal, móvil" class="wrap flex flex-col py-3">
-      {idiomas && <SelectorIdiomas idiomas={idiomas} class="px-3 pb-3 pt-1 sm:hidden" />}
+      {pildoras && <SelectorIdiomas idiomas={pildoras} class="px-3 pb-3 pt-1 sm:hidden" />}
       {
         items.map((n) => (
           <>
@@ -158,16 +167,6 @@ const enlaceOtroIdioma = idioma === 'ca' ? equivalenteEs(actual) : equivalenteCa
           </>
         ))
       }
-      {!idiomas && selectorIdioma && (
-        <a
-          href={enlaceOtroIdioma}
-          data-selector-idioma
-          data-idioma-destino={otroIdioma}
-          class="mt-2 rounded-[8px] border-t border-marfil/10 px-3 py-3 pt-4 font-mono text-[13px] font-semibold uppercase tracking-[0.04em] text-marfil/80"
-        >
-          {idioma === 'ca' ? 'Castellano' : 'Català'}
-        </a>
-      )}
     </nav>
   </div>
 </header>
@@ -178,7 +177,7 @@ const enlaceOtroIdioma = idioma === 'ca' ? equivalenteEs(actual) : equivalenteCa
   boton?.addEventListener('click', () => {
     const abierto = boton.getAttribute('aria-expanded') === 'true';
     boton.setAttribute('aria-expanded', String(!abierto));
-    boton.setAttribute('aria-label', abierto ? 'Abrir menú' : 'Cerrar menú');
+    boton.setAttribute('aria-label', (abierto ? boton.dataset.abrir : boton.dataset.cerrar) ?? '');
     menu?.classList.toggle('hidden', abierto);
     // Con el menú abierto, el scroll es del panel y no de la página de detrás.
     document.body.classList.toggle('overflow-hidden', !abierto);

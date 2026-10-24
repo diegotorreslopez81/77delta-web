@@ -1,10 +1,12 @@
-import { conf, TOKEN, cargar, rpc, guardarToken, salir, configLicita, catalogoDescarte } from './api.js';
+import { conf, TOKEN, cargar, rpc, guardarToken, salir, configLicita, catalogoDescarte, entradaPorEnlace, recordado, otroRecordado } from './api.js';
+import { franjaRecordar } from './recordar-enlace.js';
 import { S, poner } from './estado.js';
 import { el, toast } from './ui.js';
 import { crearRecargador, decidirRecargaAutomatica } from './recargador.js';
 import { fotografiar, restaurar } from './conservar.js';
 import { resolver } from './rutas.js';
-import { montarMenu, marcarActiva, pintarBarra, cablearShell } from './shell.js';
+import { haceCuanto, trazarPagina } from './aviso-pendiente.js';
+import { montarMenu, marcarActiva, pintarBarra, cablearShell, ocultarSoloOwner } from './shell.js';
 import * as hoy from './vistas/hoy.js';
 import * as avisos from './vistas/avisos.js';
 import * as kpis from './vistas/kpis.js';
@@ -20,12 +22,20 @@ import * as recursos from './vistas/recursos.js';
 import * as salud from './vistas/salud.js';
 import * as admin from './vistas/admin.js';
 import * as ventas from './vistas/ventas.js';
-import * as progreso from './vistas/progreso.js';
+import * as web from './vistas/web.js';
+import * as home from './vistas/home.js';
+import * as hoyPantalla from './vistas/hoy-pantalla.js';
+import * as enCurso from './vistas/en-curso.js';
+import * as productos from './vistas/productos.js';
+import * as secreto from './vistas/secreto.js';
+import { conectar as conectarADemanda } from './a-demanda.js';
 
 // Plan 3a: una vista por clave de ruta (rutas.js). 'equipo/agente' es la ficha de equipo.js (arg = id).
 // #1057 tarea 29: Hoy ya monta la bandeja de decisiones ella misma (decisiones.montar, solo owner),
 // justo debajo de la franja; no hace falta envolverla aquí.
-const VISTAS = { 'hoy': hoy, 'avisos': avisos, 'kpis': kpis, 'direccion/objetivo': objetivo, 'operacion/tablero': tablero, 'operacion/expedientes': expedientes, 'operacion/licitaciones': licitaciones, 'operacion/salud': salud, 'operacion/ventas': ventas, 'operacion/admin': admin, 'equipo/organigrama': equipo, 'equipo/agente': equipo, 'equipo/colaboradores': colaboradores, 'recursos/computo': recursos, 'licita-engine': motor, 'progreso': progreso };
+// Home v2 (spec 1, 18-10): owner sin arg ve la home de cuatro bloques; con arg (#hoy/bandeja, #hoy/<id>) y agentes, el Hoy de siempre.
+const hoyOHome = { render: (raiz, S, arg, filtros) => (S.datos?.rol === 'owner' ? hoyPantalla : hoy).render(raiz, S, arg, filtros) };
+const VISTAS = { 'hoy': hoyOHome, 'avisos': avisos, 'kpis': kpis, 'direccion/objetivo': objetivo, 'operacion/tablero': tablero, 'operacion/expedientes': expedientes, 'operacion/licitaciones': licitaciones, 'operacion/salud': salud, 'operacion/ventas': ventas, 'operacion/admin': admin, 'equipo/organigrama': equipo, 'equipo/agente': equipo, 'equipo/colaboradores': colaboradores, 'recursos/computo': recursos, 'licita-engine': motor, 'web': web, 'operacion/en-curso': enCurso, 'productos': productos, 'secreto': secreto };
 const raiz = document.getElementById('vista');
 document.getElementById('ver').textContent = 'v' + HQ_VERSION.v;
 montarMenu(document.getElementById('nav'));
@@ -53,10 +63,12 @@ export function render() {
   const foto = mismaVista ? fotografiar(raiz, document.activeElement) : null;
   raiz.innerHTML = ''; raiz.className = 'vista vista-' + r.clave.replace('/', '-');
   if (!S.datos) { raiz.append(el('p', { class: 'cargando', text: 'Cargando HQ...' })); ultimaVista = r.clave; return; }
-  window.HQ_DATOS = S.datos; pintarBarra(S.datos);
+  window.HQ_DATOS = S.datos; window.HQ_PINTAR = () => pintarBarra(S.datos); pintarBarra(S.datos); ocultarSoloOwner(S.datos.rol);
+  if (!mismaVista) navigator.serviceWorker?.getRegistration('/hq/').then(reg => trazaPag('vista_abierta', { hash: r.canonico.slice(0, 60), version: window.HQ_VERSION && HQ_VERSION.v }, reg)).catch(() => {});
   VISTAS[r.clave].render(raiz, S, r.arg, r.filtros);
   if (foto) restaurar(raiz, foto);
   ultimaVista = r.clave;
+  franjaRecordar({ porEnlace: entradaPorEnlace, recordado, otro: otroRecordado, clave: r.clave, arg: r.arg, token: TOKEN, guardar: guardarToken, el, toast });
 }
 // Fix ronda 2 (revision final, D3): recargar() coalescido via crearRecargador (modulo sin DOM, con test
 // propio en test/recargador.test.mjs). cargarFn atrapa el error y muestra el toast (igual que antes:
@@ -75,8 +87,10 @@ window.HQ_RECARGAR = recargarYMarcar;
 
 function pedirToken() {
   const campo = el('input', { class: 'campo', placeholder: 'Pega el enlace de HQ o el token', autofocus: true });
+  const recordar = el('input', { type: 'checkbox', id: 'recordar-disp' });
   raiz.innerHTML = ''; raiz.append(el('div', { class: 'entrar' }, [el('h1', { text: 'HQ' }), campo,
-    el('button', { class: 'btn primario', text: 'Entrar', onclick: () => { const m = campo.value.match(/[?&#]t=([0-9a-f]{20,})/i) || campo.value.match(/^([0-9a-f]{20,})$/i); if (!m) { campo.focus(); return; } guardarToken(m[1]); location.reload(); } })]));
+    el('label', { class: 'recordar', for: 'recordar-disp' }, [recordar, ' Recordar este dispositivo']),
+    el('button', { class: 'btn primario', text: 'Entrar', onclick: () => { const m = campo.value.match(/[?&#]t=([0-9a-f]{20,})/i) || campo.value.match(/^([0-9a-f]{20,})$/i); if (!m) { campo.focus(); return; } guardarToken(m[1], recordar.checked); location.reload(); } })]));
 }
 window.addEventListener('hashchange', render);
 document.addEventListener('click', e => { if (e.target.closest('[data-salir]')) salir(); });
@@ -112,10 +126,50 @@ function escribiendo() {
     return !!a.isContentEditable;
   } catch { return false; }
 }
+// C1 (18-10) / #2731: versión nueva. Con skipWaiting+clients.claim el sw nuevo toma el control solo y dispara
+// controllerchange: NUNCA se recarga sola (parpadeaba); solo un aviso fijo con botón, una vez por carga.
+// Primera instalación (sin controller previo) no avisa.
+let versionAvisada = false;
+function aplicarVersionNueva() {
+  if (versionAvisada) return; versionAvisada = true;
+  const b = el('div', { class: 'toast', id: 'aviso-version' }, [el('span', { text: 'HQ tiene versión nueva' }), el('button', { class: 'btn-enlace', text: 'Recargar', onclick: () => location.reload() })]);
+  document.body.append(b);
+}
+// C2: destino de la notificación guardado por el sw (Cache 'hq-destino'): iOS puede abrir la PWA en la home y
+// perder el hash; se aplica si tiene menos de 10 min y se borra siempre. #2694: tambien al volver visible la app.
+async function aplicarDestinoPendiente() {
+  try {
+    const c = await caches.open('hq-destino'), r = await c.match('/hq/__destino');
+    if (!r) return false;
+    await c.delete('/hq/__destino');
+    const d = await r.json();
+    if (Date.now() - d.t > 600000) return true;
+    const u = new URL(d.url, location.origin);
+    if (u.origin === location.origin && u.pathname.startsWith('/hq/') && u.hash) location.hash = u.hash;
+    return true;
+  } catch { return false; }
+}
+// C1/C3 (ronda 2, 18-10): fallback que no depende de notificationclick (iOS abre la PWA sin entregarlo). Al
+// arrancar y al volver visible: traza pagina_abierta. Sin banner (#2694): los avisos viven en la pestaña Avisos.
+const trazaPag = (ev, d, reg) => { let cfg = null; try { cfg = JSON.parse(localStorage.getItem('hq_cfg') || 'null'); } catch {} return trazarPagina(ev, d, { reg, cfg }); };
+async function revisarAvisos(visita) {
+  let reg = null, hayDestino = false, cache = null;
+  try { reg = await navigator.serviceWorker.getRegistration('/hq/'); } catch {}
+  try { hayDestino = await aplicarDestinoPendiente(); } catch {}
+  try { cache = (await caches.keys()).filter(k => /^hq-v\d+$/.test(k)).join(',') || null; } catch {}
+  let standalone = false; try { standalone = navigator.standalone === true || matchMedia('(display-mode: standalone)').matches; } catch {}
+  const origen = hayDestino || (visita === 'arranque' && location.hash) ? 'notificacion' : standalone ? 'icono' : 'pestana';
+  trazaPag('pagina_abierta', { visita, origen, entrada: location.pathname + location.hash.slice(0, 60), cache, version: window.HQ_VERSION && HQ_VERSION.v, destinoPendiente: hayDestino, controlado: !!navigator.serviceWorker.controller }, reg);
+  // #2624: sin salto automático al aviso más reciente: pisaba el hash tocado y abría siempre la misma tarjeta. El destino lo ruta el Cache hq-destino; los pendientes viven en Depende de ti y correos.
+}
 if ('serviceWorker' in navigator) {
+  const habiaControl = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (habiaControl) aplicarVersionNueva(); });
+  revisarAvisos('arranque');
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) { aplicarDestinoPendiente().catch(() => {}); revisarAvisos('visible'); } });
   navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => { if (new URL(r.scope).pathname === '/hq/' && !(r.active && r.active.scriptURL.endsWith('/hq/sw.js'))) r.unregister(); }));
   navigator.serviceWorker.register('/hq/sw.js', { updateViaCache: 'none' }).then(reg => {
-    reg.addEventListener('updatefound', () => { const nuevo = reg.installing; if (nuevo) nuevo.addEventListener('statechange', () => { if (nuevo.state === 'activated' && navigator.serviceWorker.controller) { if (escribiendo()) toast('HQ tiene versión nueva', 'recargar', () => location.reload()); else location.reload(); } }); });
+    reg.update().catch(() => {});
     if (Notification.permission === 'default') document.addEventListener('click', pedirPush, { once: true });
     else if (Notification.permission === 'granted') activarPush(reg);
   }).catch(() => {});
@@ -133,6 +187,8 @@ if ('serviceWorker' in navigator) {
 
 if (!TOKEN) pedirToken();
 else {
+  // schema-v153: hilos y enlaces de pliegos se piden al pintarse (a-demanda.js); sin token nunca se conecta.
+  conectarADemanda(rpc, render);
   conf().then(recargarYMarcar).catch(e => { raiz.innerHTML = ''; raiz.append(el('p', { class: 'error', text: 'No se pudo cargar HQ: ' + e.message })); });
   // D17 (#1355): estados/transiciones de Licita en directo, opcional y sin bloquear el arranque (mismo
   // patron que el push de mas abajo): si falla, la vista de licitaciones sigue con el snapshot de
@@ -140,7 +196,7 @@ else {
   configLicita().then(configurarLicita).catch(() => {});
   // D57/Tanda G: unico catalogo de motivos de NO, pedido en vivo a omc_motivos_no() (fuente unica, ver licitaciones.js).
   catalogoDescarte().then(configurarMotivosNo).catch(() => {});
-  // Sin realtime (T7-b): recarga cada 60s y al volver a la pestaña, nunca en segundo plano. Fix ronda 2
+  // Sin realtime (T7-b): recarga al volver a la pestaña (>10 min, #2727), nunca en segundo plano. Fix ronda 2
   // (revision final, D3): el propio tick del intervalo tambien mira document.hidden (antes solo lo
   // miraba el comentario, no el codigo). #1057 tarea 29: al volver a la pestaña solo si ya pasaron 60s
   // desde la última recarga (si el tick de abajo acaba de recargar hace 5s, no hace falta repetir).
@@ -156,8 +212,8 @@ else {
     const { disparar, pendiente } = decidirRecargaAutomatica(escribiendo());
     if (disparar) recargarYMarcar(); else recargaPendiente = pendiente;
   }
-  setInterval(() => { if (!document.hidden) recargaAutomatica(); }, 60000);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - ultimaRecarga > 60000) recargaAutomatica(); });
+  // #2727 punto 3 (Diego 21-10, 'HQ se refresca sola'): sin intervalo; solo al volver a la pestaña tras más de 10 min.
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - ultimaRecarga > 600000) recargaAutomatica(); });
   document.addEventListener('focusout', () => {
     if (!recargaPendiente) return;
     setTimeout(() => { if (recargaPendiente && !escribiendo()) { recargaPendiente = false; recargarYMarcar(); } }, 300);

@@ -22,39 +22,21 @@ const ref = { enlaces: new Map(), areas: new Map() };
 const $ = id => document.getElementById(id);
 
 const ICONO_CAMPANA = '<svg class="ico" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>';
+const ICONO_MAS = '<svg class="ico" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>';
 const ICONO_RECARGAR = '<svg class="ico" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg>';
 
-// Menu de 5 pestanas (Diego 14-10) detras de un interruptor, ENCENDIDO por defecto (OK de Diego 14-10): no borra ninguna ruta,
-// solo reparte el menu entre principales y un desplegable 'Más'. Se apaga con localStorage hq.menu5=0 o con ?menu5=0
-// (queda guardado) y se vuelve a encender con ?menu5=1. Dinero y Sistema agrupan vistas que ya existen (no hay vistas nuevas):
-// Dinero = KPIs (ingresos, cobros, costes) + Recursos (tokens y cuentas); Sistema = Salud + Organigrama + Plan estratégico + Colaboradores.
-export const MENU5 = ['hoy', 'licitaciones', 'ventas', 'dinero', 'sistema'];
-const GRUPOS5 = { dinero: ['kpis', 'recursos'], sistema: ['salud', 'progreso', 'organigrama', 'direccion', 'colaboradores'] };
-const NOMBRES5 = { dinero: 'Dinero', sistema: 'Sistema' };
-export function menu5Activo(win = globalThis) {
-  try {
-    const q = new URLSearchParams(win.location?.search || '').get('menu5');
-    if (q === '1' || q === '0') win.localStorage.setItem('hq.menu5', q);
-    return win.localStorage.getItem('hq.menu5') !== '0';
-  } catch { return true; }
-}
-// Areas del menu: con el interruptor encendido, Dinero y Sistema salen de juntar las vistas de las areas de GRUPOS5.
-export function areasMenu(cinco, areas = AREAS) {
-  if (!cinco) return areas;
-  const enGrupo = new Set(Object.values(GRUPOS5).flat());
-  const nuevas = Object.entries(GRUPOS5).map(([id, ids]) => {
-    const src = ids.map(i => areas.find(a => a.id === i)).filter(Boolean);
-    return { id, nombre: NOMBRES5[id], icono: src[0]?.icono, vistas: src.flatMap(a => a.vistas.map(v => ({ ...v, icono: v.icono || a.icono }))) };
-  });
-  const resto = areas.filter(a => !enGrupo.has(a.id));
-  const orden = id => MENU5.indexOf(id);
-  return [...resto.filter(a => MENU5.includes(a.id)), ...nuevas].sort((a, b) => orden(a.id) - orden(b.id)).concat(resto.filter(a => !MENU5.includes(a.id)));
+// Menú de seis (Diego 19-10, menu-hq-2026-10-18.md enmienda 2): cinco principales y 'Más' desplegable con el resto, en este orden.
+// Sin interruptor: ?menu5 ya no hace nada.
+export const MENU5 = ['hoy', 'licitaciones', 'ventas', 'productos', 'proyectos'];
+export const MAS = ['avisos', 'equipo', 'secreto', 'licita-engine', 'expedientes', 'tablero', 'colaboradores', 'admin'];
+export function areasMenu(areas = AREAS) {
+  const por = lista => lista.map(id => areas.find(a => a.id === id)).filter(Boolean);
+  return [...por(MENU5), ...por(MAS)];
 }
 export function montarMenu(nav) {
   nav.innerHTML = ''; ref.enlaces.clear(); ref.areas.clear();
-  const cinco = menu5Activo();
-  const mas = cinco ? el('details', { class: 'menu-mas' }, [el('summary', { text: 'Más' })]) : null;
-  for (const a of areasMenu(cinco)) {
+  const mas = el('details', { class: 'menu-mas' }, [el('summary', { text: 'Más' })]);
+  for (const a of areasMenu()) {
     // Menú (#1057 tarea 29; brief B 19-sep quitó el grupo Equipo): un área con una sola vista sale como
     // un único enlace icono+texto, sin 'area-titulo' encima (sería repetir la misma línea dos veces).
     // Hoy ninguna área tiene más de una vista, pero el camino de 'varias vistas' (título + '.sub') se
@@ -67,13 +49,60 @@ export function montarMenu(nav) {
           // Minor 5 (revision final): un click en un enlace del cajon lo cierra aunque el hash ya fuera
           // el activo (el listener de hashchange no dispara si el hash no cambia).
           onclick: cerrarMenu },
-          [el('span', { class: 'ico', html: v.icono || a.icono }), el('span', { class: 'txt', text: v.nombre })]);
+          [el('span', { class: 'ico', html: v.icono || a.icono }), el('span', { class: 'txt', text: unaVista ? a.nombre : v.nombre })]);
         ref.enlaces.set(v.clave, e); return e;
       }) : [el('p', { class: 'mudo pronto', text: 'pronto' })])]);
-    ref.areas.set(a.id, div); (mas && !MENU5.includes(a.id) ? mas : nav).append(div);
+    ref.areas.set(a.id, div); (MENU5.includes(a.id) ? nav : mas).append(div);
   }
-  if (mas) nav.append(mas);
+  nav.append(mas);
+  montarBarraInferior();
   return ref;
+}
+// Enviar secreto solo lo ve el propietario (menú enmienda 1): con otro rol se oculta en menú y barra.
+export function ocultarSoloOwner(rol, doc = globalThis.document) {
+  doc?.querySelectorAll?.('[data-area="secreto"]').forEach(e => { e.hidden = rol !== 'owner'; });
+  const a = ref.areas?.get?.('secreto'); if (a) a.hidden = rol !== 'owner';
+}
+// Barra inferior móvil (<900 px, CSS): las seis entradas principales con icono y etiqueta corta.
+function montarBarraInferior() {
+  document.getElementById?.('barra-inferior')?.remove();
+  ref.barra = new Map();
+  if (typeof document === 'undefined') return;
+  const barra = el('nav', { id: 'barra-inferior', class: 'barra-inferior', 'aria-label': 'Menú principal' });
+  for (const a of AREAS.filter(x => MENU5.includes(x.id)).sort((x, y) => MENU5.indexOf(x.id) - MENU5.indexOf(y.id))) {
+    const v = a.vistas[0];
+    const e = el('a', { href: '#' + v.clave, 'data-area': a.id, title: a.nombre }, [el('span', { class: 'ico', html: a.icono }), el('span', { class: 'txt', text: a.corto || a.nombre })]);
+    ref.barra.set(a.id, e); barra.append(e);
+  }
+  // Sexta entrada: Más abre el cajón con el desplegable Más ya abierto (sin pantalla nueva).
+  const masBtn = el('a', { href: '#', 'data-area': 'mas', title: 'Más', onclick: ev => { ev.preventDefault(); abrirMenu(); const d = document.querySelector('#menu details.menu-mas'); if (d) d.open = true; } },
+    [el('span', { class: 'ico', html: ICONO_MAS }), el('span', { class: 'txt', text: 'Más' })]);
+  ref.barra.set('mas', masBtn); barra.append(masBtn);
+  document.body.append(barra);
+  vigilarTeclado();
+}
+// #2610: en iPhone PWA el teclado encoge el visual viewport y WebKit deja la barra fixed a media pantalla
+// tras cerrarlo. Solo con body.tecleando (foco en textarea o input de texto) se sigue visualViewport.
+const TIPOS_TEXTO = ['text', 'search', 'email', 'url', 'tel', 'number', 'password'];
+const esCampoTexto = t => !!t && (t.tagName === 'TEXTAREA' || (t.tagName === 'INPUT' && TIPOS_TEXTO.includes((t.type || 'text').toLowerCase())));
+let tecladoVigilado = false;
+function vigilarTeclado() {
+  if (tecladoVigilado || typeof document === 'undefined') return;
+  tecladoVigilado = true;
+  const vv = window.visualViewport, raiz = document.documentElement;
+  const medir = () => { raiz.style.setProperty('--vv-desfase', Math.max(0, window.innerHeight - (vv.height + vv.offsetTop)) + 'px'); };
+  document.addEventListener('focusin', e => {
+    if (!esCampoTexto(e.target)) return;
+    document.body.classList.add('tecleando');
+    if (vv) { medir(); vv.addEventListener('resize', medir); vv.addEventListener('scroll', medir); }
+  });
+  document.addEventListener('focusout', e => {
+    if (!esCampoTexto(e.target)) return;
+    document.body.classList.remove('tecleando');
+    if (vv) { vv.removeEventListener('resize', medir); vv.removeEventListener('scroll', medir); }
+    raiz.style.setProperty('--vv-desfase', '0px');
+    setTimeout(() => window.scrollBy(0, 0), 100);
+  });
 }
 // Cabecera del cajón móvil (logo + marca "HQ" + botón cerrar). Se monta una sola vez, la primera vez
 // que se llama a cablearShell() (que en producción solo ocurre una vez, al arrancar main.js).
@@ -99,7 +128,7 @@ function montarAcciones() {
     btnRecargar.classList.add('girando');
     try { if (typeof window !== 'undefined' && window.HQ_RECARGAR) await window.HQ_RECARGAR(); } finally { btnRecargar.classList.remove('girando'); }
   });
-  buscador.append(campana, btnRecargar);
+  buscador.append(btnRecargar); // 18-10 (Diego): fuera la campana; avisos pendientes en Depende de ti y correos
   ref.badgeCampana = badge; ref.campana = campana; ref.recargarBtn = btnRecargar;
 }
 export function marcarActiva(clave) {
@@ -110,13 +139,13 @@ export function marcarActiva(clave) {
   // menú: cae al prefijo 'equipo', pero desde el brief B (19-sep) ya no hay área 'equipo' (se repartió
   // en 'organigrama' y 'colaboradores'), así que ese prefijo se remapea a 'organigrama'.
   const area = AREAS.find(a => a.vistas.some(v => v.clave === clave))?.id
-    || (clave.split('/')[0] === 'equipo' ? 'organigrama' : clave.split('/')[0]);
+    || clave.split('/')[0];
   for (const [k, e] of ref.enlaces) e.classList.toggle('activa', k === clave);
-  for (const [id, d] of ref.areas) d.classList.toggle('abierta', id === area || (ref.areas.has(id) && id === id5(area)));
+  for (const [id, e] of ref.barra || []) e.classList.toggle('activa', id === area);
+  for (const [id, d] of ref.areas) d.classList.toggle('abierta', id === area);
   const mas = document.querySelector?.('.menu-mas');
-  if (mas && area && !MENU5.includes(area) && !id5(area)) mas.open = true;
+  if (mas && area && !MENU5.includes(area)) mas.open = true;
 }
-const id5 = area => Object.keys(GRUPOS5).find(k => GRUPOS5[k].includes(area));
 // Badging API (petición del owner, 17-sep): refleja el contador en el icono de la app instalada
 // (PWA). Ni Safari ni algunos navegadores la implementan, y en los tests no existe `navigator`:
 // por eso todo entra en un try/catch y solo se toca si `navigator` existe.
@@ -129,7 +158,7 @@ function pintarBadge(n) {
 }
 export function pintarBarra(datos) {
   const c = contador(datos), nodo = $('contador');
-  nodo.textContent = c.texto + ' ' + c.n; nodo.setAttribute('href', c.href); nodo.hidden = !c.n;
+  nodo.textContent = c.texto + ' ' + c.n; nodo.setAttribute('href', c.href); nodo.hidden = datos?.rol === 'owner' || !c.n; // #2727 punto 5: Diego no ve la píldora (la cifra ya está en Depende de ti de Hoy); el badge y la campana siguen
   pintarBadge(c.n);
   // Campana (#1057 tarea 29): mismo recuento que el contador de la barra (pendientes del owner, en
   // curso del agente), pero el destino del click es siempre la bandeja de Hoy.

@@ -1,0 +1,169 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { site, hrefEn as href } from '../../../lib/site';
+
+const enlace = 'text-tinta underline decoration-oro/50 underline-offset-4 transition-colors hover:text-oro-oscuro';
+const parrafo = 'mt-4 text-[16px] text-pizarra';
+const titulo = 'mt-3 font-display text-[clamp(21px,2.2vw,27px)] font-semibold leading-[1.2]';
+const numero = 'font-mono text-[11px] tracking-[0.14em] text-oro-oscuro';
+const lista = 'mt-4 list-disc space-y-2 pl-5 text-[16px] text-pizarra marker:text-oro-oscuro';
+
+const navegadores = [
+  { nombre: 'Google Chrome', url: 'https://support.google.com/chrome/answer/95647' },
+  { nombre: 'Mozilla Firefox', url: 'https://support.mozilla.org/en-US/kb/delete-cookies-remove-info-websites-stored' },
+  { nombre: 'Safari', url: 'https://support.apple.com/en-us/guide/safari/sfri11471/mac' },
+  {
+    nombre: 'Microsoft Edge',
+    url: 'https://support.microsoft.com/en-us/microsoft-edge/delete-cookies-in-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09',
+  },
+];
+---
+
+<Base
+  title="Cookie policy"
+  description="This website does not set its own cookies. Analytics are anonymous and cookieless; the Google calendar on the contact page is only loaded, and may set its own cookies, if you choose to display it."
+>
+  <section class="wrap pb-14 pt-20 md:pb-20 md:pt-28">
+    <p class="eyebrow" data-reveal>Legal</p>
+    <h1
+      class="mt-5 max-w-[16ch] font-display text-[clamp(38px,6vw,76px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+      data-reveal
+    >
+      No first-party cookies. Third parties kept to a minimum.
+    </h1>
+    <p class="mt-7 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+      This website does not set its own cookies. Visitor analytics are anonymous, aggregated and cookieless. The
+      only exception is the Google booking calendar on the contact page, which is only loaded, and can only set its own
+      cookies, if you click the button to display it.
+    </p>
+  </section>
+
+  <section class="hairline">
+    <div class="wrap py-16 md:py-24">
+      <article class="max-w-[68ch] space-y-14">
+        <section data-reveal>
+          <p class={numero}>01</p>
+          <h2 class={titulo}>What are cookies?</h2>
+          <p class={parrafo}>
+            Cookies are small text files that a website stores on your device when you
+            visit it. They are used to remember preferences, maintain sessions or measure how the site is used.
+          </p>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>02</p>
+          <h2 class={titulo}>Which cookies and technologies do we use?</h2>
+          <p class={parrafo}>
+            No first-party cookies. This website is static, requires no login or user session
+            and sets no first-party cookies. We also do not use Google Analytics, social media pixels
+            or advertising or cross-site tracking tools.
+          </p>
+          <p class={parrafo}>
+            To see which pages are visited we use Umami, an analytics tool that sets no
+            cookies, does not store the IP address and does not identify the visitor. It only records
+            aggregated data: page viewed, country, device type and source of the visit. It runs on our
+            own server, at stats.77delta.com, within the European Union.
+          </p>
+          <p class={parrafo}>
+            The contact form sends your message to api.77delta.com, our own subdomain with
+            infrastructure in the European Union. It does not set cookies either.
+          </p>
+          <p class={parrafo}>
+            To remember whether you prefer to view the website in Spanish, Catalan or English, we store a value in the
+            browser's local storage (<code>localStorage</code>), not in a cookie. It is not sent to
+            any server, does not expire on its own and you can delete it from your browser settings. It is a
+            strictly necessary technical mechanism for the language selector to work, equivalent to
+            a cookie exempt from consent.
+          </p>
+          <p class={parrafo}>
+            The only exception is the Google appointment booking calendar, on the <a
+              href={href('/contacto/')}
+              class={enlace}>contact page</a
+            >. It is the only element on this site that we do not control, and it is not loaded by default: instead
+            you will see a "Show calendar" button and a link to open it in a separate tab. Until
+            you click that button, nothing is downloaded from Google. If you click it, Google may set its own
+            cookies for the calendar to work and to prevent abuse; these are non-exempt third-party
+            cookies, and that click is your express consent to them. If you prefer not to give it, the
+            same page offers the contact form and a direct link to the calendar in a separate tab, neither of which
+            embeds anything. You can read Google's cookie policy at <a
+              href="https://policies.google.com/technologies/cookies"
+              target="_blank"
+              rel="noopener"
+              class={enlace}>policies.google.com/technologies/cookies</a
+            >.
+          </p>
+          <p class={parrafo}>
+            The links to LinkedIn and WhatsApp are external links, not embedded content: you only interact
+            with those services if you click on them, and their own cookie and privacy policies then
+            apply.
+          </p>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>03</p>
+          <h2 class={titulo}>Why there is no cookie banner</h2>
+          <p class={parrafo}>
+            A consent banner is mandatory when a site sets non-exempt cookies before the
+            user decides. None of the services under our control, neither Umami analytics nor the
+            contact form, sets any cookies, so there is nothing to ask your consent for.
+          </p>
+          <p class={parrafo}>
+            The exception is the Google calendar described in the previous section, and it is already blocked
+            by default: instead of a generic banner, the calendar is only loaded if you click the "Show
+            calendar" button. That click serves the same purpose as a banner, asking your permission before Google
+            sets anything, and it is your express consent to those specific cookies. If you do not click it, Google neither
+            receives nor sets anything. If in the future we add other third-party content that requires non-exempt
+            cookies, such as videos or other calendars, we will apply the same load-on-request
+            approach or, where that is not possible, an equivalent prior-consent mechanism.
+          </p>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>04</p>
+          <h2 class={titulo}>How can you manage cookies?</h2>
+          <p class={parrafo}>
+            You can configure your browser to accept, reject or delete cookies from any website.
+            Each browser offers different options:
+          </p>
+          <ul class={lista}>
+            {
+              navegadores.map((n) => (
+                <li>
+                  <a href={n.url} target="_blank" rel="noopener" class={enlace}>
+                    {n.nombre}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>05</p>
+          <h2 class={titulo}>Changes to the policy</h2>
+          <p class={parrafo}>
+            This policy may be updated. Any change will be reflected here, with the date of the last
+            update at the foot of the page.
+          </p>
+        </section>
+
+        <section data-reveal>
+          <p class={numero}>06</p>
+          <h2 class={titulo}>Contact</h2>
+          <p class={parrafo}>
+            For any question about cookies, write to <a href={`mailto:${site.email}`} class={enlace}
+              >{site.email}</a
+            >. The processing of personal data is described in the <a
+              href={href('/politica-privacidad/')}
+              class={enlace}>privacy policy</a
+            >.
+          </p>
+        </section>
+
+        <p class="hairline pt-8 font-mono text-[12px] text-pizarra" data-reveal>
+          Last updated: 28 September 2026
+        </p>
+      </article>
+    </div>
+  </section>
+</Base>

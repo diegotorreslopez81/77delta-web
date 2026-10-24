@@ -43,8 +43,8 @@ a{color:inherit}
 .velo{display:none}
 .vista{flex:1;min-width:0;padding:14px;max-width:1280px;margin:0 auto;box-sizing:border-box}
 @media (max-width:899px){
-  .menu{position:fixed;top:0;bottom:0;left:0;z-index:25;width:min(84vw,320px);transform:translateX(-100%);transition:transform .2s var(--ease);overflow-y:auto;padding-bottom:env(safe-area-inset-bottom)}
-  body.menu-abierto .menu{transform:none}body.menu-abierto .velo{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:24}
+  .menu{position:fixed;top:0;bottom:0;left:0;z-index:var(--z-menu);width:min(84vw,320px);transform:translateX(-100%);transition:transform .2s var(--ease);overflow-y:auto;padding-bottom:env(safe-area-inset-bottom)}
+  body.menu-abierto .menu{transform:none}body.menu-abierto .velo{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:var(--z-velo-menu)}
   #plegar,.cab .salir{display:none}.cab .contador{font-size:12px;padding:2px 8px}
   /* I4 (revision final): .menu-cab (prepend de montarCabeceraMenu) suma un tercer hijo a .menu, que
      seguia usando justify-content:space-between de la regla base (linea 21): con tres hijos eso deja
@@ -80,13 +80,13 @@ a{color:inherit}
 :root[data-theme="dark"] .pill{background:rgba(212,160,58,.18);color:var(--oro-oscuro);border-color:rgba(212,160,58,.45)}
 .pill.codigo{font-family:var(--mono);background:var(--oro-suave);color:var(--tinta)}
 .mudo{color:var(--tinta-2);font-size:14px}
-.fondo{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20}
-.modal{background:var(--papel);width:100%;max-width:720px;max-height:92vh;overflow:auto;border-radius:var(--radio) var(--radio) 0 0;padding:14px}
+.fondo{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:var(--z-hoja)}
+.modal{background:var(--papel);width:100%;max-width:720px;max-height:92vh;overflow:auto;border-radius:var(--radio) var(--radio) 0 0;padding:14px 14px calc(14px + env(safe-area-inset-bottom))}
 .modal-cab{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .btn-x{font-size:24px;background:none;border:0;cursor:pointer;color:var(--tinta-2)}
 .modal-acciones{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
 .modal .chips{flex-wrap:wrap;overflow:visible}.modal textarea{width:100%;box-sizing:border-box;margin-top:10px}
-.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--tinta);color:var(--papel);padding:10px 14px;border-radius:var(--radio-boton);z-index:30;display:flex;gap:12px;align-items:center;max-width:92vw}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--tinta);color:var(--papel);padding:10px 14px;border-radius:var(--radio-boton);z-index:var(--z-toast);display:flex;gap:12px;align-items:center;max-width:92vw}
 .entrar{max-width:420px;margin:20vh auto;display:grid;gap:12px}
 .cargando,.error{text-align:center;color:var(--tinta-2);padding:40px 0}
 @media (min-width:900px){.fondo{align-items:center}.modal{border-radius:var(--radio)}.vista{padding:20px}}
@@ -357,7 +357,7 @@ a{color:inherit}
 .vt-feed li{display:grid;grid-template-columns:44px 1fr;gap:10px;font-size:13px;color:var(--tinta-2);padding:6px 0;border-bottom:1px solid var(--linea)}
 .vt-h{font-size:11.5px;color:var(--pizarra-tenue);font-variant-numeric:tabular-nums}
 .vt-q{color:var(--pizarra-tenue);font-size:12px}
-.vt-velo{position:fixed;inset:0;z-index:50;background:rgba(6,16,31,.35)}
+.vt-velo{position:fixed;inset:0;z-index:var(--z-hoja);background:rgba(6,16,31,.35)}
 .vt-ficha{position:absolute;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--papel);border-left:1px solid var(--linea);padding:18px 16px;overflow-y:auto}
 .vt-ficha h2{font-size:18px;line-height:1.2;margin:0 0 2px;padding-right:64px}
 .vt-ficha h3{margin-top:14px}
@@ -409,3 +409,161 @@ a{color:inherit}
 .titulo-progreso{position:relative;z-index:1;margin:0 0 12px;padding-top:4px}
 .marco-progreso{display:block;position:relative;z-index:0;width:100%;height:calc(100vh - 160px);min-height:480px;margin-top:0;border:1px solid var(--linea);border-radius:var(--radio);background:var(--panel)}
 .decision .cuerpo-completo summary{cursor:pointer;font-weight:600;margin-top:8px}.decision .cuerpo-texto{white-space:pre-wrap}
+.entrar .recordar{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:14px}.entrar .recordar input{width:auto}
+.aviso-banner{position:fixed;top:env(safe-area-inset-top);left:0;right:0;background:var(--tinta);color:var(--papel);padding:10px 14px;z-index:var(--z-banner);display:flex;gap:12px;align-items:center;flex-wrap:wrap}.aviso-banner .aviso-texto{flex:1 1 100%;font-weight:600}
+
+/* Home v2 (spec 1, 18-10): cuatro bloques apilados a 390 px, botones de 44 px */
+.home { display: flex; flex-direction: column; gap: 16px; }
+.home-bloque { display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; color: var(--ink); text-decoration: none; }
+.home-bloque h2 { margin: 0 0 8px; font-size: 1rem; }
+.home-decidir.rojo { border-left: 4px solid var(--error); padding-left: 10px; }
+.home-botones { display: flex; gap: 8px; margin-top: 8px; }
+.home-botones .btn, .home-mas { min-height: 44px; flex: 1; display: inline-flex; align-items: center; justify-content: center; }
+.home-mas { margin-top: 8px; }
+.home-cifras { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.home-cifra { display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 44px; text-decoration: none; color: var(--ink); }
+.home-cifra .valor { font-size: 1.5rem; font-weight: 600; }
+.home-cifra.rojo .valor { color: var(--error); }
+.home-cifra.ambar .valor { color: var(--tag-ambar-fg); }
+.home-cifra.verde .valor { color: var(--exito); }
+.home-proyecto { display: block; text-decoration: none; color: var(--ink); margin-bottom: 8px; }
+/* 18-10: la home se salía del viewport en iPhone (390 px): ningún hijo fija ancho por su contenido. */
+.home, .home > *, .home-bloque, .home .vt-cards, .home .vt-card, .home-cifras > *, .hoy-bloque, .hoy-tarjeta { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+@media (max-width: 600px) { .home-botones { display: grid; grid-template-columns: 1fr 1fr; } .home-botones .btn { white-space: nowrap; min-width: 0; } }
+.semaforo-pill.rojo{background:var(--error-suave);border-color:var(--error);color:var(--error)}
+.semaforo-pill.ambar{background:var(--tag-ambar-bg);border-color:var(--tag-ambar-fg);color:var(--tag-ambar-fg)}
+.semaforo-pill.verde{background:var(--exito-suave);border-color:var(--exito);color:var(--exito)}
+/* En curso: cronograma de proyecto (spec 3) */
+.proyecto-fila summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.cronograma{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.crono-item{border-left:3px solid var(--pizarra-tenue);padding-left:8px}
+.crono-fecha{font-weight:600;margin-right:6px}.crono-estado{font-size:12px;color:var(--pizarra)}.crono-texto{margin:2px 0}
+.crono-item.hecho{opacity:.55}.crono-item.vencido{border-left-color:var(--error)}.crono-item.vencido .crono-fecha{color:var(--error)}
+.proceso-fallo{color:var(--error)}
+
+/* Menú de seis (18-10): barra inferior móvil, seis entradas de 44 px de alto sin scroll horizontal a 390 px. */
+.barra-inferior { display: none; }
+@media (max-width: 899px) {
+  .barra-inferior { display: flex; position: fixed; left: 0; right: 0; bottom: var(--vv-desfase, 0px); z-index: var(--z-barra); background: var(--panel, var(--surface)); border-top: 1px solid var(--linea); padding-bottom: env(safe-area-inset-bottom); }
+  .barra-inferior a { flex: 1 1 0; min-width: 0; min-height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px 0; font-size: 10px; line-height: 1.1; color: var(--tinta-2); text-decoration: none; }
+  .barra-inferior a .ico, .barra-inferior a .ico svg { width: 20px; height: 20px; }
+  .barra-inferior a.activa { color: var(--tinta); font-weight: 600; }
+  body.tecleando .barra-inferior { transform: translateY(100%); }
+  .vista { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
+}
+.hoy-item { scroll-margin-bottom: calc(72px + env(safe-area-inset-bottom)); scroll-margin-top: 64px; }
+
+/* Diego 18-10 15:0x: los contadores caben en la altura de dos tarjetas: rejilla 3x2 compacta, cada uno enlaza a su pantalla. */
+.home-cifras { grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
+.home-cifras .home-cifra { padding: 6px 4px; min-height: 0; gap: 0; }
+.home-cifras .home-cifra .valor { font-size: 1.15rem; line-height: 1.2; }
+.home-cifras .home-cifra .mudo { font-size: 11px; line-height: 1.2; }
+@media (max-width: 899px) { .cab .buscador #busqueda, .cab .buscador .resultados, .cab .campana, .cab #contador { display: none; } }
+
+.aviso-banner, #aviso-nuevo { display: none !important; }
+
+/* Hoy en acordeón (spec 5, enmienda 4): cabecera 44 px, plegado por defecto */
+.hoy-acordeon{padding:0}
+.hoy-acordeon-cab{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;padding:0 12px;background:none;border:0;color:inherit;font:inherit;font-weight:600;text-align:left;cursor:pointer;box-sizing:border-box}
+.hoy-acordeon-cab .titulo{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hoy-acordeon-cab .chevron{transition:transform .15s}
+.hoy-acordeon.abierto .chevron{transform:rotate(180deg)}
+.hoy-acordeon.gris .hoy-acordeon-cab{color:var(--pizarra);cursor:default;font-weight:400}
+.hoy-acordeon-cab .punto-nuevo{width:9px;height:9px;border-radius:50%;background:var(--aviso,#d98e04);flex:none}
+.hoy-acordeon-cab .punto-nuevo.rojo{background:var(--error)}
+.hoy-acordeon-cuerpo{padding:0 12px 12px;max-width:100%;box-sizing:border-box}
+.hoy-acordeon-cuerpo[hidden]{display:none}
+.hoy-item-titulo{display:block;width:100%;min-height:44px;background:none;border:0;color:inherit;font:inherit;font-weight:600;text-align:left;padding:0;cursor:pointer}
+.hoy-item-detalle[hidden]{display:none}
+.hoy-item.destacada{outline:2px solid var(--oro,#c9a227)}
+
+.home-cifras .home-cifra.gris { opacity: .6; } .home-cifras .home-cifra.gris .valor { color: var(--pizarra); font-size: .95rem; }
+.barra-inferior a[hidden], #menu [hidden] { display: none !important; }
+
+/* Spec 8: franja de recordar dispositivo, encima de la barra inferior (390 px: ancho completo, 56 px; escritorio: 480 px centrada) */
+.franja-recordar{position:fixed;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom));min-height:56px;display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;justify-content:flex-end;padding:8px 12px;background:var(--oro-suave);color:var(--tinta);border-top:1px solid var(--linea);z-index:var(--z-franja);font-size:14px}
+.franja-recordar span{flex:1 1 14em}.franja-recordar .btn{min-height:40px}
+@media (min-width:900px){.franja-recordar{left:50%;right:auto;width:480px;transform:translateX(-50%);bottom:16px;border:1px solid var(--linea);border-radius:var(--radio)}}
+/* Con una hoja o modal abierto, lo que flota encima de la barra se oculta para no tapar la hoja */
+body.con-modal .franja-recordar,body.con-modal .aviso-banner{display:none}
+
+/* Spec 9: bloque Negocio (4 tarjetas, 2x2 en móvil, fila de 4 en escritorio) y operativa en fila de 5 con scroll propio. */
+.hoy-negocio { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+.hoy-neg { display: flex; flex-direction: column; gap: 2px; min-height: 120px; padding: 8px; text-decoration: none; color: var(--ink); position: relative; cursor: default; }
+.hoy-neg a { cursor: pointer; }
+.hoy-neg .neg-etiqueta { font-size: 12px; white-space: nowrap; }
+.hoy-neg .neg-periodo { font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hoy-neg .neg-principal small { display: block; font-size: 14px; font-weight: 400; white-space: nowrap; }
+.hoy-neg .neg-principal small.bajo { display: block; font-size: 12px; color: var(--pizarra); }
+.hoy-neg .neg-principal { font-size: 28px; font-weight: 600; line-height: 1.15; }
+.hoy-neg .neg-secundario { font-size: 14px; }
+.hoy-neg .neg-detalle { font-size: 12px; }
+.neg-linea{white-space:normal;overflow-wrap:anywhere;font-size:13px}
+/* Diego 23-10: cifras y líneas con enlace se ven como enlace (subrayado, color de acento, objetivo táctil >=24px). */
+.hoy-neg a.neg-cifra,.hoy-neg a.neg-linea{color:var(--tag-indigo-fg);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.hoy-neg a.neg-linea{display:block;min-height:24px;line-height:24px}
+.hoy-neg a.neg-cifra:hover,.hoy-neg a.neg-linea:hover{text-decoration-thickness:2px}
+.hoy-neg.rojo .neg-principal { color: var(--error); } .hoy-neg.ambar .neg-principal { color: var(--tag-ambar-fg); } .hoy-neg.verde .neg-principal { color: var(--exito); }
+/* D2 (#2584): barra apilada por línea de negocio, solo variables ya definidas */
+.neg-barra { display: flex; height: 8px; gap: 2px; border-radius: 4px; overflow: hidden; background: var(--line); margin-top: 4px; }
+.neg-leyenda { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 8px; font-size: 12px; white-space: nowrap; }
+.neg-punto { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+.neg-tramo.l-licitaciones, .neg-punto.l-licitaciones { background: var(--tag-indigo-fg); } .neg-tramo.l-propuestas, .neg-punto.l-propuestas { background: var(--tag-teal-fg); } .neg-punto.l-licita { background: var(--tag-indigo-fg); } .neg-punto.l-sales { background: var(--tag-teal-fg); } .neg-punto.l-cupones { background: var(--tag-ambar-fg); } .neg-punto.l-otros { background: var(--tag-gris-fg); } .neg-punto.l-ayudas { background: var(--oro); } .neg-punto.l-subvenciones { background: var(--exito); }
+.neg-tramo.l-licita { background: var(--tag-indigo-fg); } .neg-tramo.l-sales { background: var(--tag-teal-fg); } .neg-tramo.l-cupones { background: var(--tag-ambar-fg); } .neg-tramo.l-otros { background: var(--tag-gris-fg); } .neg-tramo.l-ayudas { background: var(--oro); } .neg-tramo.l-subvenciones { background: var(--exito); }
+@media (min-width: 900px) { .hoy-negocio { grid-template-columns: repeat(4, 1fr); max-width: none; } }
+
+.proyecto-fila summary{display:flex;align-items:center;gap:8px}.proyecto-fila .pct-grande{margin-left:auto;font-size:22px;font-weight:700}.proyecto-fila .pct-grande.gris{font-size:14px;color:var(--tinta-suave,#8a8f98)}
+.punto{width:10px;height:10px;border-radius:50%;background:#8a8f98;flex:none}.punto.rojo{background:var(--error)}.punto.ambar{background:var(--oro-luz)}.punto.verde{background:var(--exito)}
+.crono-peso{font-size:12px;margin-left:6px}.leyenda{margin-top:12px;font-size:12px}
+.web-bloques{display:grid;grid-template-columns:1fr;gap:8px}
+@media (min-width:1000px){.web-bloques{grid-template-columns:repeat(4,1fr)}}
+.web-bloque{cursor:default}
+.web-mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (min-width:900px){.web-mini-grid{grid-template-columns:repeat(4,1fr)}}
+.web-mini{display:block;text-decoration:none;color:inherit;min-width:0;overflow-wrap:anywhere}
+.web-mini h3{margin:0 0 4px;font-size:13px}
+.web-mini .web-var{font-weight:600;color:var(--c)}
+.web-sitio.destacado{border-color:var(--oro)}
+.web-kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.web-num{font-size:26px;font-weight:700;line-height:1.1}
+.web-var{margin:0;font-size:13px;font-weight:600}.web-var.verde{color:var(--exito)}.web-var.rojo{color:var(--error)}
+
+.web-mini h3{white-space:nowrap}
+.web-serie{margin:8px 0}.web-barras{display:flex;align-items:flex-end;gap:2px;height:80px}
+.web-barra{flex:1 1 0;min-width:0;background:var(--tinta-2);border-radius:1px 1px 0 0;min-height:1px}
+.web-eje{display:flex;justify-content:space-between;font-size:11px;color:var(--tinta-2);margin-top:2px}
+.web-barra:last-child{background:var(--oro)}
+.ayudas-linea{cursor:pointer;text-decoration:none}
+
+.cab-ico{display:inline-flex;flex:none;color:var(--oro-luz)}.cab-ico .ico{width:20px;height:20px}
+.pastilla{flex:none;min-width:22px;padding:2px 8px;border-radius:11px;background:var(--surface-3);font-size:13px;font-weight:600;text-align:center}
+.pastilla.rojo{background:var(--error);color:#fff}.pastilla.ambar{background:var(--oro-suave);color:var(--oro-oscuro)}.pastilla.verde{background:var(--exito-suave);color:var(--exito)}
+.firmar-card{display:flex;gap:10px;align-items:flex-start;border-left:4px solid var(--oro-luz)}.firmar-card.rojo{border-left-color:var(--error)}
+.firmar-card .firmar-datos{min-width:0;flex:1}.firmar-meta{margin:2px 0 0}.firmar-meta strong{font-size:16px}
+
+/* #2625: botones de tarjetas tipo accion, 4 en una fila con icono encima del texto */
+.home-botones.compacta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.home-botones.compacta .btn-accion { flex-direction: column; justify-content: center; gap: 0; padding: 0 2px; height: 44px; min-height: 44px; max-height: 48px; min-width: 0; box-sizing: border-box; }
+.home-botones.compacta .btn-accion .ico { width: 22px; height: 22px; }
+@media (min-width: 600px) { .home-botones.compacta { grid-template-columns: repeat(4, minmax(0, 120px)); justify-content: start; } } /* #2628: escritorio, ancho fijo a la izquierda */
+.hoy-item + .hoy-item { margin-top: 16px; }
+/* #2628: hoja de Posponer, una columna con tope de ancho e iconos del mismo estilo que los botones de accion */
+.posponer-hoja { display: flex; flex-direction: column; gap: 10px; max-width: 360px; }
+.posponer-hoja .opcion-posponer { display: flex; align-items: center; justify-content: flex-start; gap: 10px; min-height: 44px; padding: 0 12px; text-align: left; }
+.posponer-hoja .opcion-posponer .ico { width: 22px; height: 22px; flex: none; }
+.posponer-fecha { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.posponer-fecha .campo { min-height: 44px; box-sizing: border-box; width: 100%; }
+@media (min-width: 600px) { .posponer-hoja { max-width: 120px; } .posponer-hoja .opcion-posponer { padding: 0 8px; gap: 6px; white-space: nowrap; font-size: 13px; } }
+.vt-camp-cab{margin:0;font-size:12.5px;color:var(--pizarra)}
+.vt-paso{display:grid;grid-template-columns:92px 1fr auto;gap:8px;align-items:center;font-size:13px}
+.vt-paso-barra{display:block;height:8px;background:var(--linea);border-radius:4px;overflow:hidden}.vt-paso-barra i{display:block;height:100%;background:var(--oro)}
+.vt-paso-v{min-width:44px;text-align:right;white-space:nowrap}
+.vt-camp-pie{margin:0;font-size:12.5px;color:var(--pizarra)}
+.vt-pipe-imp{margin:0 0 6px;font-weight:600;font-size:13px}
+/* #2676: cifra que aún no sale de la fuente de la verdad (helper provisional() de ui.js). */
+.fuente-provisional,.fuente-provisional .neg-principal,.fuente-provisional .valor,.fuente-provisional .v,.hoy-neg.fuente-provisional .neg-principal,.hoy-neg.fuente-provisional .neg-secundario,.hoy-neg.fuente-provisional .neg-detalle,.hoy-neg.fuente-provisional .neg-leyenda,.home-cifra.fuente-provisional .valor{color:var(--error)}
+
+.web-sitio{min-width:0}
+.web-logo{width:20px;height:20px;border-radius:3px;vertical-align:-3px}
+.web-sin-datos{grid-column:1 / -1}
+.web-sitio .neg-linea{white-space:nowrap;font-size:11.5px}

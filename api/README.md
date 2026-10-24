@@ -11,6 +11,8 @@ Endpoint del formulario de contacto de 77delta.com. Node 22 sin framework, `node
 - `POST /docureal` con JSON `{email, empresa, tipo (agencia|administrador|aseguradora|otro), idioma (es|en|ca), candidaturas_mes, ya_me_paso, preferencia_precio, comentario, origen, web}`: demo de DocuReal. Calco de `/verifix`: upsert por email (el paso 2 reenvía con `comentario`), `LEADS_FILE`, Supabase `docureal_lista_espera` (fallo blando), correo a `MAIL_TO`, límite propio de 5 por IP cada 10 min, IP solo como hash. Migración: `api/sql/docureal_lista_espera.sql`. Tests: `node --test api/docureal.test.mjs`.
 
 Variables: `SMTP_HOST`, `SMTP_PORT` (465), `SMTP_SECURE` (true), `SMTP_USER`, `SMTP_PASS`, `MAIL_TO`, `MAIL_FROM`, `CORS_ORIGINS` (si se define en Coolify, debe incluir `https://verifix.77delta.com` y `https://docureal.77delta.com`).
+
+Eventos de conversión en Umami: tras cada envío con éxito de `/contacto`, `/hiring` y `/docureal` el servidor registra `form-contacto`, `form-empleo` y `form-docureal` en `UMAMI_URL/api/send` (por defecto `https://stats.77delta.com`; vacío desactiva el envío). `UMAMI_WEBSITE_77DELTA` es el website de 77delta.com (por defecto el mismo que usa la web) y `UMAMI_WEBSITE_DOCUREAL` el de docureal.77delta.com; si falta, el evento de DocuReal cae en el website de 77delta.com. Sin cookies ni datos personales: solo nombre del evento, sector o tipo, idioma y origen.
 Desplegado con Coolify (VPS6) desde esta carpeta.
 
 ## Despliegue

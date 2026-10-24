@@ -2,10 +2,11 @@
 // licitaciones por decidir. Paridad con public/hq/v1/index.html (bandeja + licitaciones), adaptado a
 // las claves reales de omc_hq_v2.
 //
-// T5-b (ruling del controlador, 2026-09-16): omc_hq_v2 no devuelve pendientes[].mensajes. El hilo vive
-// en la clave 'hilos' de omc_hq_v2 (mapa solicitud_id -> [{id, autor, texto, ts}], copiado de omc_hq v1;
-// ver schema-v2.sql, seccion T16, junto a la clave 'pendientes'). Aqui se lee con
-// ((S.datos.hilos || {})[p.id] || []) y se pasa a tarjeta() en vez de p.mensajes.
+// T5-b (ruling del controlador, 2026-09-16): omc_hq_v2 no devuelve pendientes[].mensajes. El hilo es un
+// mapa solicitud_id -> [{id, autor, texto, ts}]. Desde schema-v153 (17-oct-2026) ya no viaja en la carga
+// inicial: lo da omc_hq_hilos a demanda (a-demanda.js), que repinta cuando llega. Si el payload aun trae
+// la clave 'hilos' (contrato anterior), se usa tal cual. Los enlaces de pliegos (pcap, ppt, carpeta,
+// pcap_drive, ppt_drive) de las licitaciones por decidir tampoco viajan: enlacesPliegos() los rellena.
 //
 // T5-c: 'pendientes' excluye las pospuestas (viven en 'pospuestas', mismas columnas, con
 // pospuesta_hasta en el futuro). render() concatena ambos arrays antes de agrupar; agrupar() en si
@@ -33,6 +34,7 @@ import { porDecidir, enCriba, solvenciaTexto, tipologia, tipologiaOrgano, nivelE
 import { botonesTransicion } from '../decision-lic.js';
 import { pintarBloques } from '../tarjeta-bloques.js';
 import { colorOrgano, importeClase } from './licitaciones.js';
+import { hilos as hilosADemanda, invalidarHilos, enlacesPliegos } from '../a-demanda.js';
 
 export function agrupar(pendientes, ahora = new Date()) {
   const finHoy = new Date(ahora); finHoy.setUTCHours(23, 59, 59, 999); const finSemana = new Date(ahora.getTime() + 7 * 864e5);
@@ -56,7 +58,7 @@ async function actuar(p, accion, campo) {
       await rpc('omc_comentar', { p_id: p.id, p_texto: texto }); toast('#' + p.id + ' comentado');
       // Brief 2021 (capa C): la accion ya triunfo por RPC, el borrador de este campo ya no hace falta.
       campo.olvidarBorrador?.();
-      await recargar();
+      invalidarHilos(); await recargar();
     } else {
       // #2118: aprobar, rechazar o responder hacen desaparecer la tarjeta con fade, sin recargar la lista.
       await conSalida(campo.closest?.('[data-sale]'), () => rpc('omc_resolver', { p_id: p.id, p_estado: accion, p_respuesta: texto }), {
@@ -95,8 +97,8 @@ function tarjeta(p, abierta, hilo, soloComentar) {
     pintarBloques(p.detalle) || el('div', { class: 'detalle' }, enlazar(p.detalle || '')),
     // omc_solicitudes.cuerpo (texto completo del correo o la propuesta): desplegable, abierto en las de tipo accion.
     p.cuerpo ? el('details', { class: 'cuerpo-completo', open: p.tipo === 'accion' }, [el('summary', { text: 'Texto completo' }), el('div', { class: 'detalle cuerpo-texto' }, enlazar(p.cuerpo))]) : null,
-    enlaceSeguro ? el('a', { href: enlaceSeguro, target: '_blank', rel: 'noopener', class: 'btn-enlace', text: 'abrir enlace' }) : null,
-    el('div', { class: 'hilo' }, (hilo || []).map(mm => el('div', { class: 'avance' }, [el('span', { class: 'mudo', text: fecha(mm.ts, { hora: true }) + ' · ' + mm.autor }), el('p', { text: mm.texto })]))),
+    enlaceSeguro ? el('a', { href: enlaceSeguro, target: '_blank', rel: 'noopener noreferrer', class: 'btn-enlace', text: 'abrir enlace' }) : null,
+    el('div', { class: 'hilo' }, (hilo || []).map(mm => el('div', { class: 'avance' }, [el('span', { class: 'mudo', text: fecha(mm.ts, { hora: true }) + ' · ' + mm.autor }), el('p', {}, enlazar(mm.texto))]))),
     campo,
     el('div', { class: 'modal-acciones' }, soloComentar ? [
       el('button', { class: 'btn', text: 'Copiar para el chat', onclick: () => copiar(p, campo) }),
@@ -133,7 +135,7 @@ function slugElegible(v) {
 function enlacesDoc(l) {
   const ficha = l.expediente ? '#operacion/licitaciones?texto=' + encodeURIComponent(l.expediente) : null;
   const externos = [['PCAP', l.pcap_drive || l.pcap], ['PPT', l.ppt_drive || l.ppt], ['Perfil', l.enlace], ['Drive', l.carpeta]]
-    .map(([etiqueta, valor]) => { const href = urlSegura(valor); return href ? el('a', { class: 'btn-enlace', href, target: '_blank', rel: 'noopener', text: etiqueta }) : null; })
+    .map(([etiqueta, valor]) => { const href = urlSegura(valor); return href ? el('a', { class: 'btn-enlace', href, target: '_blank', rel: 'noopener noreferrer', text: etiqueta }) : null; })
     .filter(Boolean);
   return [...externos, ficha ? el('a', { class: 'btn-enlace', href: ficha, text: 'Ficha' }) : null].filter(Boolean);
 }
@@ -166,7 +168,7 @@ function licitacion(l, rol) {
 // que yo tengo que ir limpiando"). Arriba solo lo urgente (vence hoy y esta semana); sin fecha, pospuestas
 // y licitaciones van plegadas. arg: id de la tarjeta a abrir (push, buscador) o 'bandeja' para bajar aquí.
 export function bandeja(S, arg, ahora = new Date()) {
-  const d = S.datos, hilos = d.hilos || {};
+  const d = S.datos, hilos = d.hilos || hilosADemanda(d);
   const g = agrupar(listaDecisiones(d), ahora);
   const abierta = Number(arg) || null;
   const tarjetas = xs => xs.map(p => tarjeta(p, p.id === abierta, hilos[p.id] || []));
@@ -184,7 +186,7 @@ export function bandeja(S, arg, ahora = new Date()) {
   const otras = [...g.resto, ...g.pospuestas];
   // Fix ronda 3 (plan 3b, tarea 2): porDecidir() deja solo las decidibles; enCriba() cuenta lo que aún
   // analiza Guillem (Revisar, No viable, Sin pliego) para la línea informativa.
-  const lic = porDecidir(d.licitaciones, ahora), criba = enCriba(d.licitaciones, ahora).length;
+  const lic = enlacesPliegos(porDecidir(d.licitaciones, ahora)), criba = enCriba(d.licitaciones, ahora).length;
   const lineaCriba = criba && tieneFila(d.claves_datos, 'home.licitaciones.en_criba_guillem') ? el('p', { class: 'mudo' }, [el('a', { href: '#operacion/licitaciones', text: criba + ' en criba de Guillem (Revisar, No viable, Sin pliego): se deciden cuando estén analizadas' })]) : null;
   const urgentes = g.hoy.length + g.semana.length, total = urgentes + otras.length;
   return el('section', { class: 'seccion bandeja', id: 'bandeja' }, [
@@ -193,8 +195,7 @@ export function bandeja(S, arg, ahora = new Date()) {
     sec('Vence hoy', g.hoy), sec('Esta semana', g.semana),
     plegada('Sin fecha' + cnt('home.tarjetas.depende_de_ti', g.resto.length) + ' · pospuestas' + cnt('home.tarjetas.pospuestas', g.pospuestas.length), otras, otras.some(p => p.id === abierta)),
     secSeguimiento,
-    lic.length ? el('details', { class: 'grupo-criba' }, [el('summary', {}, [el('h2', { text: 'Licitaciones por decidir' + cnt('home.licitaciones.por_decidir', lic.length) })]), lineaCriba, ...lic.map(l => licitacion(l, d.rol)),
-      el('a', { class: 'btn-enlace', href: '/hq/v1/#licita', text: 'histórico y fichas completas en HQ v1' })]) : lineaCriba,
+    lic.length ? el('details', { class: 'grupo-criba' }, [el('summary', {}, [el('h2', { text: 'Licitaciones por decidir' + cnt('home.licitaciones.por_decidir', lic.length) })]), lineaCriba, ...lic.map(l => licitacion(l, d.rol))]) : lineaCriba,
   ]);
 }
 // Ids que la bandeja ya pinta (pendientes, pospuestas y seguimiento del snapshot).
