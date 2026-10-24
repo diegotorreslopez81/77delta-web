@@ -1,0 +1,21 @@
+name: aprobaciones
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+  pull_request_review:
+    types: [submitted, dismissed]
+permissions:
+  contents: read
+  pull-requests: read
+jobs:
+  revision-y-aprobacion:
+    name: revision-roger-y-aprobacion-chief
+    runs-on: ubuntu-latest
+    steps:
+      - name: Exigir etiquetas revisado-roger y aprobado-chief
+        env:
+          LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
+        run: |
+          echo "$LABELS"
+          echo "$LABELS" | grep -q '"revisado-roger"'  || { echo "Falta revisión de Roger (etiqueta revisado-roger)"; exit 1; }
+          echo "$LABELS" | grep -q '"aprobado-chief"'  || { echo "Falta aprobación del chief (etiqueta aprobado-chief)"; exit 1; }
