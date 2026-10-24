@@ -23,7 +23,7 @@ export const site = {
     'https://calendar.google.com/calendar/appointments/schedules/AcZssZ3pfbrqEtWjhAnykMUU6mUm29AMTInOz-4caDB41ZZdulctouHVZMdU-94Ou_JvoLRQRKeKY7Us?gv=true',
   /** Endpoint del formulario de contacto (carpeta api/ del repo). Si falla, el formulario cae a mailto. */
   formulario: 'https://api.77delta.com/contacto',
-  linkedin: 'https://www.linkedin.com/in/diegotorreslopez',
+  linkedin: 'https://www.linkedin.com/in/torreslopezdiego',
   /** Con prefijo internacional, solo dígitos (34XXXXXXXXX). Vacío = sin botón flotante. */
   whatsapp: '34622436789',
   sociedad: 'Next Gen Academy SL',
