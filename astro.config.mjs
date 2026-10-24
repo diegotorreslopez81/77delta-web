@@ -14,8 +14,6 @@ export default defineConfig({
   site,
   base,
   trailingSlash: 'always',
-  // La seguridad de IA vivió unas horas en la raíz antes de pasar a ser un servicio más.
-  redirects: { '/seguridad-ia': '/servicios/seguridad-ia/' },
   build: { format: 'directory' },
   // Castellano en la raíz (no rompe URLs ya indexadas), catalán bajo /ca/ e inglés bajo /en/ (rutas en inglés, mapa en lib/site.ts).
   i18n: {
@@ -25,7 +23,16 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/propuestas/'),
+      // Fuera del sitemap: propuestas y los puentes de la reordenación (no deben indexarse por sí mismos).
+      filter: (page) => {
+        const ruta = new URL(page).pathname;
+        return (
+          !ruta.includes('/propuestas/') &&
+          !/^\/(ca\/)?productos\//.test(ruta) &&
+          !/^\/(ca\/)?servicios\/(seguridad-ia\/)?$/.test(ruta) &&
+          ruta !== '/seguridad-ia/'
+        );
+      },
       serialize: (item) => {
         const f = lastmod(new URL(item.url).pathname);
         if (f) item.lastmod = f;

@@ -1,0 +1,281 @@
+---
+import Base from '../../../layouts/Base.astro';
+import HeroFoto from '../../../components/HeroFoto.astro';
+import Icono from '../../../components/Icono.astro';
+import Boton from '../../../components/Boton.astro';
+import Cta from '../../../components/Cta.astro';
+import FaqSchema from '../../../components/FaqSchema.astro';
+import { hrefCa as href } from '../../../lib/site';
+
+const faq = [
+  {
+    "pregunta": "Compartir dades vol dir cedir-les?",
+    "respuesta": "No. Les dades es queden a l’origen i cada organització fixa les condicions d’ús. Es comparteix l’accés, no la propietat."
+  },
+  {
+    "pregunta": "Necessito ser una gran empresa?",
+    "respuesta": "No. Hi ha casos acotats que una pime pot abordar. Comencem per un."
+  },
+  {
+    "pregunta": "Què té a veure amb la IA?",
+    "respuesta": "Els espais de dades són la matèria primera de models i agents. La IA necessita dades netes i amb permisos clars, i permeten entrenar-la amb dades de diversos actors sense que ningú les cedeixi."
+  },
+  {
+    "pregunta": "Estem obligats pel Data Act?",
+    "respuesta": "Depèn de si fabriques o ofereixes productes connectats i serveis associats. Es revisa al diagnòstic."
+  },
+  {
+    "pregunta": "Prometeu una certificació Gaia-X o IDSA?",
+    "respuesta": "No. Gaia-X i IDSA són els marcs de referència sobre els quals dissenyem. T’ajudem a alinear-te amb ells, sense prometre certificacions."
+  }
+] as const;
+---
+
+<Base
+  title="Espais de dades, Gaia-X i IDSA per a empreses"
+  description="Espais de dades per a empreses: compartim dades amb clients, proveïdors i administracions sense cedir-les. Gaia-X, IDSA i connectors. Diagnòstic a mida."
+>
+  <!-- Hero -->
+  <section class="wrap py-24 md:py-32">
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Espais de dades</p>
+        <h1
+          class="mt-7 max-w-[20ch] font-display text-[clamp(32px,4.2vw,54px)] font-extralight leading-[1.06] tracking-[-0.035em]"
+          data-reveal
+        >
+          Compartir dades amb altres, <span class="font-semibold text-oro-oscuro">sense perdre el control</span> de les teves.
+        </h1>
+        <p class="mt-8 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Els espais de dades permeten que empreses i administracions intercanviïn informació amb regles clares i sense lliurar-la a un tercer. T’ajudem a entendre’ls, a decidir si et convenen i a connectar-te.
+        </p>
+        <div class="mt-12 flex flex-wrap gap-4" data-reveal>
+          <Boton href={href('/contacto/')}>Reservar diagnòstic</Boton>
+          <Boton href="#hacemos" variante="linea">Veure què fem</Boton>
+        </div>
+      </div>
+      <HeroFoto foto="industria" alt="Planta industrial amb equips connectats" class="lg:col-span-5" />
+    </div>
+  </section>
+
+  <section class="hairline bg-panel">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">Què és, en tres línies</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          Un acord tècnic i legal per compartir sense cedir
+        </h2>
+      </div>
+      <div class="mt-14 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-2 lg:grid-cols-3">
+        <div class="flex flex-col bg-marfil p-8 md:p-10" data-reveal>
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Espai de dades</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Acord tècnic i legal perquè diverses organitzacions comparteixin dades, cadascuna amb control sobre què comparteix, amb qui i per a què.</p>
+        </div>
+        <div class="flex flex-col bg-marfil p-8 md:p-10" data-reveal>
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Gaia-X</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Iniciativa europea que defineix les regles de confiança i interoperabilitat per a infraestructures de dades federades.</p>
+        </div>
+        <div class="flex flex-col bg-marfil p-8 md:p-10" data-reveal>
+          <h3 class="mt-4 font-display text-[21px] font-semibold">IDSA</h3>
+          <p class="mt-3 text-[15px] text-pizarra">International Data Spaces Association: publica l’arquitectura de referència i els estàndards per intercanviar dades conservant la sobirania de qui les genera.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hairline">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">Què guanya una pime</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          Entrar a la cadena de valor dels teus clients amb control
+        </h2>
+      </div>
+      <div class="mt-14 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-2 lg:grid-cols-3">
+        <div class="flex flex-col bg-panel p-8 md:p-10" data-reveal>
+          <Icono nombre="industria" class="h-7 w-7 text-oro-oscuro" />
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Indústria</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Dades de producció i màquines ordenades, traçabilitat per al client i manteniment amb dades del proveïdor.</p>
+        </div>
+        <div class="flex flex-col bg-panel p-8 md:p-10" data-reveal>
+          <Icono nombre="distribucion" class="h-7 w-7 text-oro-oscuro" />
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Distribució i serveis</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Comandes, estoc i lliuraments compartits amb clients i marques, sense correus ni Excel.</p>
+        </div>
+        <div class="flex flex-col bg-panel p-8 md:p-10" data-reveal>
+          <Icono nombre="medir" class="h-7 w-7 text-oro-oscuro" />
+          <h3 class="mt-4 font-display text-[21px] font-semibold">IA que funciona</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Els projectes d’IA fallen per dades desordenades. Un espai de dades les ordena primer i permet entrenar models amb dades de diversos actors sense que surtin del seu origen.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="hacemos" class="hairline scroll-mt-24 bg-panel">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">Què fem</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          Coneixement, consultoria i desenvolupament
+        </h2>
+      </div>
+      <div class="mt-14 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-2 lg:grid-cols-3">
+        <div class="flex flex-col bg-marfil p-8 md:p-10" data-reveal>
+          <Icono nombre="formacion" class="h-7 w-7 text-oro-oscuro" />
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Coneixement</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Formació per a direcció i equips tècnics: què és un espai de dades federat, paper de Gaia-X i IDSA, què canvia en connectar-se; lectura clara del Data Act i del Data Governance Act; mapa dels espais de dades sectorials europeus.</p>
+        </div>
+        <div class="flex flex-col bg-marfil p-8 md:p-10" data-reveal>
+          <Icono nombre="diagnostico" class="h-7 w-7 text-oro-oscuro" />
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Consultoria</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Inventari de dades compartibles i condicions d’ús; disseny de governança (rols, polítiques d’accés, contractes d’ús de la dada); pla d’incorporació a un espai existent o de creació d’un de nou amb el teu clúster, associació o cadena de valor.</p>
+        </div>
+        <div class="flex flex-col bg-marfil p-8 md:p-10" data-reveal>
+          <Icono nombre="integracion" class="h-7 w-7 text-oro-oscuro" />
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Desenvolupament</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Desplegament i configuració de connectors basats en Eclipse Dataspace Components; integració amb ERP, bases de dades i plataformes sectorials; publicació de catàlegs; agents i models d’IA que consulten dades de diversos actors sense que surtin del seu origen.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hairline">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">Casos d’aplicació</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          On es comparteix amb control
+        </h2>
+      </div>
+      <ul class="mt-14 grid gap-4 md:grid-cols-2" role="list">
+        <li class="flex gap-4 rounded-[4px] border border-linea bg-panel px-6 py-5 text-[15px] text-pizarra" data-reveal>
+          <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-oro-oscuro"></span>
+          <span>Indústria: fabricants i proveïdors comparteixen dades de producció i traçabilitat per a cadena de subministrament i manteniment predictiu.</span>
+        </li>
+        <li class="flex gap-4 rounded-[4px] border border-linea bg-panel px-6 py-5 text-[15px] text-pizarra" data-reveal>
+          <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-oro-oscuro"></span>
+          <span>Salut: centres i proveïdors col·laboren en recerca i planificació amb dades que es queden sota el control de cada institució.</span>
+        </li>
+        <li class="flex gap-4 rounded-[4px] border border-linea bg-panel px-6 py-5 text-[15px] text-pizarra" data-reveal>
+          <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-oro-oscuro"></span>
+          <span>Mobilitat: operadors, ciutats i flotes combinen dades de rutes i ocupació.</span>
+        </li>
+        <li class="flex gap-4 rounded-[4px] border border-linea bg-panel px-6 py-5 text-[15px] text-pizarra" data-reveal>
+          <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-oro-oscuro"></span>
+          <span>Agroalimentari: productors, cooperatives i distribuïdors comparteixen traçabilitat i dades de camp sense exposar informació comercial.</span>
+        </li>
+        <li class="flex gap-4 rounded-[4px] border border-linea bg-panel px-6 py-5 text-[15px] text-pizarra" data-reveal>
+          <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-oro-oscuro"></span>
+          <span>Turisme: empreses i destinacions comparteixen demanda i serveis per a una experiència coherent al territori.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="hairline bg-panel">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">Com treballem</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          De saber quines dades tens a compartir-les
+        </h2>
+      </div>
+      <ol class="mt-16 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4" role="list">
+        <li class="border-t border-linea pt-6" data-reveal>
+          <span class="font-mono text-[11px] tracking-[0.14em] text-oro-oscuro">01</span>
+          <h3 class="mt-4 font-display text-[19px] font-semibold">Diagnòstic</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Activitat, dades i ecosistema, per veure si un espai de dades aporta valor real.</p>
+        </li>
+        <li class="border-t border-linea pt-6" data-reveal>
+          <span class="font-mono text-[11px] tracking-[0.14em] text-oro-oscuro">02</span>
+          <h3 class="mt-4 font-display text-[19px] font-semibold">Disseny</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Què es comparteix, sota quines regles i amb quina arquitectura, alineada amb els marcs de Gaia-X i IDSA.</p>
+        </li>
+        <li class="border-t border-linea pt-6" data-reveal>
+          <span class="font-mono text-[11px] tracking-[0.14em] text-oro-oscuro">03</span>
+          <h3 class="mt-4 font-display text-[19px] font-semibold">Implantació</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Connector desplegat i integrat, provat amb un cas d’ús concret.</p>
+        </li>
+        <li class="border-t border-linea pt-6" data-reveal>
+          <span class="font-mono text-[11px] tracking-[0.14em] text-oro-oscuro">04</span>
+          <h3 class="mt-4 font-display text-[19px] font-semibold">Explotació</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Acompanyament de l’arrencada i de nous casos, inclosos els d’IA.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="hairline">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">Per a qui</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          Qui necessita compartir dades amb garanties
+        </h2>
+      </div>
+      <div class="mt-14 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-2 lg:grid-cols-3">
+        <div class="flex flex-col bg-panel p-8 md:p-10" data-reveal>
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Pime en una cadena de valor</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Clients o proveïdors ja et demanen dades de producció, traçabilitat o sostenibilitat.</p>
+        </div>
+        <div class="flex flex-col bg-panel p-8 md:p-10" data-reveal>
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Clúster o associació sectorial</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Vol crear o unir-se a un espai de dades per als seus socis.</p>
+        </div>
+        <div class="flex flex-col bg-panel p-8 md:p-10" data-reveal>
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Administració</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Necessita compartir dades amb empreses i altres organismes amb garanties.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Líneas relacionadas -->
+  <section class="hairline">
+    <div class="wrap py-16 md:py-20">
+      <p class="eyebrow" data-reveal>Línies relacionades</p>
+      <div class="mt-8 flex flex-wrap gap-4" data-reveal>
+        <Boton href={href('/identitat-digital/')} variante="linea">Identitat digital →</Boton>
+        <Boton href={href('/ciberseguretat/')} variante="linea">Ciberseguretat →</Boton>
+        <Boton href={href('/intel-ligencia-artificial/')} variante="linea">Intel·ligència artificial →</Boton>
+        <Boton href={href('/sectores/industria/')} variante="linea">Sector indústria →</Boton>
+        <Boton href={href('/sectores/administracion/')} variante="linea">Sector administració →</Boton>
+      </div>
+    </div>
+  </section>
+
+  <!-- Preguntas frecuentes -->
+  <section class="hairline">
+    <div class="wrap grid gap-10 py-24 md:grid-cols-12 md:py-32">
+      <div class="md:col-span-5" data-reveal>
+        <p class="eyebrow">Preguntes freqüents</p>
+        <h2 class="mt-5 max-w-[16ch] font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          El que més ens pregunten abans de començar
+        </h2>
+      </div>
+
+      <div class="md:col-span-7" data-reveal>
+        {
+          faq.map((f) => (
+            <details class="group border-t border-linea py-5 last:border-b">
+              <summary class="flex cursor-pointer list-none items-start justify-between gap-6 font-display text-[17px] font-semibold marker:content-none">
+                {f.pregunta}
+                <span class="mt-1 shrink-0 font-mono text-[14px] text-oro-oscuro transition-transform duration-200 group-open:rotate-45">
+                  +
+                </span>
+              </summary>
+              <p class="mt-4 max-w-[62ch] text-[15px] text-pizarra">{f.respuesta}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <Cta
+    titulo="Comença per saber quines dades tens i amb qui té sentit compartir-les."
+    texto="Explica’ns el teu sector i la teva cadena de valor. Et diem si un espai de dades t’aporta alguna cosa i per on començar."
+    boton="Reservar diagnòstic"
+  />
+  <FaqSchema faq={faq} />
+</Base>

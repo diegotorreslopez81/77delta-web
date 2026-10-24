@@ -2,6 +2,7 @@
 /** Barra de confianza: instituciones y partners tecnológicos, en negro al 50 % sobre papel. */
 import { instituciones, tecnologia } from '../data/logos';
 import { enlaceDe, type Idioma } from '../lib/site';
+import { dimensiones } from '../lib/imagen';
 
 const idioma: Idioma = Astro.currentLocale === 'ca' || Astro.currentLocale === 'en' ? Astro.currentLocale : 'es';
 const href = enlaceDe(idioma);
@@ -44,6 +45,8 @@ const todos = [...instituciones, ...tecnologia].map((l) => (idioma === 'en' ? { 
               <img
                 src={href(`/img/logos/${l.src}`)}
                 alt={l.alt}
+                width={dimensiones(`/img/logos/${l.src}`)?.width}
+                height={dimensiones(`/img/logos/${l.src}`)?.height}
                 loading="lazy"
                 decoding="async"
                 class:list={[

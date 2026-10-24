@@ -26,7 +26,7 @@ export const resumen = [
     etiqueta: 'Seguretat',
     titulo: 'Auditoria d’IA',
     pie: 'Escaneig gratuït dels teus assistents',
-    ruta: '/servicios/seguridad-ia/',
+    ruta: '/ciberseguretat/#asistentes-ia',
   },
 ];
 
