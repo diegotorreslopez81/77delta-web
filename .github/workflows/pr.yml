@@ -1,0 +1,32 @@
+name: Comprueba la PR
+
+# Mismo build y comprobación de enlaces internos que deploy.yml, pero en cada PR:
+# un enlace roto se detecta en la rama, no al desplegar main (web#22 / PR #145).
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  SITE_URL: https://77delta.com
+  SITE_BASE: /
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # lastmod del sitemap lee la historia de git
+      - uses: withastro/action@v3
+        with:
+          node-version: 22
+          package-manager: pnpm@latest
+      - name: Comprueba enlaces internos
+        run: node scripts/check-links.mjs "$SITE_BASE"
