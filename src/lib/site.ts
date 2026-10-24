@@ -218,7 +218,8 @@ export function rutaCanonicaEs(pathname: string): string | null {
   const idioma = idiomaDeRuta(r);
   if (idioma === 'es') return r;
   if (idioma === 'ca') {
-    const sinCa = r.replace(/^\/ca(\/|$)/, '/');
+    // Quita el prefijo y deshace los slugs propios del catalán (ciberseguretat -> ciberseguridad).
+    const sinCa = traduceSlug(r.replace(/^\/ca(\/|$)/, '/'), slugsEs);
     return sinCa === '' ? '/' : sinCa;
   }
   const fija = Object.entries(rutasEn).find(([, en]) => en === r);
@@ -242,7 +243,7 @@ export function equivalente(pathname: string, destino: Idioma): string | null {
   const es = rutaCanonicaEs(pathname);
   if (es === null) return null;
   if (destino === 'es') return equivalenteEs(es);
-  if (destino === 'ca') return hrefCa(es);
+  if (destino === 'ca') return equivalenteCa(es);
   return rutaEnDe(es);
 }
 
