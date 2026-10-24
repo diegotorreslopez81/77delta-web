@@ -179,6 +179,11 @@ export const rutasEn: Record<string, string> = {
   '/estudio-asistentes-ia/': '/en/ai-assistants-study/',
   '/proyectos-en-curso/': '/en/ongoing-projects/',
   '/productos/': '/en/products/',
+  '/inteligencia-artificial/': '/en/artificial-intelligence/',
+  '/ciberseguridad/': '/en/cybersecurity/',
+  '/identidad-digital/': '/en/digital-identity/',
+  '/espacios-de-datos/': '/en/data-spaces/',
+  '/herramientas/': '/en/tools/',
   '/licita/': '/en/licita/',
   '/sobre-nosotros/': '/en/about/',
   '/contacto/': '/en/contact/',
@@ -267,14 +272,13 @@ export function enlaceDe(idioma: Idioma): (path: string) => string {
 /** Mismas rutas que `nav`, en inglés, para las páginas de /en/ (las rutas son las canónicas en castellano; `hrefEn` las traduce). */
 export const navEn: readonly ItemNav[] = [
   {
-    texto: 'Services',
-    ruta: '/servicios/',
+    texto: 'What we do',
+    ruta: '/inteligencia-artificial/',
     hijos: [
-      { texto: 'Fractional AI director', ruta: '/servicios/director-ia/', nota: 'From €1,200/month' },
-      { texto: 'Assessment', ruta: '/servicios/diagnostico/', nota: 'Free' },
-      { texto: 'Operational transformation', ruta: '/servicios/transformacion/' },
-      { texto: 'AI security', ruta: '/servicios/seguridad-ia/' },
-      { texto: 'Technology partner', ruta: '/servicios/partner/' },
+      { texto: 'Artificial intelligence', ruta: '/inteligencia-artificial/' },
+      { texto: 'Cybersecurity', ruta: '/ciberseguridad/' },
+      { texto: 'Digital identity', ruta: '/identidad-digital/' },
+      { texto: 'Data spaces', ruta: '/espacios-de-datos/' },
     ],
   },
   { texto: 'Sectors', ruta: '/sectores/' },
@@ -288,7 +292,6 @@ export const navEn: readonly ItemNav[] = [
       { texto: 'Ongoing projects', ruta: '/proyectos-en-curso/' },
     ],
   },
-  { texto: 'Products', ruta: '/productos/' },
   { texto: 'Blog', ruta: '/blog/' },
   { texto: 'About us', ruta: '/sobre-nosotros/' },
 ];

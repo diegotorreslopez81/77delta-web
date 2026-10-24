@@ -1,0 +1,281 @@
+---
+import Base from '../../../layouts/Base.astro';
+import HeroFoto from '../../../components/HeroFoto.astro';
+import Icono from '../../../components/Icono.astro';
+import Boton from '../../../components/Boton.astro';
+import Cta from '../../../components/Cta.astro';
+import FaqSchema from '../../../components/FaqSchema.astro';
+import { hrefEn as href } from '../../../lib/site';
+
+const faq = [
+  {
+    "pregunta": "Does sharing data mean giving it away?",
+    "respuesta": "No. The data stays at its source and each organisation sets the terms of use. You share access, not ownership."
+  },
+  {
+    "pregunta": "Do I need to be a large company?",
+    "respuesta": "No. There are focused cases an SME can take on. We start with one."
+  },
+  {
+    "pregunta": "What does this have to do with AI?",
+    "respuesta": "Data spaces are the raw material for models and agents. AI needs clean data with clear permissions, and data spaces let you train it on data from several parties without anyone giving it up."
+  },
+  {
+    "pregunta": "Are we bound by the Data Act?",
+    "respuesta": "It depends on whether you make or offer connected products and related services. We check it in the assessment."
+  },
+  {
+    "pregunta": "Do you promise Gaia-X or IDSA certification?",
+    "respuesta": "No. Gaia-X and IDSA are the reference frameworks we design on. We help you align with them, without promising certifications."
+  }
+] as const;
+---
+
+<Base
+  title="Data spaces, Gaia-X and IDSA for businesses"
+  description="Data spaces for businesses: share data with customers, suppliers and public administrations without giving it away. Gaia-X, IDSA and connectors. A free assessment tailored to you."
+>
+  <!-- Hero -->
+  <section class="wrap py-24 md:py-32">
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Data spaces</p>
+        <h1
+          class="mt-7 max-w-[20ch] font-display text-[clamp(32px,4.2vw,54px)] font-extralight leading-[1.06] tracking-[-0.035em]"
+          data-reveal
+        >
+          Share data with others, <span class="font-semibold text-oro-oscuro">without losing control</span> of yours.
+        </h1>
+        <p class="mt-8 max-w-[52ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Data spaces let companies and public administrations exchange information under clear rules, without handing it to a third party. We help you understand them, decide whether they suit you and connect.
+        </p>
+        <div class="mt-12 flex flex-wrap gap-4" data-reveal>
+          <Boton href={href('/contacto/')}>Book a free assessment</Boton>
+          <Boton href="#hacemos" variante="linea">See what we do</Boton>
+        </div>
+      </div>
+      <HeroFoto foto="industria" alt="Industrial plant with connected equipment" class="lg:col-span-5" />
+    </div>
+  </section>
+
+  <section class="hairline bg-panel">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">What it is, in three lines</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          A technical and legal agreement to share without giving away
+        </h2>
+      </div>
+      <div class="mt-14 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-2 lg:grid-cols-3">
+        <div class="flex flex-col bg-marfil p-8 md:p-10" data-reveal>
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Data space</h3>
+          <p class="mt-3 text-[15px] text-pizarra">A technical and legal agreement that lets several organisations share data, each keeping control over what it shares, with whom and for what.</p>
+        </div>
+        <div class="flex flex-col bg-marfil p-8 md:p-10" data-reveal>
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Gaia-X</h3>
+          <p class="mt-3 text-[15px] text-pizarra">A European initiative that defines the trust and interoperability rules for federated data infrastructures.</p>
+        </div>
+        <div class="flex flex-col bg-marfil p-8 md:p-10" data-reveal>
+          <h3 class="mt-4 font-display text-[21px] font-semibold">IDSA</h3>
+          <p class="mt-3 text-[15px] text-pizarra">International Data Spaces Association: it publishes the reference architecture and the standards for exchanging data while keeping sovereignty with whoever generates it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hairline">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">What an SME gains</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          Join your customers' value chain, in control
+        </h2>
+      </div>
+      <div class="mt-14 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-2 lg:grid-cols-3">
+        <div class="flex flex-col bg-panel p-8 md:p-10" data-reveal>
+          <Icono nombre="industria" class="h-7 w-7 text-oro-oscuro" />
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Industry</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Production and machine data in order, traceability for your customer and maintenance informed by your supplier's data.</p>
+        </div>
+        <div class="flex flex-col bg-panel p-8 md:p-10" data-reveal>
+          <Icono nombre="distribucion" class="h-7 w-7 text-oro-oscuro" />
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Distribution and services</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Orders, stock and deliveries shared with customers and brands, without emails or spreadsheets.</p>
+        </div>
+        <div class="flex flex-col bg-panel p-8 md:p-10" data-reveal>
+          <Icono nombre="medir" class="h-7 w-7 text-oro-oscuro" />
+          <h3 class="mt-4 font-display text-[21px] font-semibold">AI that works</h3>
+          <p class="mt-3 text-[15px] text-pizarra">AI projects fail because of messy data. A data space puts it in order first and lets you train models on data from several parties without it leaving its source.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="hacemos" class="hairline scroll-mt-24 bg-panel">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">What we do</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          Knowledge, consulting and development
+        </h2>
+      </div>
+      <div class="mt-14 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-2 lg:grid-cols-3">
+        <div class="flex flex-col bg-marfil p-8 md:p-10" data-reveal>
+          <Icono nombre="formacion" class="h-7 w-7 text-oro-oscuro" />
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Knowledge</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Training for management and technical teams: what a federated data space is, the role of Gaia-X and IDSA, what changes when you connect; a clear reading of the Data Act and the Data Governance Act; a map of the European sector data spaces.</p>
+        </div>
+        <div class="flex flex-col bg-marfil p-8 md:p-10" data-reveal>
+          <Icono nombre="diagnostico" class="h-7 w-7 text-oro-oscuro" />
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Consulting</h3>
+          <p class="mt-3 text-[15px] text-pizarra">An inventory of shareable data and terms of use; governance design (roles, access policies, data usage contracts); a plan to join an existing data space or create a new one with your cluster, association or value chain.</p>
+        </div>
+        <div class="flex flex-col bg-marfil p-8 md:p-10" data-reveal>
+          <Icono nombre="integracion" class="h-7 w-7 text-oro-oscuro" />
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Development</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Deployment and configuration of connectors based on Eclipse Dataspace Components; integration with ERP, databases and sector platforms; catalogue publishing; AI agents and models that query data from several parties without it leaving its source.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hairline">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">Use cases</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          Where sharing happens in control
+        </h2>
+      </div>
+      <ul class="mt-14 grid gap-4 md:grid-cols-2" role="list">
+        <li class="flex gap-4 rounded-[4px] border border-linea bg-panel px-6 py-5 text-[15px] text-pizarra" data-reveal>
+          <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-oro-oscuro"></span>
+          <span>Industry: manufacturers and suppliers share production and traceability data for the supply chain and predictive maintenance.</span>
+        </li>
+        <li class="flex gap-4 rounded-[4px] border border-linea bg-panel px-6 py-5 text-[15px] text-pizarra" data-reveal>
+          <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-oro-oscuro"></span>
+          <span>Health: centres and providers collaborate on research and planning with data that stays under each institution's control.</span>
+        </li>
+        <li class="flex gap-4 rounded-[4px] border border-linea bg-panel px-6 py-5 text-[15px] text-pizarra" data-reveal>
+          <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-oro-oscuro"></span>
+          <span>Mobility: operators, cities and fleets combine route and occupancy data.</span>
+        </li>
+        <li class="flex gap-4 rounded-[4px] border border-linea bg-panel px-6 py-5 text-[15px] text-pizarra" data-reveal>
+          <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-oro-oscuro"></span>
+          <span>Agri-food: producers, cooperatives and distributors share traceability and field data without exposing commercial information.</span>
+        </li>
+        <li class="flex gap-4 rounded-[4px] border border-linea bg-panel px-6 py-5 text-[15px] text-pizarra" data-reveal>
+          <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-oro-oscuro"></span>
+          <span>Tourism: businesses and destinations share demand and service data for a coherent experience across the region.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="hairline bg-panel">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">How we work</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          From knowing what data you have to sharing it
+        </h2>
+      </div>
+      <ol class="mt-16 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4" role="list">
+        <li class="border-t border-linea pt-6" data-reveal>
+          <span class="font-mono text-[11px] tracking-[0.14em] text-oro-oscuro">01</span>
+          <h3 class="mt-4 font-display text-[19px] font-semibold">Assessment</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Your activity, data and ecosystem, to see whether a data space adds real value.</p>
+        </li>
+        <li class="border-t border-linea pt-6" data-reveal>
+          <span class="font-mono text-[11px] tracking-[0.14em] text-oro-oscuro">02</span>
+          <h3 class="mt-4 font-display text-[19px] font-semibold">Design</h3>
+          <p class="mt-3 text-[15px] text-pizarra">What is shared, under which rules and with which architecture, aligned with the Gaia-X and IDSA frameworks.</p>
+        </li>
+        <li class="border-t border-linea pt-6" data-reveal>
+          <span class="font-mono text-[11px] tracking-[0.14em] text-oro-oscuro">03</span>
+          <h3 class="mt-4 font-display text-[19px] font-semibold">Implementation</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Connector deployed and integrated, tested with a specific use case.</p>
+        </li>
+        <li class="border-t border-linea pt-6" data-reveal>
+          <span class="font-mono text-[11px] tracking-[0.14em] text-oro-oscuro">04</span>
+          <h3 class="mt-4 font-display text-[19px] font-semibold">Operation</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Support through launch and new use cases, including AI ones.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="hairline">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">Who it is for</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          Who needs to share data with safeguards
+        </h2>
+      </div>
+      <div class="mt-14 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea sm:grid-cols-2 lg:grid-cols-3">
+        <div class="flex flex-col bg-panel p-8 md:p-10" data-reveal>
+          <h3 class="mt-4 font-display text-[21px] font-semibold">SME in a value chain</h3>
+          <p class="mt-3 text-[15px] text-pizarra">Customers or suppliers already ask you for production, traceability or sustainability data.</p>
+        </div>
+        <div class="flex flex-col bg-panel p-8 md:p-10" data-reveal>
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Cluster or sector association</h3>
+          <p class="mt-3 text-[15px] text-pizarra">It wants to create or join a data space for its members.</p>
+        </div>
+        <div class="flex flex-col bg-panel p-8 md:p-10" data-reveal>
+          <h3 class="mt-4 font-display text-[21px] font-semibold">Public administration</h3>
+          <p class="mt-3 text-[15px] text-pizarra">It needs to share data with companies and other bodies with safeguards.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Líneas relacionadas -->
+  <section class="hairline">
+    <div class="wrap py-16 md:py-20">
+      <p class="eyebrow" data-reveal>Related areas</p>
+      <div class="mt-8 flex flex-wrap gap-4" data-reveal>
+        <Boton href={href('/identidad-digital/')} variante="linea">Digital identity →</Boton>
+        <Boton href={href('/ciberseguridad/')} variante="linea">Cybersecurity →</Boton>
+        <Boton href={href('/inteligencia-artificial/')} variante="linea">Artificial intelligence →</Boton>
+        <Boton href={href('/sectores/industria/')} variante="linea">Industry sector →</Boton>
+        <Boton href={href('/sectores/administracion/')} variante="linea">Public administration sector →</Boton>
+      </div>
+    </div>
+  </section>
+
+  <!-- Preguntas frecuentes -->
+  <section class="hairline">
+    <div class="wrap grid gap-10 py-24 md:grid-cols-12 md:py-32">
+      <div class="md:col-span-5" data-reveal>
+        <p class="eyebrow">Frequently asked questions</p>
+        <h2 class="mt-5 max-w-[16ch] font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          What we are asked most before getting started
+        </h2>
+      </div>
+
+      <div class="md:col-span-7" data-reveal>
+        {
+          faq.map((f) => (
+            <details class="group border-t border-linea py-5 last:border-b">
+              <summary class="flex cursor-pointer list-none items-start justify-between gap-6 font-display text-[17px] font-semibold marker:content-none">
+                {f.pregunta}
+                <span class="mt-1 shrink-0 font-mono text-[14px] text-oro-oscuro transition-transform duration-200 group-open:rotate-45">
+                  +
+                </span>
+              </summary>
+              <p class="mt-4 max-w-[62ch] text-[15px] text-pizarra">{f.respuesta}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <Cta
+    titulo="Start by finding out what data you have and who it makes sense to share it with."
+    texto="Tell us about your sector and your value chain. We will tell you whether a data space is worth it for you and where to start."
+    boton="Book a free assessment"
+  />
+  <FaqSchema faq={faq} />
+</Base>

@@ -1,0 +1,435 @@
+---
+import Base from '../../../layouts/Base.astro';
+import HeroFoto from '../../../components/HeroFoto.astro';
+import Boton from '../../../components/Boton.astro';
+import FaqSchema from '../../../components/FaqSchema.astro';
+import Cta from '../../../components/Cta.astro';
+import { hrefEn as href } from '../../../lib/site';
+
+const protegemos = [
+  {
+    titulo: 'AI assistants and agents',
+    texto:
+      'We test them like an attacker would: internal instructions, prices they should not give out, the customer data they can reach and what they do when pushed off script.',
+  },
+  {
+    titulo: 'Data leaving the company',
+    texto:
+      'What your team pastes into public tools, with what permissions and under what contract. An AI use policy that people actually follow because it is short.',
+  },
+  {
+    titulo: 'Payments and access',
+    texto:
+      'Supplier impersonation, bank account changes by email and logins without a second factor. What you catch before paying cannot be recovered afterwards.',
+  },
+];
+
+const fugas = [
+  {
+    titulo: 'The internal instructions',
+    texto:
+      'The full system prompt: how the bot was told to behave, what it must not say and what data it works with. It is the map for everything else.',
+  },
+  {
+    titulo: 'Prices, discounts and margins',
+    texto:
+      'Fee ranges, special terms and negotiation thresholds that sit in the bot context because they were added to improve its answers.',
+  },
+  {
+    titulo: 'Customer data',
+    texto:
+      'If the chatbot queries a CRM, an order history or a knowledge base with real data, it can be asked to talk about it.',
+  },
+  {
+    titulo: 'Off-script behaviour',
+    texto:
+      'With prompt injection, the bot on your website can end up saying whatever a third party decides. And it does so under your brand.',
+  },
+  {
+    titulo: 'Promises you cannot keep',
+    texto:
+      'Deadlines, guarantees and terms invented on the fly. A chatbot on your domain is your voice, and what it states has effect with the customer.',
+  },
+  {
+    titulo: 'Access to connected tools',
+    texto:
+      'When the agent can book, query or write to your systems, the question stops being what it says and becomes what it does.',
+  },
+];
+
+const pasosIa = [
+  {
+    titulo: 'Detection',
+    texto:
+      'We walk through your website as a visitor would and find the published AI assistants, including those that marketing launched without telling the IT department.',
+  },
+  {
+    titulo: 'Testing',
+    texto:
+      'We run a battery of leak tests on each assistant: instruction extraction, commercial terms, personal data, prompt injection and going off script.',
+  },
+  {
+    titulo: 'Report',
+    texto:
+      'Each response is scored against a rubric and has to quote the exact passage that constitutes the leak. Without that passage, we do not count it as a finding.',
+  },
+  {
+    titulo: 'Remediation',
+    texto:
+      'We rewrite the system prompt, add guardrails and output filters, limit what the agent can query and leave regression tests so it does not open up again.',
+  },
+];
+
+const entregables = [
+  {
+    etiqueta: 'Free',
+    titulo: 'Initial scan',
+    texto:
+      'A one-page report on what is visible from outside: overall severity and the leak categories detected. Enough to know whether you have a problem and how big it is.',
+  },
+  {
+    etiqueta: 'Fixed price by scope',
+    titulo: 'Audit and remediation',
+    texto:
+      'The reproducible detail of each finding, with the exact conversation and the technical recommendation, and the fix carried out with your vendor or with us.',
+  },
+  {
+    etiqueta: 'Optional',
+    titulo: 'Continuous monitoring',
+    texto:
+      'We repeat the scan every month. Changing the system prompt or adding a source to the assistant can reopen what was closed.',
+  },
+];
+
+const queHacemos = [
+  {
+    etiqueta: 'Awareness',
+    texto:
+      'Tailored awareness training (phishing, impersonation, IBAN changes), fraud drills and tabletop exercises, and short good-practice guides, including the responsible use of AI tools.',
+  },
+  {
+    etiqueta: 'Consulting',
+    texto:
+      'An assessment with a prioritised plan (what to close first, what can wait), NIS2, ENS and GDPR readiness, and an incident response plan with roles and contacts, with support if one happens.',
+  },
+  {
+    etiqueta: 'Development',
+    texto:
+      'Hardening of devices, accounts, email and cloud. Secure development of applications and automations, with code and dependency review, and security for AI systems.',
+  },
+];
+
+const problemas = [
+  { frase: 'We got an email from a supplier with a new IBAN and almost paid.', causa: 'Impersonation and bank account change fraud' },
+  { frase: 'I do not know whether we are exposed or where to start.', causa: 'No visibility and no priorities' },
+  { frase: 'We are being asked for NIS2 or ENS and we do not know if it applies to us.', causa: 'Regulation not translated into tasks' },
+  { frase: 'If we are attacked tomorrow, nobody knows what to do.', causa: 'No plan, no owners and no tested backups' },
+  { frase: 'We launched an AI assistant and nobody has reviewed it.', causa: 'Tools outside IT radar' },
+];
+
+const pasos = [
+  { titulo: 'We listen', texto: 'Your business, your systems and what you cannot afford to lose.' },
+  { titulo: 'We assess', texto: 'Access, email, backups, vendors and AI systems, only with your express authorisation.' },
+  { titulo: 'We prioritise and fix', texto: 'A plan by risk and effort. What we can close, we close.' },
+  { titulo: 'We leave you with judgement', texto: 'Training and documentation so you do not depend on us.' },
+];
+
+const paraQuien = [
+  'SME managers who want to reduce fraud risk without becoming technicians.',
+  'IT leads with a small team who need a second opinion, a plan and help with regulatory readiness.',
+  'Public administration and related bodies that must align with ENS and NIS2.',
+];
+
+const faq = [
+  {
+    pregunta: 'Is my SME a real target?',
+    respuesta:
+      'Yes. Automated attacks do not distinguish by size, and email fraud looks for companies with loosely verified processes.',
+  },
+  {
+    pregunta: 'Does NIS2 or the ENS apply to me?',
+    respuesta:
+      'It depends on your sector and on whether you provide services to obliged entities. The assessment clarifies it and we prepare you for whatever applies.',
+  },
+  {
+    pregunta: 'Do you run intrusive tests?',
+    respuesta: 'Only with written authorisation and an agreed scope.',
+  },
+  {
+    pregunta: 'What if we have already had an incident?',
+    respuesta:
+      'We help you contain it, understand what happened and meet the mandatory notifications.',
+  },
+  {
+    pregunta: 'What information can be extracted from a company chatbot?',
+    respuesta:
+      'Its internal instructions, prices and terms, customer data if it queries a CRM, and off-script answers under your brand.',
+  },
+  {
+    pregunta: 'How long does the initial scan of an assistant take?',
+    respuesta:
+      'Working days, without touching your systems: only what is visible from outside. For remediation we need the minimum access, agreed in writing.',
+  },
+  {
+    pregunta: 'Is it GDPR compatible?',
+    respuesta:
+      'Yes: the report points out what personal data the assistant exposes and how to fix it.',
+  },
+];
+---
+
+<Base
+  title="Cybersecurity for SMEs"
+  description="Cybersecurity for SMEs that use AI: we audit your assistants, the data that leaves and the payments that come in. Free initial scan and fixed price."
+>
+  <!-- Hero -->
+  <section class="wrap py-24 md:py-32">
+    <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Cybersecurity</p>
+        <h1
+          class="mt-7 max-w-[20ch] font-display text-[clamp(36px,4.6vw,60px)] font-extralight leading-[1.04] tracking-[-0.035em]"
+          data-reveal
+        >
+          AI opens new doors. <span class="font-semibold text-oro-oscuro">We close them.</span>
+        </h1>
+        <p class="mt-8 max-w-[54ch] text-[clamp(17px,1.6vw,20px)] text-pizarra" data-reveal>
+          Publishing an AI assistant or connecting a tool to your data is quick. Checking what leaks out through it
+          is what almost nobody does. We help SMEs and public administrations see where they are exposed and close
+          what matters, without jargon or scare tactics.
+        </p>
+        <div class="mt-12 flex flex-wrap gap-4" data-reveal>
+          <Boton href={href('/contacto/')}>Book an assessment →</Boton>
+          <Boton href="#como-trabajamos" variante="linea">See how we work</Boton>
+        </div>
+      </div>
+      <HeroFoto foto="despachos" alt="Person signing a document" class="lg:col-span-5" />
+    </div>
+  </section>
+
+  <!-- Qué protegemos -->
+  <section class="hairline bg-panel">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">What we protect</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          Three fronts where AI and fraud meet your company.
+        </h2>
+      </div>
+      <ul class="mt-16 grid gap-10 md:grid-cols-3" role="list">
+        {
+          protegemos.map((p, i) => (
+            <li class="border-t border-linea pt-8" data-reveal>
+              <span class="font-mono text-[11px] tracking-[0.14em] text-oro-oscuro">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="mt-4 font-display text-[20px] font-semibold leading-[1.3]">{p.titulo}</h3>
+              <p class="mt-3 text-[15px] text-pizarra">{p.texto}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Asistentes de IA -->
+  <section id="asistentes-ia" class="hairline scroll-mt-[68px]">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">AI assistants</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          Your chatbot reveals more than you think.
+        </h2>
+        <p class="mt-6 text-[17px] text-pizarra">
+          You do not need to be a sophisticated attacker: asking the right questions is enough. In our crawl of
+          Spanish websites, some of the AI assistants we found let something slip when tested in depth, with a
+          second adversarial review of each finding. Nobody broke into anything: all it took was typing in the chat.
+        </p>
+        <a
+          href={href('/estudio-asistentes-ia/')}
+          class="mt-5 inline-block font-mono text-[12px] text-oro-oscuro transition-colors hover:text-tinta"
+        >
+          See the full study with the data →
+        </a>
+      </div>
+
+      <ul class="mt-16 grid gap-x-12 gap-y-12 md:grid-cols-2 lg:grid-cols-3" role="list">
+        {
+          fugas.map((f, i) => (
+            <li data-reveal>
+              <span class="font-mono text-[11px] tracking-[0.14em] text-oro-oscuro">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="mt-4 font-display text-[19px] font-semibold leading-[1.3]">{f.titulo}</h3>
+              <p class="mt-3 text-[15px] text-pizarra">{f.texto}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="mt-24 max-w-[62ch]" data-reveal>
+        <h3 class="font-display text-[clamp(24px,3vw,34px)] font-extralight leading-[1.15] tracking-[-0.03em]">
+          Four steps to audit your assistants.
+        </h3>
+      </div>
+      <ol class="mt-10 grid gap-px overflow-hidden rounded-[4px] border border-linea bg-linea md:grid-cols-2" role="list">
+        {
+          pasosIa.map((p, i) => (
+            <li class="bg-panel p-8 md:p-10" data-reveal>
+              <span class="font-mono text-[11px] tracking-[0.14em] text-oro-oscuro">{String(i + 1).padStart(2, '0')}</span>
+              <h4 class="mt-4 font-display text-[20px] font-semibold leading-[1.3]">{p.titulo}</h4>
+              <p class="mt-3 text-[15px] text-pizarra">{p.texto}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Qué te llevas -->
+  <section class="hairline bg-marino text-marfil">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow text-oro-luz">What you get</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          The initial scan is free. Fixing the vulnerabilities comes at a fixed price.
+        </h2>
+        <p class="mt-6 text-[15px] text-marfil/70">
+          It is an assessment, not an attack. We talk to the assistant the way any visitor would, from the public
+          website and at a limited pace. We do not break into systems or touch anything that is not published, and
+          the findings are shown only to the head of the company.
+        </p>
+      </div>
+      <ul class="mt-16 grid gap-10 md:grid-cols-3" role="list">
+        {
+          entregables.map((e) => (
+            <li class="border-t border-marfil/15 pt-8" data-reveal>
+              <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-oro-luz">{e.etiqueta}</span>
+              <h3 class="mt-4 font-display text-[20px] font-semibold leading-[1.3]">{e.titulo}</h3>
+              <p class="mt-3 text-[15px] text-marfil/70">{e.texto}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="mt-12" data-reveal>
+        <Boton href={href('/contacto/')}>Request the free scan →</Boton>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conocimiento, consultoría y desarrollo -->
+  <section class="hairline">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">What we do</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          Awareness, consulting and development.
+        </h2>
+      </div>
+      <ul class="mt-16 grid gap-10 md:grid-cols-3" role="list">
+        {
+          queHacemos.map((q) => (
+            <li class="border-t border-linea pt-8" data-reveal>
+              <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-oro-oscuro">{q.etiqueta}</span>
+              <p class="mt-4 text-[15px] text-pizarra">{q.texto}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Problemas que resolvemos -->
+  <section class="hairline bg-panel">
+    <div class="wrap grid gap-10 py-24 md:grid-cols-12 md:py-32">
+      <div class="md:col-span-5" data-reveal>
+        <p class="eyebrow">Problems we solve</p>
+        <h2 class="mt-5 max-w-[16ch] font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          If any of these sound familiar, let us talk.
+        </h2>
+      </div>
+      <ul class="md:col-span-7" role="list">
+        {
+          problemas.map((p) => (
+            <li class="border-t border-linea py-6 first:border-t-0 first:pt-0" data-reveal>
+              <p class="font-display text-[18px] font-semibold leading-[1.35]">“{p.frase}”</p>
+              <p class="mt-2 font-mono text-[12px] text-pizarra">{p.causa}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Cómo trabajamos -->
+  <section id="como-trabajamos" class="hairline scroll-mt-[68px]">
+    <div class="wrap py-24 md:py-32">
+      <div class="max-w-[62ch]" data-reveal>
+        <p class="eyebrow">How we work</p>
+        <h2 class="mt-5 font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          Four steps, from the conversation to your own judgement.
+        </h2>
+      </div>
+      <ol class="mt-16 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4" role="list">
+        {
+          pasos.map((p, i) => (
+            <li class="border-t border-linea pt-6" data-reveal>
+              <span class="font-mono text-[11px] tracking-[0.14em] text-oro-oscuro">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="mt-4 font-display text-[19px] font-semibold">{p.titulo}</h3>
+              <p class="mt-3 text-[15px] text-pizarra">{p.texto}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="mt-12 max-w-[62ch] font-mono text-[12px] leading-[1.7] text-pizarra" data-reveal>
+        The general assessment starts from the <a class="text-oro-oscuro underline underline-offset-4" href={href('/servicios/diagnostico/')}>initial 30-minute conversation</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- Para quién -->
+  <section class="hairline bg-panel">
+    <div class="wrap grid gap-10 py-24 md:grid-cols-12 md:py-32">
+      <div class="md:col-span-5" data-reveal>
+        <p class="eyebrow">Who it is for</p>
+        <h2 class="mt-5 max-w-[16ch] font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          Built for people who cannot dedicate themselves to this full time.
+        </h2>
+      </div>
+      <ul class="space-y-5 text-[17px] text-pizarra md:col-span-7" role="list" data-reveal>
+        {paraQuien.map((t) => <li class="border-t border-linea pt-5 first:border-t-0 first:pt-0">{t}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="hairline">
+    <div class="wrap grid gap-10 py-24 md:grid-cols-12 md:py-32">
+      <div class="md:col-span-5" data-reveal>
+        <p class="eyebrow">Frequently asked questions</p>
+        <h2 class="mt-5 max-w-[16ch] font-display text-[clamp(28px,3.6vw,44px)] font-extralight leading-[1.1] tracking-[-0.03em]">
+          What people ask us most before they start
+        </h2>
+      </div>
+      <div class="md:col-span-7" data-reveal>
+        {
+          faq.map((f) => (
+            <details class="group border-t border-linea py-5 last:border-b">
+              <summary class="flex cursor-pointer list-none items-start justify-between gap-6 font-display text-[17px] font-semibold marker:content-none">
+                {f.pregunta}
+                <span class="mt-1 shrink-0 font-mono text-[14px] text-oro-oscuro transition-transform duration-200 group-open:rotate-45">
+                  +
+                </span>
+              </summary>
+              <p class="mt-4 max-w-[62ch] text-[15px] text-pizarra">{f.respuesta}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <FaqSchema faq={faq} />
+
+  <Cta
+    titulo="Start by knowing where you stand."
+    texto="Tell us your situation and we will book an assessment. No commitment, with a clear plan at the end."
+    boton="Book an assessment"
+  />
+</Base>
